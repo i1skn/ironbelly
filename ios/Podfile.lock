@@ -1,0 +1,116 @@
+PODS:
+  - boost-for-react-native (1.63.0)
+  - DoubleConversion (1.1.6)
+  - Folly (2016.10.31.00):
+    - boost-for-react-native
+    - DoubleConversion
+    - glog
+  - glog (0.3.5)
+  - React (0.57.7):
+    - React/Core (= 0.57.7)
+  - React/Core (0.57.7):
+    - yoga (= 0.57.7.React)
+  - React/CxxBridge (0.57.7):
+    - Folly (= 2016.10.31.00)
+    - React/Core
+    - React/cxxreact
+  - React/cxxreact (0.57.7):
+    - boost-for-react-native (= 1.63.0)
+    - Folly (= 2016.10.31.00)
+    - React/jschelpers
+    - React/jsinspector
+  - React/DevSupport (0.57.7):
+    - React/Core
+    - React/RCTWebSocket
+  - React/fishhook (0.57.7)
+  - React/jschelpers (0.57.7):
+    - Folly (= 2016.10.31.00)
+    - React/PrivateDatabase
+  - React/jsinspector (0.57.7)
+  - React/PrivateDatabase (0.57.7)
+  - React/RCTActionSheet (0.57.7):
+    - React/Core
+  - React/RCTAnimation (0.57.7):
+    - React/Core
+  - React/RCTBlob (0.57.7):
+    - React/Core
+  - React/RCTGeolocation (0.57.7):
+    - React/Core
+  - React/RCTImage (0.57.7):
+    - React/Core
+    - React/RCTNetwork
+  - React/RCTLinkingIOS (0.57.7):
+    - React/Core
+  - React/RCTNetwork (0.57.7):
+    - React/Core
+  - React/RCTSettings (0.57.7):
+    - React/Core
+  - React/RCTText (0.57.7):
+    - React/Core
+  - React/RCTVibration (0.57.7):
+    - React/Core
+  - React/RCTWebSocket (0.57.7):
+    - React/Core
+    - React/fishhook
+    - React/RCTBlob
+  - RNFS (2.13.3):
+    - React
+  - RNGestureHandler (1.0.12):
+    - React
+  - yoga (0.57.7.React)
+
+DEPENDENCIES:
+  - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
+  - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
+  - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - React/Core (from `../node_modules/react-native`)
+  - React/CxxBridge (from `../node_modules/react-native`)
+  - React/DevSupport (from `../node_modules/react-native`)
+  - React/fishhook (from `../node_modules/react-native`)
+  - React/RCTActionSheet (from `../node_modules/react-native`)
+  - React/RCTAnimation (from `../node_modules/react-native`)
+  - React/RCTGeolocation (from `../node_modules/react-native`)
+  - React/RCTImage (from `../node_modules/react-native`)
+  - React/RCTLinkingIOS (from `../node_modules/react-native`)
+  - React/RCTNetwork (from `../node_modules/react-native`)
+  - React/RCTSettings (from `../node_modules/react-native`)
+  - React/RCTText (from `../node_modules/react-native`)
+  - React/RCTVibration (from `../node_modules/react-native`)
+  - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNFS (from `../node_modules/react-native-fs`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler/RNGestureHandler.podspec`)
+  - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - boost-for-react-native
+
+EXTERNAL SOURCES:
+  DoubleConversion:
+    :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
+  Folly:
+    :podspec: "../node_modules/react-native/third-party-podspecs/Folly.podspec"
+  glog:
+    :podspec: "../node_modules/react-native/third-party-podspecs/glog.podspec"
+  React:
+    :path: "../node_modules/react-native"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
+  RNGestureHandler:
+    :podspec: "../node_modules/react-native-gesture-handler/RNGestureHandler.podspec"
+  yoga:
+    :path: "../node_modules/react-native/ReactCommon/yoga"
+
+SPEC CHECKSUMS:
+  boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
+  DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
+  Folly: c89ac2d5c6ab169cd7397ef27485c44f35f742c7
+  glog: e8acf0ebbf99759d3ff18c86c292a5898282dcde
+  React: 1fe0eb13d90b625d94c3b117c274dcfd2e760e11
+  RNFS: bbb1a64eb245763daf34aea86f97c97c4e85f74c
+  RNGestureHandler: 19864cb399138347461e7c9984ccf684cbf4db1d
+  yoga: b1ce48b6cf950b98deae82838f5173ea7cf89e85
+
+PODFILE CHECKSUM: 21fd13a85b1205cc3a3b901746df9d8d18425213
+
+COCOAPODS: 1.5.3

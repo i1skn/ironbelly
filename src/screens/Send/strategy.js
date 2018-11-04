@@ -1,0 +1,132 @@
+// @flow
+//
+// Copyright 2019 Ivan Sorokin.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import styled from 'styled-components/native'
+import { type State as SettingsState } from 'modules/settings'
+
+import { hrGrin, Spacer, FlexGrow, Title, colors } from 'common'
+import {
+  type State as ReduxState,
+  type Error,
+  type Navigation,
+  type OutputStrategy,
+  type Balance,
+} from 'common/types'
+
+import { type TxForm } from 'modules/tx'
+type State = {}
+
+const Option = styled.TouchableOpacity`
+  flex-grow: 1;
+  border-left-width: 5;
+  background: #f8f8f8;
+  border-left-color: ${props => (props.active ? colors.primary : colors.lightGrey)};
+  align-items: flex-start;
+  padding: 8px 0 8px 16px;
+  margin-bottom: 32px;
+`
+
+const Row = styled.Text`
+  padding: 4px 0;
+  font-size: 16;
+`
+
+const Amount = styled(Row)`
+  font-weight: 400;
+`
+
+const Fee = styled(Row)`
+  font-weight: 400;
+  color: #fa6800;
+`
+
+const Locked = styled(Row)`
+  font-weight: 600;
+`
+
+const Spendable = styled(Row)`
+  font-weight: 600;
+  color: #2eb358;
+`
+
+class Strategy extends Component<Props, State> {
+  static navigationOptions = {
+    header: null,
+  }
+
+  render() {
+    const { txForm, setOutputStrategy, balance } = this.props
+    return (
+      <React.Fragment>
+        {txForm.outputStrategies.length > 1 && <Title>Choose strategy</Title>}
+        <Spacer />
+        <FlexGrow>
+          {txForm.outputStrategies.map((outputStrategy, i) => (
+            <Option
+              key={i}
+              active={txForm.outputStrategy === outputStrategy}
+              onPress={() => {
+                setOutputStrategy(outputStrategy)
+              }}
+            >
+              <Amount>Amount to send: {hrGrin(txForm.amount)}</Amount>
+              <Fee>Payment fee: {hrGrin(outputStrategy.fee)}</Fee>
+              <Locked>Would be locked: {hrGrin(outputStrategy.total)}</Locked>
+              <Spendable>
+                Spendable: {hrGrin(balance.amountCurrentlySpendable - outputStrategy.total)}
+              </Spendable>
+            </Option>
+          ))}
+          {/*<FiatAmount>{hrFiat(convertToFiat(txForm.amount, currency), currency)}</FiatAmount>*/}
+        </FlexGrow>
+      </React.Fragment>
+    )
+  }
+}
+
+type Props = {
+  setOutputStrategy: (outputStrategy: OutputStrategy) => void,
+  settings: SettingsState,
+  balance: Balance,
+  error: Error,
+  isCreated: boolean,
+  navigation: Navigation,
+  txForm: TxForm,
+}
+
+const mapStateToProps = (state: ReduxState) => ({
+  txForm: state.tx.txForm,
+  settings: state.settings,
+  error: state.tx.txCreate.error,
+  balance: state.balance.data,
+})
+
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  setOutputStrategy: outputStrategy => {
+    dispatch({ type: 'TX_FORM_SET_OUTPUT_STRATEGY', outputStrategy })
+  },
+})
+
+export const validate = ({ amount }: { amount: number }) => {
+  return !!amount
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Strategy)

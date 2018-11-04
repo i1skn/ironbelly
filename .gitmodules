@@ -1,0 +1,8 @@
+[submodule "rust/croaring-rs"]
+	path = rust/croaring-rs
+	url = https://github.com/cyclefortytwo/croaring-rs
+	branch = ironbelly
+[submodule "rust/grin"]
+	path = rust/grin
+	url = https://github.com/cyclefortytwo/grin
+	branch = ironbelly

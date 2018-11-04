@@ -1,0 +1,769 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		09201BD079F64179B185E58A /* Settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 32A59E6CBD68439EB5B0B486 /* Settings@3x.png */; };
+		1F81488E3DED4690B5AF60A5 /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 998300B9168649DEA2FD5C5E /* Share.png */; };
+		25891B3A91144CF4B861C0C3 /* ReceiveTX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */; };
+		2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */; };
+		2D9490C0C18F3781E43746DF /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76167AF6FD5AA2CC815D8205 /* Pods_Ironbelly.framework */; };
+		2EE92245D405410BB107EF0F /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 958B76E81DC04571A528434C /* Poppins-Light.ttf */; };
+		3B65D265646D439BA0B3629C /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */; };
+		3D9CC4A9E3F345AE8452DBBE /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */; };
+		3F2CC385CA6947C5A00E8EAC /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */; };
+		4683EBA23F9546F8A6088B91 /* Poppins-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */; };
+		4DBEF9DFA36147B3BB494DDA /* SendTX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04188CD456354D4F8C264964 /* SendTX@2x.png */; };
+		59A89B02B2304A12B9FF74A0 /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */; };
+		62167ED457CD461FBA67FCE9 /* ReceiveTX.png in Resources */ = {isa = PBXBuildFile; fileRef = C00881AC291D4599B0F948D2 /* ReceiveTX.png */; };
+		629491642B564C9E864EAF40 /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */; };
+		6B39A1EE702541C792AABFCD /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */; };
+		6E4A767318F143E4A1B520A8 /* ChevronLeft@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 65889B7F669E44F197877486 /* ChevronLeft@3x.png */; };
+		6EB4D33273124215B9435D56 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */; };
+		711C1EA9968047B287305679 /* ChevronLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = DE278FF83B76486C92F05BB4 /* ChevronLeft.png */; };
+		7CE949452A7644308ACF5C89 /* x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84EB5C67E41C492EB06C5DB2 /* x@2x.png */; };
+		8A05B33A622348C1A7EBBBED /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C52591DBA24BD485CB0E6E /* x.png */; };
+		8CBCFFA0AC1D453185CE28F5 /* ReceiveTX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */; };
+		8FDD5F64B177A7E607B84C20 /* Pods_IronbellyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAE36CB964869151D5C2A258 /* Pods_IronbellyTests.framework */; };
+		A01CD803F51F4CE0BFE222D4 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F669249426C949548172D721 /* Poppins-Italic.ttf */; };
+		A91305F43818499099E75226 /* Settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18CED6B847864E8C82A0779A /* Settings@2x.png */; };
+		AE9C71C754744856A2C998BE /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */; };
+		B7AAF7350C2F4DC4A7A7C6D8 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */; };
+		BA25A3623551494C90C26A7C /* SendTX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE9B62D915C8420F847659BB /* SendTX@3x.png */; };
+		BB78D5D4CE1F4D8891578D1A /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */; };
+		C41C0D8B147746A6BA0AA3D3 /* Share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F9E3B3C7257947359B7DDDE9 /* Share@2x.png */; };
+		C6DC0496AC154B7CB9441330 /* Share@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D959331D4664C90ACA1A3A8 /* Share@3x.png */; };
+		DA080B836352469193E85A86 /* SendTX.png in Resources */ = {isa = PBXBuildFile; fileRef = 95058308B02745B683962F6B /* SendTX.png */; };
+		DCADF58ADB344767BB4E3D41 /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */; };
+		EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AEB4E1B47E9D4CB1B965F729 /* x@3x.png */; };
+		F25177D78A534E4094054368 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 55BE2A9C431741909FC0589D /* Settings.png */; };
+		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
+		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
+		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
+		F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F64186FF2188968D00A99CA0 /* libresolv.tbd */; };
+		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
+		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
+		F6E9509621C79ACB0066C203 /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9509521C79ACB0066C203 /* libwallet.a */; };
+		F6E9509821C842340066C203 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509721C842340066C203 /* String.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F64186EE218895DE00A99CA0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F64186D1218895DC00A99CA0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F64186D8218895DC00A99CA0;
+			remoteInfo = Grin;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		F67B83C8219345180004D4A1 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		04188CD456354D4F8C264964 /* SendTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@2x.png"; path = "../src/assets/images/SendTX@2x.png"; sourceTree = "<group>"; };
+		0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../src/assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
+		11C52591DBA24BD485CB0E6E /* x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = x.png; path = ../src/assets/images/x.png; sourceTree = "<group>"; };
+		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
+		18CED6B847864E8C82A0779A /* Settings@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@2x.png"; path = "../src/assets/images/Settings@2x.png"; sourceTree = "<group>"; };
+		22A0B5EE5A73B201812045AD /* Pods-IronbellyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.release.xcconfig"; sourceTree = "<group>"; };
+		32A59E6CBD68439EB5B0B486 /* Settings@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@3x.png"; path = "../src/assets/images/Settings@3x.png"; sourceTree = "<group>"; };
+		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
+		4CF06B53BF80CCF4801C1C15 /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
+		55BE2A9C431741909FC0589D /* Settings.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Settings.png; path = ../src/assets/images/Settings.png; sourceTree = "<group>"; };
+		65889B7F669E44F197877486 /* ChevronLeft@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@3x.png"; path = "../src/assets/images/ChevronLeft@3x.png"; sourceTree = "<group>"; };
+		76167AF6FD5AA2CC815D8205 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
+		84EB5C67E41C492EB06C5DB2 /* x@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@2x.png"; path = "../src/assets/images/x@2x.png"; sourceTree = "<group>"; };
+		87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		95058308B02745B683962F6B /* SendTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SendTX.png; path = ../src/assets/images/SendTX.png; sourceTree = "<group>"; };
+		952F3650E341FE71C032A649 /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
+		958B76E81DC04571A528434C /* Poppins-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Light.ttf"; path = "../src/assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
+		998300B9168649DEA2FD5C5E /* Share.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Share.png; path = ../src/assets/images/Share.png; sourceTree = "<group>"; };
+		9D959331D4664C90ACA1A3A8 /* Share@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@3x.png"; path = "../src/assets/images/Share@3x.png"; sourceTree = "<group>"; };
+		A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-LightItalic.ttf"; path = "../src/assets/fonts/Poppins-LightItalic.ttf"; sourceTree = "<group>"; };
+		A8DBF2856A54E2689E7987B8 /* Pods-IronbellyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.debug.xcconfig"; sourceTree = "<group>"; };
+		AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		AEB4E1B47E9D4CB1B965F729 /* x@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@3x.png"; path = "../src/assets/images/x@3x.png"; sourceTree = "<group>"; };
+		C00881AC291D4599B0F948D2 /* ReceiveTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ReceiveTX.png; path = ../src/assets/images/ReceiveTX.png; sourceTree = "<group>"; };
+		C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@3x.png"; path = "../src/assets/images/ReceiveTX@3x.png"; sourceTree = "<group>"; };
+		CE9B62D915C8420F847659BB /* SendTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@3x.png"; path = "../src/assets/images/SendTX@3x.png"; sourceTree = "<group>"; };
+		DAE36CB964869151D5C2A258 /* Pods_IronbellyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IronbellyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
+		EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@2x.png"; path = "../src/assets/images/ReceiveTX@2x.png"; sourceTree = "<group>"; };
+		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
+		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
+		F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
+		F64186D9218895DC00A99CA0 /* Ironbelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ironbelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F64186DC218895DC00A99CA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F64186E6218895DE00A99CA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F64186E8218895DE00A99CA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IronbellyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F64186F3218895DE00A99CA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F64186FF2188968D00A99CA0 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
+		F669249426C949548172D721 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
+		F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
+		F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Wallet-Bridging-Header.h"; path = "Ironbelly/Wallet-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
+		F6DDC63F2197893300B51AAE /* wallet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wallet.h; sourceTree = "<group>"; };
+		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
+		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
+		F6E9509521C79ACB0066C203 /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/target/universal/release/libwallet.a; sourceTree = "<group>"; };
+		F6E9509721C842340066C203 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../src/assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
+		F9E3B3C7257947359B7DDDE9 /* Share@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@2x.png"; path = "../src/assets/images/Share@2x.png"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F64186D6218895DC00A99CA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6E9509621C79ACB0066C203 /* libwallet.a in Frameworks */,
+				F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */,
+				2D9490C0C18F3781E43746DF /* Pods_Ironbelly.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F64186EA218895DE00A99CA0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8FDD5F64B177A7E607B84C20 /* Pods_IronbellyTests.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		55BF1A98F962EF5D327DC437 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				952F3650E341FE71C032A649 /* Pods-Ironbelly.debug.xcconfig */,
+				4CF06B53BF80CCF4801C1C15 /* Pods-Ironbelly.release.xcconfig */,
+				A8DBF2856A54E2689E7987B8 /* Pods-IronbellyTests.debug.xcconfig */,
+				22A0B5EE5A73B201812045AD /* Pods-IronbellyTests.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		E3DD2FF56799419782C99E1C /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */,
+				87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */,
+				F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */,
+				AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */,
+				F669249426C949548172D721 /* Poppins-Italic.ttf */,
+				958B76E81DC04571A528434C /* Poppins-Light.ttf */,
+				A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */,
+				0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */,
+				7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */,
+				F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */,
+				3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */,
+				8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */,
+				F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */,
+				F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */,
+				DE278FF83B76486C92F05BB4 /* ChevronLeft.png */,
+				16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */,
+				65889B7F669E44F197877486 /* ChevronLeft@3x.png */,
+				C00881AC291D4599B0F948D2 /* ReceiveTX.png */,
+				EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */,
+				C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */,
+				95058308B02745B683962F6B /* SendTX.png */,
+				04188CD456354D4F8C264964 /* SendTX@2x.png */,
+				CE9B62D915C8420F847659BB /* SendTX@3x.png */,
+				55BE2A9C431741909FC0589D /* Settings.png */,
+				18CED6B847864E8C82A0779A /* Settings@2x.png */,
+				32A59E6CBD68439EB5B0B486 /* Settings@3x.png */,
+				998300B9168649DEA2FD5C5E /* Share.png */,
+				F9E3B3C7257947359B7DDDE9 /* Share@2x.png */,
+				9D959331D4664C90ACA1A3A8 /* Share@3x.png */,
+				11C52591DBA24BD485CB0E6E /* x.png */,
+				84EB5C67E41C492EB06C5DB2 /* x@2x.png */,
+				AEB4E1B47E9D4CB1B965F729 /* x@3x.png */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		F64186D0218895DC00A99CA0 = {
+			isa = PBXGroup;
+			children = (
+				F64186DB218895DC00A99CA0 /* Ironbelly */,
+				F64186F0218895DE00A99CA0 /* IronbellyTests */,
+				F64186DA218895DC00A99CA0 /* Products */,
+				F64186FC2188967A00A99CA0 /* Frameworks */,
+				55BF1A98F962EF5D327DC437 /* Pods */,
+				E3DD2FF56799419782C99E1C /* Resources */,
+			);
+			sourceTree = "<group>";
+		};
+		F64186DA218895DC00A99CA0 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F64186D9218895DC00A99CA0 /* Ironbelly.app */,
+				F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F64186DB218895DC00A99CA0 /* Ironbelly */ = {
+			isa = PBXGroup;
+			children = (
+				F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */,
+				F64186DC218895DC00A99CA0 /* AppDelegate.swift */,
+				F6DDC63F2197893300B51AAE /* wallet.h */,
+				F64186E3218895DE00A99CA0 /* Assets.xcassets */,
+				F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */,
+				F64186E8218895DE00A99CA0 /* Info.plist */,
+				F6E9509121C50DE90066C203 /* GrinBridge.m */,
+				F6E9509321C50E560066C203 /* GrinBridge.swift */,
+				F6E9509721C842340066C203 /* String.swift */,
+			);
+			path = Ironbelly;
+			sourceTree = "<group>";
+		};
+		F64186F0218895DE00A99CA0 /* IronbellyTests */ = {
+			isa = PBXGroup;
+			children = (
+				F64186F3218895DE00A99CA0 /* Info.plist */,
+			);
+			path = IronbellyTests;
+			sourceTree = "<group>";
+		};
+		F64186FC2188967A00A99CA0 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F6E9509521C79ACB0066C203 /* libwallet.a */,
+				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
+				76167AF6FD5AA2CC815D8205 /* Pods_Ironbelly.framework */,
+				DAE36CB964869151D5C2A258 /* Pods_IronbellyTests.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F64186D8218895DC00A99CA0 /* Ironbelly */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F64186F6218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "Ironbelly" */;
+			buildPhases = (
+				B4B65182060AEDB2836EFF42 /* [CP] Check Pods Manifest.lock */,
+				F64186D5218895DC00A99CA0 /* Sources */,
+				F64186D6218895DC00A99CA0 /* Frameworks */,
+				F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */,
+				F64186D7218895DC00A99CA0 /* Resources */,
+				F67B83C8219345180004D4A1 /* Embed App Extensions */,
+				455608B5CF9769BCB89DCF91 /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Ironbelly;
+			productName = Grin;
+			productReference = F64186D9218895DC00A99CA0 /* Ironbelly.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F64186EC218895DE00A99CA0 /* IronbellyTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F64186F9218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "IronbellyTests" */;
+			buildPhases = (
+				3871B0F1F7AC003049282FEE /* [CP] Check Pods Manifest.lock */,
+				F64186E9218895DE00A99CA0 /* Sources */,
+				F64186EA218895DE00A99CA0 /* Frameworks */,
+				F64186EB218895DE00A99CA0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F64186EF218895DE00A99CA0 /* PBXTargetDependency */,
+			);
+			name = IronbellyTests;
+			productName = GrinTests;
+			productReference = F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F64186D1218895DC00A99CA0 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1010;
+				LastUpgradeCheck = 1000;
+				ORGANIZATIONNAME = "Ivan Sorokin";
+				TargetAttributes = {
+					F64186D8218895DC00A99CA0 = {
+						CreatedOnToolsVersion = 10.0;
+					};
+					F64186EC218895DE00A99CA0 = {
+						CreatedOnToolsVersion = 10.0;
+						TestTargetID = F64186D8218895DC00A99CA0;
+					};
+				};
+			};
+			buildConfigurationList = F64186D4218895DC00A99CA0 /* Build configuration list for PBXProject "Ironbelly" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F64186D0218895DC00A99CA0;
+			productRefGroup = F64186DA218895DC00A99CA0 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F64186D8218895DC00A99CA0 /* Ironbelly */,
+				F64186EC218895DE00A99CA0 /* IronbellyTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F64186D7218895DC00A99CA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */,
+				F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */,
+				6EB4D33273124215B9435D56 /* Poppins-ExtraBold.ttf in Resources */,
+				6B39A1EE702541C792AABFCD /* Poppins-ExtraBoldItalic.ttf in Resources */,
+				B7AAF7350C2F4DC4A7A7C6D8 /* Poppins-ExtraLight.ttf in Resources */,
+				AE9C71C754744856A2C998BE /* Poppins-ExtraLightItalic.ttf in Resources */,
+				A01CD803F51F4CE0BFE222D4 /* Poppins-Italic.ttf in Resources */,
+				2EE92245D405410BB107EF0F /* Poppins-Light.ttf in Resources */,
+				3B65D265646D439BA0B3629C /* Poppins-LightItalic.ttf in Resources */,
+				3F2CC385CA6947C5A00E8EAC /* Poppins-Medium.ttf in Resources */,
+				DCADF58ADB344767BB4E3D41 /* Poppins-MediumItalic.ttf in Resources */,
+				3D9CC4A9E3F345AE8452DBBE /* Poppins-Regular.ttf in Resources */,
+				BB78D5D4CE1F4D8891578D1A /* Poppins-SemiBold.ttf in Resources */,
+				4683EBA23F9546F8A6088B91 /* Poppins-SemiBoldItalic.ttf in Resources */,
+				629491642B564C9E864EAF40 /* Poppins-Thin.ttf in Resources */,
+				59A89B02B2304A12B9FF74A0 /* Poppins-ThinItalic.ttf in Resources */,
+				711C1EA9968047B287305679 /* ChevronLeft.png in Resources */,
+				2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */,
+				6E4A767318F143E4A1B520A8 /* ChevronLeft@3x.png in Resources */,
+				62167ED457CD461FBA67FCE9 /* ReceiveTX.png in Resources */,
+				25891B3A91144CF4B861C0C3 /* ReceiveTX@2x.png in Resources */,
+				8CBCFFA0AC1D453185CE28F5 /* ReceiveTX@3x.png in Resources */,
+				DA080B836352469193E85A86 /* SendTX.png in Resources */,
+				4DBEF9DFA36147B3BB494DDA /* SendTX@2x.png in Resources */,
+				BA25A3623551494C90C26A7C /* SendTX@3x.png in Resources */,
+				F25177D78A534E4094054368 /* Settings.png in Resources */,
+				A91305F43818499099E75226 /* Settings@2x.png in Resources */,
+				09201BD079F64179B185E58A /* Settings@3x.png in Resources */,
+				1F81488E3DED4690B5AF60A5 /* Share.png in Resources */,
+				C41C0D8B147746A6BA0AA3D3 /* Share@2x.png in Resources */,
+				C6DC0496AC154B7CB9441330 /* Share@3x.png in Resources */,
+				8A05B33A622348C1A7EBBBED /* x.png in Resources */,
+				7CE949452A7644308ACF5C89 /* x@2x.png in Resources */,
+				EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F64186EB218895DE00A99CA0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		3871B0F1F7AC003049282FEE /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-IronbellyTests-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		455608B5CF9769BCB89DCF91 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/DoubleConversion/DoubleConversion.framework",
+				"${BUILT_PRODUCTS_DIR}/Folly/folly.framework",
+				"${BUILT_PRODUCTS_DIR}/RNFS/RNFS.framework",
+				"${BUILT_PRODUCTS_DIR}/RNGestureHandler/RNGestureHandler.framework",
+				"${BUILT_PRODUCTS_DIR}/React/React.framework",
+				"${BUILT_PRODUCTS_DIR}/glog/glog.framework",
+				"${BUILT_PRODUCTS_DIR}/yoga/yoga.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DoubleConversion.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/folly.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNFS.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNGestureHandler.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/glog.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/yoga.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B4B65182060AEDB2836EFF42 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Ironbelly-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Bundle React Native";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\nexport SKIP_BUNDLING=true\nfi\nexport NODE_BINARY=/Users/i1skn/.n/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F64186D5218895DC00A99CA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6E9509821C842340066C203 /* String.swift in Sources */,
+				F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */,
+				F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */,
+				F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F64186E9218895DE00A99CA0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F64186EF218895DE00A99CA0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F64186D8218895DC00A99CA0 /* Ironbelly */;
+			targetProxy = F64186EE218895DE00A99CA0 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F64186E6218895DE00A99CA0 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F64186F4218895DE00A99CA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F64186F5218895DE00A99CA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F64186F7218895DE00A99CA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 952F3650E341FE71C032A649 /* Pods-Ironbelly.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F4EWDSV84U;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = Ironbelly/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust/target/universal/release";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cycle42.ironbelly;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		F64186F8218895DE00A99CA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4CF06B53BF80CCF4801C1C15 /* Pods-Ironbelly.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = F4EWDSV84U;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = Ironbelly/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust/target/universal/release";
+				PRODUCT_BUNDLE_IDENTIFIER = com.cycle42.ironbelly;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		F64186FA218895DE00A99CA0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A8DBF2856A54E2689E7987B8 /* Pods-IronbellyTests.debug.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = IronbellyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivan.GrinTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ironbelly.app/Ironbelly";
+			};
+			name = Debug;
+		};
+		F64186FB218895DE00A99CA0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 22A0B5EE5A73B201812045AD /* Pods-IronbellyTests.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = IronbellyTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.ivan.GrinTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.2;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ironbelly.app/Ironbelly";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F64186D4218895DC00A99CA0 /* Build configuration list for PBXProject "Ironbelly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F64186F4218895DE00A99CA0 /* Debug */,
+				F64186F5218895DE00A99CA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F64186F6218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "Ironbelly" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F64186F7218895DE00A99CA0 /* Debug */,
+				F64186F8218895DE00A99CA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F64186F9218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "IronbellyTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F64186FA218895DE00A99CA0 /* Debug */,
+				F64186FB218895DE00A99CA0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F64186D1218895DC00A99CA0 /* Project object */;
+}
