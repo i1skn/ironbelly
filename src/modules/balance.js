@@ -25,6 +25,7 @@ import {
   type RustBalance,
   type Error,
 } from 'common/types'
+import { log } from 'common/logger'
 
 const { GrinBridge } = NativeModules
 
@@ -59,7 +60,9 @@ export const sideEffects = {
         store.dispatch({ type: 'BALANCE_SUCCESS', data: mapRustBalance(data) })
       )
       .catch(error => {
-        store.dispatch({ type: 'BALANCE_FAILURE', message: error })
+        const e = JSON.parse(error.message)
+        store.dispatch({ type: 'BALANCE_FAILURE', ...e })
+        log(e, true)
       })
   },
 }

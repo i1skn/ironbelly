@@ -21,6 +21,7 @@ import RNFS from 'react-native-fs'
 import { ToastStyles } from 'react-native-toaster'
 
 import { mapRustTx, mapRustOutputStrategy, getSlatePath } from 'common'
+import { log } from 'common/logger'
 import {
   type RustTx,
   type Tx,
@@ -32,7 +33,6 @@ import {
   type txCreateRequestAction,
   type txReceiveRequestAction,
   type txFinalizeRequestAction,
-  type slateGetRequestAction,
   type slateSetRequestAction,
   type slateRemoveRequestAction,
   type slateLoadRequestAction,
@@ -196,7 +196,9 @@ export const sideEffects = {
           })
       })
       .catch(error => {
+        const e = JSON.parse(error.message)
         store.dispatch({ type: 'TX_LIST_FAILURE', code: 1, message: error })
+        log(e, true)
       })
   },
   ['TX_CANCEL_REQUEST']: (action: txCancelRequestAction, store: Store) => {
@@ -217,7 +219,9 @@ export const sideEffects = {
         store.dispatch({ type: 'BALANCE_REQUEST' })
       })
       .catch(error => {
+        const e = JSON.parse(error.message)
         store.dispatch({ type: 'TX_CANCEL_FAILURE', code: 1, message: error })
+        log(e, true)
       })
   },
   ['TX_GET_REQUEST']: (action: txGetRequestAction, store: Store) => {
@@ -228,7 +232,9 @@ export const sideEffects = {
         store.dispatch({ type: 'TX_GET_SUCCESS', validated: result[0], tx: result[1][0] })
       })
       .catch(error => {
+        const e = JSON.parse(error.message)
         store.dispatch({ type: 'TX_GET_FAILURE', code: 1, message: error })
+        log(e, true)
       })
   },
   ['TX_CREATE_REQUEST']: (action: txCreateRequestAction, store: Store) => {
@@ -253,11 +259,7 @@ export const sideEffects = {
       .catch(error => {
         const e = JSON.parse(error.message)
         store.dispatch({ type: 'TX_CREATE_FAILURE', ...e })
-        store.dispatch({
-          type: 'TOAST_SHOW',
-          text: e.message,
-          styles: ToastStyles.error,
-        })
+        log(e, true)
       })
   },
   ['TX_RECEIVE_REQUEST']: (action: txReceiveRequestAction, store: Store) => {
@@ -274,11 +276,7 @@ export const sideEffects = {
       .catch(error => {
         const e = JSON.parse(error.message)
         store.dispatch({ type: 'TX_RECEIVE_FAILURE', ...e })
-        store.dispatch({
-          type: 'TOAST_SHOW',
-          text: e.message,
-          styles: ToastStyles.error,
-        })
+        log(e, true)
       })
   },
   ['TX_FINALIZE_REQUEST']: (action: txFinalizeRequestAction, store: Store) => {
@@ -287,7 +285,7 @@ export const sideEffects = {
       .then(data => JSON.parse(data))
       .then(value => {
         const finalized = value ? value : []
-        GrinBridge.txFinalize('default', '', checkNodeApiHttpAddr, action.responseSlatePath)
+        return GrinBridge.txFinalize('default', '', checkNodeApiHttpAddr, action.responseSlatePath)
           .then(() => {
             store.dispatch({ type: 'TX_FINALIZE_SUCCESS' })
             store.dispatch({
@@ -304,33 +302,19 @@ export const sideEffects = {
           .catch(error => {
             const e = JSON.parse(error.message)
             store.dispatch({ type: 'TX_FINALIZE_FAILURE', ...e })
-            store.dispatch({
-              type: 'TOAST_SHOW',
-              text: e.message,
-              styles: ToastStyles.error,
-            })
+            log(e, true)
           })
-      })
-  },
-  ['SLATE_GET_REQUEST']: (action: slateGetRequestAction, store: Store) => {
-    const path = getSlatePath(action.id, action.isResponse)
-    return RNFS.readFile(path, 'utf8')
-      .then((json: string) => JSON.parse(json))
-      .then(slate => {
-        store.dispatch({ type: 'SLATE_GET_SUCCESS', slate })
-      })
-      .catch(error => {
-        store.dispatch({ type: 'SLATE_GET_FAILURE', code: 1, message: error.message })
       })
   },
   ['SLATE_LOAD_REQUEST']: (action: slateLoadRequestAction, store: Store) => {
     return RNFS.readFile(action.slatePath, 'utf8')
       .then((json: string) => JSON.parse(json))
       .then(slate => {
-        store.dispatch({ type: 'SLATE_GET_SUCCESS', slate })
+        store.dispatch({ type: 'SLATE_LOAD_SUCCESS', slate })
       })
       .catch(error => {
-        store.dispatch({ type: 'SLATE_GET_FAILURE', code: 1, message: error.message })
+        store.dispatch({ type: 'SLATE_LOAD_FAILURE', code: 1, message: error.message })
+        log(error, true)
       })
   },
   ['SLATE_SET_REQUEST']: (action: slateSetRequestAction, store: Store) => {
@@ -341,6 +325,7 @@ export const sideEffects = {
       })
       .catch(error => {
         store.dispatch({ type: 'SLATE_SET_FAILURE', code: 1, message: error.message })
+        log(error, true)
       })
   },
   ['SLATE_REMOVE_REQUEST']: (action: slateRemoveRequestAction, store: Store) => {
@@ -351,6 +336,7 @@ export const sideEffects = {
       })
       .catch(error => {
         store.dispatch({ type: 'SLATE_REMOVE_FAILURE', code: 1, message: error.message })
+        log(error, true)
       })
   },
   ['SLATE_SHARE_REQUEST']: (action: slateShareRequestAction, store: Store) => {
@@ -363,6 +349,7 @@ export const sideEffects = {
       })
       .catch(error => {
         store.dispatch({ type: 'SLATE_SHARE_FAILURE', code: 1, message: error.message })
+        log(error, true)
       })
   },
 }

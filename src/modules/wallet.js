@@ -22,7 +22,7 @@ import {
   type walletRecoveryRequestAction,
   type Store,
 } from 'common/types'
-import { ToastStyles } from 'react-native-toaster'
+import { log } from 'common/logger'
 import { combineReducers } from 'redux'
 import { checkWalletDataDirectory, WALLET_DATA_DIRECTORY } from 'common'
 import RNFS from 'react-native-fs'
@@ -199,11 +199,7 @@ export const sideEffects = {
         .catch(error => {
           const e = JSON.parse(error.message)
           store.dispatch({ type: 'WALLET_INIT_FAILURE', ...e })
-          store.dispatch({
-            type: 'TOAST_SHOW',
-            text: e.message,
-            styles: ToastStyles.error,
-          })
+          log(e, true)
         })
     })
   },
@@ -216,11 +212,7 @@ export const sideEffects = {
       .catch(error => {
         const e = JSON.parse(error.message)
         store.dispatch({ type: 'WALLET_PHRASE_FAILURE', ...e })
-        store.dispatch({
-          type: 'TOAST_SHOW',
-          text: e.message,
-          styles: ToastStyles.error,
-        })
+        log(e, true)
       })
   },
   ['WALLET_RECOVERY_REQUEST']: (action: walletRecoveryRequestAction, store: Store) => {
@@ -244,12 +236,8 @@ export const sideEffects = {
           subscription.remove()
           const e = JSON.parse(error.message)
           store.dispatch({ type: 'WALLET_RECOVERY_FAILURE', ...e })
-          store.dispatch({
-            type: 'TOAST_SHOW',
-            text: e.message,
-            styles: ToastStyles.error,
-          })
           RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {})
+          log(e, true)
         })
     })
   },

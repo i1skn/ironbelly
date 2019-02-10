@@ -1,7 +1,6 @@
 {
   "name": "Ironbelly",
-  "version": "0.0.1",
-  "private": true,
+  "version": "0.0.2",
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "lint": "./node_modules/.bin/eslint src/**/*.js"
@@ -11,6 +10,7 @@
   },
   "dependencies": {
     "apsl-react-native-button": "^3.1.1",
+    "bugsnag-react-native": "^2.14.0",
     "flux-standard-action": "^2.0.3",
     "moment": "^2.23.0",
     "react": "16.6.1",
@@ -32,6 +32,7 @@
     "babel-jest": "23.2.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-preset-react-native": "^5",
+    "bugsnag-sourcemaps": "^1.1.0",
     "enzyme": "^3.6.0",
     "enzyme-to-json": "^3.3.4",
     "eslint": "^5.13.0",
