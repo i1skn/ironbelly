@@ -15,8 +15,9 @@ AppConfig.stage().then(stage => {
 
 export const log = (e: Error, showToUser: boolean = false) => {
   if (!(e instanceof Error) && e.message) {
-    bugsnag.notify(new Error(e.message))
+    e = new Error(e.message)
   }
+  bugsnag.notify(e)
   if (showToUser) {
     store.dispatch({
       type: 'TOAST_SHOW',
