@@ -132,7 +132,7 @@ class RealApp extends React.Component<Props, State> {
     Linking.removeEventListener('url', this._handleOpenURL)
   }
   _handleOpenURL = event => {
-    const slatePath = event.url.substr(7)
+    const slatePath = decodeURIComponent(event.url).substr(7)
     this.navigation.navigate(isResponseSlate(slatePath) ? 'Finalize' : 'Receive', { slatePath })
   }
   render() {
