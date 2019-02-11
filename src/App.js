@@ -24,6 +24,7 @@ import {
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
   checkApiSecret,
+  isWalletInitialized,
 } from 'common'
 import { type State as GlobalState } from 'common/types'
 import { store } from 'common/redux'
@@ -124,7 +125,10 @@ class RealApp extends React.Component<Props, State> {
   }
   _handleOpenURL = event => {
     const slatePath = decodeURIComponent(event.url).substr(7)
-    this.navigation.navigate(isResponseSlate(slatePath) ? 'Finalize' : 'Receive', { slatePath })
+    isWalletInitialized().then(exists => {
+      exists &&
+        this.navigation.navigate(isResponseSlate(slatePath) ? 'Finalize' : 'Receive', { slatePath })
+    })
   }
   render() {
     return (
