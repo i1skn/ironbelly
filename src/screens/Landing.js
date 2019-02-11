@@ -96,7 +96,7 @@ class Landing extends Component<Props, State> {
           }}
         />
         <FlexGrow />
-        <Text>Version: {pkg.version} (alpha)</Text>
+        <Text>Version: {pkg.version} (floonet)</Text>
         <Spacer />
       </Wrapper>
     )

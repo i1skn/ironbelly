@@ -89,6 +89,7 @@ const walletInit = function(
         ...state,
         inProgress: true,
         progress: 0,
+        mnemonic: '',
       }
     case 'WALLET_INIT_SUCCESS':
       return {
