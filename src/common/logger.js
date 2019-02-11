@@ -18,7 +18,7 @@ export const log = (e: Error, showToUser: boolean = false) => {
     e = new Error(e.message)
   }
   bugsnag.notify(e)
-  if (showToUser) {
+  if (showToUser && e.message) {
     store.dispatch({
       type: 'TOAST_SHOW',
       text: e.message,

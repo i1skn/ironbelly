@@ -63,8 +63,7 @@ class Send extends Component<Props, State> {
             .then((json: string) => JSON.parse(json))
             .then(outputStrategies => {})
             .catch(error => {
-              const e = JSON.parse(error.message)
-              log(e, true)
+              log(error, true)
             })
         },
       },
@@ -95,8 +94,7 @@ class Send extends Component<Props, State> {
           next()
         })
         .catch(error => {
-          const e = JSON.parse(error.message)
-          log(e, true)
+          log(error, true)
         })
     }
   }

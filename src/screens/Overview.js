@@ -173,7 +173,7 @@ class Overview extends Component<Props, State> {
             )
           }
           ItemSeparatorComponent={ListItemSeparator}
-          renderItem={(data, rowMap) => (
+          renderItem={(data: { item: Tx }, rowMap) => (
             <SwipeRow
               disableRightSwipe
               rightOpenValue={-100}
@@ -193,7 +193,7 @@ class Overview extends Component<Props, State> {
                     height: '100%',
                     justifyContent: 'center',
                   }}
-                  onPress={_ => txCancel(data.item.id, data.item.slateId, !data.item.stored_tx)}
+                  onPress={_ => txCancel(data.item.id, data.item.slateId, !data.item.storedTx)}
                 >
                   <Text
                     style={{

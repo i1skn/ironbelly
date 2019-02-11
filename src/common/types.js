@@ -280,6 +280,7 @@ export type Tx = {
   fee: number,
   creationTime: any,
   slateId: string,
+  storedTx: string,
 }
 
 // Rust structures
