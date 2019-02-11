@@ -15,6 +15,17 @@
 
 import Foundation
 
+func returnToReact(error: UInt8, cResult: UnsafePointer<Int8>, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    
+    let result = String(cString: cResult)
+        if error == 0 {
+            resolve(result)
+        } else {
+            reject(nil, result, nil)
+        }
+        cstr_free(cResult)
+}
+
 @objc(GrinBridge)
 class GrinBridge: RCTEventEmitter {
     
@@ -23,227 +34,91 @@ class GrinBridge: RCTEventEmitter {
     }
     
     @objc func balance(_ account: String, password: String, checkNodeApiHttpAddr:String, refreshFromNode: Bool,resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_balance(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, refreshFromNode, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_balance(walletUrl.path, account, password, checkNodeApiHttpAddr, refreshFromNode, &error)
+            returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
         }
     }
     
     @objc func txsGet(_ account: String, password: String, checkNodeApiHttpAddr:String, refreshFromNode: Bool,resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_txs_get(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, refreshFromNode, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_txs_get(walletUrl.path, account, password, checkNodeApiHttpAddr, refreshFromNode, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
     @objc func txGet(_ account: String, password: String, checkNodeApiHttpAddr:String, refreshFromNode: Bool, txId: UInt32, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_tx_get(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, refreshFromNode, txId, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_tx_get(walletUrl.path, account, password, checkNodeApiHttpAddr, refreshFromNode, txId, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
     @objc func txCreate(_ account: String, password: String, checkNodeApiHttpAddr:String, amount: UInt64, selectionStrategyIsUseAll: Bool, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
-            var message_ptr = message.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_tx_create(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, amount, selectionStrategyIsUseAll, &message_ptr, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
-            
+            let cResult = c_tx_create(walletUrl.path, account, password, checkNodeApiHttpAddr, amount, selectionStrategyIsUseAll, message, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
     @objc func txStrategies(_ account: String, password: String, checkNodeApiHttpAddr:String, amount: UInt64, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_tx_strategies(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, amount, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_tx_strategies(walletUrl.path, account, password, checkNodeApiHttpAddr, amount, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
             
         }
     }
     
     @objc func txCancel(_ account: String, password: String, checkNodeApiHttpAddr:String, id: UInt32, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_tx_cancel(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, id, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_tx_cancel(walletUrl.path, account, password, checkNodeApiHttpAddr, id, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
-    @objc func txReceive(_ account: String, password: String, checkNodeApiHttpAddr:String, slate_path: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
-            var slate_path_ptr = slate_path.asPtr()
-            var message_ptr = message.asPtr()
+    @objc func txReceive(_ account: String, password: String, checkNodeApiHttpAddr:String, slatePath: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_tx_receive(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, &slate_path_ptr,&message_ptr, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_tx_receive(walletUrl.path, account, password, checkNodeApiHttpAddr, slatePath,message, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
-    @objc func txFinalize(_ account: String, password: String, checkNodeApiHttpAddr:String, slate_path: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var account_ptr = account.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
-            var slate_path_ptr = slate_path.asPtr()
+    @objc func txFinalize(_ account: String, password: String, checkNodeApiHttpAddr:String, slatePath: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_tx_finalize(&path_ptr, &account_ptr, &password_ptr, &check_node_api_http_addr_ptr, &slate_path_ptr, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_tx_finalize(walletUrl.path, account, password, checkNodeApiHttpAddr, slatePath, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
     @objc func walletInit(_ password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_wallet_init(&path_ptr, &password_ptr, &check_node_api_http_addr_ptr, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_wallet_init(walletUrl.path, password, checkNodeApiHttpAddr, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
     @objc func walletPhrase(_ password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var path_ptr = wallet_url.path.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_wallet_phrase(&path_ptr, &password_ptr, &check_node_api_http_addr_ptr, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_wallet_phrase(walletUrl.path, password, checkNodeApiHttpAddr, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     
     @objc func walletRecovery(_ phrase: String, password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet_url = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            
-            var path_ptr = wallet_url.path.asPtr()
-            var phrase_ptr = phrase.asPtr()
-            var password_ptr = password.asPtr()
-            var check_node_api_http_addr_ptr = checkNodeApiHttpAddr.asPtr()
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let result_rust_str = c_wallet_recovery(&path_ptr, &phrase_ptr, &password_ptr, &check_node_api_http_addr_ptr, &error)
-            let result_rust_str_ptr = rust_string_ptr(result_rust_str)
-            let result = String.fromStringPtr(ptr: result_rust_str_ptr!.pointee)
-            if error == 0 {
-                resolve(result)
-            } else {
-                reject(nil, result, nil)
-            }
-            rust_string_ptr_destroy(result_rust_str_ptr)
-            rust_string_destroy(result_rust_str)
+            let cResult = c_wallet_recovery(walletUrl.path, phrase, password, checkNodeApiHttpAddr, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
     

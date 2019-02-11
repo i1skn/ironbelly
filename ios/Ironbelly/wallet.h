@@ -14,44 +14,27 @@
 
 #include <stdint.h>
 
-struct wallet;
-// string
-struct rust_string;
+//free c string created in rust
+void cstr_free (const char* s);
 
-// string_ptr
-struct rust_string_ptr {
-	const uint8_t* ptr;
-	size_t len;
-};
+const char* c_balance(const char* path, const char* account, const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );
 
-// return ptr to rust_str
-struct rust_string_ptr* rust_string_ptr(const struct rust_string* s);
+const char* c_txs_get(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );
 
-// removes rust string
-void rust_string_destroy(struct rust_string* s);
+const char* c_tx_get(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint32_t tx_id, const uint8_t* );
 
-// removes string pointer
-void rust_string_ptr_destroy(struct rust_string_ptr* s);
+const char* c_tx_create(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const uint64_t amount, const bool selection_strategy_is_use_all, const char* message, const uint8_t*);
 
-struct rust_string* c_balance(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );
+const char* c_tx_strategies(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const uint64_t amount, const uint8_t*);
 
-struct rust_string* c_txs_get(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );
+const char* c_tx_cancel(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const uint32_t id, const uint8_t*);
 
-struct rust_string* c_tx_get(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const bool refresh_from_node, const uint32_t tx_id, const uint8_t* );
+const char* c_tx_receive(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const char* slate_path, const char* message, const uint8_t*);
 
-struct rust_string* c_tx_create(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const uint64_t amount, const bool selection_strategy_is_use_all, const struct rust_string_ptr* message, const uint8_t*);
+const char* c_tx_finalize(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const char* slate_path, const uint8_t*);
 
-struct rust_string* c_tx_strategies(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const uint64_t amount, const uint8_t*);
+const char* c_wallet_init(const char* path,const char* password, const char* check_node_api_http_addr, const uint8_t*);
 
-struct rust_string* c_tx_cancel(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const uint32_t id, const uint8_t*);
+const char* c_wallet_phrase(const char* path,const char* password, const char* check_node_api_http_addr, const uint8_t*);
 
-struct rust_string* c_tx_receive(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const struct rust_string_ptr* slate_path, const struct rust_string_ptr* message, const uint8_t*);
-
-struct rust_string* c_tx_finalize(const struct rust_string_ptr* path,const struct rust_string_ptr* account,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const struct rust_string_ptr* slate_path, const uint8_t*);
-
-struct rust_string* c_wallet_init(const struct rust_string_ptr* path,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const uint8_t*);
-
-struct rust_string* c_wallet_phrase(const struct rust_string_ptr* path,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const uint8_t*);
-
-struct rust_string* c_wallet_recovery(const struct rust_string_ptr* path,const struct rust_string_ptr* phrase,const struct rust_string_ptr* password, const struct rust_string_ptr* check_node_api_http_addr, const uint8_t* error);
-
+const char* c_wallet_recovery(const char* path,const char* phrase,const char* password, const char* check_node_api_http_addr, const uint8_t* error);

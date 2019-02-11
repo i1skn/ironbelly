@@ -22,66 +22,23 @@ use grin_wallet::{
     instantiate_wallet, FileWalletCommAdapter, HTTPNodeClient, LMDBBackend, WalletConfig,
     WalletSeed,
 };
-use libc::size_t;
 use serde::{Deserialize, Serialize};
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
 use std::sync::Arc;
 
-// Helper struct that we'll use to give strings to C.
-#[repr(C)]
-pub struct StringPtr {
-    pub ptr: *const u8,
-    pub len: size_t,
-}
-
-impl<'a> From<&'a str> for StringPtr {
-    fn from(s: &'a str) -> Self {
-        StringPtr {
-            ptr: s.as_ptr(),
-            len: s.len() as size_t,
-        }
-    }
-}
-
-impl StringPtr {
-    pub fn as_str(&self) -> &str {
-        use std::{slice, str};
-
-        unsafe {
-            let slice = slice::from_raw_parts(self.ptr, self.len);
-            str::from_utf8(slice).unwrap()
-        }
-    }
+fn c_str_to_rust(s: *const c_char) -> String {
+    unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn rust_string_ptr(s: *mut String) -> *mut StringPtr {
-    Box::into_raw(Box::new(StringPtr::from(&**s)))
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn rust_string_destroy(s: *mut String) {
-    let _ = Box::from_raw(s);
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn rust_string_ptr_destroy(s: *mut StringPtr) {
-    let _ = Box::from_raw(s);
-}
-
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct RNError {
-    pub code: u32,
-    pub message: String,
-}
-
-impl From<String> for RNError {
-    fn from(s: String) -> Self {
-        RNError {
-            code: 1,
-            message: s,
-        }
+pub unsafe extern "C" fn cstr_free(s: *mut c_char) {
+    if s.is_null() {
+        return;
     }
+    CString::from_raw(s);
 }
+
 pub fn get_wallet_config(wallet_dir: &str, check_node_api_http_addr: &str) -> WalletConfig {
     WalletConfig {
         chain_type: Some(ChainTypes::Floonet),
@@ -123,29 +80,28 @@ macro_rules! unwrap_to_c (
 	match $func {
         Ok(res) => {
             *$error = 0;
-            Box::into_raw(Box::new(res.to_owned()))
+            CString::new(res.to_owned()).unwrap().into_raw()
         }
         Err(e) => {
             *$error = 1;
-            Box::into_raw(Box::new(
-                serde_json::to_string(&RNError::from(format!("{}", e))).unwrap(),
-            ))
+            CString::new(
+                serde_json::to_string(&format!("{}",e)).unwrap()).unwrap().into_raw()
         }
     }
 ));
 
 #[no_mangle]
 pub unsafe extern "C" fn c_wallet_init(
-    path: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         wallet_init(
-            (*path).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
         ),
         error
     )
@@ -171,18 +127,18 @@ fn wallet_recovery(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_wallet_recovery(
-    path: *mut StringPtr,
-    phrase: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    phrase: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         wallet_recovery(
-            (*path).as_str(),
-            (*phrase).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(phrase),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
         ),
         error
     )
@@ -200,16 +156,16 @@ fn wallet_phrase(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_wallet_phrase(
-    path: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         wallet_phrase(
-            (*path).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
         ),
         error
     )
@@ -244,20 +200,20 @@ fn tx_get(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_get(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     refresh_from_node: bool,
     tx_id: u32,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         tx_get(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
             refresh_from_node,
             tx_id,
         ),
@@ -283,19 +239,19 @@ fn txs_get(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_txs_get(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     refresh_from_node: bool,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         txs_get(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
             refresh_from_node,
         ),
         error
@@ -317,19 +273,19 @@ fn balance(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_balance(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     refresh_from_node: bool,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         balance(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
             refresh_from_node,
         ),
         error
@@ -375,19 +331,19 @@ fn tx_strategies(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_strategies(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     amount: u64,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         tx_strategies(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
             amount,
         ),
         error
@@ -420,22 +376,22 @@ fn tx_create(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_create(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     amount: u64,
     selection_strategy_is_use_all: bool,
-    message: *mut StringPtr,
+    message: *const c_char,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         tx_create(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
-            (*message).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
+            &c_str_to_rust(message),
             amount,
             selection_strategy_is_use_all,
         ),
@@ -458,19 +414,19 @@ fn tx_cancel(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_cancel(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
     id: u32,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         tx_cancel(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
             id,
         ),
         error
@@ -496,22 +452,22 @@ fn tx_receive(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_receive(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
-    slate_path: *mut StringPtr,
-    message: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
+    slate_path: *const c_char,
+    message: *const c_char,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         tx_receive(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
-            (*slate_path).as_str(),
-            (*message).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
+            &c_str_to_rust(slate_path),
+            &c_str_to_rust(message),
         ),
         error
     )
@@ -536,20 +492,20 @@ fn tx_finalize(
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_finalize(
-    path: *mut StringPtr,
-    account: *mut StringPtr,
-    password: *mut StringPtr,
-    check_node_api_http_addr: *mut StringPtr,
-    slate_path: *mut StringPtr,
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
+    slate_path: *const c_char,
     error: *mut u8,
-) -> *mut String {
+) -> *const c_char {
     unwrap_to_c!(
         tx_finalize(
-            (*path).as_str(),
-            (*account).as_str(),
-            (*password).as_str(),
-            (*check_node_api_http_addr).as_str(),
-            (*slate_path).as_str(),
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
+            &c_str_to_rust(slate_path),
         ),
         error
     )

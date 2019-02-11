@@ -55,7 +55,6 @@
 		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
 		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
 		F6E9509621C79ACB0066C203 /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9509521C79ACB0066C203 /* libwallet.a */; };
-		F6E9509821C842340066C203 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509721C842340066C203 /* String.swift */; };
 		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
 /* End PBXBuildFile section */
 
@@ -139,7 +138,6 @@
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
 		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
 		F6E9509521C79ACB0066C203 /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/target/universal/release/libwallet.a; sourceTree = "<group>"; };
-		F6E9509721C842340066C203 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../src/assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		F9E3B3C7257947359B7DDDE9 /* Share@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@2x.png"; path = "../src/assets/images/Share@2x.png"; sourceTree = "<group>"; };
 		FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@2x.png"; path = "../src/assets/images/ChevronRight@2x.png"; sourceTree = "<group>"; };
@@ -257,7 +255,6 @@
 				F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */,
 				F6E9509121C50DE90066C203 /* GrinBridge.m */,
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
-				F6E9509721C842340066C203 /* String.swift */,
 			);
 			path = Ironbelly;
 			sourceTree = "<group>";
@@ -544,7 +541,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6E9509821C842340066C203 /* String.swift in Sources */,
 				F617A2EC22105D1D00FDF0C0 /* AppConfig.swift in Sources */,
 				F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */,
 				F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */,
