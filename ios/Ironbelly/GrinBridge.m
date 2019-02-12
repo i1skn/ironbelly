@@ -30,9 +30,9 @@ RCT_EXTERN_METHOD(txStrategies:(NSString*)account password:(NSString*)password c
 
 RCT_EXTERN_METHOD(txCancel:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr id:(NSUInteger)id resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txReceive:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr slate_path:(NSString*)slate_path message:(NSString*)message resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txReceive:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr slatePath:(NSString*)slatePath message:(NSString*)message resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txFinalize:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr slate_path:(NSString*)slate_path resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txFinalize:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr slatePath:(NSString*)slatePath resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(walletInit:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 

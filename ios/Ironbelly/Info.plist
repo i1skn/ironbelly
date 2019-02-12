@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>BugsnagAPIKey</key>
 	<string>5a7142175552dab1f8d9a566b43c5ec9</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -52,7 +54,7 @@
 	<key>CFBundleShortVersionString</key>
 	<string>0.0.2</string>
 	<key>CFBundleVersion</key>
-	<string>7</string>
+	<string>8</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
