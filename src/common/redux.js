@@ -22,8 +22,11 @@ import { reducer as settingsReducer } from 'modules/settings'
 import { reducer as toasterReducer } from 'modules/toaster'
 import { reducer as walletReducer, sideEffects as walletEffects } from 'modules/wallet'
 import { type Store, type Action, type PromiseAction } from 'common/types'
+import { createStore, applyMiddleware } from 'redux'
+import { createLogger } from 'redux-logger'
 
-type Effects = { [string]: (action: any, store: Store) => Action | PromiseAction }
+type Effect = (action: any, store: Store) => Action | PromiseAction
+type Effects = { [string]: Effect }
 
 export const rootReducer = combineReducers({
   balance: balanceReducer,
@@ -40,7 +43,7 @@ const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => 
   const effect = effects[action.type]
   if (effect) {
     const result = effect(action, store)
-    if (isFSA(result)) {
+    if (!(result instanceof Promise) && isFSA(result)) {
       store.dispatch(result)
     } else if (result instanceof Promise) {
       result.then(res => isFSA(res) && store.dispatch(res))
@@ -54,4 +57,7 @@ const sideEffects = {
   ...walletEffects,
 }
 
-export const sideEffectsMiddleware = createMiddleware(sideEffects)
+const logger = createLogger({})
+const sideEffectsMiddleware = createMiddleware(sideEffects)
+
+export const store = createStore(rootReducer, applyMiddleware(sideEffectsMiddleware, logger))

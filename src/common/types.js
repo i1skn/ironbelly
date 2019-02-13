@@ -65,10 +65,6 @@ export type txCreateFalureAction = { type: 'TX_CREATE_FAILURE', code: number, me
 
 export type setSettings = { type: 'SET_SETTINGS', newSettings: SettingsState }
 
-export type slateGetRequestAction = { type: 'SLATE_GET_REQUEST', id: string, isResponse: boolean }
-export type slateGetSuccessAction = { type: 'SLATE_GET_SUCCESS', slate: Slate }
-export type slateGetFalureAction = { type: 'SLATE_GET_FAILURE', code?: number, message: string }
-
 export type slateLoadRequestAction = { type: 'SLATE_LOAD_REQUEST', slatePath: string }
 export type slateLoadSuccessAction = { type: 'SLATE_LOAD_SUCCESS', slate: Slate }
 export type slateLoadFalureAction = { type: 'SLATE_LOAD_FAILURE', code?: number, message: string }
@@ -186,9 +182,6 @@ export type Action =
   | txCreateSuccessAction
   | txCreateFalureAction
   | setSettings
-  | slateGetRequestAction
-  | slateGetSuccessAction
-  | slateGetFalureAction
   | slateSetRequestAction
   | slateSetSuccessAction
   | slateSetFalureAction
@@ -238,7 +231,7 @@ export type State = {
 
 export type GetState = () => State
 export type PromiseAction = Promise<Action>
-export type Dispatch = (action: Action | Array<Action>) => any
+export type Dispatch = (action: Action) => any
 export type Store = {
   dispatch: Dispatch,
   getState: () => State,
@@ -287,6 +280,7 @@ export type Tx = {
   fee: number,
   creationTime: any,
   slateId: string,
+  storedTx: string,
 }
 
 // Rust structures

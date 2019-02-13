@@ -19,7 +19,7 @@ import { ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
-import { colors, WALLET_DATA_DIRECTORY } from 'common'
+import { colors, WALLET_DATA_DIRECTORY, isWalletInitialized } from 'common'
 import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
 import RNFS from 'react-native-fs'
 
@@ -54,13 +54,14 @@ class Initial extends Component<Props, State> {
   }
 
   componentDidMount() {
-    RNFS.readFile(WALLET_DATA_DIRECTORY + '/wallet.seed', 'utf8')
-      .then(slate => {
-        this.props.navigation.navigate('App')
-      })
-      .catch(error => {
-        this.props.navigation.navigate('Landing')
-      })
+    const { navigation } = this.props
+    isWalletInitialized().then(exists => {
+      if (exists) {
+        navigation.navigate('App')
+      } else {
+        navigation.navigate('Landing')
+      }
+    })
   }
 
   componentDidUpdate(prevProps) {}

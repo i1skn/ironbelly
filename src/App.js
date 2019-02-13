@@ -17,18 +17,17 @@
 import React, { Component } from 'react'
 import { Linking } from 'react-native'
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation'
-import { createStore, applyMiddleware } from 'redux'
 import Toaster from 'react-native-toaster'
 import { Provider, connect } from 'react-redux'
-import { createLogger } from 'redux-logger'
-import thunkMiddleware from 'redux-thunk'
 import {
   isResponseSlate,
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
   checkApiSecret,
+  isWalletInitialized,
 } from 'common'
 import { type State as GlobalState } from 'common/types'
+import { store } from 'common/redux'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
@@ -41,18 +40,11 @@ import MnemonicScreen from 'screens/Mnemonic'
 import RecoveryScreen from 'screens/Recovery/main'
 import TopupScreen from 'screens/Topup'
 
-import { rootReducer, sideEffectsMiddleware } from 'common/redux'
-
 // Filesystem
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
 checkApiSecret()
 
-const logger = createLogger({})
-const store = createStore(
-  rootReducer,
-  applyMiddleware(thunkMiddleware, sideEffectsMiddleware, logger)
-)
 const MainStack = createStackNavigator(
   {
     Settings: SettingsScreen,
@@ -132,8 +124,11 @@ class RealApp extends React.Component<Props, State> {
     Linking.removeEventListener('url', this._handleOpenURL)
   }
   _handleOpenURL = event => {
-    const slatePath = event.url.substr(7)
-    this.navigation.navigate(isResponseSlate(slatePath) ? 'Finalize' : 'Receive', { slatePath })
+    const slatePath = decodeURIComponent(event.url).substr(7)
+    isWalletInitialized().then(exists => {
+      exists &&
+        this.navigation.navigate(isResponseSlate(slatePath) ? 'Finalize' : 'Receive', { slatePath })
+    })
   }
   render() {
     return (

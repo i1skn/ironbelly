@@ -18,29 +18,36 @@
 		3F2CC385CA6947C5A00E8EAC /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */; };
 		4683EBA23F9546F8A6088B91 /* Poppins-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */; };
 		4DBEF9DFA36147B3BB494DDA /* SendTX@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 04188CD456354D4F8C264964 /* SendTX@2x.png */; };
+		53EE4A959E2F42678CF8078E /* Close.png in Resources */ = {isa = PBXBuildFile; fileRef = B97B4FF20BD3443A8E5A9B82 /* Close.png */; };
 		59A89B02B2304A12B9FF74A0 /* Poppins-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */; };
 		62167ED457CD461FBA67FCE9 /* ReceiveTX.png in Resources */ = {isa = PBXBuildFile; fileRef = C00881AC291D4599B0F948D2 /* ReceiveTX.png */; };
 		629491642B564C9E864EAF40 /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */; };
+		67FBEC75BB54482CA15B1D32 /* ChevronRight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */; };
 		6B39A1EE702541C792AABFCD /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */; };
 		6E4A767318F143E4A1B520A8 /* ChevronLeft@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 65889B7F669E44F197877486 /* ChevronLeft@3x.png */; };
 		6EB4D33273124215B9435D56 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */; };
 		711C1EA9968047B287305679 /* ChevronLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = DE278FF83B76486C92F05BB4 /* ChevronLeft.png */; };
 		7CE949452A7644308ACF5C89 /* x@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84EB5C67E41C492EB06C5DB2 /* x@2x.png */; };
+		7ED43DD375854138B2208C5C /* ChevronRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AC12860C4E7462AB6A9A439 /* ChevronRight.png */; };
 		8A05B33A622348C1A7EBBBED /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C52591DBA24BD485CB0E6E /* x.png */; };
 		8CBCFFA0AC1D453185CE28F5 /* ReceiveTX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */; };
 		8FDD5F64B177A7E607B84C20 /* Pods_IronbellyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DAE36CB964869151D5C2A258 /* Pods_IronbellyTests.framework */; };
 		A01CD803F51F4CE0BFE222D4 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F669249426C949548172D721 /* Poppins-Italic.ttf */; };
 		A91305F43818499099E75226 /* Settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18CED6B847864E8C82A0779A /* Settings@2x.png */; };
 		AE9C71C754744856A2C998BE /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */; };
+		B061F339986847BE91EFD112 /* Close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21484D9BE7F14E6280C4EBFB /* Close@3x.png */; };
 		B7AAF7350C2F4DC4A7A7C6D8 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */; };
 		BA25A3623551494C90C26A7C /* SendTX@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = CE9B62D915C8420F847659BB /* SendTX@3x.png */; };
 		BB78D5D4CE1F4D8891578D1A /* Poppins-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */; };
 		C41C0D8B147746A6BA0AA3D3 /* Share@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = F9E3B3C7257947359B7DDDE9 /* Share@2x.png */; };
 		C6DC0496AC154B7CB9441330 /* Share@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 9D959331D4664C90ACA1A3A8 /* Share@3x.png */; };
+		CE5F56BE44E94BA78933ADA8 /* Close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C342A60D16E24E1882B784C1 /* Close@2x.png */; };
 		DA080B836352469193E85A86 /* SendTX.png in Resources */ = {isa = PBXBuildFile; fileRef = 95058308B02745B683962F6B /* SendTX.png */; };
 		DCADF58ADB344767BB4E3D41 /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */; };
 		EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AEB4E1B47E9D4CB1B965F729 /* x@3x.png */; };
 		F25177D78A534E4094054368 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 55BE2A9C431741909FC0589D /* Settings.png */; };
+		F617A2EC22105D1D00FDF0C0 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */; };
+		F617A2F022105D9300FDF0C0 /* AppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = F617A2EF22105D9300FDF0C0 /* AppConfig.m */; };
 		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
 		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
 		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
@@ -48,7 +55,7 @@
 		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
 		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
 		F6E9509621C79ACB0066C203 /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9509521C79ACB0066C203 /* libwallet.a */; };
-		F6E9509821C842340066C203 /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509721C842340066C203 /* String.swift */; };
+		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -80,6 +87,8 @@
 		11C52591DBA24BD485CB0E6E /* x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = x.png; path = ../src/assets/images/x.png; sourceTree = "<group>"; };
 		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
 		18CED6B847864E8C82A0779A /* Settings@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@2x.png"; path = "../src/assets/images/Settings@2x.png"; sourceTree = "<group>"; };
+		1AC12860C4E7462AB6A9A439 /* ChevronRight.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronRight.png; path = ../src/assets/images/ChevronRight.png; sourceTree = "<group>"; };
+		21484D9BE7F14E6280C4EBFB /* Close@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@3x.png"; path = "../src/assets/images/Close@3x.png"; sourceTree = "<group>"; };
 		22A0B5EE5A73B201812045AD /* Pods-IronbellyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.release.xcconfig"; sourceTree = "<group>"; };
 		32A59E6CBD68439EB5B0B486 /* Settings@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@3x.png"; path = "../src/assets/images/Settings@3x.png"; sourceTree = "<group>"; };
 		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -100,15 +109,20 @@
 		A8DBF2856A54E2689E7987B8 /* Pods-IronbellyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		AEB4E1B47E9D4CB1B965F729 /* x@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@3x.png"; path = "../src/assets/images/x@3x.png"; sourceTree = "<group>"; };
+		B97B4FF20BD3443A8E5A9B82 /* Close.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Close.png; path = ../src/assets/images/Close.png; sourceTree = "<group>"; };
 		C00881AC291D4599B0F948D2 /* ReceiveTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ReceiveTX.png; path = ../src/assets/images/ReceiveTX.png; sourceTree = "<group>"; };
+		C342A60D16E24E1882B784C1 /* Close@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@2x.png"; path = "../src/assets/images/Close@2x.png"; sourceTree = "<group>"; };
 		C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@3x.png"; path = "../src/assets/images/ReceiveTX@3x.png"; sourceTree = "<group>"; };
 		CE9B62D915C8420F847659BB /* SendTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@3x.png"; path = "../src/assets/images/SendTX@3x.png"; sourceTree = "<group>"; };
 		DAE36CB964869151D5C2A258 /* Pods_IronbellyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IronbellyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@3x.png"; path = "../src/assets/images/ChevronRight@3x.png"; sourceTree = "<group>"; };
 		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
 		EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@2x.png"; path = "../src/assets/images/ReceiveTX@2x.png"; sourceTree = "<group>"; };
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
+		F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
+		F617A2EF22105D9300FDF0C0 /* AppConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppConfig.m; sourceTree = "<group>"; };
 		F64186D9218895DC00A99CA0 /* Ironbelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ironbelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186DC218895DC00A99CA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -124,9 +138,9 @@
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
 		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
 		F6E9509521C79ACB0066C203 /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/target/universal/release/libwallet.a; sourceTree = "<group>"; };
-		F6E9509721C842340066C203 /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../src/assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		F9E3B3C7257947359B7DDDE9 /* Share@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@2x.png"; path = "../src/assets/images/Share@2x.png"; sourceTree = "<group>"; };
+		FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@2x.png"; path = "../src/assets/images/ChevronRight@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -197,6 +211,12 @@
 				11C52591DBA24BD485CB0E6E /* x.png */,
 				84EB5C67E41C492EB06C5DB2 /* x@2x.png */,
 				AEB4E1B47E9D4CB1B965F729 /* x@3x.png */,
+				1AC12860C4E7462AB6A9A439 /* ChevronRight.png */,
+				FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */,
+				DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */,
+				B97B4FF20BD3443A8E5A9B82 /* Close.png */,
+				C342A60D16E24E1882B784C1 /* Close@2x.png */,
+				21484D9BE7F14E6280C4EBFB /* Close@3x.png */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -231,9 +251,10 @@
 				F64186E3218895DE00A99CA0 /* Assets.xcassets */,
 				F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */,
 				F64186E8218895DE00A99CA0 /* Info.plist */,
+				F617A2EF22105D9300FDF0C0 /* AppConfig.m */,
+				F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */,
 				F6E9509121C50DE90066C203 /* GrinBridge.m */,
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
-				F6E9509721C842340066C203 /* String.swift */,
 			);
 			path = Ironbelly;
 			sourceTree = "<group>";
@@ -268,6 +289,7 @@
 				F64186D5218895DC00A99CA0 /* Sources */,
 				F64186D6218895DC00A99CA0 /* Frameworks */,
 				F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */,
+				F617A2F12210771000FDF0C0 /* Upload Sourcemaps to bugsnap */,
 				F64186D7218895DC00A99CA0 /* Resources */,
 				F67B83C8219345180004D4A1 /* Embed App Extensions */,
 				455608B5CF9769BCB89DCF91 /* [CP] Embed Pods Frameworks */,
@@ -377,6 +399,12 @@
 				8A05B33A622348C1A7EBBBED /* x.png in Resources */,
 				7CE949452A7644308ACF5C89 /* x@2x.png in Resources */,
 				EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */,
+				7ED43DD375854138B2208C5C /* ChevronRight.png in Resources */,
+				FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */,
+				67FBEC75BB54482CA15B1D32 /* ChevronRight@3x.png in Resources */,
+				53EE4A959E2F42678CF8078E /* Close.png in Resources */,
+				CE5F56BE44E94BA78933ADA8 /* Close@2x.png in Resources */,
+				B061F339986847BE91EFD112 /* Close@3x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -421,6 +449,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BugsnagReactNative/BugsnagReactNative.framework",
 				"${BUILT_PRODUCTS_DIR}/DoubleConversion/DoubleConversion.framework",
 				"${BUILT_PRODUCTS_DIR}/Folly/folly.framework",
 				"${BUILT_PRODUCTS_DIR}/RNFS/RNFS.framework",
@@ -433,6 +462,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BugsnagReactNative.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DoubleConversion.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/folly.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNFS.framework",
@@ -468,6 +498,24 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		F617A2F12210771000FDF0C0 /* Upload Sourcemaps to bugsnap */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Upload Sourcemaps to bugsnap";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then\n    ${SRCROOT}/upload-sourcemaps.sh\nfi\n\n\n\n\n\n\n";
+		};
 		F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -484,7 +532,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\nexport SKIP_BUNDLING=true\nfi\nexport NODE_BINARY=/Users/i1skn/.n/bin/node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
+			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\nexport SKIP_BUNDLING=true\nfi\nexport NODE_BINARY=/Users/i1skn/.n/bin/node\nDEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output ${DEST}/main.jsbundle.map\"\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -493,10 +541,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6E9509821C842340066C203 /* String.swift in Sources */,
+				F617A2EC22105D1D00FDF0C0 /* AppConfig.swift in Sources */,
 				F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */,
 				F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */,
 				F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */,
+				F617A2F022105D9300FDF0C0 /* AppConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -652,6 +701,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = F4EWDSV84U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;
@@ -665,6 +715,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -675,6 +726,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
 				DEVELOPMENT_TEAM = F4EWDSV84U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;
@@ -688,6 +740,7 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};

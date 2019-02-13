@@ -22,10 +22,10 @@ log = "0.4"
 term = "0.5"
 prettytable-rs = "0.7"
 
-grin_wallet = { path = "./grin/wallet" }
-grin_core = { path = "./grin/core" }
-grin_util = { path = "./grin/util" }
-grin_keychain = { path = "./grin/keychain" }
+grin_wallet = { git = "https://github.com/mimblewimble/grin", rev = "d6936f0ae7b1a7e7585df5fd712c217be3172a2d" }
+grin_core = { git = "https://github.com/mimblewimble/grin", rev = "d6936f0ae7b1a7e7585df5fd712c217be3172a2d" }
+grin_util = { git = "https://github.com/mimblewimble/grin", rev = "d6936f0ae7b1a7e7585df5fd712c217be3172a2d" }
+grin_keychain = { git = "https://github.com/mimblewimble/grin", rev = "d6936f0ae7b1a7e7585df5fd712c217be3172a2d" }
 
 [build-dependencies]
 built = "0.3"

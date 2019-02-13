@@ -140,6 +140,11 @@ export const checkApiSecret = () => {
   })
 }
 
+export const isWalletInitialized = () => {
+  const seedFilePath = WALLET_DATA_DIRECTORY + '/wallet.seed'
+  return RNFS.exists(seedFilePath)
+}
+
 export const Spacer = styled.View`
   height: 16px;
   width: 100%;

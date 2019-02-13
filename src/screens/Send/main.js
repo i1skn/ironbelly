@@ -20,9 +20,9 @@ import { connect } from 'react-redux'
 import Amount, { validate as AmountValidate } from './amount'
 import Strategy, { validate as StrategyValidate } from './strategy'
 import Message, { validate as MessageValidate } from './message'
+import { log } from 'common/logger'
 
 import ManyStepsView from 'components/ManyStepsView'
-import { ToastStyles } from 'react-native-toaster'
 const { GrinBridge } = NativeModules
 
 import { type TxForm } from 'modules/tx'
@@ -36,7 +36,6 @@ import {
 } from 'common/types'
 
 type Props = {
-  notify: (text: string, styles: any) => void,
   txCreate: (amount: number, message: string, selectionStrategyIsUseAll: boolean) => void,
   setOutputStrategies: (outputStrategies: Array<RustOutputStrategy>) => void,
   txForm: TxForm,
@@ -64,8 +63,7 @@ class Send extends Component<Props, State> {
             .then((json: string) => JSON.parse(json))
             .then(outputStrategies => {})
             .catch(error => {
-              const e = JSON.parse(error.message)
-              props.nofity(e.message, ToastStyles.error)
+              log(error, true)
             })
         },
       },
@@ -96,8 +94,7 @@ class Send extends Component<Props, State> {
           next()
         })
         .catch(error => {
-          const e = JSON.parse(error.message)
-          this.props.notify(e.message, ToastStyles.error)
+          log(error, true)
         })
     }
   }
@@ -131,13 +128,6 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  notify: (text, styles) => {
-    dispatch({
-      type: 'TOAST_SHOW',
-      text,
-      styles,
-    })
-  },
   txCreate: (amount: number, message: string, selectionStrategyIsUseAll: boolean) => {
     dispatch({ type: 'TX_CREATE_REQUEST', amount, message, selectionStrategyIsUseAll })
   },

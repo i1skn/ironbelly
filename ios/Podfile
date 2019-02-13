@@ -24,6 +24,7 @@ target 'Ironbelly' do
     'RCTWebSocket',
     'fishhook',
     # Add new pods below this line
+
   ]
   # Explicitly include Yoga if you are using RN >= 0.42.0
   pod "yoga", :path => "../node_modules/react-native/ReactCommon/yoga"
@@ -35,6 +36,7 @@ target 'Ironbelly' do
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
+  pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
 
   target 'IronbellyTests' do
     inherit! :search_paths
