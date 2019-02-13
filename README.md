@@ -40,7 +40,7 @@ npm install
 # All iOS related code lives in `ios/` directory
 cd ios/
 sudo gem install cocoapods
-pods install
+pod install
 cd ..
 npm start # this will start React Native server
 ```
