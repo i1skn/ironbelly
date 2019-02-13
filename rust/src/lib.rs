@@ -309,14 +309,14 @@ fn tx_strategies(
     let wallet = get_wallet(path, account, password, check_node_api_http_addr)?;
     let mut api = APIOwner::new(wallet.clone());
     let mut result = vec![];
-    if let Ok(smallest) = api.estimate_initiate_tx(None, amount, 1, 500, 1, false) {
+    if let Ok(smallest) = api.estimate_initiate_tx(None, amount, 1, 1, false) {
         result.push(Strategy {
             selection_strategy_is_use_all: false,
             total: smallest.0,
             fee: smallest.1,
         })
     }
-    match api.estimate_initiate_tx(None, amount, 1, 500, 1, true) {
+    match api.estimate_initiate_tx(None, amount, 1, 1, true) {
         Ok(all) => {
             result.push(Strategy {
                 selection_strategy_is_use_all: true,
@@ -365,7 +365,6 @@ fn tx_create(
         None,
         amount,
         1,
-        500,
         1,
         selection_strategy_is_use_all,
         Some(message.to_owned()),
