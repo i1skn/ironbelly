@@ -47,6 +47,19 @@ npm start # this will start React Native server
 
 After all of these, please open `ios/Ironbelly.xcworkspace` in XCode and run `Product -> Build (⌘B)`
 
+## Roadmap
+`0.1.0`
+* Android version
+
+`0.0.5`
+* Mainnet
+
+`0.0.4`
+* HTTP transactions
+
+`0.0.3`
+* Password support
+
 ## License
 
 Apache License v2.0.
