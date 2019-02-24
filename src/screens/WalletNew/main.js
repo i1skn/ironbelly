@@ -17,39 +17,44 @@
 import React, { Component } from 'react'
 import { Keyboard } from 'react-native'
 import { connect } from 'react-redux'
-import { type State as ReduxState, type Navigation } from 'common/types'
-import ScreenWithManySteps from 'components/ScreenWithManySteps'
-import Phrase from './phrase'
 import Password from 'screens/EnterPasswordStep'
 import Confirm from 'screens/ConfirmPasswordStep'
 import { type WalletInitState } from 'modules/wallet'
 
+import ScreenWithManySteps from 'components/ScreenWithManySteps'
+
+import { type TxForm } from 'modules/tx'
+import { type State as SettingsState } from 'modules/settings'
+import {
+  type State as ReduxState,
+  type Error,
+  type Navigation,
+  type RustOutputStrategy,
+  type Step,
+} from 'common/types'
+
 type Props = {
   walletInit: WalletInitState,
+  initNewWallet: (password: string) => void,
+  setOutputStrategies: (outputStrategies: Array<RustOutputStrategy>) => void,
+  txForm: TxForm,
+  settings: SettingsState,
+  error: Error,
+  isCreated: boolean,
   navigation: Navigation,
-  recover: () => void,
-  setPassword: (password: string) => void,
-}
-type State = {
-  inputValue: string,
-  amount: number,
-  valid: boolean,
 }
 
-class Recovery extends Component<Props, State> {
-  componentDidUpdate(prevProps) {
-    if (this.props.walletInit.inProgress && !prevProps.walletInit.inProgress) {
-      this.props.navigation.navigate('RecoveryInProgress')
-    }
+type State = {}
+
+class CreatePassword extends Component<Props, State> {
+  steps: Array<Step>
+  constructor(props) {
+    super(props)
+    this.steps = [Password, Confirm]
   }
-
-  steps = [Phrase, Password, Confirm]
-
-  componentDidMount() {}
 
   render() {
     const { navigation, walletInit } = this.props
-
     return (
       <ScreenWithManySteps
         steps={this.steps}
@@ -59,8 +64,8 @@ class Recovery extends Component<Props, State> {
           navigation.goBack(null)
         }}
         finalAction={() => {
-          this.props.setPassword(walletInit.password)
-          this.props.recover()
+          this.props.initNewWallet(walletInit.password)
+          navigation.navigate('Mnemonic')
         }}
       />
     )
@@ -68,19 +73,17 @@ class Recovery extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: ReduxState) => ({
+  settings: state.settings,
   walletInit: state.wallet.walletInit,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  setPassword: password => {
-    dispatch({ type: 'SET_PASSWORD', password })
-  },
-  recover: () => {
-    dispatch({ type: 'WALLET_RECOVERY_REQUEST' })
+  initNewWallet: password => {
+    dispatch({ type: 'WALLET_INIT_REQUEST', password })
   },
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Recovery)
+)(CreatePassword)

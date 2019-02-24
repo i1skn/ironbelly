@@ -34,7 +34,7 @@ const Wrapper = styled.View`
   padding-right: 16px;
   border-bottom-color: #dedede;
   border-bottom-width: 1;
-  background-color: ${() => colors.warning};
+  background-color: ${() => colors.primary};
 `
 type Props = {}
 

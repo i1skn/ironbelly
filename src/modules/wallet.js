@@ -20,25 +20,23 @@ import {
   type walletInitRequestAction,
   type walletPhraseRequestAction,
   type walletRecoveryRequestAction,
+  type invalidPasswordAction,
+  type checkPasswordAction,
   type Store,
 } from 'common/types'
 import { log } from 'common/logger'
 import { combineReducers } from 'redux'
 import { checkWalletDataDirectory, WALLET_DATA_DIRECTORY } from 'common'
 import RNFS from 'react-native-fs'
+import { ToastStyles } from 'react-native-toaster'
 
 const { GrinBridge } = NativeModules
 
 export type WalletInitState = {
   inProgress: boolean,
   mnemonic: string,
-}
-
-export type WalletRecoveryState = {
-  inProgress: boolean,
-  isRecovered: boolean,
-  phrase: string,
   password: string,
+  confirmPassword: string,
   progress: number,
   error: {
     message: string,
@@ -51,31 +49,46 @@ export type WalletPhraseState = {
   phrase: string,
 }
 
+export type PasswordState = {
+  value: string,
+  valid: boolean,
+  error: {
+    message: string,
+    code?: number,
+  },
+  inProgress: boolean,
+}
+
 export type State = {
   walletInit: WalletInitState,
-  walletRecovery: WalletRecoveryState,
   walletPhrase: WalletPhraseState,
+  password: PasswordState,
 }
 
 const initialState: State = {
   walletInit: {
     inProgress: false,
+    password: '',
+    confirmPassword: '',
     mnemonic: '',
+    progress: 0,
+    error: {
+      message: '',
+      code: 0,
+    },
   },
   walletPhrase: {
     inProgress: false,
     phrase: '',
   },
-  walletRecovery: {
-    inProgress: false,
-    isRecovered: false,
-    progress: 0,
-    phrase: '',
-    password: '',
+  password: {
+    valid: false,
+    value: '',
     error: {
       message: '',
       code: 0,
     },
+    inProgress: false,
   },
 }
 
@@ -84,12 +97,25 @@ const walletInit = function(
   action: Action
 ): WalletInitState {
   switch (action.type) {
+    case 'WALLET_CLEAR': {
+      return initialState.walletInit
+    }
     case 'WALLET_INIT_REQUEST':
       return {
         ...state,
         inProgress: true,
         progress: 0,
         mnemonic: '',
+      }
+    case 'WALLET_INIT_SET_PASSWORD':
+      return {
+        ...state,
+        password: action.password,
+      }
+    case 'WALLET_INIT_SET_CONFIRM_PASSWORD':
+      return {
+        ...state,
+        confirmPassword: action.confirmPassword,
       }
     case 'WALLET_INIT_SUCCESS':
       return {
@@ -102,6 +128,45 @@ const walletInit = function(
         ...state,
         inProgress: false,
       }
+    case 'WALLET_RECOVERY_REQUEST':
+      return {
+        ...state,
+        inProgress: true,
+        error: {
+          message: '',
+          code: 0,
+        },
+      }
+    case 'WALLET_RECOVERY_SUCCESS':
+      return {
+        ...state,
+        inProgress: false,
+      }
+    case 'WALLET_RECOVERY_PROGRESS_UPDATE':
+      return {
+        progress: action.progress,
+        ...state,
+      }
+    case 'WALLET_RECOVERY_FAILURE':
+      return {
+        ...state,
+        inProgress: false,
+        phrase: '',
+        error: {
+          message: action.message,
+        },
+      }
+    case 'WALLET_RECOVERY_SET_PASSWORD':
+      return {
+        ...state,
+        password: action.password,
+      }
+    case 'WALLET_RECOVERY_SET_MNEMONIC':
+      return {
+        ...state,
+        mnemonic: action.mnemonic,
+      }
+
     default:
       return state
   }
@@ -133,50 +198,45 @@ const walletPhrase = function(
   }
 }
 
-const walletRecovery = function(
-  state: WalletRecoveryState = initialState.walletRecovery,
+const password = function(
+  state: PasswordState = initialState.password,
   action: Action
-): WalletRecoveryState {
+): PasswordState {
   switch (action.type) {
-    case 'WALLET_RECOVERY_REQUEST':
+    case 'SET_PASSWORD':
       return {
-        ...state,
+        valid: false,
+        value: action.password,
+        error: {},
+        inProgress: state.inProgress,
+      }
+    case 'CHECK_PASSWORD':
+      return {
+        valid: false,
+        value: state.value,
+        error: {},
         inProgress: true,
-        isRecovered: false,
-        error: {
-          message: '',
-          code: 0,
-        },
       }
-    case 'WALLET_RECOVERY_SUCCESS':
+    case 'VALID_PASSWORD':
       return {
-        ...state,
+        value: state.value,
+        valid: true,
+        error: {},
         inProgress: false,
-        isRecovered: true,
       }
-    case 'WALLET_RECOVERY_PROGRESS_UPDATE':
+    case 'INVALID_PASSWORD':
       return {
-        progress: action.progress,
-        ...state,
-      }
-    case 'WALLET_RECOVERY_FAILURE':
-      return {
-        ...state,
+        value: '',
+        valid: false,
+        error: { message: 'Wrong password' },
         inProgress: false,
-        phrase: '',
-        error: {
-          message: action.message,
-        },
       }
-    case 'WALLET_RECOVERY_SET_PASSWORD':
+    case 'CLEAR_PASSWORD':
       return {
-        ...state,
-        password: action.password,
-      }
-    case 'WALLET_RECOVERY_SET_PHRASE':
-      return {
-        ...state,
-        phrase: action.phrase,
+        valid: false,
+        error: {},
+        value: '',
+        inProgress: false,
       }
     default:
       return state
@@ -184,18 +244,20 @@ const walletRecovery = function(
 }
 
 export const reducer = combineReducers({
+  password,
   walletInit,
-  walletRecovery,
   walletPhrase,
 })
 
 export const sideEffects = {
   ['WALLET_INIT_REQUEST']: (action: walletInitRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
+    const { password } = action
     return checkWalletDataDirectory().then(() => {
-      return GrinBridge.walletInit('', checkNodeApiHttpAddr)
+      return GrinBridge.walletInit(password, checkNodeApiHttpAddr)
         .then((mnemonic: string) => {
           store.dispatch({ type: 'WALLET_INIT_SUCCESS', mnemonic })
+          store.dispatch({ type: 'SET_PASSWORD', password })
         })
         .catch(error => {
           const e = JSON.parse(error.message)
@@ -204,9 +266,29 @@ export const sideEffects = {
         })
     })
   },
+  ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
+    const { value } = store.getState().wallet.password
+    return GrinBridge.checkPassword(value)
+      .then((mnemonic: string) => {
+        store.dispatch({ type: 'VALID_PASSWORD' })
+      })
+      .catch(error => {
+        setTimeout(() => {
+          store.dispatch({ type: 'INVALID_PASSWORD' })
+        }, 1000) // Time-out to prevent a bruteforce attack)
+      })
+  },
+  ['INVALID_PASSWORD']: (action: invalidPasswordAction, store: Store) => {
+    store.dispatch({
+      type: 'TOAST_SHOW',
+      text: 'Wrong password!',
+      styles: ToastStyles.error,
+    })
+  },
   ['WALLET_PHRASE_REQUEST']: (action: walletPhraseRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return GrinBridge.walletPhrase('', checkNodeApiHttpAddr)
+    const { value } = store.getState().wallet.password
+    return GrinBridge.walletPhrase(value, checkNodeApiHttpAddr)
       .then((phrase: string) => {
         store.dispatch({ type: 'WALLET_PHRASE_SUCCESS', phrase })
       })
@@ -218,7 +300,7 @@ export const sideEffects = {
   },
   ['WALLET_RECOVERY_REQUEST']: (action: walletRecoveryRequestAction, store: Store) => {
     const state = store.getState()
-    const { phrase, password } = state.wallet.walletRecovery
+    const { mnemonic, password } = state.wallet.walletInit
     const recoveryEventEmitter = new NativeEventEmitter(GrinBridge)
     const subscription = recoveryEventEmitter.addListener(
       'onRecoveryProgressUpdate',
@@ -226,12 +308,10 @@ export const sideEffects = {
     )
     return checkWalletDataDirectory().then(() => {
       const { checkNodeApiHttpAddr } = store.getState().settings
-      return GrinBridge.walletRecovery(phrase, password, checkNodeApiHttpAddr)
+      return GrinBridge.walletRecovery(mnemonic, password, checkNodeApiHttpAddr)
         .then(() => {
           subscription.remove()
           store.dispatch({ type: 'WALLET_RECOVERY_SUCCESS' })
-          store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-          store.dispatch({ type: 'BALANCE_REQUEST' })
         })
         .catch(error => {
           subscription.remove()

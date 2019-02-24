@@ -171,7 +171,8 @@ const initialState: State = {
 export const sideEffects = {
   ['TX_LIST_REQUEST']: (action: txListRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return GrinBridge.txsGet('default', '', checkNodeApiHttpAddr, action.refreshFromNode)
+    const password = store.getState().wallet.password.value
+    return GrinBridge.txsGet('default', password, checkNodeApiHttpAddr, action.refreshFromNode)
       .then((json: string) => JSON.parse(json))
       .then((data: [boolean, Array<RustTx>]) => {
         AsyncStorage.getItem('@finalizedTxs')
@@ -203,7 +204,8 @@ export const sideEffects = {
   },
   ['TX_CANCEL_REQUEST']: (action: txCancelRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return GrinBridge.txCancel('default', '', checkNodeApiHttpAddr, action.id)
+    const password = store.getState().wallet.password.value
+    return GrinBridge.txCancel('default', password, checkNodeApiHttpAddr, action.id)
       .then(list => {
         store.dispatch({ type: 'TX_CANCEL_SUCCESS' })
         store.dispatch({
@@ -226,7 +228,8 @@ export const sideEffects = {
   },
   ['TX_GET_REQUEST']: (action: txGetRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return GrinBridge.txGet('default', '', checkNodeApiHttpAddr, true, action.id)
+    const password = store.getState().wallet.password.value
+    return GrinBridge.txGet('default', password, checkNodeApiHttpAddr, true, action.id)
       .then((json: string) => JSON.parse(json))
       .then(result => {
         store.dispatch({ type: 'TX_GET_SUCCESS', validated: result[0], tx: result[1][0] })
@@ -239,9 +242,10 @@ export const sideEffects = {
   },
   ['TX_CREATE_REQUEST']: (action: txCreateRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
+    const password = store.getState().wallet.password.value
     return GrinBridge.txCreate(
       'default',
-      '',
+      password,
       checkNodeApiHttpAddr,
       action.amount,
       action.selectionStrategyIsUseAll,
@@ -264,7 +268,14 @@ export const sideEffects = {
   },
   ['TX_RECEIVE_REQUEST']: (action: txReceiveRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return GrinBridge.txReceive('default', '', checkNodeApiHttpAddr, action.slatePath, 'Received')
+    const password = store.getState().wallet.password.value
+    return GrinBridge.txReceive(
+      'default',
+      password,
+      checkNodeApiHttpAddr,
+      action.slatePath,
+      'Received'
+    )
       .then((json: string) => JSON.parse(json))
       .then((slate: Slate) => {
         store.dispatch({ type: 'TX_RECEIVE_SUCCESS' })
@@ -285,7 +296,13 @@ export const sideEffects = {
       .then(data => JSON.parse(data))
       .then(value => {
         const finalized = value ? value : []
-        return GrinBridge.txFinalize('default', '', checkNodeApiHttpAddr, action.responseSlatePath)
+        const password = store.getState().wallet.password.value
+        return GrinBridge.txFinalize(
+          'default',
+          password,
+          checkNodeApiHttpAddr,
+          action.responseSlatePath
+        )
           .then(() => {
             store.dispatch({ type: 'TX_FINALIZE_SUCCESS' })
             store.dispatch({
@@ -300,9 +317,8 @@ export const sideEffects = {
             })
           })
           .catch(error => {
-            const e = JSON.parse(error.message)
-            store.dispatch({ type: 'TX_FINALIZE_FAILURE', ...e })
-            log(e, true)
+            store.dispatch({ type: 'TX_FINALIZE_FAILURE', message: error.message })
+            log(error, true)
           })
       })
   },

@@ -19,7 +19,7 @@ import { KeyboardAvoidingView, View, Animated, Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 import Header from 'components/Header'
 
-import { Spacer, FlexGrow } from 'common'
+import { Spacer, FlexGrow, Wrapper } from 'common'
 import { Button } from 'components/CustomFont'
 import { type Navigation, type Step } from 'common/types'
 
@@ -27,18 +27,10 @@ import { type Navigation, type Step } from 'common/types'
 import CloseImg from 'assets/images/x.png'
 import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 
-const Container = styled(KeyboardAvoidingView)`
-  justify-content: flex-start;
-  padding: 0 16px 0 16px;
-  flex-grow: 1;
-`
-
-const Next = styled(Button)`
-  width: 100%;
-`
+export type MoveFunc = (direction: 'left' | 'right') => void
 
 type Props = {
-  steps: Array<Step>,
+  steps: Array<any>,
   navigation: Navigation,
   cancelAction: () => void,
   finalAction: () => void,
@@ -51,7 +43,7 @@ type State = {
   nextStep: number,
 }
 
-class Send extends Component<Props, State> {
+class ScreenWithManySteps extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
@@ -66,7 +58,8 @@ class Send extends Component<Props, State> {
     header: null,
   }
 
-  move = (delta: -1 | 1) => {
+  move = (direction: 'left' | 'right') => {
+    const delta = direction === 'right' ? 1 : -1
     const { currentStep, screenWidth } = this.state
     const nextStep = currentStep + delta
     if (nextStep < 0) {
@@ -89,61 +82,48 @@ class Send extends Component<Props, State> {
 
   render() {
     const { offsetX, screenWidth, currentStep, nextStep } = this.state
+    const { steps } = this.props
+    const curr = steps[currentStep]
+    const next = steps[nextStep]
     return (
       <React.Fragment>
-        <FlexGrow>
-          <Header
-            leftIcon={(!nextStep && CloseImg) || ChevronLeftImg}
-            leftText={!nextStep ? 'Cancel' : 'Back'}
-            leftAction={() => this.move(-1)}
-          />
-          <Container behavior="padding">
-            {/* Steps */}
-            <View style={{ flex: 1 }}>
-              {this.props.steps.map((step, i) => {
-                const StepContainer = step.container
-                return (
-                  [currentStep, nextStep].indexOf(i) !== -1 && (
-                    <Animated.View
-                      key={i}
-                      style={{
-                        width: '100%',
-                        top: 0,
-                        position: 'absolute',
-                        left: Animated.add(offsetX, screenWidth * i),
-                      }}
-                    >
-                      <StepContainer props={this.props} />
-                    </Animated.View>
-                  )
+        <Header
+          leftIcon={curr.backButtonIcon}
+          leftText={curr.backButtonText}
+          leftAction={() => this.move('left')}
+        />
+        <Wrapper behavior="padding">
+          {/* Steps */}
+          <FlexGrow>
+            {steps.map((step, i) => {
+              const StepContainer = step
+              return (
+                [currentStep, nextStep].indexOf(i) !== -1 && (
+                  <Animated.View
+                    key={i}
+                    style={{
+                      width: '100%',
+                      top: 0,
+                      position: 'absolute',
+                      left: Animated.add(offsetX, screenWidth * i),
+                    }}
+                  >
+                    <StepContainer />
+                  </Animated.View>
                 )
-              })}
-            </View>
-            <Next
-              title={
-                this.props.steps[nextStep].buttonTitle
-                  ? this.props.steps[nextStep].buttonTitle
-                  : nextStep === this.props.steps.length - 1
-                  ? 'Send'
-                  : 'Next'
-              }
-              onPress={e => {
-                if (this.props.steps[currentStep].onNextPress) {
-                  this.props.steps[currentStep].onNextPress(e, () => {
-                    this.move(1)
-                  })
-                } else {
-                  this.move(1)
-                }
-              }}
-              disabled={!this.props.steps[currentStep].validate(this.props)}
-            />
-            <Spacer />
-          </Container>
-        </FlexGrow>
+              )
+            })}
+          </FlexGrow>
+          <Button
+            title={next.nextButtonText}
+            onPress={next.nextButtonClick(this.move, this.props.navigation)}
+            disabled={next.nextButtonDisabled()}
+          />
+          <Spacer />
+        </Wrapper>
       </React.Fragment>
     )
   }
 }
 
-export default Send
+export default ScreenWithManySteps

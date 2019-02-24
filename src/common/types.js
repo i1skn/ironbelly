@@ -64,6 +64,11 @@ export type txCreateSuccessAction = { type: 'TX_CREATE_SUCCESS' }
 export type txCreateFalureAction = { type: 'TX_CREATE_FAILURE', code: number, message: string }
 
 export type setSettings = { type: 'SET_SETTINGS', newSettings: SettingsState }
+export type setPasswordAction = { type: 'SET_PASSWORD', password: string }
+export type checkPasswordAction = { type: 'CHECK_PASSWORD' }
+export type validPasswordAction = { type: 'VALID_PASSWORD' }
+export type invalidPasswordAction = { type: 'INVALID_PASSWORD' }
+export type clearPasswordAction = { type: 'CLEAR_PASSWORD' }
 
 export type slateLoadRequestAction = { type: 'SLATE_LOAD_REQUEST', slatePath: string }
 export type slateLoadSuccessAction = { type: 'SLATE_LOAD_SUCCESS', slate: Slate }
@@ -105,9 +110,15 @@ export type slateShareRequestAction = {
 export type slateShareSuccessAction = { type: 'SLATE_SHARE_SUCCESS' }
 export type slateShareFalureAction = { type: 'SLATE_SHARE_FAILURE', code?: number, message: string }
 
-export type walletInitRequestAction = { type: 'WALLET_INIT_REQUEST' }
+export type walletClear = { type: 'WALLET_CLEAR' }
+export type walletInitRequestAction = { type: 'WALLET_INIT_REQUEST', password: string }
 export type walletInitSuccessAction = { type: 'WALLET_INIT_SUCCESS', mnemonic: string }
 export type walletInitFalureAction = { type: 'WALLET_INIT_FAILURE', code?: number, message: string }
+export type walletInitSetPasswordAction = { type: 'WALLET_INIT_SET_PASSWORD', password: string }
+export type walletInitSetConfirmPasswordAction = {
+  type: 'WALLET_INIT_SET_CONFIRM_PASSWORD',
+  confirmPassword: string,
+}
 
 export type walletRecoveryRequestAction = {
   type: 'WALLET_RECOVERY_REQUEST',
@@ -122,7 +133,10 @@ export type walletRecoveryFalureAction = {
   code?: number,
   message: string,
 }
-export type walletRecoverySetPhraseAction = { type: 'WALLET_RECOVERY_SET_PHRASE', phrase: string }
+export type walletRecoverySetPhraseAction = {
+  type: 'WALLET_RECOVERY_SET_MNEMONIC',
+  mnemonic: string,
+}
 export type walletRecoverySetPasswordAction = {
   type: 'WALLET_RECOVERY_SET_PASSWORD',
   password: string,
@@ -182,6 +196,11 @@ export type Action =
   | txCreateSuccessAction
   | txCreateFalureAction
   | setSettings
+  | setPasswordAction
+  | checkPasswordAction
+  | validPasswordAction
+  | invalidPasswordAction
+  | clearPasswordAction
   | slateSetRequestAction
   | slateSetSuccessAction
   | slateSetFalureAction
@@ -207,9 +226,12 @@ export type Action =
   | txFormOutputStrategiesRequestAction
   | txFormOutputStrategiesSuccessAction
   | txFormOutputStrategiesFalureAction
+  | walletClear
   | walletInitRequestAction
   | walletInitSuccessAction
   | walletInitFalureAction
+  | walletInitSetPasswordAction
+  | walletInitSetConfirmPasswordAction
   | walletRecoveryRequestAction
   | walletRecoverySuccessAction
   | walletRecoveryFalureAction
@@ -240,7 +262,7 @@ export type Store = {
 export type Navigation = {
   navigate: (screen: string, params: any) => void,
   dispatch: (action: any) => void,
-  goBack: () => void,
+  goBack: (key: ?string) => void,
   state: {
     params: any,
   },
@@ -325,6 +347,7 @@ export type Error = {
 
 export type Step = {
   container: any,
-  validate: () => any,
+  validate: (props: any) => any,
   onNextPress?: (event: any, next: () => void) => any,
+  buttonTitle?: string,
 }

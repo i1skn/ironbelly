@@ -58,6 +58,41 @@ pub fn get_wallet_config(wallet_dir: &str, check_node_api_http_addr: &str) -> Wa
     }
 }
 
+macro_rules! unwrap_to_c (
+	($func:expr, $error:expr) => (
+	match $func {
+        Ok(res) => {
+            *$error = 0;
+            CString::new(res.to_owned()).unwrap().into_raw()
+        }
+        Err(e) => {
+            *$error = 1;
+            CString::new(
+                serde_json::to_string(&format!("{}",e)).unwrap()).unwrap().into_raw()
+        }
+    }
+));
+
+fn check_password(path: &str, password: &str) -> Result<String, grin_wallet::Error> {
+    let wallet_config = get_wallet_config(path, "");
+    match WalletSeed::from_file(&wallet_config, &password) {
+        Ok(_) => Ok("".to_owned()),
+        Err(e) => Err(grin_wallet::Error::from(e)),
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_check_password(
+    path: *const c_char,
+    password: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(
+        check_password(&c_str_to_rust(path), &c_str_to_rust(password),),
+        error
+    )
+}
+
 fn wallet_init(
     path: &str,
     password: &str,
@@ -74,21 +109,6 @@ fn wallet_init(
         LMDBBackend::new(wallet_config.clone(), &password, client_n)?;
     seed.to_mnemonic()
 }
-
-macro_rules! unwrap_to_c (
-	($func:expr, $error:expr) => (
-	match $func {
-        Ok(res) => {
-            *$error = 0;
-            CString::new(res.to_owned()).unwrap().into_raw()
-        }
-        Err(e) => {
-            *$error = 1;
-            CString::new(
-                serde_json::to_string(&format!("{}",e)).unwrap()).unwrap().into_raw()
-        }
-    }
-));
 
 #[no_mangle]
 pub unsafe extern "C" fn c_wallet_init(

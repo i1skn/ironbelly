@@ -158,7 +158,7 @@ class Mnemonic extends Component<Props, State> {
           title="I’ve written it down"
           disabled={false}
           onPress={() => {
-            navigation.navigate('App')
+            navigation.navigate('Main')
           }}
         />
         <Spacer />

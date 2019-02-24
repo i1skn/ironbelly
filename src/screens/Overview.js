@@ -34,7 +34,7 @@ import {
 } from 'common/types'
 import { colors } from 'common'
 
-import { type WalletRecoveryState } from 'modules/wallet'
+import { type WalletInitState } from 'modules/wallet'
 
 //Images
 import SendTXImg from 'assets/images/SendTX.png'
@@ -52,9 +52,9 @@ type Props = {
   slateShare: (id: string, isResponse: boolean) => void,
   navigation: Navigation,
   txListRefreshInProgress: boolean,
-  walletRecovery: WalletRecoveryState,
   isOffline: boolean,
   firstLoading: boolean,
+  walletInit: WalletInitState,
 }
 
 type State = {}
@@ -121,16 +121,23 @@ class Overview extends Component<Props, State> {
     super(props)
   }
   componentDidMount() {
-    if (!this.props.walletRecovery.inProgress) {
+    if (!this.props.walletInit.inProgress) {
       this.props.getBalance()
-      this.props.txsGet(false, false)
+      this.props.txsGet(false, true)
     }
   }
   componentDidUpdate(prevProps) {
-    if (this.props.walletRecovery.error.message && !prevProps.walletRecovery.error.message) {
+    if (this.props.walletInit.error.message && !prevProps.walletInit.error.message) {
       this.props.navigation.navigate('Initial')
     }
+    if (
+      this.props.walletInit.inProgress !== prevProps.walletInit.inProgress &&
+      !this.props.walletInit.inProgress
+    ) {
+      this.props.txsGet(false, true)
+    }
   }
+
   render() {
     const {
       txListRefreshInProgress,
@@ -143,7 +150,7 @@ class Overview extends Component<Props, State> {
       slateShare,
       settings,
       resetTxForm,
-      walletRecovery,
+      walletInit,
       isOffline,
       firstLoading,
     } = this.props
@@ -152,7 +159,7 @@ class Overview extends Component<Props, State> {
       <Wrapper>
         <HeaderSpan bgColor={colors.primary} />
 
-        {(walletRecovery.inProgress && <RecoveryProgress />) || (
+        {(walletInit.inProgress && <RecoveryProgress />) || (
           <Balance
             balance={balance}
             currency={currency}
@@ -164,7 +171,7 @@ class Overview extends Component<Props, State> {
           useFlatList
           data={txs}
           ListEmptyComponent={
-            !walletRecovery.inProgress && (
+            !walletInit.inProgress && (
               <NoTxsView>
                 {(firstLoading && <EmptyTxListMessage>Loading...</EmptyTxListMessage>) || (
                   <Button onPress={() => navigation.navigate('Topup')} title="Top up balance?" />
@@ -242,7 +249,7 @@ class Overview extends Component<Props, State> {
             />
           }
         />
-        {!walletRecovery.inProgress && (
+        {!walletInit.inProgress && (
           <ActionButton
             title="Send"
             disabled={!balance.amountCurrentlySpendable}
@@ -266,7 +273,7 @@ const mapStateToProps = (state: GlobalState) => {
     firstLoading: state.tx.list.lastUpdated === null,
     isOffline: state.tx.list.isOffline,
     settings: state.settings,
-    walletRecovery: state.wallet.walletRecovery,
+    walletInit: state.wallet.walletInit,
   }
 }
 

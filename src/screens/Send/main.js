@@ -43,6 +43,7 @@ type Props = {
   error: Error,
   isCreated: boolean,
   navigation: Navigation,
+  password: string,
 }
 
 type State = {}
@@ -59,7 +60,13 @@ class Send extends Component<Props, State> {
         },
         onNextPress: (e, next) => {
           const { checkNodeApiHttpAddr } = props.settings
-          return GrinBridge.txStrategies('default', '', checkNodeApiHttpAddr, props.txForm.amount)
+          const { password } = props
+          return GrinBridge.txStrategies(
+            'default',
+            password,
+            checkNodeApiHttpAddr,
+            props.txForm.amount
+          )
             .then((json: string) => JSON.parse(json))
             .then(outputStrategies => {})
             .catch(error => {
@@ -87,7 +94,8 @@ class Send extends Component<Props, State> {
     }
     this.steps[0].onNextPress = (e, next) => {
       const { checkNodeApiHttpAddr } = this.props.settings
-      GrinBridge.txStrategies('default', '', checkNodeApiHttpAddr, this.props.txForm.amount)
+      const { password } = this.props
+      GrinBridge.txStrategies('default', password, checkNodeApiHttpAddr, this.props.txForm.amount)
         .then((json: string) => JSON.parse(json))
         .then(outputStrategies => {
           this.props.setOutputStrategies(outputStrategies)
@@ -125,6 +133,7 @@ const mapStateToProps = (state: ReduxState) => ({
   txForm: state.tx.txForm,
   isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,
+  password: state.wallet.password.value,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

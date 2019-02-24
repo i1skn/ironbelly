@@ -54,15 +54,15 @@ const initialState: State = {
 export const sideEffects = {
   ['BALANCE_REQUEST']: (action: balanceRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return GrinBridge.balance('default', '', checkNodeApiHttpAddr, true)
+    const password = store.getState().wallet.password.value
+    return GrinBridge.balance('default', password, checkNodeApiHttpAddr, true)
       .then((jsonBalance: string) => JSON.parse(jsonBalance))
-      .then((data: RustBalance) =>
+      .then((data: RustBalance) => {
         store.dispatch({ type: 'BALANCE_SUCCESS', data: mapRustBalance(data) })
-      )
+      })
       .catch(error => {
-        const e = JSON.parse(error.message)
-        store.dispatch({ type: 'BALANCE_FAILURE', ...e })
-        log(e, true)
+        store.dispatch({ type: 'BALANCE_FAILURE', code: 1, message: error })
+        log(error, true)
       })
   },
 }

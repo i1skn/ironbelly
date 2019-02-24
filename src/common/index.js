@@ -194,6 +194,11 @@ export const Wrapper = styled(KeyboardAvoidingView)`
   flex-grow: 1;
 `
 
+export const LoaderView = styled.View`
+  flex-grow: 1;
+  justify-content: center;
+`
+
 export const colors = {
   primary: '#ffdd57',
   warning: '#fa6800',

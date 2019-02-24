@@ -16,15 +16,17 @@
 
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
-import { TextInput } from 'components/CustomFont'
+import { TextInput, Text } from 'components/CustomFont'
 
 type Props = {
   units?: string,
   placeholder?: string,
-  maxLength: number,
+  title?: string,
+  maxLength?: number,
   value: string,
   onChange: (value: string) => void,
   autoFocus: boolean,
+  secureTextEntry?: boolean,
 }
 type State = {}
 
@@ -46,21 +48,39 @@ const StyledInput = styled(TextInput)`
   flex-grow: 1;
 `
 
+const Title = styled(Text)`
+  font-weight: bold;
+  font-size: 16;
+  margin-bottom: 4;
+`
+
 export default class FormTextInput extends Component<Props, State> {
   render() {
-    const { maxLength, onChange, value, autoFocus, placeholder } = this.props
+    const {
+      maxLength,
+      onChange,
+      value,
+      autoFocus,
+      placeholder,
+      title,
+      secureTextEntry,
+    } = this.props
     return (
-      <Layout>
-        <StyledInput
-          selectionColor={'#ABABAB'}
-          autoFocus={autoFocus}
-          onChangeText={onChange}
-          value={value}
-          keyboardType="default"
-          maxLength={maxLength}
-          placeholder={placeholder}
-        />
-      </Layout>
+      <React.Fragment>
+        {title && <Title>{title}</Title>}
+        <Layout>
+          <StyledInput
+            selectionColor={'#ABABAB'}
+            secureTextEntry={secureTextEntry}
+            autoFocus={autoFocus}
+            onChangeText={onChange}
+            value={value}
+            keyboardType="default"
+            maxLength={maxLength}
+            placeholder={placeholder}
+          />
+        </Layout>
+      </React.Fragment>
     )
   }
 }

@@ -15,7 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { Linking } from 'react-native'
+import { Linking, AppState } from 'react-native'
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation'
 import Toaster from 'react-native-toaster'
 import { Provider, connect } from 'react-redux'
@@ -26,6 +26,7 @@ import {
   checkApiSecret,
   isWalletInitialized,
 } from 'common'
+
 import { type State as GlobalState } from 'common/types'
 import { store } from 'common/redux'
 
@@ -39,6 +40,9 @@ import InitialScreen from 'screens/Initial'
 import MnemonicScreen from 'screens/Mnemonic'
 import RecoveryScreen from 'screens/Recovery/main'
 import TopupScreen from 'screens/Topup'
+import PasswordScreen from 'screens/Password'
+import WalletNewScreen from 'screens/WalletNew/main'
+import RecoveryInProgressScreen from 'screens/RecoveryInProgress'
 
 // Filesystem
 checkSlatesDirectory()
@@ -67,6 +71,7 @@ const AppStack = createStackNavigator(
     Finalize: {
       screen: ReceiveFinalizeScreen,
     },
+    ShowMnemonic: MnemonicScreen,
   },
   {
     initialRouteName: 'Main',
@@ -75,20 +80,42 @@ const AppStack = createStackNavigator(
   }
 )
 
+const WalletNewStack = createStackNavigator(
+  {
+    CreatePassword: WalletNewScreen,
+    Mnemonic: MnemonicScreen,
+  },
+  {
+    initialRouteName: 'CreatePassword',
+    headerMode: 'none',
+  }
+)
+
+const WalletRecoveryStack = createStackNavigator(
+  {
+    Recovery: RecoveryScreen,
+    RecoveryInProgress: RecoveryInProgressScreen,
+  },
+  {
+    initialRouteName: 'Recovery',
+    headerMode: 'none',
+  }
+)
+
 const WalletCreateStack = createStackNavigator(
   {
     Landing: LandingScreen,
-    Mnemonic: MnemonicScreen,
-    Recovery: RecoveryScreen,
+    WalletNew: WalletNewStack,
+    WalletRecovery: WalletRecoveryStack,
   },
   {
-    mode: 'modal',
     headerMode: 'none',
   }
 )
 
 const RootStack = createSwitchNavigator(
   {
+    Password: PasswordScreen,
     App: AppStack,
     Initial: InitialScreen,
     WalletCreate: WalletCreateStack,
@@ -119,16 +146,40 @@ class RealApp extends React.Component<Props, State> {
       })
       .catch(err => console.error('An error occurred', err))
     Linking.addEventListener('url', this._handleOpenURL)
+    AppState.addEventListener('change', this._handleAppStateChange)
   }
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL)
+    AppState.removeEventListener('change', this._handleAppStateChange)
   }
+
   _handleOpenURL = event => {
     const slatePath = decodeURIComponent(event.url).substr(7)
     isWalletInitialized().then(exists => {
-      exists &&
-        this.navigation.navigate(isResponseSlate(slatePath) ? 'Finalize' : 'Receive', { slatePath })
+      if (exists) {
+        const nextScreen = {
+          name: isResponseSlate(slatePath) ? 'Finalize' : 'Receive',
+          params: { slatePath },
+        }
+        if (!store.getState().wallet.password.value) {
+          //Password is not set
+          this.navigation.navigate('Password', { nextScreen })
+        } else {
+          this.navigation.navigate(nextScreen.name, nextScreen.params)
+        }
+      }
     })
+  }
+
+  _handleAppStateChange = nextAppState => {
+    if (nextAppState === 'background') {
+      isWalletInitialized().then(exists => {
+        if (exists) {
+          this.navigation.navigate('Password', { nextScreen: { name: 'Main' } })
+          store.dispatch({ type: 'CLEAR_PASSWORD' })
+        }
+      })
+    }
   }
   render() {
     return (

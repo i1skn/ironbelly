@@ -38,3 +38,5 @@ const char* c_wallet_init(const char* path,const char* password, const char* che
 const char* c_wallet_phrase(const char* path,const char* password, const char* check_node_api_http_addr, const uint8_t*);
 
 const char* c_wallet_recovery(const char* path,const char* phrase,const char* password, const char* check_node_api_http_addr, const uint8_t* error);
+
+const char* c_check_password(const char* path,const char* password, const uint8_t*);

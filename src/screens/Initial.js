@@ -17,11 +17,9 @@
 import React, { Component } from 'react'
 import { ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
-import styled from 'styled-components/native'
 
-import { colors, WALLET_DATA_DIRECTORY, isWalletInitialized } from 'common'
+import { colors, isWalletInitialized, LoaderView } from 'common'
 import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
-import RNFS from 'react-native-fs'
 
 type Props = {
   settings: {
@@ -36,11 +34,6 @@ type State = {
   amount: number,
   valid: boolean,
 }
-
-const LoaderView = styled.View`
-  flex-grow: 1;
-  justify-content: center;
-`
 
 class Initial extends Component<Props, State> {
   static navigationOptions = {
@@ -57,9 +50,9 @@ class Initial extends Component<Props, State> {
     const { navigation } = this.props
     isWalletInitialized().then(exists => {
       if (exists) {
-        navigation.navigate('App')
+        navigation.navigate('Password', { nextScreen: { name: 'Main' } })
       } else {
-        navigation.navigate('Landing')
+        navigation.navigate('WalletCreate')
       }
     })
   }

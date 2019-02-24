@@ -15,55 +15,53 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { View } from 'react-native'
-import { Text } from 'components/CustomFont'
 import { connect } from 'react-redux'
-import styled from 'styled-components/native'
-
 import FormTextInput from 'components/FormTextInput'
-import { type State as ReduxState } from 'common/types'
-import { type WalletInitState } from 'modules/wallet'
+import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 
 import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 import { store } from 'common/redux'
 import { type MoveFunc } from 'components/ScreenWithManySteps'
 
-const Title = styled(Text)`
-  font-size: 27;
-  font-weight: 500;
-  margin-bottom: 20;
-`
-
 type Props = {
-  setPhrase: (mnemonic: string) => void,
-  walletInit: WalletInitState,
+  error: Error,
+  navigation: Navigation,
+  setConfirmPassword: (confirmPassword: string) => void,
+  confirmPassword: string,
 }
 
 type State = {}
 
-class Phrase extends Component<Props, State> {
+class Confirm extends Component<Props, State> {
+  static navigationOptions = {
+    header: null,
+  }
+
   static backButtonText = 'Back'
   static backButtonIcon = ChevronLeftImg
-  static nextButtonText = 'Next'
+  static nextButtonText = 'Confirm'
   static nextButtonDisabled = () => {
     const state = store.getState()
-    return [12, 24].indexOf(state.wallet.walletInit.mnemonic.trim().split(' ').length) === -1
+    const { password, confirmPassword } = state.wallet.walletInit
+    return !confirmPassword || confirmPassword !== password
   }
   static nextButtonClick = (move: MoveFunc) => {
     return () => {
       move('right')
     }
   }
+
   render() {
-    const { setPhrase, walletInit } = this.props
+    const { confirmPassword, setConfirmPassword } = this.props
     return (
       <React.Fragment>
         <FormTextInput
-          title={'Recovery phrase'}
+          title={'Confirm password'}
           autoFocus={true}
-          onChange={setPhrase}
-          value={walletInit.mnemonic}
-          placeholder="12 or 24 words"
+          secureTextEntry={true}
+          onChange={setConfirmPassword}
+          value={confirmPassword}
+          placeholder="Password"
         />
       </React.Fragment>
     )
@@ -71,19 +69,18 @@ class Phrase extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: ReduxState) => ({
-  walletInit: state.wallet.walletInit,
+  settings: state.settings,
+  error: state.tx.txCreate.error,
+  confirmPassword: state.wallet.walletInit.confirmPassword,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  setPhrase: mnemonic => {
-    dispatch({ type: 'WALLET_RECOVERY_SET_MNEMONIC', mnemonic })
+  setConfirmPassword: confirmPassword => {
+    dispatch({ type: 'WALLET_INIT_SET_CONFIRM_PASSWORD', confirmPassword })
   },
 })
 
-export const validate = (password: any) => {
-  return
-}
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Phrase)
+)(Confirm)

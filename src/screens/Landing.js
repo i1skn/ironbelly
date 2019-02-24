@@ -15,7 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { KeyboardAvoidingView } from 'react-native'
+import { View } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
@@ -41,7 +41,7 @@ const FlexGrow = styled.View`
   flex-grow: 1;
 `
 
-const Wrapper = styled(KeyboardAvoidingView)`
+const Wrapper = styled(View)`
   padding: 20px;
   flex-grow: 1;
   align-items: center;
@@ -66,33 +66,29 @@ class Landing extends Component<Props, State> {
 
   componentDidMount() {}
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.walletCreated != this.props.walletCreated && this.props.walletCreated) {
-      this.props.navigation.navigate('Mnemonic')
-    }
-  }
-
   render() {
-    const { navigation, walletInit } = this.props
+    const { navigation } = this.props
 
     return (
       <Wrapper behavior="padding">
         <FlexGrow />
-        <Title>Welcome to Ironbelly</Title>
-        <SubTitle>Grin wallet you've deserved</SubTitle>
+        <View>
+          <Title>Welcome to Ironbelly</Title>
+          <SubTitle>Grin wallet you've deserved</SubTitle>
+        </View>
 
         <ActionButton
           title="Initiate new wallet"
           disabled={false}
           onPress={() => {
-            walletInit()
+            navigation.navigate('WalletNew')
           }}
         />
         <ActionButton
           title="Restore from phrase"
           disabled={false}
           onPress={() => {
-            navigation.navigate('Recovery')
+            navigation.navigate('WalletRecovery')
           }}
         />
         <FlexGrow />
@@ -107,14 +103,9 @@ const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,
-  walletCreated: !!state.wallet.walletInit.mnemonic,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  walletInit: () => {
-    dispatch({ type: 'WALLET_INIT_REQUEST' })
-  },
-})
+const mapDispatchToProps = (dispatch, ownProps) => ({})
 
 export default connect(
   mapStateToProps,

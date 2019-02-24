@@ -122,6 +122,14 @@ class GrinBridge: RCTEventEmitter {
         }
     }
     
+    @objc func checkPassword(_ password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            var error: UInt8 = 0
+            let cResult = c_check_password(walletUrl.path, password, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        }
+    }
+    
     @objc open override func supportedEvents() -> [String] {
         return ["onRecoveryProgressUpdate"]
     }

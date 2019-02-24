@@ -39,4 +39,6 @@ RCT_EXTERN_METHOD(walletInit:(NSString*)password checkNodeApiHttpAddr:(NSString*
 RCT_EXTERN_METHOD(walletPhrase:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(walletRecovery:(NSString*)phrase password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(checkPassword:(NSString*)password resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 @end

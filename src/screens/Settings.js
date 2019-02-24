@@ -31,7 +31,7 @@ import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 type Props = {
   setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void,
   getPhrase: () => void,
-  clearTxs: () => void,
+  clearWallet: () => void,
   settings: {
     currency: Currency,
     checkNodeApiHttpAddr: string,
@@ -73,7 +73,7 @@ class Settings extends Component<Props, State> {
   componentDidUpdate(prevProps) {}
 
   render() {
-    const { navigation, getPhrase, clearTxs } = this.props
+    const { navigation, getPhrase, clearWallet } = this.props
     return (
       <React.Fragment>
         <Header
@@ -83,21 +83,12 @@ class Settings extends Component<Props, State> {
           title="Settings"
         />
         <Wrapper behavior="padding">
-          {/*
-        <FieldTitle>Node check API [Node port :13413]</FieldTitle>
-        <FormTextInput
-          onChange={setCheckNodeApiHttpAddr}
-          autoFocus={false}
-          value={checkNodeApiHttpAddr}
-        />
-        <Spacer />
-        */}
           <Button
             title="See recovery phrase"
             disabled={false}
             onPress={() => {
               getPhrase()
-              navigation.navigate('Mnemonic')
+              navigation.navigate('ShowMnemonic')
             }}
           />
           <Spacer />
@@ -120,7 +111,7 @@ class Settings extends Component<Props, State> {
                     style: 'destructive',
                     onPress: () => {
                       RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
-                        clearTxs()
+                        clearWallet()
                         navigation.navigate('Initial')
                       })
                     },
@@ -154,8 +145,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   getPhrase: () => {
     dispatch({ type: 'WALLET_PHRASE_REQUEST' })
   },
-  clearTxs: () => {
+  clearWallet: () => {
     dispatch({ type: 'TX_LIST_CLEAR' })
+    dispatch({ type: 'WALLET_CLEAR' })
   },
 })
 
