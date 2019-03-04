@@ -115,6 +115,7 @@ class ScreenWithManySteps extends Component<Props, State> {
             })}
           </FlexGrow>
           <Button
+            testID="ManyStepsNextButton"
             title={next.nextButtonText}
             onPress={next.nextButtonClick(this.move, this.props.navigation)}
             disabled={next.nextButtonDisabled()}

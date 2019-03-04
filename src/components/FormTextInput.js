@@ -21,6 +21,7 @@ import { TextInput, Text } from 'components/CustomFont'
 type Props = {
   units?: string,
   placeholder?: string,
+  testID?: string,
   title?: string,
   maxLength?: number,
   value: string,
@@ -64,6 +65,7 @@ export default class FormTextInput extends Component<Props, State> {
       placeholder,
       title,
       secureTextEntry,
+      testID,
     } = this.props
     return (
       <React.Fragment>
@@ -78,6 +80,7 @@ export default class FormTextInput extends Component<Props, State> {
             keyboardType="default"
             maxLength={maxLength}
             placeholder={placeholder}
+            testID={testID}
           />
         </Layout>
       </React.Fragment>

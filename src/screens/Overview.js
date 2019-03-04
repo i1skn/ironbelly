@@ -174,7 +174,11 @@ class Overview extends Component<Props, State> {
             !walletInit.inProgress && (
               <NoTxsView>
                 {(firstLoading && <EmptyTxListMessage>Loading...</EmptyTxListMessage>) || (
-                  <Button onPress={() => navigation.navigate('Topup')} title="Top up balance?" />
+                  <Button
+                    testID="TopUpButton"
+                    onPress={() => navigation.navigate('Topup')}
+                    title="Top up balance?"
+                  />
                 )}
               </NoTxsView>
             )

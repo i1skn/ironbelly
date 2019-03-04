@@ -1,0 +1,28 @@
+language: swift
+osx_image: xcode10.1
+
+cache:
+  directories:
+  - $HOME/.cargo
+  - $TRAVIS_BUILD_DIR/rust/target
+  - $TRAVIS_BUILD_DIR/node_modules
+  - $TRAVIS_BUILD_DIR/ios/Pods
+  - /usr/local/Cellar/applesimutils
+  - /usr/local/lib/node_modules
+  - $HOME/Library/Detox
+
+env:
+  global:
+  - NODE_VERSION=stable
+  - CODE_SIGNING_REQUIRED=NO
+
+jobs:
+  include:
+    - stage: compile rust code
+      script: ./scripts/rust.sh
+    - stage: install applesimutils for detox
+      script: ./scripts/applesimutils.sh
+    - stage: npm install
+      script: ./scripts/npm.sh
+    - stage: test
+      script: ./scripts/test.sh

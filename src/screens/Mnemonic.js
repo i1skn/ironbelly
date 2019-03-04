@@ -132,7 +132,7 @@ class Mnemonic extends Component<Props, State> {
           </SubTitle>
           <View style={{ flexGrow: 1, justifyContent: 'center' }}>
             {(isShort && (
-              <Phrase12>
+              <Phrase12 testID="Mnemonic12">
                 {mnemonicArr.map((word: string, i: number) => {
                   return (
                     <PhraseWord12 key={i}>
@@ -155,6 +155,7 @@ class Mnemonic extends Component<Props, State> {
           </View>
         </View>
         <Finish
+          testID="MnemonicFinishButton"
           title="I’ve written it down"
           disabled={false}
           onPress={() => {

@@ -56,6 +56,7 @@ class Password extends Component<Props, State> {
       <React.Fragment>
         <FormTextInput
           title={'Enter password'}
+          testID="EnterPassword"
           autoFocus={true}
           secureTextEntry={true}
           onChange={setPassword}

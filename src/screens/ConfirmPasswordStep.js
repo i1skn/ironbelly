@@ -62,6 +62,7 @@ class Confirm extends Component<Props, State> {
           onChange={setConfirmPassword}
           value={confirmPassword}
           placeholder="Password"
+          testID="ConfirmPassword"
         />
       </React.Fragment>
     )

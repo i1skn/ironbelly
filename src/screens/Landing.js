@@ -70,7 +70,7 @@ class Landing extends Component<Props, State> {
     const { navigation } = this.props
 
     return (
-      <Wrapper behavior="padding">
+      <Wrapper behavior="padding" testID="LandingScreen">
         <FlexGrow />
         <View>
           <Title>Welcome to Ironbelly</Title>
@@ -79,6 +79,7 @@ class Landing extends Component<Props, State> {
 
         <ActionButton
           title="Initiate new wallet"
+          testID="NewWalletButton"
           disabled={false}
           onPress={() => {
             navigation.navigate('WalletNew')
