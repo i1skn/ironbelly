@@ -47,7 +47,7 @@ class Confirm extends Component<Props, State> {
   }
   static nextButtonClick = (move: MoveFunc) => {
     return () => {
-      move('right')
+      move(1)
     }
   }
 

@@ -38,6 +38,7 @@ import {
   type slateLoadRequestAction,
   type slateShareRequestAction,
   type txGetRequestAction,
+  type txFormOutputStrategiesRequestAction,
   type Error,
   type OutputStrategy,
 } from 'common/types'
@@ -94,6 +95,7 @@ export type TxForm = {
   outputStrategies: Array<OutputStrategy>,
   textAmount: string,
   message: string,
+  url: string,
 }
 
 export type SlateState = {
@@ -158,6 +160,7 @@ const initialState: State = {
     outputStrategies: [],
     textAmount: '',
     message: '',
+    url: '',
     all: { locked: 0, fee: 0 },
     smallest: { locked: 0, fee: 0 },
   },
@@ -365,6 +368,27 @@ export const sideEffects = {
       })
       .catch(error => {
         store.dispatch({ type: 'SLATE_SHARE_FAILURE', code: 1, message: error.message })
+        log(error, true)
+      })
+  },
+  ['TX_FORM_OUTPUT_STRATEGIES_REQUEST']: (
+    action: txFormOutputStrategiesRequestAction,
+    store: Store
+  ) => {
+    const { checkNodeApiHttpAddr } = store.getState().settings
+    const password = store.getState().wallet.password.value
+
+    return GrinBridge.txStrategies('default', password, checkNodeApiHttpAddr, action.amount)
+      .then((json: string) => JSON.parse(json))
+      .then(outputStrategies => {
+        store.dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS', outputStrategies })
+      })
+      .catch(error => {
+        store.dispatch({
+          type: 'TX_FORM_OUTPUT_STRATEGIES_FAILURE',
+          code: 1,
+          message: error.message,
+        })
         log(error, true)
       })
   },
@@ -593,12 +617,18 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         amount: action.amount,
         textAmount: action.textAmount,
       }
+    case 'TX_FORM_SET_URL':
+      return {
+        ...state,
+        url: action.url,
+        her: 'v rot',
+      }
     case 'TX_FORM_SET_OUTPUT_STRATEGY':
       return {
         ...state,
         outputStrategy: action.outputStrategy,
       }
-    case 'TX_FORM_SET_OUTPUT_STRATEGIES_SUCCESS':
+    case 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS':
       const strategies =
         action.outputStrategies.length == 2 &&
         action.outputStrategies[0].fee === action.outputStrategies[1].fee &&

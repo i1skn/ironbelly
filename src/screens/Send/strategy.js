@@ -29,6 +29,10 @@ import {
 } from 'common/types'
 
 import { type TxForm } from 'modules/tx'
+import ChevronLeftImg from 'assets/images/ChevronLeft.png'
+import { store } from 'common/redux'
+import { type MoveFunc } from 'components/ScreenWithManySteps'
+
 type State = {}
 
 const Option = styled.TouchableOpacity`
@@ -67,6 +71,19 @@ const Spendable = styled(Row)`
 class Strategy extends Component<Props, State> {
   static navigationOptions = {
     header: null,
+  }
+
+  static backButtonText = 'Back'
+  static backButtonIcon = ChevronLeftImg
+  static nextButtonText = 'Next'
+  static nextButtonDisabled = () => {
+    const state = store.getState()
+    return !state.tx.txForm.outputStrategy
+  }
+  static nextButtonClick = (move: MoveFunc) => {
+    return () => {
+      move(1)
+    }
   }
 
   render() {
@@ -121,10 +138,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch({ type: 'TX_FORM_SET_OUTPUT_STRATEGY', outputStrategy })
   },
 })
-
-export const validate = ({ amount }: { amount: number }) => {
-  return !!amount
-}
 
 export default connect(
   mapStateToProps,

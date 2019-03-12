@@ -29,6 +29,10 @@ import {
 } from 'common/types'
 
 import { type TxForm } from 'modules/tx'
+import ChevronLeftImg from 'assets/images/ChevronLeft.png'
+import { store } from 'common/redux'
+import { type MoveFunc } from 'components/ScreenWithManySteps'
+
 type Props = {
   setAmount: (amount: number, textAmount: string) => void,
   setOutputStrategy: (outputStrategy: OutputStrategy) => void,
@@ -39,6 +43,8 @@ type Props = {
   isCreated: boolean,
   navigation: Navigation,
   txForm: TxForm,
+  move: MoveFunc,
+  resetStrategies: () => void,
 }
 
 type State = {}
@@ -50,6 +56,32 @@ const GrinAmount = styled(NumericInput)`
 class Send extends Component<Props, State> {
   static navigationOptions = {
     header: null,
+  }
+  static backButtonText = 'Back'
+  static backButtonIcon = ChevronLeftImg
+  static backButtonDelta = -2
+  static nextButtonText = 'Next'
+  static nextButtonDisabled = () => {
+    const state = store.getState()
+    return !state.tx.txForm.amount
+  }
+  static nextButtonClick = (move: MoveFunc) => {
+    return () => {
+      const amount = store.getState().tx.txForm.amount
+      store.dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_REQUEST', amount })
+    }
+  }
+
+  componentDidMount() {
+    this.props.resetStrategies()
+  }
+  componentDidUpdate(prevProps) {
+    if (!prevProps.isCreated && this.props.isCreated) {
+      this.props.navigation.goBack()
+    }
+    if (!prevProps.txForm.outputStrategies.length && this.props.txForm.outputStrategies.length) {
+      this.props.move(1)
+    }
   }
 
   render() {
@@ -88,17 +120,13 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  // txCreate: (amount: number, message: string) => {
-  // dispatch({ type: 'TX_CREATE_REQUEST', amount, message })
-  // },
   setAmount: (amount: number, textAmount: string) => {
     dispatch({ type: 'TX_FORM_SET_AMOUNT', amount, textAmount })
   },
+  resetStrategies: amount => {
+    dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS', outputStrategies: [] })
+  },
 })
-
-export const validate = ({ amount }: { amount: number }) => {
-  return !!amount
-}
 
 export default connect(
   mapStateToProps,

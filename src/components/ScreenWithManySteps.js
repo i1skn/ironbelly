@@ -27,7 +27,7 @@ import { type Navigation, type Step } from 'common/types'
 import CloseImg from 'assets/images/x.png'
 import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 
-export type MoveFunc = (direction: 'left' | 'right') => void
+export type MoveFunc = (delta: number) => void
 
 type Props = {
   steps: Array<any>,
@@ -58,8 +58,7 @@ class ScreenWithManySteps extends Component<Props, State> {
     header: null,
   }
 
-  move = (direction: 'left' | 'right') => {
-    const delta = direction === 'right' ? 1 : -1
+  move = (delta: number) => {
     const { currentStep, screenWidth } = this.state
     const nextStep = currentStep + delta
     if (nextStep < 0) {
@@ -90,7 +89,7 @@ class ScreenWithManySteps extends Component<Props, State> {
         <Header
           leftIcon={curr.backButtonIcon}
           leftText={curr.backButtonText}
-          leftAction={() => this.move('left')}
+          leftAction={() => this.move(next.backButtonDelta || -1)}
         />
         <Wrapper behavior="padding">
           {/* Steps */}
@@ -108,18 +107,20 @@ class ScreenWithManySteps extends Component<Props, State> {
                       left: Animated.add(offsetX, screenWidth * i),
                     }}
                   >
-                    <StepContainer />
+                    <StepContainer move={this.move} />
                   </Animated.View>
                 )
               )
             })}
           </FlexGrow>
-          <Button
-            testID="ManyStepsNextButton"
-            title={next.nextButtonText}
-            onPress={next.nextButtonClick(this.move, this.props.navigation)}
-            disabled={next.nextButtonDisabled()}
-          />
+          {!next.nextButtonHide && (
+            <Button
+              testID="ManyStepsNextButton"
+              title={next.nextButtonText}
+              onPress={next.nextButtonClick(this.move, this.props.navigation)}
+              disabled={next.nextButtonDisabled()}
+            />
+          )}
           <Spacer />
         </Wrapper>
       </React.Fragment>

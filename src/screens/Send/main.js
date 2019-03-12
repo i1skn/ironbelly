@@ -15,15 +15,15 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { Keyboard, NativeModules } from 'react-native'
+import { Keyboard } from 'react-native'
 import { connect } from 'react-redux'
-import Amount, { validate as AmountValidate } from './amount'
-import Strategy, { validate as StrategyValidate } from './strategy'
-import Message, { validate as MessageValidate } from './message'
-import { log } from 'common/logger'
+import Amount from './amount'
+import Strategy from './strategy'
+import Message from './message'
+import Transport from './transport'
+import Address from './address'
 
-import ManyStepsView from 'components/ManyStepsView'
-const { GrinBridge } = NativeModules
+import ScreenWithManySteps from 'components/ScreenWithManySteps'
 
 import { type TxForm } from 'modules/tx'
 import { type State as SettingsState } from 'modules/settings'
@@ -32,7 +32,6 @@ import {
   type Error,
   type Navigation,
   type RustOutputStrategy,
-  type Step,
 } from 'common/types'
 
 type Props = {
@@ -49,61 +48,11 @@ type Props = {
 type State = {}
 
 class Send extends Component<Props, State> {
-  steps: Array<Step>
-  constructor(props) {
-    super(props)
-    this.steps = [
-      {
-        container: Amount,
-        validate: () => {
-          return AmountValidate(this.props.txForm)
-        },
-        onNextPress: (e, next) => {
-          const { checkNodeApiHttpAddr } = props.settings
-          const { password } = props
-          return GrinBridge.txStrategies(
-            'default',
-            password,
-            checkNodeApiHttpAddr,
-            props.txForm.amount
-          )
-            .then((json: string) => JSON.parse(json))
-            .then(outputStrategies => {})
-            .catch(error => {
-              log(error, true)
-            })
-        },
-      },
-      {
-        container: Strategy,
-        validate: () => {
-          return StrategyValidate(this.props.txForm)
-        },
-      },
-      {
-        container: Message,
-        validate: () => {
-          return MessageValidate(this.props.txForm)
-        },
-      },
-    ]
-  }
+  steps = [Amount, Strategy, Message, Transport, Address]
+
   componentDidUpdate(prevProps) {
     if (!prevProps.isCreated && this.props.isCreated) {
       this.props.navigation.goBack()
-    }
-    this.steps[0].onNextPress = (e, next) => {
-      const { checkNodeApiHttpAddr } = this.props.settings
-      const { password } = this.props
-      GrinBridge.txStrategies('default', password, checkNodeApiHttpAddr, this.props.txForm.amount)
-        .then((json: string) => JSON.parse(json))
-        .then(outputStrategies => {
-          this.props.setOutputStrategies(outputStrategies)
-          next()
-        })
-        .catch(error => {
-          log(error, true)
-        })
     }
   }
 
@@ -111,14 +60,15 @@ class Send extends Component<Props, State> {
     const { navigation, txForm } = this.props
     const { amount, message, outputStrategy } = txForm
     return (
-      <ManyStepsView
+      <ScreenWithManySteps
         steps={this.steps}
         navigation={navigation}
         cancelAction={() => {
           Keyboard.dismiss()
-          this.props.navigation.goBack()
+          navigation.goBack(null)
         }}
         finalAction={() => {
+          console.log('final')
           if (outputStrategy) {
             this.props.txCreate(amount, message, outputStrategy.selectionStrategyIsUseAll)
           }
@@ -139,9 +89,6 @@ const mapStateToProps = (state: ReduxState) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   txCreate: (amount: number, message: string, selectionStrategyIsUseAll: boolean) => {
     dispatch({ type: 'TX_CREATE_REQUEST', amount, message, selectionStrategyIsUseAll })
-  },
-  setOutputStrategies: outputStrategies => {
-    dispatch({ type: 'TX_FORM_SET_OUTPUT_STRATEGIES_SUCCESS', outputStrategies })
   },
 })
 

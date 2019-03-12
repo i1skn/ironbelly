@@ -157,21 +157,26 @@ export type txFormSetAmountAction = {
   textAmount: string,
 }
 
+export type txFormSetUrlAction = {
+  type: 'TX_FORM_SET_URL',
+  url: string,
+}
+
 export type txFormSetOutputStrategyAction = {
   type: 'TX_FORM_SET_OUTPUT_STRATEGY',
   outputStrategy: OutputStrategy,
 }
 
 export type txFormOutputStrategiesRequestAction = {
-  type: 'TX_FORM_SET_OUTPUT_STRATEGIES_REQUEST',
+  type: 'TX_FORM_OUTPUT_STRATEGIES_REQUEST',
   amount: number,
 }
 export type txFormOutputStrategiesSuccessAction = {
-  type: 'TX_FORM_SET_OUTPUT_STRATEGIES_SUCCESS',
+  type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS',
   outputStrategies: Array<RustOutputStrategy>,
 }
 export type txFormOutputStrategiesFalureAction = {
-  type: 'TX_FORM_SET_OUTPUT_STRATEGIES_FAILURE',
+  type: 'TX_FORM_OUTPUT_STRATEGIES_FAILURE',
   code?: number,
   message: string,
 }
@@ -221,6 +226,7 @@ export type Action =
   | slateShareFalureAction
   | toastShowAction
   | txFormSetAmountAction
+  | txFormSetUrlAction
   | txFormSetMessageAction
   | txFormSetOutputStrategyAction
   | txFormOutputStrategiesRequestAction
@@ -343,11 +349,4 @@ export type RustOutputStrategy = {
 export type Error = {
   code: number,
   message: string,
-}
-
-export type Step = {
-  container: any,
-  validate: (props: any) => any,
-  onNextPress?: (event: any, next: () => void) => any,
-  buttonTitle?: string,
 }

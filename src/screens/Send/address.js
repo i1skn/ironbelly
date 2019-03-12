@@ -15,24 +15,35 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
+import { View, AlertIOS } from 'react-native'
 import { connect } from 'react-redux'
-import FormTextInput from 'components/FormTextInput'
-import { type State as ReduxState, type Error, type Navigation } from 'common/types'
+import styled from 'styled-components/native'
 
+import { Text } from 'components/CustomFont'
+import FormTextInput from 'components/FormTextInput'
+import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
+import { FlexGrow, Title } from 'common'
+import { Button } from 'components/CustomFont'
+import { type TxForm } from 'modules/tx'
 import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 import { store } from 'common/redux'
 import { type MoveFunc } from 'components/ScreenWithManySteps'
 
 type Props = {
+  settings: {
+    currency: Currency,
+  },
   error: Error,
+  isCreated: boolean,
   navigation: Navigation,
-  setPassword: (password: string) => void,
-  password: string,
+  txForm: TxForm,
+  move: MoveFunc,
+  setUrl: (url: string) => void,
 }
 
 type State = {}
 
-class Password extends Component<Props, State> {
+class Address extends Component<Props, State> {
   static navigationOptions = {
     header: null,
   }
@@ -41,46 +52,56 @@ class Password extends Component<Props, State> {
   static backButtonIcon = ChevronLeftImg
   static nextButtonText = 'Next'
   static nextButtonDisabled = () => {
-    const state = store.getState()
-    return !state.wallet.walletInit.password
+    const url = store.getState().tx.txForm.url
+    return url.toLowerCase().indexOf('https://') === -1
   }
   static nextButtonClick = (move: MoveFunc) => {
     return () => {
-      move(1)
+      AlertIOS.alert(
+        'Alert!',
+        'Send via https is not implemented yet. Fallback to sharing the file',
+        [
+          {
+            text: 'Ok',
+            onPress: () => move(1),
+          },
+        ]
+      )
     }
   }
 
+  state = {}
+
   render() {
-    const { password, setPassword } = this.props
+    const { txForm, setUrl } = this.props
+
     return (
-      <React.Fragment>
-        <FormTextInput
-          title={'Enter password'}
-          testID="EnterPassword"
-          autoFocus={true}
-          secureTextEntry={true}
-          onChange={setPassword}
-          value={password}
-          placeholder="Password"
-        />
-      </React.Fragment>
+      <View>
+        <Title>How to send?</Title>
+        <FlexGrow>
+          <FormTextInput
+            autoFocus={true}
+            onChange={url => setUrl(url)}
+            value={txForm.url}
+            placeholder="https://"
+          />
+        </FlexGrow>
+      </View>
     )
   }
 }
 
 const mapStateToProps = (state: ReduxState) => ({
-  settings: state.settings,
-  error: state.tx.txCreate.error,
-  password: state.wallet.walletInit.password,
+  txForm: state.tx.txForm,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  setPassword: password => {
-    dispatch({ type: 'WALLET_INIT_SET_PASSWORD', password })
+  setUrl: (url: string) => {
+    dispatch({ type: 'TX_FORM_SET_URL', url })
   },
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Password)
+)(Address)

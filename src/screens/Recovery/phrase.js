@@ -15,10 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { View } from 'react-native'
-import { Text } from 'components/CustomFont'
 import { connect } from 'react-redux'
-import styled from 'styled-components/native'
 
 import FormTextInput from 'components/FormTextInput'
 import { type State as ReduxState } from 'common/types'
@@ -27,12 +24,6 @@ import { type WalletInitState } from 'modules/wallet'
 import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 import { store } from 'common/redux'
 import { type MoveFunc } from 'components/ScreenWithManySteps'
-
-const Title = styled(Text)`
-  font-size: 27;
-  font-weight: 500;
-  margin-bottom: 20;
-`
 
 type Props = {
   setPhrase: (mnemonic: string) => void,
@@ -51,7 +42,7 @@ class Phrase extends Component<Props, State> {
   }
   static nextButtonClick = (move: MoveFunc) => {
     return () => {
-      move('right')
+      move(1)
     }
   }
   render() {

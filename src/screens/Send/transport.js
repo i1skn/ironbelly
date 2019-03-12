@@ -22,25 +22,36 @@ import styled from 'styled-components/native'
 import { Text } from 'components/CustomFont'
 import FormTextInput from 'components/FormTextInput'
 import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
+import { FlexGrow, Title } from 'common'
+import { Button } from 'components/CustomFont'
 import { type TxForm } from 'modules/tx'
 import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 import { store } from 'common/redux'
 import { type MoveFunc } from 'components/ScreenWithManySteps'
-import { FlexGrow, Title } from 'common'
 
 type Props = {
   setMessage: (message: string) => void,
   settings: {
     currency: Currency,
   },
+  error: Error,
   isCreated: boolean,
   navigation: Navigation,
   txForm: TxForm,
+  move: MoveFunc,
 }
 
-type State = {}
+type State = {
+  url: string,
+}
 
-class Send extends Component<Props, State> {
+const Or = styled(Text)`
+  text-align: center;
+  font-size: 20;
+  margin: 8px 0;
+`
+
+class Transport extends Component<Props, State> {
   static navigationOptions = {
     header: null,
   }
@@ -48,6 +59,7 @@ class Send extends Component<Props, State> {
   static backButtonText = 'Back'
   static backButtonIcon = ChevronLeftImg
   static nextButtonText = 'Next'
+  static nextButtonHide = true
   static nextButtonDisabled = () => {
     return false
   }
@@ -57,23 +69,32 @@ class Send extends Component<Props, State> {
     }
   }
 
-  state = {}
+  state = {
+    url: '',
+  }
 
   render() {
-    const { setMessage, txForm } = this.props
+    const { setMessage, txForm, move } = this.props
+    const { url } = this.state
 
     return (
       <View>
-        <Title>Message</Title>
-        <View>
-          <FormTextInput
-            autoFocus={true}
-            onChange={setMessage}
-            value={txForm.message}
-            placeholder="Optional"
+        <Title>How to send?</Title>
+        <FlexGrow>
+          <Button
+            testID="ShareAsAFile"
+            title={'Share as a file'}
+            onPress={() => move(2)}
+            disabled={false}
           />
-        </View>
-        <FlexGrow />
+          <Or>or</Or>
+          <Button
+            testID="ShareAsAFile"
+            title={'Send via https'}
+            onPress={() => move(1)}
+            disabled={false}
+          />
+        </FlexGrow>
       </View>
     )
   }
@@ -92,7 +113,10 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 })
 
+export const validate = (_: any) => {
+  return true
+}
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Send)
+)(Transport)
