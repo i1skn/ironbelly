@@ -28,6 +28,9 @@ type Props = {
   onChange: (value: string) => void,
   autoFocus: boolean,
   secureTextEntry?: boolean,
+  textContentType?: string,
+  keyboardType?: string,
+  autoCorrect?: boolean,
 }
 type State = {}
 
@@ -66,6 +69,9 @@ export default class FormTextInput extends Component<Props, State> {
       title,
       secureTextEntry,
       testID,
+      textContentType,
+      autoCorrect,
+      keyboardType,
     } = this.props
     return (
       <React.Fragment>
@@ -81,6 +87,9 @@ export default class FormTextInput extends Component<Props, State> {
             maxLength={maxLength}
             placeholder={placeholder}
             testID={testID}
+            keyboardType={keyboardType}
+            textContentType={textContentType}
+            autoCorrect={autoCorrect}
           />
         </Layout>
       </React.Fragment>

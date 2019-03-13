@@ -16,6 +16,7 @@
 
 import * as React from 'react'
 import styled from 'styled-components/native'
+import { Text as NativeText } from 'react-native'
 import { colors } from 'common'
 
 const fontFamily = 'font-family: Poppins'
@@ -27,11 +28,15 @@ export const TextInput = styled.TextInput`
   ${fontFamily};
 `
 
+function getBackgroundColor(props: any) {
+  return props.inverted ? 'white' : props.danger ? colors.warning : colors.primary
+}
+
 const StyledButton = styled.TouchableOpacity`
   padding: 10px 15px;
-  background-color: ${props => (props.danger ? colors.warning : colors.primary)};
-  border-radius: 10;
-
+  background-color: ${props => getBackgroundColor(props)};
+  border-radius: 8;
+  border-width: ${props => (props.inverted ? '1' : '0')};
   opacity: ${props => (props.disabled ? '0.3' : '1')};
 `
 

@@ -36,11 +36,18 @@ import {
 
 type Props = {
   txCreate: (amount: number, message: string, selectionStrategyIsUseAll: boolean) => void,
+  txSendHttps: (
+    amount: number,
+    message: string,
+    url: string,
+    selectionStrategyIsUseAll: boolean
+  ) => void,
   setOutputStrategies: (outputStrategies: Array<RustOutputStrategy>) => void,
   txForm: TxForm,
   settings: SettingsState,
   error: Error,
   isCreated: boolean,
+  isSent: boolean,
   navigation: Navigation,
   password: string,
 }
@@ -51,14 +58,17 @@ class Send extends Component<Props, State> {
   steps = [Amount, Strategy, Message, Transport, Address]
 
   componentDidUpdate(prevProps) {
-    if (!prevProps.isCreated && this.props.isCreated) {
+    if (
+      (!prevProps.isCreated && this.props.isCreated) ||
+      (!prevProps.isSent && this.props.isSent)
+    ) {
       this.props.navigation.goBack()
     }
   }
 
   render() {
     const { navigation, txForm } = this.props
-    const { amount, message, outputStrategy } = txForm
+    const { amount, message, outputStrategy, url } = txForm
     return (
       <ScreenWithManySteps
         steps={this.steps}
@@ -68,9 +78,12 @@ class Send extends Component<Props, State> {
           navigation.goBack(null)
         }}
         finalAction={() => {
-          console.log('final')
           if (outputStrategy) {
-            this.props.txCreate(amount, message, outputStrategy.selectionStrategyIsUseAll)
+            if (url) {
+              this.props.txSendHttps(amount, message, url, outputStrategy.selectionStrategyIsUseAll)
+            } else {
+              this.props.txCreate(amount, message, outputStrategy.selectionStrategyIsUseAll)
+            }
           }
         }}
       />
@@ -82,6 +95,7 @@ const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
   txForm: state.tx.txForm,
   isCreated: state.tx.txCreate.created,
+  isSent: state.tx.txSend.sent,
   error: state.tx.txCreate.error,
   password: state.wallet.password.value,
 })
@@ -89,6 +103,14 @@ const mapStateToProps = (state: ReduxState) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   txCreate: (amount: number, message: string, selectionStrategyIsUseAll: boolean) => {
     dispatch({ type: 'TX_CREATE_REQUEST', amount, message, selectionStrategyIsUseAll })
+  },
+  txSendHttps: (
+    amount: number,
+    message: string,
+    url: string,
+    selectionStrategyIsUseAll: boolean
+  ) => {
+    dispatch({ type: 'TX_SEND_HTTPS_REQUEST', amount, message, url, selectionStrategyIsUseAll })
   },
 })
 

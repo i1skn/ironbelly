@@ -22,9 +22,13 @@ RCT_EXTERN_METHOD(balance:(NSString*)account password:(NSString*)password checkN
 
 RCT_EXTERN_METHOD(txsGet:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr refreshFromNode:(BOOL)refreshFromNode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txGet:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr refreshFromNode:(BOOL)refreshFromNode txId:(NSUInteger)txId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txGet:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr refreshFromNode:(BOOL)refreshFromNode txSlateId:(NSString*)txSlateId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(txPost:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr txSlateId:(NSString*)txSlateId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txCreate:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll message:(NSString*)message  resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(txSendHttps:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll message:(NSString*)message url:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txStrategies:(NSString*)account password:(NSString*)password checkNodeApiHttpAddr:(NSString*)checkNodeApiHttpAddr amount:(int64_t)amount resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 

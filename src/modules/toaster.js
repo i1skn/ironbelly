@@ -15,6 +15,7 @@
 // limitations under the License.
 
 import { type Action } from 'common/types'
+import { type Store, type toastShowAction } from 'common/types'
 
 export type State = {
   text: string,
@@ -33,7 +34,17 @@ export const reducer = (state: State = initialState, action: Action): State => {
         ...state,
         ...action,
       }
+    case 'TOAST_CLEAR':
+      return initialState
     default:
       return state
   }
+}
+
+export const sideEffects = {
+  ['TOAST_SHOW']: async (action: toastShowAction, store: Store) => {
+    setTimeout(() => {
+      store.dispatch({ type: 'TOAST_CLEAR' })
+    }, 50)
+  },
 }

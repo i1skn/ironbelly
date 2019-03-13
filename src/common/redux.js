@@ -19,7 +19,7 @@ import { combineReducers } from 'redux'
 import { reducer as balanceReducer, sideEffects as balanceSideEffects } from 'modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'modules/tx'
 import { reducer as settingsReducer } from 'modules/settings'
-import { reducer as toasterReducer } from 'modules/toaster'
+import { reducer as toasterReducer, sideEffects as toasterEffects } from 'modules/toaster'
 import { reducer as walletReducer, sideEffects as walletEffects } from 'modules/wallet'
 import { type Store, type Action, type PromiseAction } from 'common/types'
 import { createStore, applyMiddleware } from 'redux'
@@ -55,6 +55,7 @@ const sideEffects = {
   ...balanceSideEffects,
   ...txSideEffects,
   ...walletEffects,
+  ...toasterEffects,
 }
 
 const logger = createLogger({})

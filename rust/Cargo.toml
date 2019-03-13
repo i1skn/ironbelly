@@ -21,6 +21,7 @@ serde_derive = "1"
 log = "0.4"
 term = "0.5"
 prettytable-rs = "0.7"
+uuid = "0.6.5"
 
 grin_wallet = { git = "https://github.com/cyclefortytwo/grin", rev = "8b84453a51d4affacce55bc83b7a6138d6556023" }
 grin_core = { git = "https://github.com/cyclefortytwo/grin", rev = "8b84453a51d4affacce55bc83b7a6138d6556023" }

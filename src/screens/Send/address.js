@@ -53,20 +53,11 @@ class Address extends Component<Props, State> {
   static nextButtonText = 'Next'
   static nextButtonDisabled = () => {
     const url = store.getState().tx.txForm.url
-    return url.toLowerCase().indexOf('https://') === -1
+    return url.toLowerCase().indexOf('http') === -1
   }
   static nextButtonClick = (move: MoveFunc) => {
     return () => {
-      AlertIOS.alert(
-        'Alert!',
-        'Send via https is not implemented yet. Fallback to sharing the file',
-        [
-          {
-            text: 'Ok',
-            onPress: () => move(1),
-          },
-        ]
-      )
+      move(1)
     }
   }
 
@@ -77,13 +68,16 @@ class Address extends Component<Props, State> {
 
     return (
       <View>
-        <Title>How to send?</Title>
+        <Title>Wallet address</Title>
         <FlexGrow>
           <FormTextInput
             autoFocus={true}
             onChange={url => setUrl(url)}
             value={txForm.url}
             placeholder="https://"
+            textContentType={'URL'}
+            keyboardType={'url'}
+            autoCorrect={false}
           />
         </FlexGrow>
       </View>
@@ -97,7 +91,7 @@ const mapStateToProps = (state: ReduxState) => ({
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   setUrl: (url: string) => {
-    dispatch({ type: 'TX_FORM_SET_URL', url })
+    dispatch({ type: 'TX_FORM_SET_URL', url: url.toLowerCase() })
   },
 })
 

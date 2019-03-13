@@ -26,9 +26,11 @@ import {
   checkApiSecret,
   isWalletInitialized,
 } from 'common'
+import Modal from 'react-native-modal'
 
 import { type State as GlobalState } from 'common/types'
 import { store } from 'common/redux'
+import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
@@ -130,6 +132,8 @@ type Props = {
     text: string,
     styles: any,
   },
+  showTxConfirmationModal: boolean,
+  closeTxPostModal: () => void,
 }
 type State = {}
 
@@ -172,7 +176,7 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleAppStateChange = nextAppState => {
-    if (nextAppState === 'background') {
+    if (nextAppState === 'inactive') {
       isWalletInitialized().then(exists => {
         if (exists) {
           this.navigation.navigate('Password', { nextScreen: { name: 'Main' } })
@@ -182,9 +186,13 @@ class RealApp extends React.Component<Props, State> {
     }
   }
   render() {
+    const { closeTxPostModal } = this.props
     return (
       <React.Fragment>
         <Toaster message={this.props.toastMessage} />
+        <Modal isVisible={this.props.showTxConfirmationModal} onBackdropPress={closeTxPostModal}>
+          <TxPostConfirmationModal />
+        </Modal>
         <AppContainer
           ref={nav => {
             if (nav && nav._navigation) {
@@ -200,9 +208,12 @@ const RealAppConnected = connect(
   (state: GlobalState) => {
     return {
       toastMessage: state.toaster,
+      showTxConfirmationModal: state.tx.txPost.showModal,
     }
   },
-  null
+  (dispatch, ownProps) => ({
+    closeTxPostModal: () => dispatch({ type: 'TX_POST_CLOSE' }),
+  })
 )(RealApp)
 
 export default class App extends Component<{}, {}> {

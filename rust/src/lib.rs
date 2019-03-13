@@ -19,13 +19,14 @@ use grin_util::Mutex;
 use grin_wallet::libwallet::api::{APIForeign, APIOwner};
 use grin_wallet::libwallet::types::{NodeClient, WalletInst};
 use grin_wallet::{
-    instantiate_wallet, FileWalletCommAdapter, HTTPNodeClient, LMDBBackend, WalletConfig,
-    WalletSeed,
+    instantiate_wallet, FileWalletCommAdapter, HTTPNodeClient, HTTPWalletCommAdapter, LMDBBackend,
+    WalletConfig, WalletSeed,
 };
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::sync::Arc;
+use uuid::Uuid;
 
 fn c_str_to_rust(s: *const c_char) -> String {
     unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
@@ -210,12 +211,21 @@ fn tx_get(
     password: &str,
     check_node_api_http_addr: &str,
     refresh_from_node: bool,
-    tx_id: u32,
+    tx_slate_id: &str,
 ) -> Result<String, grin_wallet::Error> {
     let wallet = get_wallet(path, account, password, check_node_api_http_addr)?;
     let api = APIOwner::new(wallet.clone());
-    let txs = api.retrieve_txs(refresh_from_node, Some(tx_id), None)?;
-    Ok(serde_json::to_string(&txs).unwrap())
+    match Uuid::parse_str(tx_slate_id) {
+        Ok(uuid) => {
+            let txs = api.retrieve_txs(refresh_from_node, None, Some(uuid))?;
+            Ok(serde_json::to_string(&txs).unwrap())
+        }
+        Err(e) => {
+            return Err(grin_wallet::Error::from(
+                grin_wallet::ErrorKind::GenericError(e.to_string()),
+            ));
+        }
+    }
 }
 
 #[no_mangle]
@@ -225,7 +235,7 @@ pub unsafe extern "C" fn c_tx_get(
     password: *const c_char,
     check_node_api_http_addr: *const c_char,
     refresh_from_node: bool,
-    tx_id: u32,
+    tx_slate_id: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
@@ -235,7 +245,7 @@ pub unsafe extern "C" fn c_tx_get(
             &c_str_to_rust(password),
             &c_str_to_rust(check_node_api_http_addr),
             refresh_from_node,
-            tx_id,
+            &c_str_to_rust(tx_slate_id),
         ),
         error
     )
@@ -505,8 +515,7 @@ fn tx_finalize(
     let mut slate = adapter.receive_tx_async(&slate_path)?;
     api.verify_slate_messages(&slate)?;
     api.finalize_tx(&mut slate)?;
-    api.post_tx(&slate.tx, true)?;
-    Ok("".to_owned())
+    Ok(serde_json::to_string(&slate).unwrap())
 }
 
 #[no_mangle]
@@ -525,6 +534,131 @@ pub unsafe extern "C" fn c_tx_finalize(
             &c_str_to_rust(password),
             &c_str_to_rust(check_node_api_http_addr),
             &c_str_to_rust(slate_path),
+        ),
+        error
+    )
+}
+
+fn tx_send_https(
+    path: &str,
+    account: &str,
+    password: &str,
+    check_node_api_http_addr: &str,
+    message: &str,
+    url: &str,
+    amount: u64,
+    selection_strategy_is_use_all: bool,
+) -> Result<String, grin_wallet::Error> {
+    let wallet = get_wallet(path, account, password, check_node_api_http_addr)?;
+    let mut api = APIOwner::new(wallet.clone());
+    let adapter = HTTPWalletCommAdapter::new();
+    let (slate, lock_fn) = api.initiate_tx(
+        None,
+        amount,
+        1,
+        1,
+        selection_strategy_is_use_all,
+        Some(message.to_owned()),
+    )?;
+    api.tx_lock_outputs(&slate, lock_fn)?;
+    match adapter.send_tx_sync(url, &slate) {
+        Ok(mut slate) => {
+            api.verify_slate_messages(&slate)?;
+            api.finalize_tx(&mut slate)?;
+            Ok(serde_json::to_string(&slate).unwrap())
+        }
+        Err(e) => {
+            api.cancel_tx(None, Some(slate.id))?;
+            Err(grin_wallet::Error::from(e))
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_tx_send_https(
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
+    amount: u64,
+    selection_strategy_is_use_all: bool,
+    message: *const c_char,
+    url: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(
+        tx_send_https(
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
+            &c_str_to_rust(message),
+            &c_str_to_rust(url),
+            amount,
+            selection_strategy_is_use_all,
+        ),
+        error
+    )
+}
+
+fn tx_post(
+    path: &str,
+    account: &str,
+    password: &str,
+    check_node_api_http_addr: &str,
+    tx_slate_id: &str,
+) -> Result<String, grin_wallet::Error> {
+    let wallet = get_wallet(path, account, password, check_node_api_http_addr)?;
+    let api = APIOwner::new(wallet.clone());
+    match Uuid::parse_str(tx_slate_id) {
+        Ok(uuid) => {
+            let (_, txs) = api.retrieve_txs(true, None, Some(uuid))?;
+            if txs[0].confirmed {
+                return Err(grin_wallet::Error::from(
+                    grin_wallet::ErrorKind::GenericError(format!(
+                        "Transaction with id {} is confirmed. Not posting.",
+                        tx_slate_id
+                    )),
+                ));
+            }
+            let stored_tx = api.get_stored_tx(&txs[0])?;
+            match stored_tx {
+                Some(stored_tx) => {
+                    api.post_tx(&stored_tx, true)?;
+                    Ok("".to_owned())
+                }
+                None => Err(grin_wallet::Error::from(
+                    grin_wallet::ErrorKind::GenericError(format!(
+                        "Transaction with id {} does not have transaction data. Not posting.",
+                        tx_slate_id
+                    )),
+                )),
+            }
+        }
+        Err(e) => {
+            return Err(grin_wallet::Error::from(
+                grin_wallet::ErrorKind::GenericError(e.to_string()),
+            ));
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_tx_post(
+    path: *const c_char,
+    account: *const c_char,
+    password: *const c_char,
+    check_node_api_http_addr: *const c_char,
+    tx_slate_id: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(
+        tx_post(
+            &c_str_to_rust(path),
+            &c_str_to_rust(account),
+            &c_str_to_rust(password),
+            &c_str_to_rust(check_node_api_http_addr),
+            &c_str_to_rust(tx_slate_id),
         ),
         error
     )

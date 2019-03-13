@@ -31,6 +31,8 @@ import {
   type txCancelRequestAction,
   type txListRequestAction,
   type txCreateRequestAction,
+  type txSendHttpsRequestAction,
+  type txPostRequestAction,
   type txReceiveRequestAction,
   type txFinalizeRequestAction,
   type slateSetRequestAction,
@@ -45,7 +47,7 @@ import {
 
 const { GrinBridge } = NativeModules
 
-export type ListState = {
+export type ListState = {|
   data: Array<Tx>,
   inProgress: boolean,
   isOffline: boolean,
@@ -53,67 +55,84 @@ export type ListState = {
   showLoader: boolean,
   lastUpdated: ?moment,
   error: ?Error,
-}
+|}
 
-export type TxCreateState = {
+export type TxCreateState = {|
   data: ?Tx,
   created: boolean,
   inProgress: boolean,
   error: ?Error,
-}
+|}
 
-export type TxGetState = {
+export type TxSendState = {|
+  data: ?Tx,
+  sent: boolean,
+  inProgress: boolean,
+  error: ?Error,
+|}
+
+export type TxPostState = {|
+  txSlateId: ?string,
+  showModal: boolean,
+  posted: boolean,
+  inProgress: boolean,
+  error: ?Error,
+|}
+
+export type TxGetState = {|
   data: ?Tx,
   validated: boolean,
   inProgress: boolean,
   error: ?Error,
-}
+|}
 
-export type TxReceiveState = {
+export type TxReceiveState = {|
   data: ?Tx,
   received: boolean,
   inProgress: boolean,
   error: ?Error,
-}
+|}
 
-export type TxFinalizeState = {
+export type TxFinalizeState = {|
   data: ?Tx,
   finalized: boolean,
   inProgress: boolean,
   error: ?Error,
-}
+|}
 
-export type TxCancelState = {
+export type TxCancelState = {|
   data: ?Tx,
   inProgress: boolean,
   error: ?Error,
-}
+|}
 
-export type TxForm = {
+export type TxForm = {|
   amount: number,
   outputStrategy: ?OutputStrategy,
   outputStrategies: Array<OutputStrategy>,
   textAmount: string,
   message: string,
   url: string,
-}
+|}
 
-export type SlateState = {
+export type SlateState = {|
   data: ?Slate,
   inProgress: boolean,
   error: ?Error,
-}
+|}
 
-export type State = $ReadOnly<{
+export type State = $ReadOnly<{|
   list: ListState,
   txCreate: TxCreateState,
+  txSend: TxSendState,
   txGet: TxGetState,
+  txPost: TxPostState,
   txCancel: TxCancelState,
   txReceive: TxReceiveState,
   txFinalize: TxFinalizeState,
   txForm: TxForm,
   slate: SlateState,
-}>
+|}>
 
 const initialState: State = {
   list: {
@@ -128,6 +147,19 @@ const initialState: State = {
   txCreate: {
     data: null,
     created: false,
+    inProgress: false,
+    error: null,
+  },
+  txSend: {
+    data: null,
+    sent: false,
+    inProgress: false,
+    error: null,
+  },
+  txPost: {
+    txSlateId: null,
+    posted: false,
+    showModal: false,
     inProgress: false,
     error: null,
   },
@@ -161,8 +193,6 @@ const initialState: State = {
     textAmount: '',
     message: '',
     url: '',
-    all: { locked: 0, fee: 0 },
-    smallest: { locked: 0, fee: 0 },
   },
   slate: {
     data: null,
@@ -172,38 +202,56 @@ const initialState: State = {
 }
 
 export const sideEffects = {
-  ['TX_LIST_REQUEST']: (action: txListRequestAction, store: Store) => {
+  ['TX_LIST_REQUEST']: async (action: txListRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
     const password = store.getState().wallet.password.value
-    return GrinBridge.txsGet('default', password, checkNodeApiHttpAddr, action.refreshFromNode)
-      .then((json: string) => JSON.parse(json))
-      .then((data: [boolean, Array<RustTx>]) => {
-        AsyncStorage.getItem('@finalizedTxs')
-          .then(data => JSON.parse(data))
-          .then(value => {
-            const finalized = value ? value : []
-            const mappedData = data[1].map((tx: RustTx) => {
-              const pos = finalized.indexOf(tx.tx_slate_id)
-              if (pos !== -1) {
-                if (tx.confirmed) {
-                  finalized.splice(pos, 1)
-                  return tx
-                } else {
-                  return { ...tx, tx_type: 'TxFinalized' }
-                }
-              }
+    try {
+      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
+      if (!finalized) {
+        finalized = []
+      }
+      const newFinalized = []
+      let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
+      if (!posted) {
+        posted = []
+      }
+      const newPosted = []
+      const data = await GrinBridge.txsGet(
+        'default',
+        password,
+        checkNodeApiHttpAddr,
+        action.refreshFromNode
+      ).then(JSON.parse)
+      const mappedData = data[1]
+        .filter((tx: RustTx) => tx.tx_type.indexOf('Cancelled') === -1)
+        .map((tx: RustTx) => {
+          let pos = finalized.indexOf(tx.tx_slate_id)
+          if (pos !== -1) {
+            if (tx.confirmed) {
               return tx
-            })
-            AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized)).then(() => {
-              store.dispatch({ type: 'TX_LIST_SUCCESS', data: mappedData, validated: data[0] })
-            })
-          })
-      })
-      .catch(error => {
-        const e = JSON.parse(error.message)
-        store.dispatch({ type: 'TX_LIST_FAILURE', code: 1, message: error })
-        log(e, true)
-      })
+            } else {
+              newFinalized.push(tx.tx_slate_id)
+              return { ...tx, tx_type: 'TxFinalized' }
+            }
+          }
+          pos = posted.indexOf(tx.tx_slate_id)
+          if (pos !== -1) {
+            if (tx.confirmed) {
+              return tx
+            } else {
+              newPosted.push(tx.tx_slate_id)
+              return { ...tx, tx_type: 'TxPosted' }
+            }
+          }
+          return tx
+        })
+      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(newFinalized))
+      await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
+      store.dispatch({ type: 'TX_LIST_SUCCESS', data: mappedData, validated: data[0] })
+    } catch (e) {
+      store.dispatch({ type: 'TX_LIST_FAILURE', message: e.message })
+      log(e, true)
+    }
   },
   ['TX_CANCEL_REQUEST']: (action: txCancelRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
@@ -232,7 +280,7 @@ export const sideEffects = {
   ['TX_GET_REQUEST']: (action: txGetRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
     const password = store.getState().wallet.password.value
-    return GrinBridge.txGet('default', password, checkNodeApiHttpAddr, true, action.id)
+    return GrinBridge.txGet('default', password, checkNodeApiHttpAddr, true, action.txSlateId)
       .then((json: string) => JSON.parse(json))
       .then(result => {
         store.dispatch({ type: 'TX_GET_SUCCESS', validated: result[0], tx: result[1][0] })
@@ -269,6 +317,65 @@ export const sideEffects = {
         log(e, true)
       })
   },
+  ['TX_SEND_HTTPS_REQUEST']: async (action: txSendHttpsRequestAction, store: Store) => {
+    const { checkNodeApiHttpAddr } = store.getState().settings
+    const password = store.getState().wallet.password.value
+    try {
+      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
+      if (!finalized) {
+        finalized = []
+      }
+      const slate = await GrinBridge.txSendHttps(
+        'default',
+        password,
+        checkNodeApiHttpAddr,
+        action.amount,
+        action.selectionStrategyIsUseAll,
+        action.message,
+        action.url
+      ).then(JSON.parse)
+      finalized.push(slate.id)
+      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
+      store.dispatch({ type: 'TX_SEND_HTTPS_SUCCESS' })
+      store.dispatch({ type: 'TX_POST_SHOW', txSlateId: slate.id })
+      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+      store.dispatch({ type: 'BALANCE_REQUEST' })
+    } catch (e) {
+      store.dispatch({ type: 'TX_SEND_HTTPS_FAILURE', message: e.message })
+      log(e, true)
+    }
+  },
+  ['TX_POST_REQUEST']: async (action: txPostRequestAction, store: Store) => {
+    const { checkNodeApiHttpAddr } = store.getState().settings
+    const password = store.getState().wallet.password.value
+    try {
+      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
+      if (!finalized) {
+        finalized = []
+      }
+      let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
+      if (!posted) {
+        posted = []
+      }
+      await GrinBridge.txPost('default', password, checkNodeApiHttpAddr, action.txSlateId)
+      posted.push(action.txSlateId)
+      let pos = finalized.indexOf(action.txSlateId)
+      if (pos !== -1) {
+        finalized.splice(pos, 1)
+      }
+      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
+      await AsyncStorage.setItem('@postedTxs', JSON.stringify(posted))
+      store.dispatch({ type: 'TX_POST_SUCCESS' })
+      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+      store.dispatch({ type: 'BALANCE_REQUEST' })
+      setTimeout(() => {
+        store.dispatch({ type: 'TX_POST_CLOSE' })
+      }, 5000)
+    } catch (e) {
+      store.dispatch({ type: 'TX_POST_FAILURE', message: e.message })
+      log(e, true)
+    }
+  },
   ['TX_RECEIVE_REQUEST']: (action: txReceiveRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
     const password = store.getState().wallet.password.value
@@ -293,37 +400,30 @@ export const sideEffects = {
         log(e, true)
       })
   },
-  ['TX_FINALIZE_REQUEST']: (action: txFinalizeRequestAction, store: Store) => {
+  ['TX_FINALIZE_REQUEST']: async (action: txFinalizeRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    return AsyncStorage.getItem('@finalizedTxs')
-      .then(data => JSON.parse(data))
-      .then(value => {
-        const finalized = value ? value : []
-        const password = store.getState().wallet.password.value
-        return GrinBridge.txFinalize(
-          'default',
-          password,
-          checkNodeApiHttpAddr,
-          action.responseSlatePath
-        )
-          .then(() => {
-            store.dispatch({ type: 'TX_FINALIZE_SUCCESS' })
-            store.dispatch({
-              type: 'TOAST_SHOW',
-              text: 'Transaction completed!',
-              styles: ToastStyles.success,
-            })
-            finalized.push(action.slateId)
-            AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized)).then(() => {
-              store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-              store.dispatch({ type: 'BALANCE_REQUEST' })
-            })
-          })
-          .catch(error => {
-            store.dispatch({ type: 'TX_FINALIZE_FAILURE', message: error.message })
-            log(error, true)
-          })
-      })
+    const password = store.getState().wallet.password.value
+    try {
+      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
+      if (!finalized) {
+        finalized = []
+      }
+      await GrinBridge.txFinalize(
+        'default',
+        password,
+        checkNodeApiHttpAddr,
+        action.responseSlatePath
+      )
+      store.dispatch({ type: 'TX_FINALIZE_SUCCESS' })
+      finalized.push(action.slateId)
+      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
+      store.dispatch({ type: 'TX_POST_SHOW', txSlateId: action.slateId })
+      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+      store.dispatch({ type: 'BALANCE_REQUEST' })
+    } catch (e) {
+      store.dispatch({ type: 'TX_FINALIZE_FAILURE', message: e.message })
+      log(e, true)
+    }
   },
   ['SLATE_LOAD_REQUEST']: (action: slateLoadRequestAction, store: Store) => {
     return RNFS.readFile(action.slatePath, 'utf8')
@@ -347,16 +447,20 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['SLATE_REMOVE_REQUEST']: (action: slateRemoveRequestAction, store: Store) => {
+  ['SLATE_REMOVE_REQUEST']: async (action: slateRemoveRequestAction, store: Store) => {
     const path = getSlatePath(action.id, action.isResponse)
-    return RNFS.unlink(path)
-      .then(success => {
-        store.dispatch({ type: 'SLATE_REMOVE_SUCCESS', slate })
-      })
-      .catch(error => {
-        store.dispatch({ type: 'SLATE_REMOVE_FAILURE', code: 1, message: error.message })
-        log(error, true)
-      })
+    if (await RNFS.exists(path)) {
+      return RNFS.unlink(path)
+        .then(success => {
+          store.dispatch({ type: 'SLATE_REMOVE_SUCCESS' })
+        })
+        .catch(error => {
+          store.dispatch({ type: 'SLATE_REMOVE_FAILURE', code: 1, message: error.message })
+          log(error, true)
+        })
+    } else {
+      store.dispatch({ type: 'SLATE_REMOVE_SUCCESS' })
+    }
   },
   ['SLATE_SHARE_REQUEST']: (action: slateShareRequestAction, store: Store) => {
     const path = getSlatePath(action.id, action.isResponse)
@@ -417,7 +521,7 @@ const list = function(state: ListState = initialState.list, action): ListState {
       })
       return {
         ...state,
-        data: txs.map(mapRustTx).filter(tx => tx.type.indexOf('Cancelled') === -1),
+        data: txs.map(mapRustTx),
         showLoader: false,
         refreshFromNode: false,
         isOffline: state.refreshFromNode && !action.validated,
@@ -465,6 +569,80 @@ const txCreate = function(state: TxCreateState = initialState.txCreate, action):
           message: action.message,
         },
         created: false,
+        inProgress: false,
+      }
+    default:
+      return state
+  }
+}
+
+const txSend = function(state: TxSendState = initialState.txSend, action): TxSendState {
+  switch (action.type) {
+    case 'TX_SEND_HTTPS_REQUEST':
+      return {
+        ...state,
+        inProgress: true,
+        sent: false,
+        error: null,
+      }
+    case 'TX_SEND_HTTPS_SUCCESS':
+      return {
+        ...state,
+        sent: true,
+        inProgress: false,
+      }
+    case 'TX_SEND_HTTPS_FAILURE':
+      return {
+        ...state,
+        error: {
+          code: action.code,
+          message: action.message,
+        },
+        sent: false,
+        inProgress: false,
+      }
+    default:
+      return state
+  }
+}
+
+const txPost = function(state: TxPostState = initialState.txPost, action): TxPostState {
+  switch (action.type) {
+    case 'TX_POST_SHOW':
+      return {
+        ...state,
+        txSlateId: action.txSlateId,
+        showModal: true,
+        posted: false,
+      }
+    case 'TX_POST_CLOSE':
+      return {
+        ...state,
+        txSlateId: null,
+        showModal: false,
+        posted: false,
+      }
+    case 'TX_POST_REQUEST':
+      return {
+        ...state,
+        inProgress: true,
+        posted: false,
+        error: null,
+      }
+    case 'TX_POST_SUCCESS':
+      return {
+        ...state,
+        inProgress: false,
+        posted: true,
+      }
+    case 'TX_POST_FAILURE':
+      return {
+        ...state,
+        error: {
+          code: action.code,
+          message: action.message,
+        },
+        posted: false,
         inProgress: false,
       }
     default:
@@ -621,7 +799,6 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
       return {
         ...state,
         url: action.url,
-        her: 'v rot',
       }
     case 'TX_FORM_SET_OUTPUT_STRATEGY':
       return {
@@ -685,6 +862,8 @@ const slate = function(state: SlateState = initialState.slate, action): SlateSta
 export const reducer = combineReducers({
   list,
   txCreate,
+  txSend,
+  txPost,
   txGet,
   txCancel,
   txReceive,

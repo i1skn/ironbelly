@@ -75,7 +75,7 @@ type Props = {
 }
 const TxListItem = (props: Props) => {
   const { type, confirmed, creationTime, amount, fee } = props.tx
-  const isSent = type.indexOf('Sent') !== -1 || type === 'TxFinalized'
+  const isSent = type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
   return (
     <Wrapper>
       <View style={{ flexGrow: 1 }}>
@@ -87,8 +87,10 @@ const TxListItem = (props: Props) => {
           <Time>{creationTime.fromNow()}</Time>
         ) : (
           <UnconfirmedGuide>
-            {type === 'TxFinalized'
-              ? 'Waiting for confirmation'
+            {type === 'TxPosted'
+              ? 'Awaiting confirmation'
+              : type === 'TxFinalized'
+              ? 'Click to confirm'
               : isSent
               ? 'Share with a recipient'
               : 'Share with the sender'}
@@ -99,7 +101,7 @@ const TxListItem = (props: Props) => {
         <AmountFiat>{hrFiat(convertToFiat(amount, currency), currency)}</AmountFiat>
       </View>*/}
 
-      {(!confirmed && type !== 'TxFinalized' && <ShareIcon source={ShareImg} />) || (
+      {(!confirmed && type !== 'TxPosted' && <ShareIcon source={ShareImg} />) || (
         <DetailsChevron source={ChevronRightImg} />
       )}
     </Wrapper>

@@ -21,9 +21,13 @@ const char* c_balance(const char* path, const char* account, const char* passwor
 
 const char* c_txs_get(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );
 
-const char* c_tx_get(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint32_t tx_id, const uint8_t* );
+const char* c_tx_get(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const char* tx_slate_id, const uint8_t* );
+
+const char* c_tx_post(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const char* tx_slate_id, const uint8_t* );
 
 const char* c_tx_create(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const uint64_t amount, const bool selection_strategy_is_use_all, const char* message, const uint8_t*);
+
+const char* c_tx_send_https(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const uint64_t amount, const bool selection_strategy_is_use_all, const char* message, const char* url, const uint8_t*);
 
 const char* c_tx_strategies(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const uint64_t amount, const uint8_t*);
 

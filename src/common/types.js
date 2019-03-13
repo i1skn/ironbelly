@@ -39,9 +39,9 @@ export type txListSuccessAction = {
   data: Array<RustTx>,
   validated: boolean,
 }
-export type txListFailureAction = { type: 'TX_LIST_FAILURE', code: number, message: string }
+export type txListFailureAction = { type: 'TX_LIST_FAILURE', code?: number, message: string }
 
-export type txGetRequestAction = { type: 'TX_GET_REQUEST', id: string }
+export type txGetRequestAction = { type: 'TX_GET_REQUEST', txSlateId: string }
 export type txGetSuccessAction = { type: 'TX_GET_SUCCESS', tx: RustTx, validated: boolean }
 export type txGetFalureAction = { type: 'TX_GET_FAILURE', code?: number, message: string }
 
@@ -61,8 +61,27 @@ export type txCreateRequestAction = {
   message: string,
 }
 export type txCreateSuccessAction = { type: 'TX_CREATE_SUCCESS' }
-export type txCreateFalureAction = { type: 'TX_CREATE_FAILURE', code: number, message: string }
+export type txCreateFalureAction = { type: 'TX_CREATE_FAILURE', code?: number, message: string }
 
+export type txSendHttpsRequestAction = {
+  type: 'TX_SEND_HTTPS_REQUEST',
+  amount: number,
+  selectionStrategyIsUseAll: boolean,
+  message: string,
+  url: string,
+}
+export type txSendHttpsSuccessAction = { type: 'TX_SEND_HTTPS_SUCCESS' }
+export type txSendHttpsFalureAction = {
+  type: 'TX_SEND_HTTPS_FAILURE',
+  code?: number,
+  message: string,
+}
+
+export type txPostShowAction = { type: 'TX_POST_SHOW', txSlateId: string }
+export type txPostCloseAction = { type: 'TX_POST_CLOSE' }
+export type txPostRequestAction = { type: 'TX_POST_REQUEST', txSlateId: string }
+export type txPostSuccessAction = { type: 'TX_POST_SUCCESS' }
+export type txPostFalureAction = { type: 'TX_POST_FAILURE', code?: number, message: string }
 export type setSettings = { type: 'SET_SETTINGS', newSettings: SettingsState }
 export type setPasswordAction = { type: 'SET_PASSWORD', password: string }
 export type checkPasswordAction = { type: 'CHECK_PASSWORD' }
@@ -150,6 +169,7 @@ export type walletPhraseFalureAction = {
   message: string,
 }
 export type toastShowAction = { type: 'TOAST_SHOW', text: string, styles: any }
+export type toastClearAction = { type: 'TOAST_CLEAR' }
 
 export type txFormSetAmountAction = {
   type: 'TX_FORM_SET_AMOUNT',
@@ -200,6 +220,14 @@ export type Action =
   | txCreateRequestAction
   | txCreateSuccessAction
   | txCreateFalureAction
+  | txSendHttpsRequestAction
+  | txSendHttpsSuccessAction
+  | txSendHttpsFalureAction
+  | txPostShowAction
+  | txPostCloseAction
+  | txPostRequestAction
+  | txPostSuccessAction
+  | txPostFalureAction
   | setSettings
   | setPasswordAction
   | checkPasswordAction
@@ -225,6 +253,7 @@ export type Action =
   | slateShareSuccessAction
   | slateShareFalureAction
   | toastShowAction
+  | toastClearAction
   | txFormSetAmountAction
   | txFormSetUrlAction
   | txFormSetMessageAction
@@ -296,7 +325,7 @@ type SlateParticipantData = {
 export type Slate = {
   id: string,
   amount: number,
-  fee: number,
+  falsefee: number,
   participant_data: Array<SlateParticipantData>,
 }
 

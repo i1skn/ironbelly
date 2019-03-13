@@ -49,10 +49,18 @@ class GrinBridge: RCTEventEmitter {
         }
     }
     
-    @objc func txGet(_ account: String, password: String, checkNodeApiHttpAddr:String, refreshFromNode: Bool, txId: UInt32, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func txGet(_ account: String, password: String, checkNodeApiHttpAddr:String, refreshFromNode: Bool, txSlateId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let cResult = c_tx_get(walletUrl.path, account, password, checkNodeApiHttpAddr, refreshFromNode, txId, &error)
+            let cResult = c_tx_get(walletUrl.path, account, password, checkNodeApiHttpAddr, refreshFromNode, txSlateId, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        }
+    }
+    
+    @objc func txPost(_ account: String, password: String, checkNodeApiHttpAddr:String, txSlateId: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            var error: UInt8 = 0
+            let cResult = c_tx_post(walletUrl.path, account, password, checkNodeApiHttpAddr, txSlateId, &error)
             returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
@@ -61,6 +69,14 @@ class GrinBridge: RCTEventEmitter {
         if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
             let cResult = c_tx_create(walletUrl.path, account, password, checkNodeApiHttpAddr, amount, selectionStrategyIsUseAll, message, &error)
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        }
+    }
+    
+    @objc func txSendHttps(_ account: String, password: String, checkNodeApiHttpAddr:String, amount: UInt64, selectionStrategyIsUseAll: Bool, message: String, url: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
+            var error: UInt8 = 0
+            let cResult = c_tx_send_https(walletUrl.path, account, password, checkNodeApiHttpAddr, amount, selectionStrategyIsUseAll, message, url, &error)
             returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }

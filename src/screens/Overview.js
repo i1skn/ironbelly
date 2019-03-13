@@ -49,6 +49,7 @@ type Props = {
   txCancel: (id: number, slateId: string, isResponse: boolean) => void,
   txsGet: (showLoader: boolean, refreshFromNode: boolean) => void,
   resetTxForm: () => void,
+  txConfirm: (txSlateId: string) => void,
   slateShare: (id: string, isResponse: boolean) => void,
   navigation: Navigation,
   txListRefreshInProgress: boolean,
@@ -124,6 +125,7 @@ class Overview extends Component<Props, State> {
     if (!this.props.walletInit.inProgress) {
       this.props.getBalance()
       this.props.txsGet(false, true)
+      // this.props.testPost()
     }
   }
   componentDidUpdate(prevProps) {
@@ -153,6 +155,7 @@ class Overview extends Component<Props, State> {
       walletInit,
       isOffline,
       firstLoading,
+      txConfirm,
     } = this.props
     const { currency } = settings
     return (
@@ -188,7 +191,7 @@ class Overview extends Component<Props, State> {
             <SwipeRow
               disableRightSwipe
               rightOpenValue={-100}
-              disableLeftSwipe={data.item.confirmed || data.item.type === 'TxFinalized'}
+              disableLeftSwipe={data.item.confirmed || data.item.type === 'TxPosted'}
             >
               <View
                 style={{
@@ -219,8 +222,10 @@ class Overview extends Component<Props, State> {
               </View>
               <TouchableHighlight
                 onPress={_ => {
-                  if (data.item.confirmed || data.item.type === 'TxFinalized') {
+                  if (data.item.confirmed || data.item.type === 'TxPosted') {
                     navigation.navigate('TxDetails', { txId: data.item.id })
+                  } else if (data.item.type === 'TxFinalized') {
+                    txConfirm(data.item.slateId)
                   } else {
                     slateShare(data.item.slateId, !data.item.storedTx)
                   }
@@ -297,6 +302,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   resetTxForm: () => {
     dispatch({ type: 'TX_FORM_SET_AMOUNT', amount: 0, textAmount: '' })
     dispatch({ type: 'TX_FORM_SET_MESSAGE', message: '' })
+  },
+  txConfirm: txSlateId => {
+    dispatch({ type: 'TX_POST_SHOW', txSlateId })
   },
 })
 
