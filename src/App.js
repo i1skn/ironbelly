@@ -34,7 +34,7 @@ import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
-import ReceiveFinalizeScreen from 'screens/ReceiveFinalize'
+import ReceiveScreen from 'screens/Receive'
 import SettingsScreen from 'screens/Settings'
 import TxDetailsScreen from 'screens/TxDetails'
 import LandingScreen from 'screens/Landing'
@@ -54,7 +54,10 @@ checkApiSecret()
 const MainStack = createStackNavigator(
   {
     Settings: SettingsScreen,
-    Overview: OverviewScreen,
+    Overview: {
+      screen: OverviewScreen,
+      params: {},
+    },
     TxDetails: TxDetailsScreen,
   },
   {
@@ -67,12 +70,7 @@ const AppStack = createStackNavigator(
     Main: MainStack,
     Send: SendScreen,
     Topup: TopupScreen,
-    Receive: {
-      screen: ReceiveFinalizeScreen,
-    },
-    Finalize: {
-      screen: ReceiveFinalizeScreen,
-    },
+    Receive: ReceiveScreen,
     ShowMnemonic: MnemonicScreen,
   },
   {
@@ -161,10 +159,16 @@ class RealApp extends React.Component<Props, State> {
     const slatePath = decodeURIComponent(event.url).substr(7)
     isWalletInitialized().then(exists => {
       if (exists) {
-        const nextScreen = {
-          name: isResponseSlate(slatePath) ? 'Finalize' : 'Receive',
-          params: { slatePath },
-        }
+        const nextScreen = isResponseSlate(slatePath)
+          ? {
+              name: 'Overview',
+              params: { responseSlatePath: slatePath },
+            }
+          : {
+              name: 'Receive',
+              params: { slatePath },
+            }
+        console.log(nextScreen)
         if (!store.getState().wallet.password.value) {
           //Password is not set
           this.navigation.navigate('Password', { nextScreen })

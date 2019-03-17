@@ -50,6 +50,7 @@ type Props = {
   txsGet: (showLoader: boolean, refreshFromNode: boolean) => void,
   resetTxForm: () => void,
   txConfirm: (txSlateId: string) => void,
+  txFinalize: (txSlateId: string) => void,
   slateShare: (id: string, isResponse: boolean) => void,
   navigation: Navigation,
   txListRefreshInProgress: boolean,
@@ -125,7 +126,10 @@ class Overview extends Component<Props, State> {
     if (!this.props.walletInit.inProgress) {
       this.props.getBalance()
       this.props.txsGet(false, true)
-      // this.props.testPost()
+    }
+    const { responseSlatePath } = this.props.navigation.state.params
+    if (responseSlatePath) {
+      this.props.txFinalize(responseSlatePath)
     }
   }
   componentDidUpdate(prevProps) {
@@ -137,6 +141,13 @@ class Overview extends Component<Props, State> {
       !this.props.walletInit.inProgress
     ) {
       this.props.txsGet(false, true)
+    }
+
+    if (
+      this.props.navigation.state.params.responseSlatePath !==
+      prevProps.navigation.state.params.responseSlatePath
+    ) {
+      this.props.txFinalize(this.props.navigation.state.params.responseSlatePath)
     }
   }
 
@@ -302,6 +313,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   resetTxForm: () => {
     dispatch({ type: 'TX_FORM_SET_AMOUNT', amount: 0, textAmount: '' })
     dispatch({ type: 'TX_FORM_SET_MESSAGE', message: '' })
+  },
+  txFinalize: responseSlatePath => {
+    dispatch({ type: 'TX_FINALIZE_REQUEST', responseSlatePath })
   },
   txConfirm: txSlateId => {
     dispatch({ type: 'TX_POST_SHOW', txSlateId })

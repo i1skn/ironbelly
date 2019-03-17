@@ -370,7 +370,7 @@ export const sideEffects = {
       store.dispatch({ type: 'BALANCE_REQUEST' })
       setTimeout(() => {
         store.dispatch({ type: 'TX_POST_CLOSE' })
-      }, 5000)
+      }, 3000)
     } catch (e) {
       store.dispatch({ type: 'TX_POST_FAILURE', message: e.message })
       log(e, true)
@@ -408,16 +408,16 @@ export const sideEffects = {
       if (!finalized) {
         finalized = []
       }
-      await GrinBridge.txFinalize(
+      const slate = await GrinBridge.txFinalize(
         'default',
         password,
         checkNodeApiHttpAddr,
         action.responseSlatePath
-      )
+      ).then(JSON.parse)
       store.dispatch({ type: 'TX_FINALIZE_SUCCESS' })
-      finalized.push(action.slateId)
+      finalized.push(slate.id)
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
-      store.dispatch({ type: 'TX_POST_SHOW', txSlateId: action.slateId })
+      store.dispatch({ type: 'TX_POST_SHOW', txSlateId: slate.id })
       store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
       store.dispatch({ type: 'BALANCE_REQUEST' })
     } catch (e) {
@@ -823,6 +823,8 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         ...state,
         message: action.message,
       }
+    case 'TX_FORM_RESET':
+      return initialState.txForm
     default:
       return state
   }

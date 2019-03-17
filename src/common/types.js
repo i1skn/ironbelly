@@ -113,11 +113,10 @@ export type txReceiveRequestAction = { type: 'TX_RECEIVE_REQUEST', slatePath: st
 export type txReceiveSuccessAction = { type: 'TX_RECEIVE_SUCCESS' }
 export type txReceiveFalureAction = { type: 'TX_RECEIVE_FAILURE', code?: number, message: string }
 
-export type txFinalizeRequestAction = {
+export type txFinalizeRequestAction = {|
   type: 'TX_FINALIZE_REQUEST',
   responseSlatePath: string,
-  slateId: string,
-}
+|}
 export type txFinalizeSuccessAction = { type: 'TX_FINALIZE_SUCCESS' }
 export type txFinalizeFalureAction = { type: 'TX_FINALIZE_FAILURE', code?: number, message: string }
 
@@ -202,6 +201,7 @@ export type txFormOutputStrategiesFalureAction = {
 }
 
 export type txFormSetMessageAction = { type: 'TX_FORM_SET_MESSAGE', message: string }
+export type txFormResetAction = { type: 'TX_FORM_RESET' }
 
 export type Action =
   | balanceRequestAction
@@ -257,6 +257,7 @@ export type Action =
   | txFormSetAmountAction
   | txFormSetUrlAction
   | txFormSetMessageAction
+  | txFormResetAction
   | txFormSetOutputStrategyAction
   | txFormOutputStrategiesRequestAction
   | txFormOutputStrategiesSuccessAction
@@ -325,7 +326,7 @@ type SlateParticipantData = {
 export type Slate = {
   id: string,
   amount: number,
-  falsefee: number,
+  fee: number,
   participant_data: Array<SlateParticipantData>,
 }
 

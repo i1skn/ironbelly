@@ -74,7 +74,7 @@ class Address extends Component<Props, State> {
             autoFocus={true}
             onChange={url => setUrl(url)}
             value={txForm.url}
-            placeholder="https://"
+            placeholder="http(s)://"
             textContentType={'URL'}
             keyboardType={'url'}
             autoCorrect={false}

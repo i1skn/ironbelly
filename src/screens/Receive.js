@@ -22,7 +22,7 @@ import Header from 'components/Header'
 
 import { Text, Button } from 'components/CustomFont'
 
-import { colors, TextareaTitle, Textarea, isResponseSlate, hrGrin, Spacer } from 'common'
+import { colors, TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
 import { type State as GlobalState, type Navigation, type Slate } from 'common/types'
 
 //Images
@@ -31,10 +31,8 @@ import CloseImg from 'assets/images/x.png'
 type Props = {
   navigation: Navigation,
   txReceive: (slatePath: string) => void,
-  txFinalize: (responseSlatePath: string, slateId: string) => void,
   slateRequest: (slatePath: string) => void,
   isReceived: boolean,
-  isFinalized: boolean,
   slate: ?Slate,
 }
 
@@ -67,19 +65,14 @@ class Receive extends Component<Props, State> {
     slateRequest(slatePath)
   }
   componentDidUpdate(prevProps) {
-    const { navigation, isReceived, isFinalized } = this.props
-    const isReceive = !isResponseSlate(navigation.state.params.slatePath)
-    if (isReceive && isReceived) {
-      navigation.goBack()
-    }
-    if (!isReceive && isFinalized) {
+    const { navigation, isReceived } = this.props
+    if (isReceived) {
       navigation.goBack()
     }
   }
   render() {
-    const { navigation, txReceive, txFinalize, slate } = this.props
+    const { navigation, txReceive, slate } = this.props
     const { slatePath } = navigation.state.params
-    const isReceive = !isResponseSlate(slatePath)
     return (
       <React.Fragment>
         <Header
@@ -90,9 +83,7 @@ class Receive extends Component<Props, State> {
         <Wrapper behavior="padding">
           {(slate && (
             <React.Fragment>
-              <Title>
-                {(isReceive && 'Receive') || 'Send'} {hrGrin(slate.amount)} ?
-              </Title>
+              <Title>{`Incoming ${hrGrin(slate.amount)}`}</Title>
               <View style={{ flex: 1 }}>
                 <TextareaTitle>Sender message</TextareaTitle>
                 <Textarea>
@@ -103,13 +94,9 @@ class Receive extends Component<Props, State> {
               </View>
               <Spacer />
               <Button
-                title={(isReceive && 'Accept') || 'Confirm'}
+                title={'Accept'}
                 onPress={() => {
-                  if (isReceive) {
-                    txReceive(slatePath)
-                  } else {
-                    txFinalize(slatePath, slate.id)
-                  }
+                  txReceive(slatePath)
                 }}
               />
               <Spacer />
@@ -129,16 +116,12 @@ const mapStateToProps = (state: GlobalState) => {
   return {
     slate: state.tx.slate.data,
     isReceived: state.tx.txReceive.received,
-    isFinalized: state.tx.txFinalize.finalized,
   }
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   txReceive: slatePath => {
     dispatch({ type: 'TX_RECEIVE_REQUEST', slatePath })
-  },
-  txFinalize: (responseSlatePath, slateId) => {
-    dispatch({ type: 'TX_FINALIZE_REQUEST', responseSlatePath, slateId })
   },
   slateRequest: slatePath => {
     dispatch({ type: 'SLATE_LOAD_REQUEST', slatePath, isResponse: false })

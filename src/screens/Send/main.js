@@ -42,6 +42,7 @@ type Props = {
     url: string,
     selectionStrategyIsUseAll: boolean
   ) => void,
+  resetTxForm: () => void,
   setOutputStrategies: (outputStrategies: Array<RustOutputStrategy>) => void,
   txForm: TxForm,
   settings: SettingsState,
@@ -64,6 +65,10 @@ class Send extends Component<Props, State> {
     ) {
       this.props.navigation.goBack()
     }
+  }
+
+  componentDidMount() {
+    this.props.resetTxForm()
   }
 
   render() {
@@ -112,6 +117,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   ) => {
     dispatch({ type: 'TX_SEND_HTTPS_REQUEST', amount, message, url, selectionStrategyIsUseAll })
   },
+  resetTxForm: () => dispatch({ type: 'TX_FORM_RESET' }),
 })
 
 export default connect(
