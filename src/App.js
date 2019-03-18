@@ -26,14 +26,17 @@ import {
   checkApiSecret,
   isWalletInitialized,
 } from 'common'
+import urlParser from 'url'
 import Modal from 'react-native-modal'
+import { decode as atob } from 'base-64'
 
-import { type State as GlobalState } from 'common/types'
+import { type State as GlobalState, type Url } from 'common/types'
 import { store } from 'common/redux'
 import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
+import SendLinkScreen from 'screens/SendLink/main'
 import ReceiveScreen from 'screens/Receive'
 import SettingsScreen from 'screens/Settings'
 import TxDetailsScreen from 'screens/TxDetails'
@@ -69,6 +72,7 @@ const AppStack = createStackNavigator(
   {
     Main: MainStack,
     Send: SendScreen,
+    SendLink: SendLinkScreen,
     Topup: TopupScreen,
     Receive: ReceiveScreen,
     ShowMnemonic: MnemonicScreen,
@@ -156,24 +160,41 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleOpenURL = event => {
-    const slatePath = decodeURIComponent(event.url).substr(7)
     isWalletInitialized().then(exists => {
       if (exists) {
-        const nextScreen = isResponseSlate(slatePath)
-          ? {
-              name: 'Overview',
-              params: { responseSlatePath: slatePath },
+        // $FlowFixMe
+        const link: Url = urlParser.parse(event.url, true)
+        let nextScreen
+        if (link.protocol === 'grin:') {
+          if (link.host === 'send') {
+            const amount = parseFloat(link.query.amount)
+            const destination = link.query.destination
+            const message = atob(link.query.message)
+            if (!isNaN(amount) && destination) {
+              nextScreen = {
+                name: 'SendLink',
+                params: { amount, url: destination, message },
+              }
             }
-          : {
-              name: 'Receive',
-              params: { slatePath },
-            }
-        console.log(nextScreen)
-        if (!store.getState().wallet.password.value) {
-          //Password is not set
-          this.navigation.navigate('Password', { nextScreen })
-        } else {
-          this.navigation.navigate(nextScreen.name, nextScreen.params)
+          }
+        } else if (link.protocol === 'file:') {
+          nextScreen = isResponseSlate(link.path)
+            ? {
+                name: 'Overview',
+                params: { responseSlatePath: link.path },
+              }
+            : {
+                name: 'Receive',
+                params: { slatePath: link.path },
+              }
+        }
+        if (nextScreen) {
+          if (!store.getState().wallet.password.value) {
+            //Password is not set
+            this.navigation.navigate('Password', { nextScreen })
+          } else {
+            this.navigation.navigate(nextScreen.name, nextScreen.params)
+          }
         }
       }
     })

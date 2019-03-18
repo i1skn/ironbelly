@@ -380,3 +380,23 @@ export type Error = {
   code: number,
   message: string,
 }
+
+export type Url = {
+  protocol: string,
+  slashes: boolean,
+  auth: string,
+  username: string,
+  password: string,
+  host: string,
+  hostname: string,
+  port: string,
+  pathname: string,
+  path: string,
+  query: Object,
+  hash: string,
+  href: string,
+  origin: string,
+  set: (part: string, value: mixed, fn?: boolean | ((value: mixed) => Object)) => Url,
+  toString: () => string,
+  lolcation: (loc?: Object | string) => Object,
+}

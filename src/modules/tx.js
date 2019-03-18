@@ -110,6 +110,8 @@ export type TxForm = {|
   amount: number,
   outputStrategy: ?OutputStrategy,
   outputStrategies: Array<OutputStrategy>,
+  outputStrategies_error: string,
+  outputStrategies_inProgress: boolean,
   textAmount: string,
   message: string,
   url: string,
@@ -190,6 +192,8 @@ const initialState: State = {
     amount: 0,
     outputStrategy: null,
     outputStrategies: [],
+    outputStrategies_error: '',
+    outputStrategies_inProgress: false,
     textAmount: '',
     message: '',
     url: '',
@@ -805,6 +809,19 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         ...state,
         outputStrategy: action.outputStrategy,
       }
+    case 'TX_FORM_OUTPUT_STRATEGIES_REQUEST':
+      return {
+        ...state,
+        outputStrategies_inProgress: true,
+        outputStrategies_error: '',
+      }
+    case 'TX_FORM_OUTPUT_STRATEGIES_FAILURE':
+      return {
+        ...state,
+        outputStrategies_inProgress: false,
+        outputStrategies_error: action.message,
+      }
+
     case 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS':
       const strategies =
         action.outputStrategies.length == 2 &&
@@ -817,6 +834,7 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         ...state,
         outputStrategies,
         outputStrategy: outputStrategies.length ? outputStrategies[0] : null,
+        outputStrategies_inProgress: false,
       }
     case 'TX_FORM_SET_MESSAGE':
       return {

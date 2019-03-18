@@ -15,17 +15,12 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { KeyboardAvoidingView, View, Animated, Dimensions } from 'react-native'
-import styled from 'styled-components/native'
+import { Animated, Dimensions } from 'react-native'
 import Header from 'components/Header'
 
 import { Spacer, FlexGrow, Wrapper } from 'common'
 import { Button } from 'components/CustomFont'
-import { type Navigation, type Step } from 'common/types'
-
-//Images
-import CloseImg from 'assets/images/x.png'
-import ChevronLeftImg from 'assets/images/ChevronLeft.png'
+import { type Navigation } from 'common/types'
 
 export type MoveFunc = (delta: number) => void
 
