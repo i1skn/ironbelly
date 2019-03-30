@@ -114,6 +114,12 @@ class GrinBridge: RCTEventEmitter {
         }
     }
     
+    @objc func seedNew(_ seedLength: UInt8, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_seed_new(seedLength, &error)
+        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+    }
+    
     @objc func walletInit(_ password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0

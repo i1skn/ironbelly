@@ -20,8 +20,6 @@ import { connect } from 'react-redux'
 import { type State as ReduxState, type Navigation } from 'common/types'
 import ScreenWithManySteps from 'components/ScreenWithManySteps'
 import Phrase from './phrase'
-import Password from 'screens/EnterPasswordStep'
-import Confirm from 'screens/ConfirmPasswordStep'
 import { type WalletInitState } from 'modules/wallet'
 
 type Props = {
@@ -43,7 +41,7 @@ class Recovery extends Component<Props, State> {
     }
   }
 
-  steps = [Phrase, Password, Confirm]
+  steps = [Phrase]
 
   componentDidMount() {}
 

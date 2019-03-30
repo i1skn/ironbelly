@@ -129,6 +129,9 @@ export type slateShareSuccessAction = { type: 'SLATE_SHARE_SUCCESS' }
 export type slateShareFalureAction = { type: 'SLATE_SHARE_FAILURE', code?: number, message: string }
 
 export type walletClear = { type: 'WALLET_CLEAR' }
+export type seedNewRequestAction = { type: 'SEED_NEW_REQUEST' }
+export type seedNewSuccessAction = { type: 'SEED_NEW_SUCCESS', mnemonic: string }
+export type seedNewFalureAction = { type: 'SEED_NEW_FAILURE', code?: number, message: string }
 export type walletInitRequestAction = { type: 'WALLET_INIT_REQUEST', password: string }
 export type walletInitSuccessAction = { type: 'WALLET_INIT_SUCCESS', mnemonic: string }
 export type walletInitFalureAction = { type: 'WALLET_INIT_FAILURE', code?: number, message: string }
@@ -263,6 +266,9 @@ export type Action =
   | txFormOutputStrategiesSuccessAction
   | txFormOutputStrategiesFalureAction
   | walletClear
+  | seedNewRequestAction
+  | seedNewSuccessAction
+  | seedNewFalureAction
   | walletInitRequestAction
   | walletInitSuccessAction
   | walletInitFalureAction
@@ -297,6 +303,7 @@ export type Store = {
 
 export type Navigation = {
   navigate: (screen: string, params: any) => void,
+  setParams: any,
   dispatch: (action: any) => void,
   goBack: (key: ?string) => void,
   state: {

@@ -94,6 +94,15 @@ pub unsafe extern "C" fn c_check_password(
     )
 }
 
+fn seed_new(seed_length: usize) -> Result<String, grin_wallet::Error> {
+    WalletSeed::init_new(seed_length).to_mnemonic()
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c_char {
+    unwrap_to_c!(seed_new(seed_length as usize), error)
+}
+
 fn wallet_init(
     path: &str,
     password: &str,

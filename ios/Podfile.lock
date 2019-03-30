@@ -68,9 +68,11 @@ PODS:
     - React/Core
     - React/fishhook
     - React/RCTBlob
+  - RNDeviceInfo (1.0.0):
+    - React
   - RNFS (2.13.3):
     - React
-  - RNGestureHandler (1.0.12):
+  - RNGestureHandler (1.1.0):
     - React
   - yoga (0.59.3.React)
 
@@ -94,6 +96,7 @@ DEPENDENCIES:
   - React/RCTText (from `../node_modules/react-native`)
   - React/RCTVibration (from `../node_modules/react-native`)
   - React/RCTWebSocket (from `../node_modules/react-native`)
+  - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler/RNGestureHandler.podspec`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -115,6 +118,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native"
   react-native-async-storage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNDeviceInfo:
+    :path: "../node_modules/react-native-device-info"
   RNFS:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
@@ -130,10 +135,11 @@ SPEC CHECKSUMS:
   glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
   React: 1d605e098d69bdf08960787f3446f0a9dc2e2ccf
   react-native-async-storage: 8b91703e95887488a180f3cae839981f55687dd5
+  RNDeviceInfo: 8a21b2687c7c829362ca0ccc3a8b5380a42dd59f
   RNFS: bbb1a64eb245763daf34aea86f97c97c4e85f74c
-  RNGestureHandler: 19864cb399138347461e7c9984ccf684cbf4db1d
+  RNGestureHandler: b65d391f4f570178d657b99a16ec99d09b8656b0
   yoga: 128daf064cacaede0c3bb27424b6b4c71052e6cd
 
-PODFILE CHECKSUM: 1c25e9ce44fb85de75a7d80763d548fef2ceed25
+PODFILE CHECKSUM: 706052abb26581ad4468a242ed9084f8604c7ea0
 
 COCOAPODS: 1.5.3

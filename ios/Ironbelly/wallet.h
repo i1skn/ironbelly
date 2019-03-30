@@ -17,6 +17,8 @@
 //free c string created in rust
 void cstr_free (const char* s);
 
+const char* c_seed_new(const uint8_t seed_length, const uint8_t* );
+
 const char* c_balance(const char* path, const char* account, const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );
 
 const char* c_txs_get(const char* path,const char* account,const char* password, const char* check_node_api_http_addr, const bool refresh_from_node, const uint8_t* );

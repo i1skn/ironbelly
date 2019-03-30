@@ -83,7 +83,6 @@ export default class FormTextInput extends Component<Props, State> {
             autoFocus={autoFocus}
             onChangeText={onChange}
             value={value}
-            keyboardType="default"
             maxLength={maxLength}
             placeholder={placeholder}
             testID={testID}

@@ -33,6 +33,7 @@ import { decode as atob } from 'base-64'
 import { type State as GlobalState, type Url } from 'common/types'
 import { store } from 'common/redux'
 import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
+import { appFont } from 'components/CustomFont'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
@@ -42,12 +43,14 @@ import SettingsScreen from 'screens/Settings'
 import TxDetailsScreen from 'screens/TxDetails'
 import LandingScreen from 'screens/Landing'
 import InitialScreen from 'screens/Initial'
-import MnemonicScreen from 'screens/Mnemonic'
+import ShowPaperKeyScreen from 'screens/PaperKey/Show'
+import VerifyPaperKeyScreen from 'screens/PaperKey/Verify'
 import RecoveryScreen from 'screens/Recovery/main'
 import TopupScreen from 'screens/Topup'
 import PasswordScreen from 'screens/Password'
-import WalletNewScreen from 'screens/WalletNew/main'
 import RecoveryInProgressScreen from 'screens/RecoveryInProgress'
+import NewPasswordScreen from 'screens/NewPassword'
+import { colors } from 'common'
 
 // Filesystem
 checkSlatesDirectory()
@@ -75,45 +78,42 @@ const AppStack = createStackNavigator(
     SendLink: SendLinkScreen,
     Topup: TopupScreen,
     Receive: ReceiveScreen,
-    ShowMnemonic: MnemonicScreen,
+    // ShowPaperKey: ShowPaperKeyScreen,
   },
   {
     initialRouteName: 'Main',
     mode: 'modal',
     headerMode: 'none',
-  }
-)
-
-const WalletNewStack = createStackNavigator(
-  {
-    CreatePassword: WalletNewScreen,
-    Mnemonic: MnemonicScreen,
-  },
-  {
-    initialRouteName: 'CreatePassword',
-    headerMode: 'none',
-  }
-)
-
-const WalletRecoveryStack = createStackNavigator(
-  {
-    Recovery: RecoveryScreen,
-    RecoveryInProgress: RecoveryInProgressScreen,
-  },
-  {
-    initialRouteName: 'Recovery',
-    headerMode: 'none',
+    defaultNavigationOptions: {},
   }
 )
 
 const WalletCreateStack = createStackNavigator(
   {
     Landing: LandingScreen,
-    WalletNew: WalletNewStack,
-    WalletRecovery: WalletRecoveryStack,
+    NewPassword: NewPasswordScreen,
+    ShowPaperKey: ShowPaperKeyScreen,
+    VerifyPaperKey: VerifyPaperKeyScreen,
+    Recovery: RecoveryScreen,
+    RecoveryInProgress: RecoveryInProgressScreen,
   },
   {
-    headerMode: 'none',
+    initialRouteName: 'Landing',
+    defaultNavigationOptions: {
+      headerTintColor: colors.black,
+      headerTitleStyle: {
+        fontWeight: 'bold',
+        fontFamily: appFont,
+      },
+      headerStyle: {
+        borderBottomWidth: 0,
+        backgroundColor: colors.accent,
+      },
+      headerBackTitleStyle: {
+        fontFamily: appFont,
+        color: colors.black,
+      },
+    },
   }
 )
 
@@ -126,9 +126,9 @@ const RootStack = createSwitchNavigator(
   },
   {
     initialRouteName: 'Initial',
-    headerMode: 'none',
   }
 )
+
 type Props = {
   toastMessage: {
     text: string,

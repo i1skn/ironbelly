@@ -29,6 +29,7 @@ type Props = {
   navigation: Navigation,
   cancelAction: () => void,
   finalAction: () => void,
+  headerChange: any => void,
   title?: string,
 }
 
@@ -39,9 +40,13 @@ type State = {
   nextStep: number,
 }
 
-class ScreenWithManySteps extends Component<Props, State> {
+class NextScreenWithManySteps extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
+    const curr = props.steps[0]
+    props.headerChange({
+      title: curr.title,
+    })
     this.state = {
       offsetX: new Animated.Value(0),
       screenWidth: Dimensions.get('window').width,
@@ -64,6 +69,10 @@ class ScreenWithManySteps extends Component<Props, State> {
     } else {
       // Proceed to the next step
       this.setState({ nextStep })
+      const next = this.props.steps[nextStep]
+      this.props.headerChange({
+        title: next.title,
+      })
       // During transition we show both current and next step
       Animated.timing(this.state.offsetX, {
         toValue: -nextStep * screenWidth,
@@ -74,6 +83,12 @@ class ScreenWithManySteps extends Component<Props, State> {
       })
     }
   }
+  //         <Header
+  // leftIcon={curr.backButtonIcon}
+  // leftText={curr.backButtonText}
+  // leftAction={() => this.move(next.backButtonDelta || -1)}
+  // title={curr.title || title}
+  // />
 
   render() {
     const { offsetX, screenWidth, currentStep, nextStep } = this.state
@@ -82,12 +97,6 @@ class ScreenWithManySteps extends Component<Props, State> {
     const next = steps[nextStep]
     return (
       <React.Fragment>
-        <Header
-          leftIcon={curr.backButtonIcon}
-          leftText={curr.backButtonText}
-          leftAction={() => this.move(next.backButtonDelta || -1)}
-          title={curr.title || title}
-        />
         <Wrapper behavior="padding">
           {/* Steps */}
           <FlexGrow>
@@ -125,4 +134,4 @@ class ScreenWithManySteps extends Component<Props, State> {
   }
 }
 
-export default ScreenWithManySteps
+export default NextScreenWithManySteps

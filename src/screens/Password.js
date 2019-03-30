@@ -32,7 +32,6 @@ type Props = {
   checkPassword: () => void,
   isPasswordValid: boolean,
   error: { message: string },
-  getBalance: () => void,
   password: string,
   inProgress: boolean,
   clearWallet: () => void,
@@ -149,9 +148,6 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  getBalance: () => {
-    dispatch({ type: 'BALANCE_REQUEST' })
-  },
   setPassword: password => {
     dispatch({ type: 'SET_PASSWORD', password })
   },

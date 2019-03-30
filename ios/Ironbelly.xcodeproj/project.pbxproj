@@ -129,7 +129,6 @@
 		F64186E6218895DE00A99CA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F64186E8218895DE00A99CA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IronbellyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		F64186F3218895DE00A99CA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F64186FF2188968D00A99CA0 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		F669249426C949548172D721 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
@@ -225,7 +224,6 @@
 			isa = PBXGroup;
 			children = (
 				F64186DB218895DC00A99CA0 /* Ironbelly */,
-				F64186F0218895DE00A99CA0 /* IronbellyTests */,
 				F64186DA218895DC00A99CA0 /* Products */,
 				F64186FC2188967A00A99CA0 /* Frameworks */,
 				55BF1A98F962EF5D327DC437 /* Pods */,
@@ -257,14 +255,6 @@
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
 			);
 			path = Ironbelly;
-			sourceTree = "<group>";
-		};
-		F64186F0218895DE00A99CA0 /* IronbellyTests */ = {
-			isa = PBXGroup;
-			children = (
-				F64186F3218895DE00A99CA0 /* Info.plist */,
-			);
-			path = IronbellyTests;
 			sourceTree = "<group>";
 		};
 		F64186FC2188967A00A99CA0 /* Frameworks */ = {
@@ -452,6 +442,7 @@
 				"${BUILT_PRODUCTS_DIR}/BugsnagReactNative/BugsnagReactNative.framework",
 				"${BUILT_PRODUCTS_DIR}/DoubleConversion/DoubleConversion.framework",
 				"${BUILT_PRODUCTS_DIR}/Folly/folly.framework",
+				"${BUILT_PRODUCTS_DIR}/RNDeviceInfo/RNDeviceInfo.framework",
 				"${BUILT_PRODUCTS_DIR}/RNFS/RNFS.framework",
 				"${BUILT_PRODUCTS_DIR}/RNGestureHandler/RNGestureHandler.framework",
 				"${BUILT_PRODUCTS_DIR}/React/React.framework",
@@ -466,6 +457,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BugsnagReactNative.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DoubleConversion.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/folly.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNDeviceInfo.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNFS.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNGestureHandler.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",

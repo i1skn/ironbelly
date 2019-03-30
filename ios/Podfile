@@ -43,6 +43,7 @@ target 'Ironbelly' do
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
   pod 'RNGestureHandler', :podspec => '../node_modules/react-native-gesture-handler/RNGestureHandler.podspec'
   pod 'BugsnagReactNative', :path => '../node_modules/bugsnag-react-native'
+  pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
   # Add new pods below this line
   pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'

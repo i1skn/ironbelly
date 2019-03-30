@@ -16,14 +16,13 @@
 
 import React, { Component } from 'react'
 import { View } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
-import { Title, SubTitle, Spacer } from 'common'
+import { FlexGrow, colors } from 'common'
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
-
-const pkg = require('../../package.json')
 
 type Props = {
   walletInit: () => void,
@@ -37,20 +36,28 @@ type State = {
   valid: boolean,
 }
 
-const FlexGrow = styled.View`
-  flex-grow: 1;
-`
-
 const Wrapper = styled(View)`
-  padding: 20px;
+  padding: 16px;
   flex-grow: 1;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
 `
 
 const ActionButton = styled(Button)`
   margin-bottom: 20;
   width: 100%;
+`
+
+export const AppTitle = styled(Text)`
+  font-size: 32;
+  font-weight: 600;
+`
+
+export const AppSlogan = styled(Text)`
+  font-size: 20;
+  font-weight: 500;
+  margin-bottom: 30;
+  color: ${() => colors.grey};
 `
 
 class Landing extends Component<Props, State> {
@@ -73,28 +80,29 @@ class Landing extends Component<Props, State> {
       <Wrapper behavior="padding" testID="LandingScreen">
         <FlexGrow />
         <View>
-          <Title>Welcome to Ironbelly</Title>
-          <SubTitle>Grin wallet you've deserved</SubTitle>
+          <AppTitle>Ironbelly</AppTitle>
+          <AppSlogan>Grin wallet you've deserved</AppSlogan>
         </View>
 
         <ActionButton
-          title="Initiate new wallet"
+          title="New wallet"
           testID="NewWalletButton"
           disabled={false}
           onPress={() => {
-            navigation.navigate('WalletNew')
+            navigation.navigate('NewPassword')
           }}
         />
         <ActionButton
-          title="Restore from phrase"
+          title="Restore"
           disabled={false}
           onPress={() => {
             navigation.navigate('WalletRecovery')
           }}
         />
         <FlexGrow />
-        <Text>Version: {pkg.version} (floonet)</Text>
-        <Spacer />
+        <Text style={{ textAlign: 'center', width: '100%' }}>
+          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
+        </Text>
       </Wrapper>
     )
   }

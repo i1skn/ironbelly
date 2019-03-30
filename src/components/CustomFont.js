@@ -18,13 +18,15 @@ import * as React from 'react'
 import styled from 'styled-components/native'
 import colors from 'common/colors'
 
-const fontFamily = 'font-family: Poppins'
+export const appFont = 'Poppins'
+export const monoSpaceFont = 'Menlo'
+
 export const Text = styled.Text`
-  ${fontFamily};
+  font-family: ${appFont};
 `
 
 export const TextInput = styled.TextInput`
-  ${fontFamily};
+  font-family: ${appFont};
 `
 
 function getBackgroundColor(props: any) {

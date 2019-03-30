@@ -18,6 +18,7 @@ import { NativeModules, NativeEventEmitter } from 'react-native'
 import {
   type Action,
   type walletInitRequestAction,
+  type seedNewRequestAction,
   type walletPhraseRequestAction,
   type walletRecoveryRequestAction,
   type invalidPasswordAction,
@@ -70,7 +71,8 @@ const initialState: State = {
     inProgress: false,
     password: '',
     confirmPassword: '',
-    mnemonic: '',
+    mnemonic:
+      'enter like rich season laundry urban pole piece circle stock clinic toilet enter like rich season laundry urban pole piece circle stock clinic toilet',
     progress: 0,
     error: {
       message: '',
@@ -116,6 +118,11 @@ const walletInit = function(
       return {
         ...state,
         confirmPassword: action.confirmPassword,
+      }
+    case 'SEED_NEW_SUCCESS':
+      return {
+        ...state,
+        mnemonic: action.mnemonic,
       }
     case 'WALLET_INIT_SUCCESS':
       return {
@@ -250,6 +257,16 @@ export const reducer = combineReducers({
 })
 
 export const sideEffects = {
+  ['SEED_NEW_REQUEST']: (action: seedNewRequestAction, store: Store) => {
+    return GrinBridge.seedNew(32)
+      .then((mnemonic: string) => {
+        store.dispatch({ type: 'SEED_NEW_SUCCESS', mnemonic })
+      })
+      .catch(error => {
+        store.dispatch({ type: 'SEED_NEW_FAILURE', message: error.message })
+        log(error, true)
+      })
+  },
   ['WALLET_INIT_REQUEST']: (action: walletInitRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
     const { password } = action
