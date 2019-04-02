@@ -24,7 +24,7 @@ import { hrGrin } from 'common'
 import { type Tx, type Currency } from 'common/types'
 import ShareImg from 'assets/images/Share.png'
 import ChevronRightImg from 'assets/images/ChevronRight.png'
-import { colors } from 'common'
+import colors from 'common/colors'
 
 const Time = styled(Text)`
   font-size: 14;

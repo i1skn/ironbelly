@@ -22,7 +22,8 @@ import Header from 'components/Header'
 
 import { Text, Button } from 'components/CustomFont'
 
-import { colors, TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
+import { TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
+import colors from 'common/colors'
 import { type State as GlobalState, type Navigation, type Slate } from 'common/types'
 
 //Images

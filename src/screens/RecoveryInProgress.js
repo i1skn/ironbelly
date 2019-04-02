@@ -19,7 +19,7 @@ import { Text } from 'components/CustomFont'
 import styled from 'styled-components'
 
 import { type State as GlobalState, type Navigation } from 'common/types'
-import { colors } from 'common'
+import colors from 'common/colors'
 
 import { type WalletInitState } from 'modules/wallet'
 

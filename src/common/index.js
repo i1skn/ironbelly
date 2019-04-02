@@ -25,6 +25,7 @@ import {
   type RustBalance,
   type Balance,
 } from 'common/types'
+import colors from 'common/colors'
 import styled from 'styled-components/native'
 import { Text } from 'components/CustomFont'
 
@@ -198,14 +199,3 @@ export const LoaderView = styled.View`
   flex-grow: 1;
   justify-content: center;
 `
-
-export const colors = {
-  primary: '#ffdd57',
-  warning: '#fa6800',
-  success: '#2EB358',
-  lightGrey: '#f8f8f8',
-  grey: '#bbb',
-  darkGrey: '#808080',
-  darkestGrey: '#333',
-  black: '#000',
-}

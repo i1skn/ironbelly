@@ -14,7 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Share, AsyncStorage, NativeModules } from 'react-native'
+import { Share, NativeModules } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'

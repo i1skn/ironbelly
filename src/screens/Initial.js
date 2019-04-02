@@ -18,7 +18,8 @@ import React, { Component } from 'react'
 import { ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 
-import { colors, isWalletInitialized, LoaderView } from 'common'
+import { isWalletInitialized, LoaderView } from 'common'
+import colors from 'common/colors'
 import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
 
 type Props = {

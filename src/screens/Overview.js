@@ -32,7 +32,7 @@ import {
   type Tx,
   type Navigation,
 } from 'common/types'
-import { colors } from 'common'
+import colors from 'common/colors'
 
 import { type WalletInitState } from 'modules/wallet'
 

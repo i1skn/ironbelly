@@ -21,7 +21,8 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import RNFS from 'react-native-fs'
 
-import { WALLET_DATA_DIRECTORY, Spacer, Wrapper, FlexGrow, colors, LoaderView } from 'common'
+import { WALLET_DATA_DIRECTORY, Spacer, Wrapper, FlexGrow, LoaderView } from 'common'
+import colors from 'common/colors'
 import { Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
 
@@ -82,7 +83,6 @@ class Password extends Component<Props, State> {
               <NativeButton
                 title="Forgot?"
                 disabled={false}
-                danger
                 onPress={() => {
                   AlertIOS.alert(
                     'Forgot password',

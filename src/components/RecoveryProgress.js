@@ -19,7 +19,7 @@ import { View } from 'react-native'
 import { Text } from 'components/CustomFont'
 import HeaderSpan from 'components/HeaderSpan'
 import styled from 'styled-components/native'
-import { colors } from 'common'
+import colors from 'common/colors'
 
 const Title = styled(Text)`
   font-weight: 600;

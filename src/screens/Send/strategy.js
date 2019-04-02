@@ -19,7 +19,8 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { type State as SettingsState } from 'modules/settings'
 
-import { hrGrin, Spacer, FlexGrow, Title, colors } from 'common'
+import { hrGrin, Spacer, FlexGrow, Title } from 'common'
+import colors from 'common/colors'
 import {
   type State as ReduxState,
   type Error,

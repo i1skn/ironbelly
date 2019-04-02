@@ -22,7 +22,8 @@ import { Button } from 'components/CustomFont'
 import Header from 'components/Header'
 
 import { hrGrin } from 'common'
-import { colors, Spacer, FlexGrow, Wrapper, LoaderView } from 'common'
+import { Spacer, FlexGrow, Wrapper, LoaderView } from 'common'
+import colors from 'common/colors'
 import { type TxForm } from 'modules/tx'
 import { type State as ReduxState, type Navigation, type RustOutputStrategy } from 'common/types'
 

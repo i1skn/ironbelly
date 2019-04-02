@@ -16,8 +16,7 @@
 
 import * as React from 'react'
 import styled from 'styled-components/native'
-import { Text as NativeText } from 'react-native'
-import { colors } from 'common'
+import colors from 'common/colors'
 
 const fontFamily = 'font-family: Poppins'
 export const Text = styled.Text`
