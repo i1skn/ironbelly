@@ -20,7 +20,7 @@ then install Rust
 
 add iOS architectures to rustup
 
-`rustup target add aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios i386-apple-ios`
+`rustup target add aarch64-apple-ios x86_64-apple-ios`
 
 install cargo-lipo, which is a cargo subcommand which automatically creates a universal library for use with iOS
 
@@ -47,16 +47,6 @@ npm start # this will start React Native server
 ```
 
 After all of these, please open `ios/Ironbelly.xcworkspace` in XCode and run `Product -> Build (⌘B)`
-
-## Roadmap
-`0.3.0`
-* Android version
-
-`0.2.0`
-* Mainnet
-
-`0.1.0`
-* HTTP(s) transactions
 
 ## License
 

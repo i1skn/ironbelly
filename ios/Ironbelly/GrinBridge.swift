@@ -23,7 +23,7 @@ func returnToReact(error: UInt8, cResult: UnsafePointer<Int8>, resolve: RCTPromi
         } else {
             reject(nil, result, nil)
         }
-        cstr_free(cResult)
+        cstr_free(UnsafeMutablePointer(mutating: cResult))
 }
 
 @objc(GrinBridge)
@@ -120,14 +120,6 @@ class GrinBridge: RCTEventEmitter {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
     
-    @objc func walletInit(_ password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
-            var error: UInt8 = 0
-            let cResult = c_wallet_init(walletUrl.path, password, checkNodeApiHttpAddr, &error)
-            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
-        }
-    }
-    
     @objc func walletPhrase(_ password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
@@ -136,10 +128,10 @@ class GrinBridge: RCTEventEmitter {
         }
     }
     
-    @objc func walletRecovery(_ phrase: String, password: String, checkNodeApiHttpAddr:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func walletInit(_ phrase: String, password: String, checkNodeApiHttpAddr:String, isNew: Bool, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         if let walletUrl = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
             var error: UInt8 = 0
-            let cResult = c_wallet_recovery(walletUrl.path, phrase, password, checkNodeApiHttpAddr, &error)
+            let cResult = c_wallet_init(walletUrl.path, phrase, password, checkNodeApiHttpAddr, &error, isNew)
             returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }

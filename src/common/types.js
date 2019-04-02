@@ -129,13 +129,19 @@ export type slateShareSuccessAction = { type: 'SLATE_SHARE_SUCCESS' }
 export type slateShareFalureAction = { type: 'SLATE_SHARE_FAILURE', code?: number, message: string }
 
 export type walletClear = { type: 'WALLET_CLEAR' }
-export type seedNewRequestAction = { type: 'SEED_NEW_REQUEST' }
+export type seedNewRequestAction = { type: 'SEED_NEW_REQUEST', length: number }
 export type seedNewSuccessAction = { type: 'SEED_NEW_SUCCESS', mnemonic: string }
 export type seedNewFalureAction = { type: 'SEED_NEW_FAILURE', code?: number, message: string }
-export type walletInitRequestAction = { type: 'WALLET_INIT_REQUEST', password: string }
+export type walletInitRequestAction = {|
+  type: 'WALLET_INIT_REQUEST',
+  password: string,
+  phrase: string,
+  isNew: boolean,
+|}
 export type walletInitSuccessAction = { type: 'WALLET_INIT_SUCCESS', mnemonic: string }
 export type walletInitFalureAction = { type: 'WALLET_INIT_FAILURE', code?: number, message: string }
 export type walletInitSetPasswordAction = { type: 'WALLET_INIT_SET_PASSWORD', password: string }
+export type walletInitSetIsNewAction = { type: 'WALLET_INIT_SET_IS_NEW', value: boolean }
 export type walletInitSetConfirmPasswordAction = {
   type: 'WALLET_INIT_SET_CONFIRM_PASSWORD',
   confirmPassword: string,
@@ -171,7 +177,6 @@ export type walletPhraseFalureAction = {
   message: string,
 }
 export type toastShowAction = { type: 'TOAST_SHOW', text: string, styles: any }
-export type toastClearAction = { type: 'TOAST_CLEAR' }
 
 export type txFormSetAmountAction = {
   type: 'TX_FORM_SET_AMOUNT',
@@ -256,7 +261,6 @@ export type Action =
   | slateShareSuccessAction
   | slateShareFalureAction
   | toastShowAction
-  | toastClearAction
   | txFormSetAmountAction
   | txFormSetUrlAction
   | txFormSetMessageAction
@@ -272,6 +276,7 @@ export type Action =
   | walletInitRequestAction
   | walletInitSuccessAction
   | walletInitFalureAction
+  | walletInitSetIsNewAction
   | walletInitSetPasswordAction
   | walletInitSetConfirmPasswordAction
   | walletRecoveryRequestAction

@@ -20,7 +20,9 @@ import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
-import { FlexGrow, colors } from 'common'
+import { FlexGrow } from 'common'
+import colors from 'common/colors'
+
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 
@@ -29,6 +31,7 @@ type Props = {
   error: Error,
   walletCreated: boolean,
   navigation: Navigation,
+  setIsNew: (value: boolean) => void,
 }
 type State = {
   inputValue: string,
@@ -74,7 +77,7 @@ class Landing extends Component<Props, State> {
   componentDidMount() {}
 
   render() {
-    const { navigation } = this.props
+    const { navigation, setIsNew } = this.props
 
     return (
       <Wrapper behavior="padding" testID="LandingScreen">
@@ -89,6 +92,7 @@ class Landing extends Component<Props, State> {
           testID="NewWalletButton"
           disabled={false}
           onPress={() => {
+            setIsNew(true)
             navigation.navigate('NewPassword')
           }}
         />
@@ -96,7 +100,8 @@ class Landing extends Component<Props, State> {
           title="Restore"
           disabled={false}
           onPress={() => {
-            navigation.navigate('WalletRecovery')
+            setIsNew(false)
+            navigation.navigate('NewPassword')
           }}
         />
         <FlexGrow />
@@ -114,7 +119,11 @@ const mapStateToProps = (state: ReduxState) => ({
   error: state.tx.txCreate.error,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({})
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  setIsNew: value => {
+    dispatch({ type: 'WALLET_INIT_SET_IS_NEW', value })
+  },
+})
 
 export default connect(
   mapStateToProps,

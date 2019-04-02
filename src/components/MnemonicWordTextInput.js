@@ -26,6 +26,7 @@ type Props = {
   onChange: (value: string) => void,
   getRef: any => void,
   onSubmitEditing: any => void,
+  autoFocus: boolean,
 }
 type State = {}
 
@@ -55,7 +56,16 @@ const WordNumber = styled(Text)`
 
 export default class FormTextInput extends Component<Props, State> {
   render() {
-    const { onChange, onSubmitEditing, value, testID, number, returnKeyType, getRef } = this.props
+    const {
+      onChange,
+      onSubmitEditing,
+      value,
+      testID,
+      number,
+      returnKeyType,
+      getRef,
+      autoFocus,
+    } = this.props
     return (
       <Layout>
         <WordNumber>{number + 1}</WordNumber>
@@ -63,7 +73,7 @@ export default class FormTextInput extends Component<Props, State> {
           selectionColor={'#ABABAB'}
           returnKeyType={returnKeyType}
           secureTextEntry={false}
-          autoFocus={false}
+          autoFocus={autoFocus}
           ref={getRef}
           onChangeText={onChange}
           onSubmitEditing={onSubmitEditing}

@@ -21,7 +21,8 @@ import { connect } from 'react-redux'
 import FormTextInput from 'components/FormTextInput'
 import styled from 'styled-components/native'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
-import { colors, Spacer, FlexGrow, Wrapper } from 'common'
+import { Spacer, FlexGrow, Wrapper } from 'common'
+import colors from 'common/colors'
 import { Button, Text } from 'components/CustomFont'
 
 type Props = {
@@ -31,22 +32,30 @@ type Props = {
   password: string,
   setConfirmPassword: (confirmPassword: string) => void,
   confirmPassword: string,
+  newWallet: boolean,
 }
 
 type State = {}
 
 const Desc = styled.View`
-  background-color: ${colors.accent};
+  background-color: ${colors.primary};
   padding: 0 16px 16px 16px;
 `
 
 class NewPassword extends Component<Props, State> {
   static navigationOptions = {
-    title: 'Set Password',
+    title: 'New Password',
   }
 
   render() {
-    const { password, setPassword, confirmPassword, setConfirmPassword, navigation } = this.props
+    const {
+      newWallet,
+      password,
+      setPassword,
+      confirmPassword,
+      setConfirmPassword,
+      navigation,
+    } = this.props
     return (
       <FlexGrow>
         <Wrapper
@@ -61,7 +70,7 @@ class NewPassword extends Component<Props, State> {
             secureTextEntry={true}
             onChange={setPassword}
             value={password}
-            placeholder="Password"
+            title="Password"
           />
           <Spacer />
           <FormTextInput
@@ -70,13 +79,19 @@ class NewPassword extends Component<Props, State> {
             secureTextEntry={true}
             onChange={setConfirmPassword}
             value={confirmPassword}
-            placeholder="Confirm password"
+            title="Confirm password"
           />
           <FlexGrow />
           <Button
             testID="EnterPassword"
             title={'Continue'}
-            onPress={() => navigation.navigate('ShowPaperKey')}
+            onPress={() => {
+              if (newWallet) {
+                navigation.navigate('ShowPaperKey')
+              } else {
+                navigation.navigate('VerifyPaperKey')
+              }
+            }}
             disabled={!(password && password === confirmPassword)}
           />
           <Spacer />
@@ -90,6 +105,7 @@ const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
   error: state.tx.txCreate.error,
   password: state.wallet.walletInit.password,
+  newWallet: state.wallet.walletInit.isNew,
   confirmPassword: state.wallet.walletInit.confirmPassword,
 })
 

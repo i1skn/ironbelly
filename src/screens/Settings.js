@@ -15,7 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { KeyboardAvoidingView, AlertIOS, Linking, Button as NativeButton } from 'react-native'
+import { KeyboardAvoidingView, Alert, Linking, Button as NativeButton } from 'react-native'
 import RNFS from 'react-native-fs'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
@@ -97,7 +97,7 @@ class Settings extends Component<Props, State> {
             disabled={false}
             danger
             onPress={() => {
-              AlertIOS.alert(
+              Alert.alert(
                 'Destroy this wallet',
                 'This action would remove all of your data! Please back up your recovery phrase before!',
                 [

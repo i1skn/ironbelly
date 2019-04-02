@@ -13,9 +13,11 @@
 // limitations under the License.
 
 
-#ifndef Wallet_Bridging_Header_h
-#define Wallet_Bridging_Header_h
-
 #import <React/RCTBridgeModule.h>
-#import "bindings.h"
-#endif /* Wallet_Bridging_Header_h */
+#import <React/RCTEventEmitter.h>
+
+@interface RCT_EXTERN_MODULE(AppConfig, NSObject)
+
+RCT_EXTERN_METHOD(stage:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+@end

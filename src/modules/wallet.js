@@ -33,17 +33,19 @@ import { ToastStyles } from 'react-native-toaster'
 
 const { GrinBridge } = NativeModules
 
-export type WalletInitState = {
+export type WalletInitState = {|
   inProgress: boolean,
   mnemonic: string,
   password: string,
   confirmPassword: string,
   progress: number,
+  created: boolean,
+  isNew: boolean,
   error: {
     message: string,
     code?: number,
   },
-}
+|}
 
 export type WalletPhraseState = {
   inProgress: boolean,
@@ -71,9 +73,10 @@ const initialState: State = {
     inProgress: false,
     password: '',
     confirmPassword: '',
-    mnemonic:
-      'enter like rich season laundry urban pole piece circle stock clinic toilet enter like rich season laundry urban pole piece circle stock clinic toilet',
+    mnemonic: '',
     progress: 0,
+    created: false,
+    isNew: true,
     error: {
       message: '',
       code: 0,
@@ -108,6 +111,15 @@ const walletInit = function(
         inProgress: true,
         progress: 0,
         mnemonic: '',
+        error: {
+          message: '',
+          code: 0,
+        },
+      }
+    case 'WALLET_INIT_SET_IS_NEW':
+      return {
+        ...initialState.walletInit,
+        isNew: action.value,
       }
     case 'WALLET_INIT_SET_PASSWORD':
       return {
@@ -128,12 +140,17 @@ const walletInit = function(
       return {
         ...state,
         inProgress: false,
+        created: true,
         mnemonic: action.mnemonic,
       }
     case 'WALLET_INIT_FAILURE':
       return {
         ...state,
         inProgress: false,
+        error: {
+          message: action.message,
+          code: 0,
+        },
       }
     case 'WALLET_RECOVERY_REQUEST':
       return {
@@ -158,7 +175,7 @@ const walletInit = function(
       return {
         ...state,
         inProgress: false,
-        phrase: '',
+        mnemonic: '',
         error: {
           message: action.message,
         },
@@ -258,7 +275,7 @@ export const reducer = combineReducers({
 
 export const sideEffects = {
   ['SEED_NEW_REQUEST']: (action: seedNewRequestAction, store: Store) => {
-    return GrinBridge.seedNew(32)
+    return GrinBridge.seedNew(action.length)
       .then((mnemonic: string) => {
         store.dispatch({ type: 'SEED_NEW_SUCCESS', mnemonic })
       })
@@ -269,17 +286,16 @@ export const sideEffects = {
   },
   ['WALLET_INIT_REQUEST']: (action: walletInitRequestAction, store: Store) => {
     const { checkNodeApiHttpAddr } = store.getState().settings
-    const { password } = action
+    const { password, phrase, isNew } = action
     return checkWalletDataDirectory().then(() => {
-      return GrinBridge.walletInit(password, checkNodeApiHttpAddr)
+      return GrinBridge.walletInit(phrase, password, checkNodeApiHttpAddr, isNew)
         .then((mnemonic: string) => {
           store.dispatch({ type: 'WALLET_INIT_SUCCESS', mnemonic })
           store.dispatch({ type: 'SET_PASSWORD', password })
         })
         .catch(error => {
-          const e = JSON.parse(error.message)
-          store.dispatch({ type: 'WALLET_INIT_FAILURE', ...e })
-          log(e, true)
+          store.dispatch({ type: 'WALLET_INIT_FAILURE', message: error.message })
+          log(error, true)
         })
     })
   },
@@ -314,29 +330,5 @@ export const sideEffects = {
         store.dispatch({ type: 'WALLET_PHRASE_FAILURE', ...e })
         log(e, true)
       })
-  },
-  ['WALLET_RECOVERY_REQUEST']: (action: walletRecoveryRequestAction, store: Store) => {
-    const state = store.getState()
-    const { mnemonic, password } = state.wallet.walletInit
-    const recoveryEventEmitter = new NativeEventEmitter(GrinBridge)
-    const subscription = recoveryEventEmitter.addListener(
-      'onRecoveryProgressUpdate',
-      ({ progress }) => store.dispatch({ type: 'WALLET_RECOVERY_PROGRESS_UPDATE', progress })
-    )
-    return checkWalletDataDirectory().then(() => {
-      const { checkNodeApiHttpAddr } = store.getState().settings
-      return GrinBridge.walletRecovery(mnemonic, password, checkNodeApiHttpAddr)
-        .then(() => {
-          subscription.remove()
-          store.dispatch({ type: 'WALLET_RECOVERY_SUCCESS' })
-        })
-        .catch(error => {
-          subscription.remove()
-          const e = JSON.parse(error.message)
-          store.dispatch({ type: 'WALLET_RECOVERY_FAILURE', ...e })
-          RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {})
-          log(e, true)
-        })
-    })
   },
 }

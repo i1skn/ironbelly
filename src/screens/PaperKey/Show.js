@@ -19,7 +19,8 @@ import { ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
-import { Spacer, colors } from 'common'
+import { Spacer } from 'common'
+import colors from 'common/colors'
 import { monoSpaceFont, Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
 
@@ -27,7 +28,9 @@ type Props = {
   mnemonic: string,
   phrase: string,
   navigation: Navigation,
+  generateSeed: (length: number) => void,
 }
+
 type State = {
   inputValue: string,
   amount: number,
@@ -39,7 +42,7 @@ const Wrapper = styled.View`
 `
 
 const Desc = styled.View`
-  background-color: ${colors.accent};
+  background-color: ${colors.primary};
   padding: 0 16px 16px 16px;
 `
 
@@ -76,7 +79,11 @@ class Show extends Component<Props, State> {
     valid: false,
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    if (!this.props.mnemonic) {
+      this.props.generateSeed(32)
+    }
+  }
 
   componentDidUpdate(prevProps) {}
 
@@ -130,7 +137,12 @@ const mapStateToProps = (state: ReduxState) => ({
   phrase: state.wallet.walletPhrase.phrase,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({})
+//
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  generateSeed: length => {
+    dispatch({ type: 'SEED_NEW_REQUEST', length })
+  },
+})
 
 export default connect(
   mapStateToProps,

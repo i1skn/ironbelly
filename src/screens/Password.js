@@ -15,7 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { View, ActivityIndicator, AlertIOS, Button as NativeButton } from 'react-native'
+import { View, ActivityIndicator, Alert, Button as NativeButton } from 'react-native'
 import FormTextInput from 'components/FormTextInput'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
@@ -83,7 +83,7 @@ class Password extends Component<Props, State> {
                 title="Forgot?"
                 disabled={false}
                 onPress={() => {
-                  AlertIOS.alert(
+                  Alert.alert(
                     'Forgot password',
                     'There is no way to restore the password. You can destroy the wallet and restore it if you have recovery passphrase backed up. Then you can provide a new password.',
                     [
@@ -96,7 +96,7 @@ class Password extends Component<Props, State> {
                         text: 'Destroy the wallet',
                         style: 'destructive',
                         onPress: () => {
-                          AlertIOS.alert(
+                          Alert.alert(
                             'Destroy the wallet',
                             'This action would remove all of your data!',
                             [

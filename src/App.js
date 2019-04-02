@@ -50,7 +50,8 @@ import TopupScreen from 'screens/Topup'
 import PasswordScreen from 'screens/Password'
 import RecoveryInProgressScreen from 'screens/RecoveryInProgress'
 import NewPasswordScreen from 'screens/NewPassword'
-import { colors } from 'common'
+import WalletPrepareScreen from 'screens/WalletPrepare'
+import colors from 'common/colors'
 
 // Filesystem
 checkSlatesDirectory()
@@ -96,6 +97,7 @@ const WalletCreateStack = createStackNavigator(
     VerifyPaperKey: VerifyPaperKeyScreen,
     Recovery: RecoveryScreen,
     RecoveryInProgress: RecoveryInProgressScreen,
+    WalletPrepare: WalletPrepareScreen,
   },
   {
     initialRouteName: 'Landing',
@@ -107,7 +109,7 @@ const WalletCreateStack = createStackNavigator(
       },
       headerStyle: {
         borderBottomWidth: 0,
-        backgroundColor: colors.accent,
+        backgroundColor: colors.primary,
       },
       headerBackTitleStyle: {
         fontFamily: appFont,

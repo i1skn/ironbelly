@@ -15,145 +15,167 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { ScrollView, Keyboard } from 'react-native'
+import { Keyboard, Alert } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scrollview'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import MnemonicWordTextInput from 'components/MnemonicWordTextInput'
 
-import { Spacer, colors } from 'common'
+import { Spacer } from 'common'
+import colors from 'common/colors'
 import { monoSpaceFont, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
 
-const WORDS_COUNT = 24
-
 type Props = {
   mnemonic: string,
-  phrase: string,
   navigation: Navigation,
+  newWallet: boolean,
 }
 type State = {
   inputValue: string,
   amount: number,
   valid: boolean,
   mnemonicWords: Array<string>,
+  wordsCount: number,
 }
 
 const Wrapper = styled.View`
   flex: 1;
 `
 
-const Desc = styled.View`
-  background-color: ${colors.accent};
-  padding: 0 16px 16px 16px;
-`
-
 const Words = styled.View`
   margin: 16px 0;
 `
 
-const Word = styled.View`
-  flex-direction: row;
-  margin: 0 4px;
-`
-
-const WordText = styled.Text`
-  padding: 8px 0 8px 16px;
-  font-size: 24px;
-  font-family: ${monoSpaceFont};
-`
-
-const WordNumber = styled.Text`
-  color: #bbbbbb;
-  padding: 8px 0;
-  font-size: 24px;
-  font-family: ${monoSpaceFont};
-`
-
 class Verify extends Component<Props, State> {
   static navigationOptions = {
-    title: 'Verify Paper Key',
+    title: 'Enter Paper Key',
   }
 
   state = {
+    wordsCount: 0,
     inputValue: '',
     amount: 0,
     valid: false,
-    mnemonicWords: Array(WORDS_COUNT).fill(''),
+    mnemonicWords: [],
   }
 
   _inputs = []
   _scrollView = null
 
   componentDidMount() {
-    this.setState({
-      mnemonicWords: this.props.mnemonic.split(' '),
-    })
+    // Only for testing
+    //
+    // this.setState({
+    // wordsCount: 24,
+    // mnemonicWords: (this.props.newWallet
+    // ? this.props.mnemonic
+    // : 'obtain long legal stadium stool gesture original depart rail run gate super quote old impact recipe marine unhappy census ski gown exist puzzle knock'
+    // ).split(' '),
+    // })
+    if (!this.props.newWallet) {
+      Alert.alert('Paper key', 'How many words in your paper key?', [
+        {
+          text: '12',
+          onPress: () => {
+            const wordsCount = 12
+            this.setState({
+              wordsCount,
+              mnemonicWords: Array(wordsCount).fill(''),
+            })
+          },
+        },
+        {
+          text: '24',
+          onPress: () => {
+            const wordsCount = 24
+            this.setState({
+              wordsCount,
+              mnemonicWords: Array(wordsCount).fill(''),
+            })
+          },
+        },
+      ])
+    } else {
+      const wordsCount = 24
+      this.setState({
+        wordsCount,
+        mnemonicWords: Array(wordsCount).fill(''),
+      })
+    }
   }
 
   componentDidUpdate(prevProps) {}
 
   render() {
-    const { navigation, mnemonic } = this.props
-    const { mnemonicWords } = this.state
+    const { navigation, mnemonic, newWallet } = this.props
+    const { mnemonicWords, wordsCount } = this.state
 
-    const verified = mnemonic === mnemonicWords.join(' ')
+    const currentUserPhrase = mnemonicWords.map(w => w.toLowerCase()).join(' ')
+    const verified = newWallet
+      ? mnemonic === currentUserPhrase
+      : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) === wordsCount
+
     return (
       <Wrapper>
-        <KeyboardAwareScrollView
-          getTextInputRefs={() => this._inputs}
-          ref={sv => (this._scrollView = sv)}
-          style={{
-            paddingLeft: 16,
-            paddingRight: 16,
-          }}
-        >
-          <Words>
-            {mnemonicWords.map((word: string, i: number) => {
-              return (
-                <MnemonicWordTextInput
-                  key={i}
-                  getRef={input => {
-                    this._inputs[i] = input
-                  }}
-                  number={i}
-                  returnKeyType={i < WORDS_COUNT - 1 ? 'next' : 'done'}
-                  onSubmitEditing={() => {
-                    if (i < WORDS_COUNT - 1) {
-                      this._inputs[i + 1].focus()
-                    } else {
-                      setTimeout(() => {
-                        if (this._scrollView) {
-                          this._scrollView.scrollToBottom()
-                        }
-                      }, 50)
-                    }
-                  }}
-                  onChange={value => {
-                    this.setState({
-                      mnemonicWords: mnemonicWords.map((w, j) => {
-                        if (j === i) {
-                          return value
-                        }
-                        return w
-                      }),
-                    })
-                  }}
-                  value={mnemonicWords[i]}
-                />
-              )
-            })}
-          </Words>
-          <Button
-            testID="VerifyPaperKeyFinishButton"
-            title="Finish"
-            disabled={!verified}
-            onPress={() => {
-              navigation.navigate('Main')
+        {(wordsCount && (
+          <KeyboardAwareScrollView
+            getTextInputRefs={() => this._inputs}
+            ref={sv => (this._scrollView = sv)}
+            style={{
+              paddingLeft: 16,
+              paddingRight: 16,
             }}
-          />
-          <Spacer />
-        </KeyboardAwareScrollView>
+          >
+            <Words>
+              {mnemonicWords.map((word: string, i: number) => {
+                return (
+                  <MnemonicWordTextInput
+                    key={i}
+                    getRef={input => {
+                      this._inputs[i] = input
+                    }}
+                    number={i}
+                    autoFocus={!i}
+                    returnKeyType={i < wordsCount - 1 ? 'next' : 'done'}
+                    onSubmitEditing={() => {
+                      if (i < wordsCount - 1) {
+                        this._inputs[i + 1].focus()
+                      } else {
+                        setTimeout(() => {
+                          if (this._scrollView) {
+                            this._scrollView.scrollToBottom()
+                          }
+                        }, 50)
+                      }
+                    }}
+                    onChange={value => {
+                      this.setState({
+                        mnemonicWords: mnemonicWords.map((w, j) => {
+                          if (j === i) {
+                            return value
+                          }
+                          return w
+                        }),
+                      })
+                    }}
+                    value={mnemonicWords[i]}
+                  />
+                )
+              })}
+            </Words>
+            <Button
+              testID="VerifyPaperKeyFinishButton"
+              title="Finish!"
+              disabled={!verified}
+              onPress={() => {
+                navigation.navigate('WalletPrepare', { phrase: currentUserPhrase })
+              }}
+            />
+            <Spacer />
+          </KeyboardAwareScrollView>
+        )) ||
+          null}
       </Wrapper>
     )
   }
@@ -161,7 +183,7 @@ class Verify extends Component<Props, State> {
 
 const mapStateToProps = (state: ReduxState) => ({
   mnemonic: state.wallet.walletInit.mnemonic,
-  phrase: state.wallet.walletPhrase.phrase,
+  newWallet: state.wallet.walletInit.isNew,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({})

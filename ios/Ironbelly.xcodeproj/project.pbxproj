@@ -133,7 +133,7 @@
 		F669249426C949548172D721 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Wallet-Bridging-Header.h"; path = "Ironbelly/Wallet-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
-		F6DDC63F2197893300B51AAE /* wallet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = wallet.h; sourceTree = "<group>"; };
+		F6DDC63F2197893300B51AAE /* bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bindings.h; path = ../../rust/bindings.h; sourceTree = "<group>"; };
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
 		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
 		F6E9509521C79ACB0066C203 /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/target/universal/release/libwallet.a; sourceTree = "<group>"; };
@@ -245,7 +245,7 @@
 			children = (
 				F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */,
 				F64186DC218895DC00A99CA0 /* AppDelegate.swift */,
-				F6DDC63F2197893300B51AAE /* wallet.h */,
+				F6DDC63F2197893300B51AAE /* bindings.h */,
 				F64186E3218895DE00A99CA0 /* Assets.xcassets */,
 				F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */,
 				F64186E8218895DE00A99CA0 /* Info.plist */,

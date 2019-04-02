@@ -105,70 +105,45 @@ pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c
 
 fn wallet_init(
     path: &str,
+    phrase: &str,
     password: &str,
     check_node_api_http_addr: &str,
+    is_new: bool,
 ) -> Result<String, grin_wallet::Error> {
     let wallet_config = get_wallet_config(path, check_node_api_http_addr);
+    WalletSeed::recover_from_phrase(&wallet_config, &phrase, &password)?;
     let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
-    let seed = WalletSeed::init_file(&wallet_config, 16, None, &password)?;
-    let client_n = HTTPNodeClient::new(
-        &wallet_config.check_node_api_http_addr,
-        node_api_secret.clone(),
-    );
-    let _: LMDBBackend<HTTPNodeClient, ExtKeychain> =
-        LMDBBackend::new(wallet_config.clone(), &password, client_n)?;
-    seed.to_mnemonic()
+    let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
+    if !is_new {
+        let wallet = instantiate_wallet(wallet_config.clone(), node_client, password, "default")?;
+        let mut api = APIOwner::new(wallet.clone());
+        match api.restore() {
+            Ok(_) => Ok("".to_owned()),
+            Err(e) => Err(grin_wallet::Error::from(e)),
+        }
+    } else {
+        let _: LMDBBackend<HTTPNodeClient, ExtKeychain> =
+            LMDBBackend::new(wallet_config.clone(), &password, node_client)?;
+        Ok("".to_owned())
+    }
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn c_wallet_init(
     path: *const c_char,
-    password: *const c_char,
-    check_node_api_http_addr: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        wallet_init(
-            &c_str_to_rust(path),
-            &c_str_to_rust(password),
-            &c_str_to_rust(check_node_api_http_addr),
-        ),
-        error
-    )
-}
-
-fn wallet_recovery(
-    path: &str,
-    phrase: &str,
-    password: &str,
-    check_node_api_http_addr: &str,
-) -> Result<String, grin_wallet::Error> {
-    let wallet_config = get_wallet_config(path, check_node_api_http_addr);
-    let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
-    let _res = WalletSeed::recover_from_phrase(&wallet_config, &phrase, &password)?;
-    let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
-    let wallet = instantiate_wallet(wallet_config.clone(), node_client, password, "default")?;
-    let mut api = APIOwner::new(wallet.clone());
-    match api.restore() {
-        Ok(_) => Ok("".to_owned()),
-        Err(e) => Err(grin_wallet::Error::from(e)),
-    }
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_wallet_recovery(
-    path: *const c_char,
     phrase: *const c_char,
     password: *const c_char,
     check_node_api_http_addr: *const c_char,
     error: *mut u8,
+    is_new: bool,
 ) -> *const c_char {
     unwrap_to_c!(
-        wallet_recovery(
+        wallet_init(
             &c_str_to_rust(path),
             &c_str_to_rust(phrase),
             &c_str_to_rust(password),
             &c_str_to_rust(check_node_api_http_addr),
+            is_new
         ),
         error
     )
