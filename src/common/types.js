@@ -177,6 +177,7 @@ export type walletPhraseFalureAction = {
   message: string,
 }
 export type toastShowAction = { type: 'TOAST_SHOW', text: string, styles: any }
+export type toastClearAction = { type: 'TOAST_CLEAR' }
 
 export type txFormSetAmountAction = {
   type: 'TX_FORM_SET_AMOUNT',
@@ -261,6 +262,7 @@ export type Action =
   | slateShareSuccessAction
   | slateShareFalureAction
   | toastShowAction
+  | toastClearAction
   | txFormSetAmountAction
   | txFormSetUrlAction
   | txFormSetMessageAction

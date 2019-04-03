@@ -34,9 +34,17 @@ export const reducer = (state: State = initialState, action: Action): State => {
         ...state,
         ...action,
       }
+    case 'TOAST_CLEAR':
+      return initialState
     default:
       return state
   }
 }
 
-export const sideEffects = {}
+export const sideEffects = {
+  ['TOAST_SHOW']: async (action: toastShowAction, store: Store) => {
+    setTimeout(() => {
+      store.dispatch({ type: 'TOAST_CLEAR' })
+    }, 2000)
+  },
+}

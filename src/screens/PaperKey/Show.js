@@ -19,10 +19,14 @@ import { ScrollView } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
-import { Spacer } from 'common'
+import { UnderHeaderBlock, Spacer } from 'common'
 import colors from 'common/colors'
 import { monoSpaceFont, Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
+import Header from 'components/Header'
+
+//Images
+import CloseImg from 'assets/images/Close.png'
 
 type Props = {
   mnemonic: string,
@@ -32,18 +36,11 @@ type Props = {
 }
 
 type State = {
-  inputValue: string,
-  amount: number,
-  valid: boolean,
+  fromSettings: boolean,
 }
 
 const Wrapper = styled.View`
   flex: 1;
-`
-
-const Desc = styled.View`
-  background-color: ${colors.primary};
-  padding: 0 16px 16px 16px;
 `
 
 const Words = styled.View`
@@ -73,14 +70,16 @@ class Show extends Component<Props, State> {
     title: 'Paper key',
   }
 
-  state = {
-    inputValue: '',
-    amount: 0,
-    valid: false,
+  constructor(props) {
+    super(props)
+    const fromSettings = props.navigation.state.params && props.navigation.state.params.fromSettings
+    this.state = {
+      fromSettings,
+    }
   }
 
   componentDidMount() {
-    if (!this.props.mnemonic) {
+    if (!this.props.mnemonic && !this.state.fromSettings) {
       this.props.generateSeed(32)
     }
   }
@@ -90,16 +89,26 @@ class Show extends Component<Props, State> {
   render() {
     const { navigation, mnemonic, phrase } = this.props
     const mnemonicArr = (mnemonic || phrase).split(' ')
+    const { fromSettings } = this.state
 
     return (
       <Wrapper>
-        <Desc>
-          <Text>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum
-            has been the industry's standard dummy text ever since the 1500s, when an unknown
-            printer took
-          </Text>
-        </Desc>
+        {fromSettings ? (
+          <Header
+            leftIcon={CloseImg}
+            leftText={'Close'}
+            leftAction={() => this.props.navigation.goBack()}
+            title={'Paper key'}
+          />
+        ) : (
+          <UnderHeaderBlock>
+            <Text>
+              Your paper key is the only way to restore your Grin wallet if your phone is lost,
+              stolen, broken, or upgraded. It consists of 24 words. Please write them down on a
+              piece of paper and keep safe.
+            </Text>
+          </UnderHeaderBlock>
+        )}
         <ScrollView
           style={{
             paddingLeft: 16,
@@ -117,14 +126,16 @@ class Show extends Component<Props, State> {
               )
             })}
           </Words>
-          <Button
-            testID="ShowPaperKeyFinishButton"
-            title="Continue"
-            disabled={false}
-            onPress={() => {
-              navigation.navigate('VerifyPaperKey')
-            }}
-          />
+          {!fromSettings && (
+            <Button
+              testID="ShowPaperKeyFinishButton"
+              title="Continue"
+              disabled={false}
+              onPress={() => {
+                navigation.navigate('VerifyPaperKey', { title: 'Verify Paper key ' })
+              }}
+            />
+          )}
           <Spacer />
         </ScrollView>
       </Wrapper>

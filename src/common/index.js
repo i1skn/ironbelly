@@ -147,7 +147,7 @@ export const isWalletInitialized = () => {
 }
 
 export const Spacer = styled.View`
-  height: 16px;
+  height: ${({ height }) => (height ? height : '16px')};
   width: 100%;
 `
 
@@ -190,7 +190,12 @@ export const FlexGrow = styled.View`
   flex-grow: 1;
 `
 
-export const Wrapper = styled(KeyboardAvoidingView)`
+export const Wrapper = styled.View`
+  padding: 0 16px;
+  flex-grow: 1;
+`
+
+export const KeyboardAvoidingWrapper = styled(KeyboardAvoidingView)`
   padding: 0 16px;
   flex-grow: 1;
 `
@@ -198,4 +203,9 @@ export const Wrapper = styled(KeyboardAvoidingView)`
 export const LoaderView = styled.View`
   flex-grow: 1;
   justify-content: center;
+`
+
+export const UnderHeaderBlock = styled.View`
+  background-color: ${colors.primary};
+  padding: 0 16px 16px 16px;
 `

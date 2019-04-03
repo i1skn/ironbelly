@@ -84,11 +84,11 @@ class Settings extends Component<Props, State> {
         />
         <Wrapper behavior="padding">
           <Button
-            title="See recovery phrase"
+            title="Paper key"
             disabled={false}
             onPress={() => {
               getPhrase()
-              navigation.navigate('ShowMnemonic')
+              navigation.navigate('ViewPaperKey')
             }}
           />
           <Spacer />

@@ -19,6 +19,7 @@ import { View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
+import { Alert } from 'react-native'
 
 import { FlexGrow } from 'common'
 import colors from 'common/colors'
@@ -31,7 +32,6 @@ type Props = {
   error: Error,
   walletCreated: boolean,
   navigation: Navigation,
-  setIsNew: (value: boolean) => void,
 }
 type State = {
   inputValue: string,
@@ -63,6 +63,20 @@ export const AppSlogan = styled(Text)`
   color: ${() => colors.grey};
 `
 
+const withFloonetWarning = (cb: () => void) => {
+  return () =>
+    Alert.alert(
+      'Testnet ONLY!',
+      'This version currently works only with the Grin test network (floonet)! Mainnet support is coming soon!',
+      [
+        {
+          text: 'Continue',
+          onPress: cb,
+        },
+      ]
+    )
+}
+
 class Landing extends Component<Props, State> {
   static navigationOptions = {
     header: null,
@@ -77,7 +91,7 @@ class Landing extends Component<Props, State> {
   componentDidMount() {}
 
   render() {
-    const { navigation, setIsNew } = this.props
+    const { navigation } = this.props
 
     return (
       <Wrapper behavior="padding" testID="LandingScreen">
@@ -88,21 +102,19 @@ class Landing extends Component<Props, State> {
         </View>
 
         <ActionButton
-          title="New wallet"
+          title="Create new wallet"
           testID="NewWalletButton"
           disabled={false}
-          onPress={() => {
-            setIsNew(true)
-            navigation.navigate('NewPassword')
-          }}
+          onPress={withFloonetWarning(() => {
+            navigation.navigate('NewPassword', { isNew: true })
+          })}
         />
         <ActionButton
-          title="Restore"
+          title="Restore from paper key"
           disabled={false}
-          onPress={() => {
-            setIsNew(false)
-            navigation.navigate('NewPassword')
-          }}
+          onPress={withFloonetWarning(() => {
+            navigation.navigate('NewPassword', { isNew: false })
+          })}
         />
         <FlexGrow />
         <Text style={{ textAlign: 'center', width: '100%' }}>
@@ -119,11 +131,7 @@ const mapStateToProps = (state: ReduxState) => ({
   error: state.tx.txCreate.error,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  setIsNew: value => {
-    dispatch({ type: 'WALLET_INIT_SET_IS_NEW', value })
-  },
-})
+const mapDispatchToProps = (dispatch, ownProps) => ({})
 
 export default connect(
   mapStateToProps,

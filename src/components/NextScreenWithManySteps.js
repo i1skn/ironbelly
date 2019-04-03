@@ -18,7 +18,7 @@ import React, { Component } from 'react'
 import { Animated, Dimensions } from 'react-native'
 import Header from 'components/Header'
 
-import { Spacer, FlexGrow, Wrapper } from 'common'
+import { Spacer, FlexGrow, KeyboardAvoidingWrapper } from 'common'
 import { Button } from 'components/CustomFont'
 import { type Navigation } from 'common/types'
 
@@ -97,7 +97,7 @@ class NextScreenWithManySteps extends Component<Props, State> {
     const next = steps[nextStep]
     return (
       <React.Fragment>
-        <Wrapper behavior="padding">
+        <KeyboardAvoidingWrapper behavior="padding">
           {/* Steps */}
           <FlexGrow>
             {steps.map((step, i) => {
@@ -128,7 +128,7 @@ class NextScreenWithManySteps extends Component<Props, State> {
             />
           )}
           <Spacer />
-        </Wrapper>
+        </KeyboardAvoidingWrapper>
       </React.Fragment>
     )
   }

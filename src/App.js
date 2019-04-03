@@ -79,7 +79,10 @@ const AppStack = createStackNavigator(
     SendLink: SendLinkScreen,
     Topup: TopupScreen,
     Receive: ReceiveScreen,
-    // ShowPaperKey: ShowPaperKeyScreen,
+    ViewPaperKey: {
+      screen: ShowPaperKeyScreen,
+      params: { fromSettings: true },
+    },
   },
   {
     initialRouteName: 'Main',
@@ -203,7 +206,7 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleAppStateChange = nextAppState => {
-    if (nextAppState === 'inactive') {
+    if (nextAppState === 'background') {
       isWalletInitialized().then(exists => {
         if (exists) {
           this.navigation.navigate('Password', { nextScreen: { name: 'Main' } })

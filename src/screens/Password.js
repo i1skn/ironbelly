@@ -21,7 +21,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import RNFS from 'react-native-fs'
 
-import { WALLET_DATA_DIRECTORY, Spacer, Wrapper, FlexGrow, LoaderView } from 'common'
+import { WALLET_DATA_DIRECTORY, Spacer, KeyboardAvoidingWrapper, FlexGrow, LoaderView } from 'common'
 import colors from 'common/colors'
 import { Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
@@ -61,7 +61,7 @@ class Password extends Component<Props, State> {
     const { password, navigation, setPassword, checkPassword, inProgress, clearWallet } = this.props
 
     return (
-      <Wrapper behavior="padding" enabled>
+      <KeyboardAvoidingWrapper behavior="padding" enabled>
         {(inProgress && (
           <LoaderView>
             <ActivityIndicator size="large" color={colors.primary} />
@@ -135,7 +135,7 @@ class Password extends Component<Props, State> {
             <Spacer />
           </React.Fragment>
         )}
-      </Wrapper>
+      </KeyboardAvoidingWrapper>
     )
   }
 }

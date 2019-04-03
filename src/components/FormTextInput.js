@@ -26,11 +26,15 @@ type Props = {
   maxLength?: number,
   value: string,
   onChange: (value: string) => void,
+  onFocus?: (value: string) => void,
   autoFocus: boolean,
   secureTextEntry?: boolean,
   textContentType?: string,
   keyboardType?: string,
   autoCorrect?: boolean,
+  getRef?: any => void,
+  returnKeyType?: string,
+  onSubmitEditing?: any => void,
 }
 type State = {}
 
@@ -63,6 +67,7 @@ export default class FormTextInput extends Component<Props, State> {
     const {
       maxLength,
       onChange,
+      onFocus,
       value,
       autoFocus,
       placeholder,
@@ -72,6 +77,9 @@ export default class FormTextInput extends Component<Props, State> {
       textContentType,
       autoCorrect,
       keyboardType,
+      returnKeyType,
+      getRef,
+      onSubmitEditing,
     } = this.props
     return (
       <React.Fragment>
@@ -82,6 +90,7 @@ export default class FormTextInput extends Component<Props, State> {
             secureTextEntry={secureTextEntry}
             autoFocus={autoFocus}
             onChangeText={onChange}
+            ref={getRef}
             value={value}
             maxLength={maxLength}
             placeholder={placeholder}
@@ -89,6 +98,9 @@ export default class FormTextInput extends Component<Props, State> {
             keyboardType={keyboardType}
             textContentType={textContentType}
             autoCorrect={autoCorrect}
+            returnKeyType={returnKeyType}
+            onSubmitEditing={onSubmitEditing}
+            onFocus={onFocus}
           />
         </Layout>
       </React.Fragment>

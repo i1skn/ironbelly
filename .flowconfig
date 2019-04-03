@@ -24,6 +24,10 @@
 ; Ignore metro
 .*/node_modules/metro/.*
 
+; Ignore react-native-keyboard-aware-scroll-view
+; https://github.com/APSL/react-native-keyboard-aware-scroll-view/issues/315
+.*/node_modules/react-native-keyboard-aware-scroll-view/.*
+
 [include]
 
 [libs]

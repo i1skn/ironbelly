@@ -23,6 +23,7 @@ export const monoSpaceFont = 'Menlo'
 
 export const Text = styled.Text`
   font-family: ${appFont};
+  font-size: 16px;
 `
 
 export const TextInput = styled.TextInput`

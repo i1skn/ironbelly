@@ -83,6 +83,7 @@ export default class FormTextInput extends Component<Props, State> {
           testID={testID}
           keyboardType={'default'}
           autoCorrect={false}
+          autoCapitalize={'none'}
         />
       </Layout>
     )

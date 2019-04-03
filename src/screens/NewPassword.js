@@ -15,14 +15,15 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
+import { Alert } from 'react-native'
 import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 import { connect } from 'react-redux'
 import FormTextInput from 'components/FormTextInput'
-import styled from 'styled-components/native'
+// $FlowFixMe
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
-import { Spacer, FlexGrow, Wrapper } from 'common'
-import colors from 'common/colors'
+import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'common'
 import { Button, Text } from 'components/CustomFont'
 
 type Props = {
@@ -33,19 +34,25 @@ type Props = {
   setConfirmPassword: (confirmPassword: string) => void,
   confirmPassword: string,
   newWallet: boolean,
+  setIsNew: (value: boolean) => void,
 }
 
 type State = {}
 
-const Desc = styled.View`
-  background-color: ${colors.primary};
-  padding: 0 16px 16px 16px;
-`
-
 class NewPassword extends Component<Props, State> {
   static navigationOptions = {
-    title: 'New Password',
+    title: 'Password',
   }
+
+  componentWillMount() {
+    const { navigation, setIsNew } = this.props
+    if (navigation.state.params) {
+      setIsNew(navigation.state.params.isNew)
+    }
+  }
+
+  _confirmPassword = null
+  _scrollView = null
 
   render() {
     const {
@@ -58,44 +65,93 @@ class NewPassword extends Component<Props, State> {
     } = this.props
     return (
       <FlexGrow>
-        <Wrapper
-          behavior="padding"
-          style={{ flex: 1 }}
+        <UnderHeaderBlock>
+          <Text>Choose a strong password to protect your new wallet.</Text>
+        </UnderHeaderBlock>
+        <KeyboardAwareScrollView
+          style={{ flexGrow: 1 }}
           keyboardVerticalOffset={ifIphoneX() ? 88 : 64}
+          keyboardShouldPersistTaps="handled"
+          keyboardOpeningTime={0}
+          getTextInputRefs={() => [this._confirmPassword]}
+          innerRef={view => {
+            this._scrollView = view
+          }}
         >
-          <Spacer />
-          <FormTextInput
-            testID="EnterPassword"
-            autoFocus={true}
-            secureTextEntry={true}
-            onChange={setPassword}
-            value={password}
-            title="Password"
-          />
-          <Spacer />
-          <FormTextInput
-            testID="ConfirmPassword"
-            autoFocus={false}
-            secureTextEntry={true}
-            onChange={setConfirmPassword}
-            value={confirmPassword}
-            title="Confirm password"
-          />
-          <FlexGrow />
-          <Button
-            testID="EnterPassword"
-            title={'Continue'}
-            onPress={() => {
-              if (newWallet) {
-                navigation.navigate('ShowPaperKey')
-              } else {
-                navigation.navigate('VerifyPaperKey')
-              }
-            }}
-            disabled={!(password && password === confirmPassword)}
-          />
-          <Spacer />
-        </Wrapper>
+          <Wrapper>
+            <Spacer />
+            <FormTextInput
+              testID="EnterPassword"
+              returnKeyType={'next'}
+              autoFocus={true}
+              secureTextEntry={true}
+              onChange={setPassword}
+              onSubmitEditing={() => {
+                if (this._confirmPassword) {
+                  this._confirmPassword.focus()
+                }
+              }}
+              value={password}
+              title="Password"
+            />
+            <Spacer />
+            <FormTextInput
+              testID="ConfirmPassword"
+              returnKeyType={'done'}
+              autoFocus={false}
+              secureTextEntry={true}
+              getRef={input => {
+                this._confirmPassword = input
+              }}
+              onChange={setConfirmPassword}
+              onFocus={e => {
+                if (this._scrollView) {
+                  setTimeout(() => {
+                    if (this._scrollView) {
+                      this._scrollView.scrollToEnd()
+                    }
+                  }, 50)
+                }
+              }}
+              value={confirmPassword}
+              title="Confirm password"
+            />
+            <FlexGrow />
+            <Spacer />
+            <Button
+              testID="EnterPassword"
+              title={'Continue'}
+              onPress={() => {
+                if (newWallet) {
+                  navigation.navigate('ShowPaperKey')
+                } else {
+                  Alert.alert('Paper key', 'How many words in your paper key?', [
+                    {
+                      text: '12',
+                      onPress: () => {
+                        navigation.navigate('VerifyPaperKey', {
+                          title: 'Paper key',
+                          wordsCount: 12,
+                        })
+                      },
+                    },
+                    {
+                      text: '24',
+                      onPress: () => {
+                        navigation.navigate('VerifyPaperKey', {
+                          title: 'Paper key',
+                          wordsCount: 24,
+                        })
+                      },
+                    },
+                  ])
+                }
+              }}
+              disabled={!(password && password === confirmPassword)}
+            />
+            <Spacer />
+          </Wrapper>
+        </KeyboardAwareScrollView>
       </FlexGrow>
     )
   }
@@ -115,6 +171,9 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   setConfirmPassword: confirmPassword => {
     dispatch({ type: 'WALLET_INIT_SET_CONFIRM_PASSWORD', confirmPassword })
+  },
+  setIsNew: value => {
+    dispatch({ type: 'WALLET_INIT_SET_IS_NEW', value })
   },
 })
 
