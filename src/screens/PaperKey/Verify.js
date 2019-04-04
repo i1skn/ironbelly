@@ -104,7 +104,7 @@ class Verify extends Component<Props, State> {
           <Fragment>
             <UnderHeaderBlock
               onLayout={event => {
-                this.setState({ scrollOffset: event.nativeEvent.layout.height })
+                this.setState({ scrollOffset: event.nativeEvent.layout.height + 8 })
               }}
             >
               <Text>
@@ -130,6 +130,7 @@ class Verify extends Component<Props, State> {
                       getRef={input => {
                         this._inputs[i] = input
                       }}
+                      testID={`VerifyWord${i + 1}`}
                       number={i}
                       autoFocus={!i}
                       returnKeyType={i < wordsCount - 1 ? 'next' : 'done'}
@@ -141,7 +142,7 @@ class Verify extends Component<Props, State> {
                             if (this._scrollView) {
                               this._scrollView.scrollToEnd()
                             }
-                          }, 50)
+                          }, 100)
                         }
                       }}
                       onChange={value => {
@@ -160,7 +161,7 @@ class Verify extends Component<Props, State> {
                 })}
               </Words>
               <Button
-                testID="VerifyPaperKeyFinishButton"
+                testID="VerifyPaperKeyContinueButton"
                 title="Continue"
                 disabled={!verified}
                 onPress={() => {

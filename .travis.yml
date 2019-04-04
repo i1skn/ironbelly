@@ -1,5 +1,5 @@
 language: swift
-osx_image: xcode10.1
+osx_image: xcode10.2
 
 cache:
   directories:
@@ -15,6 +15,7 @@ env:
   global:
   - NODE_VERSION=stable
   - CODE_SIGNING_REQUIRED=NO
+  - E2E_TEST=yes
 
 jobs:
   include:

@@ -74,6 +74,21 @@ macro_rules! unwrap_to_c (
     }
 ));
 
+macro_rules! unwrap_to_c_with_e2e (
+    ($e2e_func:expr, $func:expr, $error:expr) => (
+    match if option_env!("E2E_TEST").is_some() { $e2e_func } else { $func } {
+        Ok(res) => {
+            *$error = 0;
+            CString::new(res.to_owned()).unwrap().into_raw()
+        }
+        Err(e) => {
+            *$error = 1;
+            CString::new(
+                serde_json::to_string(&format!("{}",e)).unwrap()).unwrap().into_raw()
+        }
+    }
+));
+
 fn check_password(path: &str, password: &str) -> Result<String, grin_wallet::Error> {
     let wallet_config = get_wallet_config(path, "");
     match WalletSeed::from_file(&wallet_config, &password) {
@@ -98,9 +113,13 @@ fn seed_new(seed_length: usize) -> Result<String, grin_wallet::Error> {
     WalletSeed::init_new(seed_length).to_mnemonic()
 }
 
+fn e2e_seed_new() -> Result<String, grin_wallet::Error> {
+    Ok("confirm erupt mirror palace hockey final admit announce minimum apple work slam return jeans lobster chalk fatal sense prison water host fat eagle seed".to_owned())
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c_char {
-    unwrap_to_c!(seed_new(seed_length as usize), error)
+    unwrap_to_c_with_e2e!(e2e_seed_new(), seed_new(seed_length as usize), error)
 }
 
 fn wallet_init(

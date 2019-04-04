@@ -114,6 +114,7 @@ class Show extends Component<Props, State> {
             paddingLeft: 16,
             paddingRight: 16,
           }}
+          testID="ShowPaperKeyScrollView"
           showsVerticalScrollIndicator={true}
         >
           <Words>
@@ -121,14 +122,14 @@ class Show extends Component<Props, State> {
               return (
                 <Word key={i}>
                   <WordNumber>{i + 1}</WordNumber>
-                  <WordText>{word}</WordText>
+                  <WordText testID={`Word${i + 1}`}>{word}</WordText>
                 </Word>
               )
             })}
           </Words>
           {!fromSettings && (
             <Button
-              testID="ShowPaperKeyFinishButton"
+              testID="ShowPaperKeyContinueButton"
               title="Continue"
               disabled={false}
               onPress={() => {

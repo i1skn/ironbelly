@@ -81,7 +81,7 @@ class NewPassword extends Component<Props, State> {
           <Wrapper>
             <Spacer />
             <FormTextInput
-              testID="EnterPassword"
+              testID="Password"
               returnKeyType={'next'}
               autoFocus={true}
               secureTextEntry={true}
@@ -110,7 +110,7 @@ class NewPassword extends Component<Props, State> {
                     if (this._scrollView) {
                       this._scrollView.scrollToEnd()
                     }
-                  }, 50)
+                  }, 100)
                 }
               }}
               value={confirmPassword}
@@ -119,7 +119,7 @@ class NewPassword extends Component<Props, State> {
             <FlexGrow />
             <Spacer />
             <Button
-              testID="EnterPassword"
+              testID="SubmitPassword"
               title={'Continue'}
               onPress={() => {
                 if (newWallet) {

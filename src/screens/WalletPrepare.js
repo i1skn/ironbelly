@@ -85,7 +85,7 @@ class WalletPrepare extends Component<Props, State> {
             <StatusText>Your wallet was succesfully created!</StatusText>
             <Spacer />
             <Button
-              testID="ShowPaperKeyFinishButton"
+              testID="ShowMeButton"
               title="Show me"
               disabled={false}
               onPress={() => {
