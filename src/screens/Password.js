@@ -19,9 +19,8 @@ import { View, ActivityIndicator, Alert, Button as NativeButton } from 'react-na
 import FormTextInput from 'components/FormTextInput'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
-import RNFS from 'react-native-fs'
 
-import { WALLET_DATA_DIRECTORY, Spacer, KeyboardAvoidingWrapper, FlexGrow, LoaderView } from 'common'
+import { Spacer, KeyboardAvoidingWrapper, FlexGrow, LoaderView } from 'common'
 import colors from 'common/colors'
 import { Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
@@ -34,7 +33,7 @@ type Props = {
   error: { message: string },
   password: string,
   inProgress: boolean,
-  clearWallet: () => void,
+  destroyWallet: () => void,
 }
 type State = {}
 
@@ -58,7 +57,14 @@ class Password extends Component<Props, State> {
   }
 
   render() {
-    const { password, navigation, setPassword, checkPassword, inProgress, clearWallet } = this.props
+    const {
+      password,
+      navigation,
+      setPassword,
+      checkPassword,
+      inProgress,
+      destroyWallet,
+    } = this.props
 
     return (
       <KeyboardAvoidingWrapper behavior="padding" enabled>
@@ -109,10 +115,7 @@ class Password extends Component<Props, State> {
                                 text: 'Destroy',
                                 style: 'destructive',
                                 onPress: () => {
-                                  RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
-                                    clearWallet()
-                                    navigation.navigate('Initial')
-                                  })
+                                  destroyWallet()
                                 },
                               },
                             ]
@@ -154,9 +157,8 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   checkPassword: () => {
     dispatch({ type: 'CHECK_PASSWORD' })
   },
-  clearWallet: () => {
-    dispatch({ type: 'TX_LIST_CLEAR' })
-    dispatch({ type: 'WALLET_CLEAR' })
+  destroyWallet: () => {
+    dispatch({ type: 'WALLET_DESTROY_REQUEST' })
   },
 })
 

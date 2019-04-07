@@ -20,6 +20,8 @@ import { type State as SettingsState } from 'modules/settings'
 import { type State as ToastedState } from 'modules/toaster'
 import { type State as WalletState } from 'modules/wallet'
 
+import { type NavigationState } from 'react-navigation'
+
 export type balanceRequestAction = {
   type: 'BALANCE_REQUEST',
 }
@@ -82,7 +84,7 @@ export type txPostCloseAction = { type: 'TX_POST_CLOSE' }
 export type txPostRequestAction = { type: 'TX_POST_REQUEST', txSlateId: string }
 export type txPostSuccessAction = { type: 'TX_POST_SUCCESS' }
 export type txPostFalureAction = { type: 'TX_POST_FAILURE', code?: number, message: string }
-export type setSettings = { type: 'SET_SETTINGS', newSettings: SettingsState }
+export type setSettingsAction = { type: 'SET_SETTINGS', newSettings: SettingsState }
 export type setPasswordAction = { type: 'SET_PASSWORD', password: string }
 export type checkPasswordAction = { type: 'CHECK_PASSWORD' }
 export type validPasswordAction = { type: 'VALID_PASSWORD' }
@@ -176,6 +178,23 @@ export type walletPhraseFalureAction = {
   code?: number,
   message: string,
 }
+
+export type walletDestroyRequestAction = { type: 'WALLET_DESTROY_REQUEST' }
+export type walletDestroySuccessAction = { type: 'WALLET_DESTROY_SUCCESS' }
+export type walletDestroyFalureAction = {
+  type: 'WALLET_DESTROY_FAILURE',
+  code?: number,
+  message: string,
+}
+
+export type walletMigrateToMainnetRequestAction = { type: 'WALLET_MIGRATE_TO_MAINNET_REQUEST' }
+export type walletMigrateToMainnetSuccessAction = { type: 'WALLET_MIGRATE_TO_MAINNET_SUCCESS' }
+export type walletMigrateToMainnetFalureAction = {
+  type: 'WALLET_MIGRATE_TO_MAINNET_FAILURE',
+  code?: number,
+  message: string,
+}
+
 export type toastShowAction = { type: 'TOAST_SHOW', text: string, styles: any }
 export type toastClearAction = { type: 'TOAST_CLEAR' }
 
@@ -237,7 +256,7 @@ export type Action =
   | txPostRequestAction
   | txPostSuccessAction
   | txPostFalureAction
-  | setSettings
+  | setSettingsAction
   | setPasswordAction
   | checkPasswordAction
   | validPasswordAction
@@ -290,6 +309,12 @@ export type Action =
   | walletPhraseRequestAction
   | walletPhraseSuccessAction
   | walletPhraseFalureAction
+  | walletDestroyRequestAction
+  | walletDestroySuccessAction
+  | walletDestroyFalureAction
+  | walletMigrateToMainnetRequestAction
+  | walletMigrateToMainnetSuccessAction
+  | walletMigrateToMainnetFalureAction
 
 export type Currency = 'EUR' | 'USD'
 export type State = {
@@ -298,6 +323,7 @@ export type State = {
   tx: TxState,
   toaster: ToastedState,
   wallet: WalletState,
+  nav: NavigationState,
 }
 
 export type GetState = () => State
@@ -356,6 +382,15 @@ export type Tx = {
 }
 
 // Rust structures
+
+export type RustState = {
+  wallet_dir: string,
+  check_node_api_http_addr: string,
+  chain: string,
+  account?: string,
+  password?: string,
+}
+
 export type RustBalance = {
   amount_awaiting_confirmation: number,
   amount_currently_spendable: number,

@@ -64,14 +64,15 @@ const Wrapper = styled.View`
   background-color: ${() => colors.primary};
 `
 
-const HelpIcon = styled.TouchableOpacity`
-  width: 24;
+const Floonet = styled(Text)`
+  width: 64;
   height: 24;
 `
 
 const SettingsIcon = styled.TouchableOpacity`
-  width: 24;
+  width: 64;
   height: 24;
+  align-items: flex-end;
 `
 
 const SettingsIconImage = styled.Image`
@@ -97,14 +98,15 @@ type Props = {
   currency: string,
   isOffline: boolean,
   navigation: Navigation,
+  isFloonet: boolean,
 }
 
-const BalanceComponent = ({ balance, currency, isOffline, navigation }: Props) => {
+const BalanceComponent = ({ isFloonet, balance, currency, isOffline, navigation }: Props) => {
   return (
     <React.Fragment>
       <Wrapper>
         <TopLine>
-          <HelpIcon />
+          {isFloonet && <Floonet>Testnet</Floonet>}
           <BalanceTitle>Balance</BalanceTitle>
           <SettingsIcon onPress={() => navigation.navigate('Settings')}>
             <SettingsIconImage source={SettingsImg} />

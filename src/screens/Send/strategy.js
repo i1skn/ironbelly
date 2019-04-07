@@ -40,7 +40,7 @@ const Option = styled.TouchableOpacity`
   flex-grow: 1;
   border-left-width: 5;
   background: #f8f8f8;
-  border-left-color: ${props => (props.active ? colors.primary : colors.lightGrey)};
+  border-left-color: ${props => (props.active ? colors.primary : colors.grey[300])};
   align-items: flex-start;
   padding: 8px 0 8px 16px;
   margin-bottom: 32px;

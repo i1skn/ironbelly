@@ -93,22 +93,14 @@ class Show extends Component<Props, State> {
 
     return (
       <Wrapper>
-        {fromSettings ? (
-          <Header
-            leftIcon={CloseImg}
-            leftText={'Close'}
-            leftAction={() => this.props.navigation.goBack()}
-            title={'Paper key'}
-          />
-        ) : (
-          <UnderHeaderBlock>
-            <Text>
-              Your paper key is the only way to restore your Grin wallet if your phone is lost,
-              stolen, broken, or upgraded. It consists of 24 words. Please write them down on a
-              piece of paper and keep safe.
-            </Text>
-          </UnderHeaderBlock>
-        )}
+        <UnderHeaderBlock>
+          <Text>
+            Your paper key is the only way to restore your Grin wallet if your phone is lost,
+            stolen, broken, or upgraded.
+            {!fromSettings &&
+              'It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
+          </Text>
+        </UnderHeaderBlock>
         <ScrollView
           style={{
             paddingLeft: 16,

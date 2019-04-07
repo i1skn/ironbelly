@@ -18,14 +18,17 @@ import { isFSA } from 'flux-standard-action'
 import { combineReducers } from 'redux'
 import { reducer as balanceReducer, sideEffects as balanceSideEffects } from 'modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'modules/tx'
-import { reducer as settingsReducer } from 'modules/settings'
+import { reducer as settingsReducer, sideEffects as settingsEffects } from 'modules/settings'
 import { reducer as toasterReducer, sideEffects as toasterEffects } from 'modules/toaster'
 import { reducer as walletReducer, sideEffects as walletEffects } from 'modules/wallet'
 import { type Store, type Action, type PromiseAction } from 'common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+import { navReducer, navMiddleware } from 'modules/navigation'
 
-type Effect = (action: any, store: Store) => Action | PromiseAction
+type Effect = (action: any, store: Store) => ?(Action | PromiseAction)
 type Effects = { [string]: Effect }
 
 export const rootReducer = combineReducers({
@@ -34,6 +37,7 @@ export const rootReducer = combineReducers({
   settings: settingsReducer,
   toaster: toasterReducer,
   wallet: walletReducer,
+  nav: navReducer,
 })
 
 const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => (
@@ -43,7 +47,7 @@ const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => 
   const effect = effects[action.type]
   if (effect) {
     const result = effect(action, store)
-    if (!(result instanceof Promise) && isFSA(result)) {
+    if (result && !(result instanceof Promise) && isFSA(result)) {
       store.dispatch(result)
     } else if (result instanceof Promise) {
       result.then(res => isFSA(res) && store.dispatch(res))
@@ -56,9 +60,22 @@ const sideEffects = {
   ...txSideEffects,
   ...walletEffects,
   ...toasterEffects,
+  ...settingsEffects,
 }
 
 const logger = createLogger({})
 const sideEffectsMiddleware = createMiddleware(sideEffects)
 
-export const store = createStore(rootReducer, applyMiddleware(sideEffectsMiddleware, logger))
+const persistConfig = {
+  key: 'redux',
+  storage,
+  whitelist: ['settings'],
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
+export const store = createStore(
+  persistedReducer,
+  applyMiddleware(navMiddleware, sideEffectsMiddleware, logger)
+)
+export const persistor = persistStore(store)

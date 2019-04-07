@@ -28,13 +28,13 @@ import TxListItem from 'components/TxListItem'
 import {
   type Balance as BalanceType,
   type State as GlobalState,
-  type Currency,
   type Tx,
   type Navigation,
 } from 'common/types'
 import colors from 'common/colors'
 
 import { type WalletInitState } from 'modules/wallet'
+import { type State as SettingsState } from 'modules/settings'
 
 //Images
 import SendTXImg from 'assets/images/SendTX.png'
@@ -43,9 +43,7 @@ type Props = {
   getBalance: () => void,
   balance: BalanceType,
   txs: Array<Tx>,
-  settings: {
-    currency: Currency,
-  },
+  settings: SettingsState,
   txCancel: (id: number, slateId: string, isResponse: boolean) => void,
   txsGet: (showLoader: boolean, refreshFromNode: boolean) => void,
   resetTxForm: () => void,
@@ -111,7 +109,7 @@ const ListItemSeparator = styled.View`
 const EmptyTxListMessage = styled(Text)`
   font-size: 18;
   text-align: center;
-  color: ${() => colors.darkestGrey};
+  color: ${() => colors.grey[900]};
   margin-bottom: 20;
 `
 class Overview extends Component<Props, State> {
@@ -168,13 +166,14 @@ class Overview extends Component<Props, State> {
       firstLoading,
       txConfirm,
     } = this.props
-    const { currency } = settings
+    const { currency, chain } = settings
     return (
       <Wrapper>
         <HeaderSpan bgColor={colors.primary} />
 
         {(walletInit.inProgress && <RecoveryProgress />) || (
           <Balance
+            isFloonet={chain === 'floonet'}
             balance={balance}
             currency={currency}
             isOffline={isOffline}

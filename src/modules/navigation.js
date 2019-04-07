@@ -14,30 +14,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { type Action, type Currency } from 'common/types'
+import {
+  createReduxContainer,
+  createReactNavigationReduxMiddleware,
+  createNavigationReducer,
+} from 'react-navigation-redux-helpers'
+import AppNavigator from 'modules/navigation/routes'
 
-export type State = {
-  currency: Currency,
-  checkNodeApiHttpAddr: string,
-  chain: 'floonet' | 'mainnet',
-}
+const navReducer = createNavigationReducer(AppNavigator)
+const navMiddleware = createReactNavigationReduxMiddleware(state => state.nav)
 
-export const initialState: State = {
-  currency: 'USD',
-  checkNodeApiHttpAddr: 'http://grinnode.cycle42.com:3413',
-  chain: 'mainnet',
-}
+const AppContainer = createReduxContainer(AppNavigator)
 
-export const reducer = (state: State = initialState, action: Action): State => {
-  switch (action.type) {
-    case 'SET_SETTINGS':
-      return {
-        ...state,
-        ...action.newSettings,
-      }
-    default:
-      return state
-  }
-}
-
-export const sideEffects = {}
+export { AppContainer, navReducer, navMiddleware }

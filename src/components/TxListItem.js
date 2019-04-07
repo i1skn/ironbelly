@@ -14,7 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-//@flow
 import * as React from 'react'
 import { View } from 'react-native'
 
@@ -28,7 +27,7 @@ import colors from 'common/colors'
 
 const Time = styled(Text)`
   font-size: 14;
-  color: ${() => colors.darkGrey};
+  color: ${() => colors.grey[700]};
 `
 const UnconfirmedGuide = styled(Text)`
   font-size: 14;

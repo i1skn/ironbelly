@@ -15,23 +15,26 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { View } from 'react-native'
+import { Button as NativeButton, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Alert } from 'react-native'
 
-import { FlexGrow } from 'common'
+import { FlexGrow, Spacer } from 'common'
 import colors from 'common/colors'
 
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
+import { initialState as initialSettings } from 'modules/settings'
 
 type Props = {
   walletInit: () => void,
+  migrateToMainnet: () => void,
   error: Error,
   walletCreated: boolean,
   navigation: Navigation,
+  isFloonet: boolean,
 }
 type State = {
   inputValue: string,
@@ -60,22 +63,13 @@ export const AppSlogan = styled(Text)`
   font-size: 20;
   font-weight: 500;
   margin-bottom: 30;
-  color: ${() => colors.grey};
+  color: ${() => colors.grey[500]};
 `
 
-const withFloonetWarning = (cb: () => void) => {
-  return () =>
-    Alert.alert(
-      'Testnet ONLY!',
-      'This version currently works only with the Grin test network (floonet)! Mainnet support is coming soon!',
-      [
-        {
-          text: 'Continue',
-          onPress: cb,
-        },
-      ]
-    )
-}
+export const FloonetDisclaimer = styled.View`
+  width: 100%;
+  align-items: center;
+`
 
 class Landing extends Component<Props, State> {
   static navigationOptions = {
@@ -91,7 +85,7 @@ class Landing extends Component<Props, State> {
   componentDidMount() {}
 
   render() {
-    const { navigation } = this.props
+    const { isFloonet, navigation, migrateToMainnet } = this.props
 
     return (
       <Wrapper behavior="padding" testID="LandingScreen">
@@ -105,17 +99,26 @@ class Landing extends Component<Props, State> {
           title="Create new wallet"
           testID="NewWalletButton"
           disabled={false}
-          onPress={withFloonetWarning(() => {
+          onPress={() => {
             navigation.navigate('NewPassword', { isNew: true })
-          })}
+          }}
         />
         <ActionButton
           title="Restore from paper key"
           disabled={false}
-          onPress={withFloonetWarning(() => {
+          onPress={() => {
             navigation.navigate('NewPassword', { isNew: false })
-          })}
+          }}
         />
+        <Spacer />
+        {isFloonet && (
+          <FloonetDisclaimer>
+            <Text style={{ textAlign: 'center', width: '100%' }}>
+              This app is configured to use testnet
+            </Text>
+            <NativeButton title="Switch to mainnet" onPress={() => migrateToMainnet()} />
+          </FloonetDisclaimer>
+        )}
         <FlexGrow />
         <Text style={{ textAlign: 'center', width: '100%' }}>
           Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
@@ -129,9 +132,14 @@ const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,
+  isFloonet: state.settings.chain === 'floonet',
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({})
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  migrateToMainnet: () => {
+    dispatch({ type: 'SET_SETTINGS', newSettings: initialSettings })
+  },
+})
 
 export default connect(
   mapStateToProps,

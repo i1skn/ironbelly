@@ -14,21 +14,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NativeModules, NativeEventEmitter } from 'react-native'
+import { NativeModules } from 'react-native'
 import {
   type Action,
   type walletInitRequestAction,
   type seedNewRequestAction,
   type walletPhraseRequestAction,
-  type walletRecoveryRequestAction,
   type invalidPasswordAction,
+  type walletDestroyRequestAction,
+  type walletDestroySuccessAction,
+  type walletMigrateToMainnetRequestAction,
+  type walletMigrateToMainnetSuccessAction,
   type checkPasswordAction,
   type Store,
 } from 'common/types'
 import { log } from 'common/logger'
 import { combineReducers } from 'redux'
-import { checkWalletDataDirectory, WALLET_DATA_DIRECTORY } from 'common'
+import { getStateForRust, checkWalletDataDirectory } from 'common'
 import RNFS from 'react-native-fs'
+import { WALLET_DATA_DIRECTORY } from 'common'
+import { NavigationActions } from 'react-navigation'
+
 import { ToastStyles } from 'react-native-toaster'
 
 const { GrinBridge } = NativeModules
@@ -103,6 +109,9 @@ const walletInit = function(
 ): WalletInitState {
   switch (action.type) {
     case 'WALLET_CLEAR': {
+      return initialState.walletInit
+    }
+    case 'WALLET_DESTROY_SUCCESS': {
       return initialState.walletInit
     }
     case 'WALLET_INIT_REQUEST':
@@ -285,10 +294,9 @@ export const sideEffects = {
       })
   },
   ['WALLET_INIT_REQUEST']: (action: walletInitRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
     const { password, phrase, isNew } = action
     return checkWalletDataDirectory().then(() => {
-      return GrinBridge.walletInit(phrase, password, checkNodeApiHttpAddr, isNew)
+      return GrinBridge.walletInit(getStateForRust(store.getState()), phrase, password, isNew)
         .then((mnemonic: string) => {
           store.dispatch({ type: 'WALLET_INIT_SUCCESS', mnemonic })
           store.dispatch({ type: 'SET_PASSWORD', password })
@@ -301,7 +309,7 @@ export const sideEffects = {
   },
   ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
     const { value } = store.getState().wallet.password
-    return GrinBridge.checkPassword(value)
+    return GrinBridge.checkPassword(getStateForRust(store.getState()), value)
       .then((mnemonic: string) => {
         store.dispatch({ type: 'VALID_PASSWORD' })
       })
@@ -319,16 +327,32 @@ export const sideEffects = {
     })
   },
   ['WALLET_PHRASE_REQUEST']: (action: walletPhraseRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const { value } = store.getState().wallet.password
-    return GrinBridge.walletPhrase(value, checkNodeApiHttpAddr)
+    return GrinBridge.walletPhrase(getStateForRust(store.getState()))
       .then((phrase: string) => {
         store.dispatch({ type: 'WALLET_PHRASE_SUCCESS', phrase })
       })
       .catch(error => {
-        const e = JSON.parse(error.message)
-        store.dispatch({ type: 'WALLET_PHRASE_FAILURE', ...e })
-        log(e, true)
+        store.dispatch({ type: 'WALLET_PHRASE_FAILURE', message: error.message })
+        log(error, true)
       })
+  },
+  ['WALLET_DESTROY_REQUEST']: async (action: walletDestroyRequestAction, store: Store) => {
+    try {
+      await RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
+        store.dispatch({ type: 'TX_LIST_CLEAR' })
+        store.dispatch({ type: 'WALLET_DESTROY_SUCCESS' })
+      })
+    } catch (error) {
+      store.dispatch({ type: 'WALLET_PHRASE_FAILURE', message: error.message })
+      log(error, true)
+    }
+  },
+  ['WALLET_DESTROY_SUCCESS']: (action: walletDestroySuccessAction, store: Store) => {
+    store.dispatch(NavigationActions.navigate({ routeName: 'Initial' }))
+  },
+  ['WALLET_MIGRATE_TO_MAINNET_REQUEST']: (action: walletDestroyRequestAction, store: Store) => {
+    const settings = store.getState().settings
+    store.dispatch({ type: 'SET_SETTINGS', newSettings: { ...settings, chain: 'mainnet' } })
+    store.dispatch({ type: 'WALLET_DESTROY_REQUEST' })
   },
 }

@@ -19,9 +19,8 @@ import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'
-import { ToastStyles } from 'react-native-toaster'
 
-import { mapRustTx, mapRustOutputStrategy, getSlatePath } from 'common'
+import { getStateForRust, mapRustTx, mapRustOutputStrategy, getSlatePath } from 'common'
 import { log } from 'common/logger'
 import {
   type RustTx,
@@ -208,8 +207,6 @@ const initialState: State = {
 
 export const sideEffects = {
   ['TX_LIST_REQUEST']: async (action: txListRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
     try {
       let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
       if (!finalized) {
@@ -222,9 +219,7 @@ export const sideEffects = {
       }
       const newPosted = []
       const data = await GrinBridge.txsGet(
-        'default',
-        password,
-        checkNodeApiHttpAddr,
+        getStateForRust(store.getState()),
         action.refreshFromNode
       ).then(JSON.parse)
       const mappedData = data[1]
@@ -259,9 +254,7 @@ export const sideEffects = {
     }
   },
   ['TX_CANCEL_REQUEST']: (action: txCancelRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
-    return GrinBridge.txCancel('default', password, checkNodeApiHttpAddr, action.id)
+    return GrinBridge.txCancel(getStateForRust(store.getState()), action.id)
       .then(list => {
         store.dispatch({ type: 'TX_CANCEL_SUCCESS' })
         store.dispatch({
@@ -283,9 +276,7 @@ export const sideEffects = {
       })
   },
   ['TX_GET_REQUEST']: (action: txGetRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
-    return GrinBridge.txGet('default', password, checkNodeApiHttpAddr, true, action.txSlateId)
+    return GrinBridge.txGet(getStateForRust(store.getState()), true, action.txSlateId)
       .then((json: string) => JSON.parse(json))
       .then(result => {
         store.dispatch({ type: 'TX_GET_SUCCESS', validated: result[0], tx: result[1][0] })
@@ -297,12 +288,8 @@ export const sideEffects = {
       })
   },
   ['TX_CREATE_REQUEST']: (action: txCreateRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
     return GrinBridge.txCreate(
-      'default',
-      password,
-      checkNodeApiHttpAddr,
+      getStateForRust(store.getState()),
       action.amount,
       action.selectionStrategyIsUseAll,
       action.message
@@ -323,17 +310,13 @@ export const sideEffects = {
       })
   },
   ['TX_SEND_HTTPS_REQUEST']: async (action: txSendHttpsRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
     try {
       let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
       if (!finalized) {
         finalized = []
       }
       const slate = await GrinBridge.txSendHttps(
-        'default',
-        password,
-        checkNodeApiHttpAddr,
+        getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
         action.message,
@@ -351,8 +334,6 @@ export const sideEffects = {
     }
   },
   ['TX_POST_REQUEST']: async (action: txPostRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
     try {
       let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
       if (!finalized) {
@@ -362,7 +343,7 @@ export const sideEffects = {
       if (!posted) {
         posted = []
       }
-      await GrinBridge.txPost('default', password, checkNodeApiHttpAddr, action.txSlateId)
+      await GrinBridge.txPost(getStateForRust(store.getState()), action.txSlateId)
       posted.push(action.txSlateId)
       let pos = finalized.indexOf(action.txSlateId)
       if (pos !== -1) {
@@ -382,15 +363,7 @@ export const sideEffects = {
     }
   },
   ['TX_RECEIVE_REQUEST']: (action: txReceiveRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
-    return GrinBridge.txReceive(
-      'default',
-      password,
-      checkNodeApiHttpAddr,
-      action.slatePath,
-      'Received'
-    )
+    return GrinBridge.txReceive(getStateForRust(store.getState()), action.slatePath, 'Received')
       .then((json: string) => JSON.parse(json))
       .then((slate: Slate) => {
         store.dispatch({ type: 'TX_RECEIVE_SUCCESS' })
@@ -406,17 +379,13 @@ export const sideEffects = {
       })
   },
   ['TX_FINALIZE_REQUEST']: async (action: txFinalizeRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
     try {
       let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
       if (!finalized) {
         finalized = []
       }
       const slate = await GrinBridge.txFinalize(
-        'default',
-        password,
-        checkNodeApiHttpAddr,
+        getStateForRust(store.getState()),
         action.responseSlatePath
       ).then(JSON.parse)
       store.dispatch({ type: 'TX_FINALIZE_SUCCESS' })
@@ -484,10 +453,7 @@ export const sideEffects = {
     action: txFormOutputStrategiesRequestAction,
     store: Store
   ) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
-
-    return GrinBridge.txStrategies('default', password, checkNodeApiHttpAddr, action.amount)
+    return GrinBridge.txStrategies(getStateForRust(store.getState()), action.amount)
       .then((json: string) => JSON.parse(json))
       .then(outputStrategies => {
         store.dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS', outputStrategies })

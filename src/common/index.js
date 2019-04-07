@@ -24,6 +24,8 @@ import {
   type OutputStrategy,
   type RustBalance,
   type Balance,
+  type State,
+  type RustState,
 } from 'common/types'
 import colors from 'common/colors'
 import styled from 'styled-components/native'
@@ -87,6 +89,17 @@ export const mapRustOutputStrategy = (oS: RustOutputStrategy): OutputStrategy =>
     fee: oS.fee,
     selectionStrategyIsUseAll: oS.selection_strategy_is_use_all,
   }
+}
+
+export const getStateForRust = (state: State): string => {
+  const result: RustState = {
+    wallet_dir: APPLICATION_SUPPORT_DIRECTORY,
+    check_node_api_http_addr: state.settings.checkNodeApiHttpAddr,
+    chain: state.settings.chain,
+    account: 'default',
+    password: state.wallet.password.value,
+  }
+  return JSON.stringify(result)
 }
 
 export const SLATES_DIRECTORY = RNFS.DocumentDirectoryPath + `/slates`

@@ -16,7 +16,7 @@
 
 import { NativeModules } from 'react-native'
 import moment from 'moment'
-import { mapRustBalance } from 'common'
+import { getStateForRust, mapRustBalance } from 'common'
 import {
   type Action,
   type balanceRequestAction,
@@ -53,9 +53,7 @@ const initialState: State = {
 
 export const sideEffects = {
   ['BALANCE_REQUEST']: (action: balanceRequestAction, store: Store) => {
-    const { checkNodeApiHttpAddr } = store.getState().settings
-    const password = store.getState().wallet.password.value
-    return GrinBridge.balance('default', password, checkNodeApiHttpAddr, true)
+    return GrinBridge.balance(getStateForRust(store.getState()), true)
       .then((jsonBalance: string) => JSON.parse(jsonBalance))
       .then((data: RustBalance) => {
         store.dispatch({ type: 'BALANCE_SUCCESS', data: mapRustBalance(data) })
