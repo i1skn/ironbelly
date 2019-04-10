@@ -45,6 +45,7 @@ struct State {
     wallet_dir: String,
     check_node_api_http_addr: String,
     chain: String,
+    minimum_confirmations: u64,
     account: Option<String>,
     password: String,
 }
@@ -273,9 +274,11 @@ pub unsafe extern "C" fn c_txs_get(
 }
 
 fn balance(state_json: &str, refresh_from_node: bool) -> Result<String, grin_wallet::Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
     let mut api = APIOwner::new(wallet.clone());
-    let (_validated, wallet_info) = api.retrieve_summary_info(refresh_from_node, 1)?;
+    let (_validated, wallet_info) =
+        api.retrieve_summary_info(refresh_from_node, state.minimum_confirmations)?;
     Ok(serde_json::to_string(&wallet_info).unwrap())
 }
 
@@ -299,10 +302,13 @@ struct Strategy {
 }
 
 fn tx_strategies(state_json: &str, amount: u64) -> Result<String, grin_wallet::Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
     let mut api = APIOwner::new(wallet.clone());
     let mut result = vec![];
-    if let Ok(smallest) = api.estimate_initiate_tx(None, amount, 1, 1, false) {
+    if let Ok(smallest) =
+        api.estimate_initiate_tx(None, amount, state.minimum_confirmations, 1, false)
+    {
         result.push(Strategy {
             selection_strategy_is_use_all: false,
             total: smallest.0,
@@ -310,7 +316,7 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, grin_wallet::E
         })
     }
     let all = api
-        .estimate_initiate_tx(None, amount, 1, 1, true)
+        .estimate_initiate_tx(None, amount, state.minimum_confirmations, 1, true)
         .map_err(|e| grin_wallet::Error::from(e))?;
     result.push(Strategy {
         selection_strategy_is_use_all: true,
@@ -335,12 +341,13 @@ fn tx_create(
     amount: u64,
     selection_strategy_is_use_all: bool,
 ) -> Result<String, grin_wallet::Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
     let mut api = APIOwner::new(wallet.clone());
     let (slate, lock_fn) = api.initiate_tx(
         None,
         amount,
-        1,
+        state.minimum_confirmations,
         1,
         selection_strategy_is_use_all,
         Some(message.to_owned()),
@@ -451,13 +458,14 @@ fn tx_send_https(
     amount: u64,
     selection_strategy_is_use_all: bool,
 ) -> Result<String, grin_wallet::Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
     let mut api = APIOwner::new(wallet.clone());
     let adapter = HTTPWalletCommAdapter::new();
     let (slate, lock_fn) = api.initiate_tx(
         None,
         amount,
-        1,
+        state.minimum_confirmations,
         1,
         selection_strategy_is_use_all,
         Some(message.to_owned()),
@@ -536,4 +544,16 @@ pub unsafe extern "C" fn c_tx_post(
         tx_post(&c_str_to_rust(state_json), &c_str_to_rust(tx_slate_id)),
         error
     )
+}
+
+fn wallet_repair(state_json: &str) -> Result<String, grin_wallet::Error> {
+    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let mut api = APIOwner::new(wallet.clone());
+    api.check_repair()?;
+    Ok("".to_owned())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_wallet_repair(state: *const c_char, error: *mut u8) -> *const c_char {
+    unwrap_to_c!(wallet_repair(&c_str_to_rust(state),), error)
 }

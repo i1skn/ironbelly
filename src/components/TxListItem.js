@@ -71,8 +71,10 @@ const DetailsChevron = styled.Image`
 type Props = {
   tx: Tx,
   currency: Currency,
+  minimumConfirmations: number,
 }
 const TxListItem = (props: Props) => {
+  const { minimumConfirmations } = props
   const { type, confirmed, creationTime, amount, fee } = props.tx
   const isSent = type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
   return (
@@ -87,7 +89,9 @@ const TxListItem = (props: Props) => {
         ) : (
           <UnconfirmedGuide>
             {type === 'TxPosted'
-              ? 'Awaiting confirmation'
+              ? `Awaiting ${minimumConfirmations} confirmation${
+                  minimumConfirmations > 1 ? 's' : ''
+                }`
               : type === 'TxFinalized'
               ? 'Click to confirm'
               : isSent

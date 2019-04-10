@@ -13,7 +13,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation'
+import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
@@ -25,12 +25,13 @@ import LandingScreen from 'screens/Landing'
 import InitialScreen from 'screens/Initial'
 import ShowPaperKeyScreen from 'screens/PaperKey/Show'
 import VerifyPaperKeyScreen from 'screens/PaperKey/Verify'
-import RecoveryScreen from 'screens/Recovery/main'
 import TopupScreen from 'screens/Topup'
 import PasswordScreen from 'screens/Password'
-import RecoveryInProgressScreen from 'screens/RecoveryInProgress'
 import NewPasswordScreen from 'screens/NewPassword'
 import WalletPrepareScreen from 'screens/WalletPrepare'
+import WalletRepairScreen from 'screens/WalletRepair'
+import SettingsGrinNodeScreen from 'screens/Settings/GrinNode'
+import LegalDisclaimerScreen from 'screens/LegalDisclaimer'
 
 import colors from 'common/colors'
 import { appFont } from 'components/CustomFont'
@@ -53,6 +54,12 @@ const defaultNavigationOptions = {
 const MainStack = createStackNavigator(
   {
     Settings: SettingsScreen,
+    SettingsGrinNode: SettingsGrinNodeScreen,
+    SettingsLegalDisclaimer: {
+      screen: LegalDisclaimerScreen,
+      params: { alreadyAccepted: true },
+    },
+
     Overview: {
       screen: OverviewScreen,
       params: {},
@@ -88,12 +95,15 @@ const AppStack = createStackNavigator(
 const WalletCreateStack = createStackNavigator(
   {
     Landing: LandingScreen,
+    LegalDisclaimer: {
+      screen: LegalDisclaimerScreen,
+      params: { alreadyAccepted: false },
+    },
     NewPassword: NewPasswordScreen,
     ShowPaperKey: ShowPaperKeyScreen,
     VerifyPaperKey: VerifyPaperKeyScreen,
-    Recovery: RecoveryScreen,
-    RecoveryInProgress: RecoveryInProgressScreen,
     WalletPrepare: WalletPrepareScreen,
+    WalletRepair: WalletRepairScreen,
   },
   {
     initialRouteName: 'Landing',

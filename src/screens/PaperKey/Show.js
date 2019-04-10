@@ -20,13 +20,9 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 
 import { UnderHeaderBlock, Spacer } from 'common'
-import colors from 'common/colors'
 import { monoSpaceFont, Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
-import Header from 'components/Header'
-
-//Images
-import CloseImg from 'assets/images/Close.png'
+import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 type Props = {
   mnemonic: string,
@@ -41,6 +37,7 @@ type State = {
 
 const Wrapper = styled.View`
   flex: 1;
+  padding-bottom: ${ifIphoneX() ? '16px' : '0'};
 `
 
 const Words = styled.View`

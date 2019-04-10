@@ -27,6 +27,7 @@ import { createLogger } from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { navReducer, navMiddleware } from 'modules/navigation'
+import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
 type Effect = (action: any, store: Store) => ?(Action | PromiseAction)
 type Effects = { [string]: Effect }
@@ -67,7 +68,8 @@ const logger = createLogger({})
 const sideEffectsMiddleware = createMiddleware(sideEffects)
 
 const persistConfig = {
-  key: 'redux',
+  key: 'root',
+  stateReconciler: autoMergeLevel2,
   storage,
   whitelist: ['settings'],
 }

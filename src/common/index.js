@@ -98,6 +98,7 @@ export const getStateForRust = (state: State): string => {
     chain: state.settings.chain,
     account: 'default',
     password: state.wallet.password.value,
+    minimum_confirmations: state.settings.minimumConfirmations,
   }
   return JSON.stringify(result)
 }
@@ -143,13 +144,11 @@ export const checkWalletDataDirectory = () => {
   })
 }
 
-export const checkApiSecret = () => {
+export const checkApiSecret = (cb: () => void) => {
   const apiSecretFilePath = APPLICATION_SUPPORT_DIRECTORY + '/.api_secret'
   RNFS.exists(apiSecretFilePath).then(exists => {
     if (!exists) {
-      RNFS.writeFile(apiSecretFilePath, 'ac9rOHFKASTRzZ4SNJun').then(() => {
-        console.log(`${apiSecretFilePath} was created`)
-      })
+      cb()
     }
   })
 }

@@ -166,7 +166,7 @@ class Overview extends Component<Props, State> {
       firstLoading,
       txConfirm,
     } = this.props
-    const { currency, chain } = settings
+    const { currency, chain, minimumConfirmations } = settings
     return (
       <Wrapper>
         <HeaderSpan bgColor={colors.primary} />
@@ -249,7 +249,11 @@ class Overview extends Component<Props, State> {
                 }}
                 underlayColor={'#FBFBFB'}
               >
-                <TxListItem currency={currency} tx={data.item} />
+                <TxListItem
+                  currency={currency}
+                  tx={data.item}
+                  minimumConfirmations={minimumConfirmations}
+                />
               </TouchableHighlight>
             </SwipeRow>
           )}

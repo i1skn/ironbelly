@@ -20,39 +20,35 @@ import { connect } from 'react-redux'
 
 import { isWalletInitialized, LoaderView } from 'common'
 import colors from 'common/colors'
-import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
+import { FLOONET_CHAIN } from 'modules/settings'
+import { type State as ReduxState, type Error, type Navigation } from 'common/types'
+import { type State as SettingsState } from 'modules/settings'
 
 type Props = {
-  settings: {
-    currency: Currency,
-  },
+  settings: SettingsState,
   error: Error,
   isCreated: boolean,
   navigation: Navigation,
+  switchToMainnet: () => void,
 }
-type State = {
-  inputValue: string,
-  amount: number,
-  valid: boolean,
-}
+type State = {}
 
 class Initial extends Component<Props, State> {
   static navigationOptions = {
     header: null,
   }
 
-  state = {
-    inputValue: '',
-    amount: 0,
-    valid: false,
-  }
+  state = {}
 
   componentDidMount() {
-    const { navigation } = this.props
+    const { navigation, settings } = this.props
     isWalletInitialized().then(exists => {
       if (exists) {
         navigation.navigate('Password', { nextScreen: { name: 'Main' } })
       } else {
+        if (settings.chain === FLOONET_CHAIN) {
+          this.props.switchToMainnet()
+        }
         navigation.navigate('WalletCreate')
       }
     })
@@ -73,7 +69,11 @@ const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({})
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  switchToMainnet: () => {
+    dispatch({ type: 'SWITCH_TO_MAINNET' })
+  },
+})
 
 export default connect(
   mapStateToProps,

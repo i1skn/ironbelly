@@ -50,4 +50,6 @@ const char *c_wallet_init(const char *state,
 
 const char *c_wallet_phrase(const char *state_json, uint8_t *error);
 
+const char *c_wallet_repair(const char *state, uint8_t *error);
+
 void cstr_free(char *s);

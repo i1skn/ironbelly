@@ -71,7 +71,6 @@ class Verify extends Component<Props, State> {
     // Only for testing
     //
     // this.setState({
-    // wordsCount: 24,
     // mnemonicWords: (this.props.newWallet
     // ? this.props.mnemonic
     // : 'obtain long legal stadium stool gesture original depart rail run gate super quote old impact recipe marine unhappy census ski gown exist puzzle knock'
@@ -79,10 +78,11 @@ class Verify extends Component<Props, State> {
     // })
     // if (!this.props.newWallet) {
     // } else {
-    // const wordsCount = 24
     // this.setState({
-    // wordsCount,
-    // ,
+    // // mnemonicWords: this.props.mnemonic.split(' '),
+    // mnemonicWords: 'panic dwarf energy disease crater tonight daughter member practice pattern good dismiss clock surprise hybrid piano keep maze grass exercise wire boil venture airport'.split(
+    // ' '
+    // ),
     // })
     // }
   }

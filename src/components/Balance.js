@@ -53,7 +53,7 @@ const OfflineText = styled(Text)`
   font-weight: 600;
   font-size: 16;
   background: ${() => colors.warning};
-  padding: 2px 8px;
+  padding: 6px 8px;
   color: #fff;
   text-align: center;
 `
@@ -132,7 +132,7 @@ const BalanceComponent = ({ isFloonet, balance, currency, isOffline, navigation 
           {/*<BalanceFiat>{hrFiat(totalFiat, currency)}</BalanceFiat>*/}
         </View>
       </Wrapper>
-      {isOffline && <OfflineText>you're offline</OfflineText>}
+      {isOffline && <OfflineText>Grin node is not reachable</OfflineText>}
     </React.Fragment>
   )
 }

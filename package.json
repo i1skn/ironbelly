@@ -26,6 +26,7 @@
     "react-native-iphone-x-helper": "^1.2.0",
     "react-native-keyboard-aware-scroll-view": "^0.8.0",
     "react-native-keyboard-aware-scrollview": "^2.0.0",
+    "react-native-markdown-renderer": "^3.2.8",
     "react-native-modal": "^9.0.0",
     "react-native-swipe-list-view": "^1.5.3",
     "react-native-toaster": "^1.2.2",

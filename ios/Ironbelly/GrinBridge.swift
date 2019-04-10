@@ -126,6 +126,14 @@ class GrinBridge: RCTEventEmitter {
 
     }
 
+    @objc func walletRepair(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        
+        var error: UInt8 = 0
+        let cResult = c_wallet_repair(state, &error)
+        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        
+    }
+    
     @objc func checkPassword(_ state:String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
 
         var error: UInt8 = 0

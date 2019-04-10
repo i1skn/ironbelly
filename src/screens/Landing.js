@@ -15,32 +15,19 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { Button as NativeButton, View } from 'react-native'
+import { TouchableOpacity, Button as NativeButton, View } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Alert } from 'react-native'
+import LegalDisclaimer from 'screens/LegalDisclaimer'
+import { type State as SettingsState } from 'modules/settings'
 
 import { FlexGrow, Spacer } from 'common'
 import colors from 'common/colors'
 
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
-import { initialState as initialSettings } from 'modules/settings'
-
-type Props = {
-  walletInit: () => void,
-  migrateToMainnet: () => void,
-  error: Error,
-  walletCreated: boolean,
-  navigation: Navigation,
-  isFloonet: boolean,
-}
-type State = {
-  inputValue: string,
-  amount: number,
-  valid: boolean,
-}
 
 const Wrapper = styled(View)`
   padding: 16px;
@@ -71,21 +58,70 @@ export const FloonetDisclaimer = styled.View`
   align-items: center;
 `
 
+type Props = {
+  walletInit: () => void,
+  switchToMainnet: () => void,
+  switchToFloonet: () => void,
+  error: Error,
+  walletCreated: boolean,
+  navigation: Navigation,
+  isFloonet: boolean,
+  settings: SettingsState,
+}
+
+type State = {}
+
 class Landing extends Component<Props, State> {
   static navigationOptions = {
     header: null,
   }
 
-  state = {
-    inputValue: '',
-    amount: 0,
-    valid: false,
-  }
+  state = {}
 
   componentDidMount() {}
 
+  _onVersionClick = () => {
+    if (!this.props.isFloonet) {
+      return Alert.alert('Switch to floonet', 'Are you sure you want to switch to floonet?', [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Switch',
+          style: 'destructive',
+          onPress: () => {
+            this.props.switchToFloonet()
+          },
+        },
+      ])
+    }
+  }
+
+  _onNewWallet = (isNew: boolean) => {
+    return () => {
+      const actualBuildNumber = parseInt(DeviceInfo.getBuildNumber())
+      if (
+        !this.props.isFloonet &&
+        Math.min(LegalDisclaimer.fromBuildNumber, actualBuildNumber) >
+          this.props.settings.acceptedLegalDisclaimerBuildNumber
+      ) {
+        this.props.navigation.navigate('LegalDisclaimer', {
+          nextScreen: {
+            name: 'NewPassword',
+            params: { isNew },
+          },
+          buildNumber: actualBuildNumber,
+        })
+      } else {
+        this.props.navigation.navigate('NewPassword', { isNew })
+      }
+    }
+  }
+
   render() {
-    const { isFloonet, navigation, migrateToMainnet } = this.props
+    const { isFloonet, switchToMainnet } = this.props
 
     return (
       <Wrapper behavior="padding" testID="LandingScreen">
@@ -99,16 +135,12 @@ class Landing extends Component<Props, State> {
           title="Create new wallet"
           testID="NewWalletButton"
           disabled={false}
-          onPress={() => {
-            navigation.navigate('NewPassword', { isNew: true })
-          }}
+          onPress={this._onNewWallet(true)}
         />
         <ActionButton
           title="Restore from paper key"
           disabled={false}
-          onPress={() => {
-            navigation.navigate('NewPassword', { isNew: false })
-          }}
+          onPress={this._onNewWallet(false)}
         />
         <Spacer />
         {isFloonet && (
@@ -116,13 +148,23 @@ class Landing extends Component<Props, State> {
             <Text style={{ textAlign: 'center', width: '100%' }}>
               This app is configured to use testnet
             </Text>
-            <NativeButton title="Switch to mainnet" onPress={() => migrateToMainnet()} />
+            <NativeButton title="Switch to mainnet" onPress={() => switchToMainnet()} />
           </FloonetDisclaimer>
         )}
         <FlexGrow />
-        <Text style={{ textAlign: 'center', width: '100%' }}>
-          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
-        </Text>
+        <TouchableOpacity
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '100%',
+            paddingBottom: 8,
+          }}
+          onPress={this._onVersionClick}
+        >
+          <Text style={{}}>
+            Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
+          </Text>
+        </TouchableOpacity>
       </Wrapper>
     )
   }
@@ -136,8 +178,11 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  migrateToMainnet: () => {
-    dispatch({ type: 'SET_SETTINGS', newSettings: initialSettings })
+  switchToMainnet: () => {
+    dispatch({ type: 'SWITCH_TO_MAINNET' })
+  },
+  switchToFloonet: () => {
+    dispatch({ type: 'SWITCH_TO_FLOONET' })
   },
 })
 

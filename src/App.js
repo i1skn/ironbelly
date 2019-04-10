@@ -34,12 +34,17 @@ import { type Dispatch, type State as GlobalState, type Url } from 'common/types
 import { store, persistor } from 'common/redux'
 import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 import { AppContainer } from 'modules/navigation'
-import { type NavigationState } from 'react-navigation'
+import { type NavigationState, NavigationActions } from 'react-navigation'
+import {
+  MAINNET_CHAIN,
+  FLOONET_CHAIN,
+  MAINNET_API_SECRET,
+  FLOONET_API_SECRET,
+} from 'modules/settings'
 
 // Filesystem
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
-checkApiSecret()
 
 type Props = {
   toastMessage: {
@@ -49,6 +54,8 @@ type Props = {
   nav: NavigationState,
   showTxConfirmationModal: boolean,
   closeTxPostModal: () => void,
+  setApiSecret: (apiSecret: string) => void,
+  chain: string,
   dispatch: Dispatch,
 }
 type State = {}
@@ -65,6 +72,11 @@ class RealApp extends React.Component<Props, State> {
       .catch(err => console.error('An error occurred', err))
     Linking.addEventListener('url', this._handleOpenURL)
     AppState.addEventListener('change', this._handleAppStateChange)
+    checkApiSecret(() => {
+      this.props.setApiSecret(
+        this.props.chain === MAINNET_CHAIN ? MAINNET_API_SECRET : FLOONET_API_SECRET
+      )
+    })
   }
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL)
@@ -103,9 +115,13 @@ class RealApp extends React.Component<Props, State> {
         if (nextScreen) {
           if (!store.getState().wallet.password.value) {
             //Password is not set
-            this.navigation.navigate('Password', { nextScreen })
+            this.props.dispatch(
+              NavigationActions.navigate({ routeName: 'Password', params: { nextScreen } })
+            )
           } else {
-            this.navigation.navigate(nextScreen.name, nextScreen.params)
+            this.props.dispatch(
+              NavigationActions.navigate({ routeName: nextScreen.name, params: nextScreen.params })
+            )
           }
         }
       }
@@ -116,8 +132,13 @@ class RealApp extends React.Component<Props, State> {
     if (nextAppState === 'background') {
       isWalletInitialized().then(exists => {
         if (exists) {
-          this.navigation.navigate('Password', { nextScreen: { name: 'Main' } })
-          store.dispatch({ type: 'CLEAR_PASSWORD' })
+          this.props.dispatch(
+            NavigationActions.navigate({
+              routeName: 'Password',
+              params: { nextScreen: { name: 'Main' } },
+            })
+          )
+          this.props.dispatch({ type: 'CLEAR_PASSWORD' })
         }
       })
     }
@@ -140,9 +161,13 @@ const RealAppConnected = connect(
     nav: state.nav,
     toastMessage: state.toaster,
     showTxConfirmationModal: state.tx.txPost.showModal,
+    chain: state.settings.chain,
   }),
   (dispatch, ownProps) => ({
     closeTxPostModal: () => dispatch({ type: 'TX_POST_CLOSE' }),
+    setApiSecret: apiSecret => {
+      dispatch({ type: 'SET_API_SECRET', apiSecret })
+    },
     dispatch,
   })
 )(RealApp)

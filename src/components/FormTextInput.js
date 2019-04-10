@@ -27,6 +27,7 @@ type Props = {
   value: string,
   onChange: (value: string) => void,
   onFocus?: (value: string) => void,
+  onBlur?: (value: string) => void,
   autoFocus: boolean,
   secureTextEntry?: boolean,
   textContentType?: string,
@@ -68,6 +69,7 @@ export default class FormTextInput extends Component<Props, State> {
       maxLength,
       onChange,
       onFocus,
+      onBlur,
       value,
       autoFocus,
       placeholder,
@@ -101,6 +103,7 @@ export default class FormTextInput extends Component<Props, State> {
             returnKeyType={returnKeyType}
             onSubmitEditing={onSubmitEditing}
             onFocus={onFocus}
+            onBlur={onBlur}
           />
         </Layout>
       </React.Fragment>

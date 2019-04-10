@@ -27,6 +27,7 @@ type Props = {
   setChain: (chain: string) => void,
   getPhrase: () => void,
   destroyWallet: () => void,
+  repairWallet: () => void,
   migrateToMainnet: () => void,
   settings: {
     currency: Currency,
@@ -102,11 +103,39 @@ class Settings extends Component<Props, State> {
       ]
     )
   }
+  _onGrinNode = () => {
+    this.props.navigation.navigate('SettingsGrinNode')
+  }
+  _onRepairWallet = () => {
+    return Alert.alert(
+      'Repair this wallet',
+      "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required",
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Continue',
+          style: 'default',
+          onPress: () => {
+            this.props.navigation.navigate('WalletRepair')
+          },
+        },
+      ]
+    )
+  }
 
   render() {
     const { navigation, getPhrase, isFloonet } = this.props
     const listData = [
       // { key: 'currency', title: 'Currency', value: 'EUR', onPress: () => {} },
+      {
+        key: 'grin_node',
+        title: 'Grin node',
+        onPress: this._onGrinNode,
+      },
       {
         key: 'paperkey',
         title: 'Paper key',
@@ -116,12 +145,26 @@ class Settings extends Component<Props, State> {
         },
       },
       {
+        key: 'legal_disclaimer',
+        title: 'Legal disclaimer',
+        onPress: () => {
+          navigation.navigate('SettingsLegalDisclaimer')
+        },
+      },
+
+      {
         key: 'feedback',
         title: 'Got feeback?',
         hideChevron: true,
         onPress: () => {
           Linking.openURL('mailto:ironbelly@cycle42.com')
         },
+      },
+      {
+        key: 'repair',
+        title: 'Repair this wallet',
+        onPress: this._onRepairWallet,
+        hideChevron: true,
       },
       {
         key: 'destroy',
@@ -143,12 +186,6 @@ class Settings extends Component<Props, State> {
           color: colors.success,
           fontWeight: '600',
         },
-      })
-    } else {
-      listData.splice(0, 0, {
-        key: 'node_url',
-        title: 'Grin node URL',
-        onPress: () => {},
       })
     }
     return (

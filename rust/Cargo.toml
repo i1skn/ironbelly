@@ -5,7 +5,6 @@ authors = ["Ivan Sorokin <ivan@sorokin.io>"]
 description = "Ironbelly - Grin mobile wallet"
 publish = false
 edition = "2018"
-build = "build.rs"
 
 [dependencies]
 libc = "0.2.45"

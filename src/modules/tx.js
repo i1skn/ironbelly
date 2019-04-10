@@ -481,7 +481,6 @@ const list = function(state: ListState = initialState.list, action): ListState {
         ...state,
         inProgress: true,
         refreshFromNode: action.refreshFromNode,
-        isOffline: false,
         showLoader: action.showLoader,
         error: null,
       }

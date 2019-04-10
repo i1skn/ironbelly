@@ -85,7 +85,11 @@ export type txPostRequestAction = { type: 'TX_POST_REQUEST', txSlateId: string }
 export type txPostSuccessAction = { type: 'TX_POST_SUCCESS' }
 export type txPostFalureAction = { type: 'TX_POST_FAILURE', code?: number, message: string }
 export type setSettingsAction = { type: 'SET_SETTINGS', newSettings: SettingsState }
+export type switchToMainnetAction = { type: 'SWITCH_TO_MAINNET' }
+export type switchToFloonetAction = { type: 'SWITCH_TO_FLOONET' }
+export type acceptLegalDisclamerAction = { type: 'ACCEPT_LEGAL_DISCLAIMER', buildNumber: number }
 export type setPasswordAction = { type: 'SET_PASSWORD', password: string }
+export type setApiSecretAction = { type: 'SET_API_SECRET', apiSecret: string }
 export type checkPasswordAction = { type: 'CHECK_PASSWORD' }
 export type validPasswordAction = { type: 'VALID_PASSWORD' }
 export type invalidPasswordAction = { type: 'INVALID_PASSWORD' }
@@ -140,7 +144,7 @@ export type walletInitRequestAction = {|
   phrase: string,
   isNew: boolean,
 |}
-export type walletInitSuccessAction = { type: 'WALLET_INIT_SUCCESS', mnemonic: string }
+export type walletInitSuccessAction = { type: 'WALLET_INIT_SUCCESS' }
 export type walletInitFalureAction = { type: 'WALLET_INIT_FAILURE', code?: number, message: string }
 export type walletInitSetPasswordAction = { type: 'WALLET_INIT_SET_PASSWORD', password: string }
 export type walletInitSetIsNewAction = { type: 'WALLET_INIT_SET_IS_NEW', value: boolean }
@@ -187,6 +191,13 @@ export type walletDestroyFalureAction = {
   message: string,
 }
 
+export type walletRepairRequestAction = { type: 'WALLET_REPAIR_REQUEST' }
+export type walletRepairSuccessAction = { type: 'WALLET_REPAIR_SUCCESS' }
+export type walletRepairFalureAction = {
+  type: 'WALLET_REPAIR_FAILURE',
+  code?: number,
+  message: string,
+}
 export type walletMigrateToMainnetRequestAction = { type: 'WALLET_MIGRATE_TO_MAINNET_REQUEST' }
 export type walletMigrateToMainnetSuccessAction = { type: 'WALLET_MIGRATE_TO_MAINNET_SUCCESS' }
 export type walletMigrateToMainnetFalureAction = {
@@ -257,7 +268,11 @@ export type Action =
   | txPostSuccessAction
   | txPostFalureAction
   | setSettingsAction
+  | switchToMainnetAction
+  | switchToFloonetAction
+  | acceptLegalDisclamerAction
   | setPasswordAction
+  | setApiSecretAction
   | checkPasswordAction
   | validPasswordAction
   | invalidPasswordAction
@@ -312,6 +327,9 @@ export type Action =
   | walletDestroyRequestAction
   | walletDestroySuccessAction
   | walletDestroyFalureAction
+  | walletRepairRequestAction
+  | walletRepairSuccessAction
+  | walletRepairFalureAction
   | walletMigrateToMainnetRequestAction
   | walletMigrateToMainnetSuccessAction
   | walletMigrateToMainnetFalureAction
@@ -336,6 +354,7 @@ export type Store = {
 
 export type Navigation = {
   navigate: (screen: string, params: any) => void,
+  replace: (screen: string, params: any) => void,
   setParams: any,
   dispatch: (action: any) => void,
   goBack: (key: ?string) => void,
