@@ -19,8 +19,8 @@ platform :ios do
   desc "Push a new beta build to TestFlight"
   lane :beta do
     increment_build_number(xcodeproj: "Ironbelly.xcodeproj")
-    increment_version_number(bump_type: "patch")
+    increment_version_number(bump_type: "major")
     build_app(workspace: "Ironbelly.xcworkspace", scheme: "Ironbelly")
-    upload_to_testflight(changelog: "Completely new wallet creation process", beta_app_feedback_email: "ironbelly@cycle42.com")
+    upload_to_testflight()
   end
 end

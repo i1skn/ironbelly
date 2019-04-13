@@ -15,6 +15,7 @@
 // limitations under the License.
 
 import { isFSA } from 'flux-standard-action'
+import AsyncStorage from '@react-native-community/async-storage'
 import { combineReducers } from 'redux'
 import { reducer as balanceReducer, sideEffects as balanceSideEffects } from 'modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'modules/tx'
@@ -25,7 +26,6 @@ import { type Store, type Action, type PromiseAction } from 'common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
-import storage from 'redux-persist/lib/storage'
 import { navReducer, navMiddleware } from 'modules/navigation'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
@@ -70,7 +70,7 @@ const sideEffectsMiddleware = createMiddleware(sideEffects)
 const persistConfig = {
   key: 'root',
   stateReconciler: autoMergeLevel2,
-  storage,
+  storage: AsyncStorage,
   whitelist: ['settings'],
 }
 

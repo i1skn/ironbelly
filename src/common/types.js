@@ -192,6 +192,7 @@ export type walletDestroyFalureAction = {
 }
 
 export type walletRepairRequestAction = { type: 'WALLET_REPAIR_REQUEST' }
+export type walletRepairResetAction = { type: 'WALLET_REPAIR_RESET' }
 export type walletRepairSuccessAction = { type: 'WALLET_REPAIR_SUCCESS' }
 export type walletRepairFalureAction = {
   type: 'WALLET_REPAIR_FAILURE',
@@ -206,7 +207,7 @@ export type walletMigrateToMainnetFalureAction = {
   message: string,
 }
 
-export type toastShowAction = { type: 'TOAST_SHOW', text: string, styles: any }
+export type toastShowAction = { type: 'TOAST_SHOW', text: string, duration?: number }
 export type toastClearAction = { type: 'TOAST_CLEAR' }
 
 export type txFormSetAmountAction = {
@@ -328,6 +329,7 @@ export type Action =
   | walletDestroySuccessAction
   | walletDestroyFalureAction
   | walletRepairRequestAction
+  | walletRepairResetAction
   | walletRepairSuccessAction
   | walletRepairFalureAction
   | walletMigrateToMainnetRequestAction

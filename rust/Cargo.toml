@@ -23,10 +23,10 @@ term = "0.5"
 prettytable-rs = "0.7"
 uuid = "0.6.5"
 
-grin_wallet = { git = "https://github.com/cyclefortytwo/grin", rev = "6370e3adce669fb70444a565adcdc45e90a960f3" }
-grin_core = { git = "https://github.com/cyclefortytwo/grin", rev = "6370e3adce669fb70444a565adcdc45e90a960f3" }
-grin_util = { git = "https://github.com/cyclefortytwo/grin", rev = "6370e3adce669fb70444a565adcdc45e90a960f3" }
-grin_keychain = { git = "https://github.com/cyclefortytwo/grin", rev = "6370e3adce669fb70444a565adcdc45e90a960f3" }
+grin_wallet = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
+grin_core = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
+grin_util = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
+grin_keychain = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
 
 
 [build-dependencies]

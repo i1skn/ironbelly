@@ -16,7 +16,6 @@
 
 import React, { Component } from 'react'
 import { Linking, AppState } from 'react-native'
-import Toaster from 'react-native-toaster'
 import { Provider, connect } from 'react-redux'
 import {
   isResponseSlate,
@@ -29,6 +28,8 @@ import urlParser from 'url'
 import Modal from 'react-native-modal'
 import { decode as atob } from 'base-64'
 import { PersistGate } from 'redux-persist/integration/react'
+import Toast, { DURATION } from 'react-native-easy-toast'
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 import { type Dispatch, type State as GlobalState, type Url } from 'common/types'
 import { store, persistor } from 'common/redux'
@@ -41,19 +42,18 @@ import {
   MAINNET_API_SECRET,
   FLOONET_API_SECRET,
 } from 'modules/settings'
+import { type State as ToasterState } from 'modules/toaster'
 
 // Filesystem
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
 
 type Props = {
-  toastMessage: {
-    text: string,
-    styles: any,
-  },
+  toastMessage: ToasterState,
   nav: NavigationState,
   showTxConfirmationModal: boolean,
   closeTxPostModal: () => void,
+  clearToast: () => void,
   setApiSecret: (apiSecret: string) => void,
   chain: string,
   dispatch: Dispatch,
@@ -143,15 +143,31 @@ class RealApp extends React.Component<Props, State> {
       })
     }
   }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.toastMessage.text !== this.props.toastMessage.text) {
+      if (this.props.toastMessage.text) {
+        this.refs.toast.timer && clearTimeout(this.refs.toast.timer)
+        this.refs.toast.show(this.props.toastMessage.text, this.props.toastMessage.duration, () => {
+          this.props.clearToast()
+        })
+      } else {
+        if (this.refs.toast.state.isShow) {
+          this.refs.toast.setState({ isShow: false })
+        }
+      }
+    }
+  }
+
   render() {
     const { dispatch, closeTxPostModal } = this.props
     return (
       <React.Fragment>
-        <Toaster message={this.props.toastMessage} />
         <Modal isVisible={this.props.showTxConfirmationModal} onBackdropPress={closeTxPostModal}>
           <TxPostConfirmationModal />
         </Modal>
         <AppContainer state={this.props.nav} dispatch={dispatch} />
+        <Toast ref="toast" position={'top'} positionValue={isIphoneX() ? 75 : 55} />
       </React.Fragment>
     )
   }
@@ -168,6 +184,7 @@ const RealAppConnected = connect(
     setApiSecret: apiSecret => {
       dispatch({ type: 'SET_API_SECRET', apiSecret })
     },
+    clearToast: () => dispatch({ type: 'TOAST_CLEAR' }),
     dispatch,
   })
 )(RealApp)

@@ -36,11 +36,14 @@ type State = {
   valid: boolean,
   mnemonicWords: Array<string>,
   wordsCount: number,
-  scrollOffset: number,
 }
 
 const Words = styled.View`
   margin: 16px 0;
+`
+
+const Wrapper = styled.View`
+  flex: 1;
 `
 
 class Verify extends Component<Props, State> {
@@ -63,35 +66,28 @@ class Verify extends Component<Props, State> {
       inputValue: '',
       amount: 0,
       valid: false,
-      scrollOffset: 0,
       mnemonicWords: Array(wordsCount).fill(''),
     }
   }
   componentDidMount() {
     // Only for testing
     //
+    // New wallet
     // this.setState({
-    // mnemonicWords: (this.props.newWallet
-    // ? this.props.mnemonic
-    // : 'obtain long legal stadium stool gesture original depart rail run gate super quote old impact recipe marine unhappy census ski gown exist puzzle knock'
-    // ).split(' '),
+    // mnemonicWords: this.props.mnemonic.split(' '),
     // })
-    // if (!this.props.newWallet) {
-    // } else {
+    //
+    // Restore
     // this.setState({
-    // // mnemonicWords: this.props.mnemonic.split(' '),
-    // mnemonicWords: 'panic dwarf energy disease crater tonight daughter member practice pattern good dismiss clock surprise hybrid piano keep maze grass exercise wire boil venture airport'.split(
-    // ' '
-    // ),
+    // mnemonicWords: ''.split(' '),
     // })
-    // }
   }
 
   componentDidUpdate(prevProps) {}
 
   render() {
     const { navigation, mnemonic, newWallet } = this.props
-    const { mnemonicWords, wordsCount, scrollOffset } = this.state
+    const { mnemonicWords, wordsCount } = this.state
 
     const currentUserPhrase = mnemonicWords.map(w => w.toLowerCase()).join(' ')
     const verified = newWallet
@@ -99,14 +95,10 @@ class Verify extends Component<Props, State> {
       : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) === wordsCount
 
     return (
-      <FlexGrow>
+      <Wrapper>
         {(wordsCount && (
           <Fragment>
-            <UnderHeaderBlock
-              onLayout={event => {
-                this.setState({ scrollOffset: event.nativeEvent.layout.height + 8 })
-              }}
-            >
+            <UnderHeaderBlock>
               <Text>
                 {newWallet
                   ? 'Enter the paper key you have just written to verify its correctness.'
@@ -115,11 +107,13 @@ class Verify extends Component<Props, State> {
             </UnderHeaderBlock>
             <KeyboardAwareScrollView
               innerRef={sv => (this._scrollView = sv)}
-              extraScrollHeight={scrollOffset}
               style={{
                 paddingLeft: 16,
                 paddingRight: 16,
               }}
+              keyboardShouldPersistTaps={'handled'}
+              extraHeight={8}
+              enableResetScrollToCoords={false}
               keyboardOpeningTime={0}
             >
               <Words>
@@ -168,12 +162,12 @@ class Verify extends Component<Props, State> {
                   navigation.navigate('WalletPrepare', { phrase: currentUserPhrase })
                 }}
               />
-              <Spacer height={16 + scrollOffset} />
+              <Spacer />
             </KeyboardAwareScrollView>
           </Fragment>
         )) ||
           null}
-      </FlexGrow>
+      </Wrapper>
     )
   }
 }

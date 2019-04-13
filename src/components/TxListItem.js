@@ -74,7 +74,6 @@ type Props = {
   minimumConfirmations: number,
 }
 const TxListItem = (props: Props) => {
-  const { minimumConfirmations } = props
   const { type, confirmed, creationTime, amount, fee } = props.tx
   const isSent = type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
   return (
@@ -89,9 +88,7 @@ const TxListItem = (props: Props) => {
         ) : (
           <UnconfirmedGuide>
             {type === 'TxPosted'
-              ? `Awaiting ${minimumConfirmations} confirmation${
-                  minimumConfirmations > 1 ? 's' : ''
-                }`
+              ? `Awaiting confirmation`
               : type === 'TxFinalized'
               ? 'Click to confirm'
               : isSent

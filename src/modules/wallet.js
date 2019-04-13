@@ -35,8 +35,6 @@ import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY } from 'common'
 import { NavigationActions } from 'react-navigation'
 
-import { ToastStyles } from 'react-native-toaster'
-
 const { GrinBridge } = NativeModules
 
 export type WalletInitState = {|
@@ -234,6 +232,7 @@ const walletRepair = function(
         ...state,
         inProgress: true,
         progress: 0,
+        repaired: false,
         error: {
           message: '',
           code: 0,
@@ -251,6 +250,17 @@ const walletRepair = function(
         inProgress: false,
         error: {
           message: action.message,
+          code: 0,
+        },
+      }
+    case 'WALLET_REPAIR_RESET':
+      return {
+        ...state,
+        inProgress: true,
+        progress: 0,
+        repaired: false,
+        error: {
+          message: '',
           code: 0,
         },
       }
@@ -378,7 +388,6 @@ export const sideEffects = {
     store.dispatch({
       type: 'TOAST_SHOW',
       text: 'Wrong password!',
-      styles: ToastStyles.error,
     })
   },
   ['WALLET_PHRASE_REQUEST']: (action: walletPhraseRequestAction, store: Store) => {

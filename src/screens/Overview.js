@@ -24,6 +24,7 @@ import Balance from 'components/Balance'
 import RecoveryProgress from 'components/RecoveryProgress'
 import HeaderSpan from 'components/HeaderSpan'
 import TxListItem from 'components/TxListItem'
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 import {
   type Balance as BalanceType,
@@ -62,10 +63,9 @@ type State = {}
 const Wrapper = styled.View`
   height: 100%;
 `
-
 const ActionButtonTH = styled.TouchableOpacity`
   position: absolute;
-  bottom: -50;
+  bottom: ${isIphoneX() ? -40 : -50};
   justify-content: center;
   align-items: center;
   width: 120;
@@ -178,6 +178,7 @@ class Overview extends Component<Props, State> {
             currency={currency}
             isOffline={isOffline}
             navigation={navigation}
+            minimumConfirmations={minimumConfirmations}
           />
         )}
         <SwipeListView

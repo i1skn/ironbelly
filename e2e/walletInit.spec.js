@@ -10,8 +10,13 @@ describe('Ironbelly', () => {
 
     await element(by.id('NewWalletButton')).tap()
 
-    await element(by.label('Continue').and(by.type('_UIAlertControllerActionView'))).tap()
-    let nextButton = element(by.id('SubmitPassword'))
+    //Legal
+    await element(by.id('LegalDisclaimerScrollView')).scrollTo('bottom')
+    let nextButton = element(by.id('IAgree'))
+    await expect(nextButton).toBeVisible()
+    await nextButton.tap()
+
+    nextButton = element(by.id('SubmitPassword'))
 
     const passwordField = element(by.id('Password'))
     await expect(passwordField).toBeVisible()

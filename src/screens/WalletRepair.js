@@ -28,6 +28,7 @@ import { type WalletRepairState } from 'modules/wallet'
 type Props = WalletRepairState & {
   navigation: Navigation,
   repairWallet: () => void,
+  resetRepaired: () => void,
 }
 type State = {}
 
@@ -62,7 +63,7 @@ class WalletRepair extends Component<Props, State> {
   }
 
   render() {
-    const { navigation, repaired } = this.props
+    const { navigation, repaired, resetRepaired } = this.props
     return (
       <Wrapper>
         {(!repaired && (
@@ -85,7 +86,8 @@ class WalletRepair extends Component<Props, State> {
               title="Continue"
               disabled={false}
               onPress={() => {
-                navigation.navigate('Main')
+                resetRepaired()
+                navigation.navigate('Overview')
               }}
             />
           </Fragment>
@@ -102,6 +104,9 @@ const mapStateToProps = (state: ReduxState) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   repairWallet: () => {
     dispatch({ type: 'WALLET_REPAIR_REQUEST' })
+  },
+  resetRepaired: () => {
+    dispatch({ type: 'WALLET_REPAIR_RESET' })
   },
 })
 

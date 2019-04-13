@@ -22,15 +22,19 @@ import { hrGrin } from 'common'
 import colors from 'common/colors'
 import { type Balance, type Navigation } from 'common/types'
 import SettingsImg from 'assets/images/Settings.png'
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 const BalanceTitle = styled(Text)`
   font-weight: 600;
   font-size: 21;
   text-align: center;
+  flex-direction: row;
 `
 
 const Amount = styled.View`
   align-items: center;
+  flex-direction: row;
+  justify-content: space-between;
 `
 
 const AmountGrin = styled(Text)`
@@ -40,7 +44,7 @@ const AmountGrin = styled(Text)`
 `
 const AmountTitle = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 400)};
-  font-size: 14;
+  font-size: 16;
 `
 
 // const BalanceFiat = styled(Text)`
@@ -87,10 +91,7 @@ const TopLine = styled.View`
 `
 
 const BalanceEq = styled.View`
-  margin-top: 8;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
+  margin: 16px 0 8px 0;
 `
 
 type Props = {
@@ -99,14 +100,22 @@ type Props = {
   isOffline: boolean,
   navigation: Navigation,
   isFloonet: boolean,
+  minimumConfirmations: number,
 }
 
-const BalanceComponent = ({ isFloonet, balance, currency, isOffline, navigation }: Props) => {
+const BalanceComponent = ({
+  minimumConfirmations,
+  isFloonet,
+  balance,
+  currency,
+  isOffline,
+  navigation,
+}: Props) => {
   return (
     <React.Fragment>
       <Wrapper>
         <TopLine>
-          {isFloonet && <Floonet>Testnet</Floonet>}
+          <Floonet>{isFloonet && 'Testnet'}</Floonet>
           <BalanceTitle>Balance</BalanceTitle>
           <SettingsIcon onPress={() => navigation.navigate('Settings')}>
             <SettingsIconImage source={SettingsImg} />
@@ -114,18 +123,26 @@ const BalanceComponent = ({ isFloonet, balance, currency, isOffline, navigation 
         </TopLine>
         <BalanceEq>
           <Amount>
-            <AmountTitle bold={!balance.amountLocked}>Total</AmountTitle>
-            <AmountGrin bold={!balance.amountLocked}>{hrGrin(balance.total)}</AmountGrin>
+            <AmountTitle bold={!!balance.total}>Total</AmountTitle>
+            <AmountGrin bold={!!balance.total}>{hrGrin(balance.total)}</AmountGrin>
           </Amount>
           <Amount>
-            <AmountTitle bold={!!balance.amountLocked}>Spendable</AmountTitle>
-            <AmountGrin bold={!!balance.amountLocked}>
+            <AmountTitle bold={!!balance.amountAwaitingConfirmation}>
+              Awaiting {minimumConfirmations} confirmations
+            </AmountTitle>
+            <AmountGrin bold={!!balance.amountAwaitingConfirmation}>
+              {hrGrin(balance.amountAwaitingConfirmation)}
+            </AmountGrin>
+          </Amount>
+          <Amount>
+            <AmountTitle bold={!!balance.amountCurrentlySpendable}>Currently spendable</AmountTitle>
+            <AmountGrin bold={!!balance.amountCurrentlySpendable}>
               {hrGrin(balance.amountCurrentlySpendable)}
             </AmountGrin>
           </Amount>
           <Amount>
-            <AmountTitle>Locked</AmountTitle>
-            <AmountGrin>{hrGrin(balance.amountLocked)}</AmountGrin>
+            <AmountTitle bold={!!balance.amountLocked}>Locked</AmountTitle>
+            <AmountGrin bold={!!balance.amountLocked}>{hrGrin(balance.amountLocked)}</AmountGrin>
           </Amount>
         </BalanceEq>
         <View style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>

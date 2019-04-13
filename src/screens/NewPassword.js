@@ -16,7 +16,7 @@
 
 import React, { Component } from 'react'
 import { Alert } from 'react-native'
-import { ifIphoneX } from 'react-native-iphone-x-helper'
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 import { connect } from 'react-redux'
 import FormTextInput from 'components/FormTextInput'
@@ -70,7 +70,7 @@ class NewPassword extends Component<Props, State> {
         </UnderHeaderBlock>
         <KeyboardAwareScrollView
           style={{ flexGrow: 1 }}
-          keyboardVerticalOffset={ifIphoneX() ? 88 : 64}
+          keyboardVerticalOffset={isIphoneX() ? 88 : 64}
           keyboardShouldPersistTaps="handled"
           keyboardOpeningTime={0}
           getTextInputRefs={() => [this._confirmPassword]}

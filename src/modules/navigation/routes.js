@@ -59,6 +59,7 @@ const MainStack = createStackNavigator(
       screen: LegalDisclaimerScreen,
       params: { alreadyAccepted: true },
     },
+    WalletRepair: WalletRepairScreen,
 
     Overview: {
       screen: OverviewScreen,
@@ -103,7 +104,6 @@ const WalletCreateStack = createStackNavigator(
     ShowPaperKey: ShowPaperKeyScreen,
     VerifyPaperKey: VerifyPaperKeyScreen,
     WalletPrepare: WalletPrepareScreen,
-    WalletRepair: WalletRepairScreen,
   },
   {
     initialRouteName: 'Landing',

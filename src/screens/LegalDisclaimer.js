@@ -19,10 +19,9 @@ import { ScrollView, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Spacer } from 'common'
-import { Text, Button } from 'components/CustomFont'
+import { appFont, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 import Markdown, { styles as markdownDefaultStyles } from 'react-native-markdown-renderer'
-import { ifIphoneX } from 'react-native-iphone-x-helper'
 import legalDisclaimer from 'documents/legal-disclaimer'
 
 type Props = {
@@ -35,7 +34,6 @@ type State = {}
 
 const Wrapper = styled.View`
   flex: 1;
-  padding-bottom: ${ifIphoneX() ? '16px' : '0'};
 `
 
 const markdownStyles = StyleSheet.create({
@@ -51,6 +49,7 @@ const markdownStyles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
+    fontFamily: appFont,
   },
 })
 class LegalDisclaimer extends Component<Props, State> {
@@ -79,7 +78,7 @@ class LegalDisclaimer extends Component<Props, State> {
             paddingLeft: 16,
             paddingRight: 16,
           }}
-          testID="ShowPaperKeyScrollView"
+          testID="LegalDisclaimerScrollView"
           showsVerticalScrollIndicator={true}
         >
           <Markdown style={markdownStyles}>{legalDisclaimer}</Markdown>

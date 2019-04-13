@@ -30,6 +30,7 @@ import {
 import colors from 'common/colors'
 import styled from 'styled-components/native'
 import { Text } from 'components/CustomFont'
+import { isIphoneX } from 'react-native-iphone-x-helper'
 
 export const hrGrin = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
@@ -159,7 +160,7 @@ export const isWalletInitialized = () => {
 }
 
 export const Spacer = styled.View`
-  height: ${({ height }) => (height ? height : '16px')};
+  height: ${({ height }) => (height ? height : isIphoneX() ? '24px' : '16px')};
   width: 100%;
 `
 
@@ -204,12 +205,12 @@ export const FlexGrow = styled.View`
 
 export const Wrapper = styled.View`
   padding: 0 16px;
-  flex-grow: 1;
+  flex: 1;
 `
 
 export const KeyboardAvoidingWrapper = styled(KeyboardAvoidingView)`
-  padding: 0 16px;
-  flex-grow: 1;
+  padding: 0 16px 0 16px;
+  flex: 1;
 `
 
 export const LoaderView = styled.View`

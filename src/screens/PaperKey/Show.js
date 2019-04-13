@@ -22,7 +22,6 @@ import styled from 'styled-components/native'
 import { UnderHeaderBlock, Spacer } from 'common'
 import { monoSpaceFont, Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
-import { ifIphoneX } from 'react-native-iphone-x-helper'
 
 type Props = {
   mnemonic: string,
@@ -37,7 +36,6 @@ type State = {
 
 const Wrapper = styled.View`
   flex: 1;
-  padding-bottom: ${ifIphoneX() ? '16px' : '0'};
 `
 
 const Words = styled.View`
@@ -95,7 +93,7 @@ class Show extends Component<Props, State> {
             Your paper key is the only way to restore your Grin wallet if your phone is lost,
             stolen, broken, or upgraded.
             {!fromSettings &&
-              'It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
+              ' It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
           </Text>
         </UnderHeaderBlock>
         <ScrollView

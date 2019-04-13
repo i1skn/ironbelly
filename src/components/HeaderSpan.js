@@ -23,10 +23,10 @@ export default styled.View`
     Platform.OS === 'ios' &&
     Dimensions.get('window').height === 812 &&
     Dimensions.get('window').width === 375
-      ? '10px'
+      ? '24px'
       : Platform.OS === 'ios' &&
         Dimensions.get('window').height === 896 &&
         Dimensions.get('window').width === 414
-      ? '16px'
+      ? '24px'
       : '0'};
 `

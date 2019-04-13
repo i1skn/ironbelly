@@ -62,9 +62,16 @@ export const reducer = (state: State = initialState, action: Action): State => {
         chain: MAINNET_CHAIN,
         checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
         minimumConfirmations: 10,
+        acceptedLegalDisclaimerBuildNumber: 0,
       }
     case 'SWITCH_TO_FLOONET':
-      return initialState
+      return {
+        ...state,
+        checkNodeApiHttpAddr: FLOONET_DEFAULT_NODE,
+        chain: FLOONET_CHAIN,
+        minimumConfirmations: 1,
+        acceptedLegalDisclaimerBuildNumber: 0,
+      }
     case 'ACCEPT_LEGAL_DISCLAIMER':
       return {
         ...state,

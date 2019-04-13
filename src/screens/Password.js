@@ -34,15 +34,11 @@ type Props = {
   password: string,
   inProgress: boolean,
   destroyWallet: () => void,
+  clearToast: () => void,
 }
 type State = {}
 
 const Submit = styled(Button)``
-
-const Forget = styled(View)`
-  margin-top: -54px;
-  align-items: flex-end;
-`
 
 class Password extends Component<Props, State> {
   static navigationOptions = {
@@ -52,19 +48,13 @@ class Password extends Component<Props, State> {
   componentDidUpdate(prevProps) {
     if (prevProps.isPasswordValid !== this.props.isPasswordValid && this.props.isPasswordValid) {
       const { nextScreen } = this.props.navigation.state.params
+      this.props.clearToast()
       this.props.navigation.navigate(nextScreen.name, nextScreen.params)
     }
   }
 
   render() {
-    const {
-      password,
-      navigation,
-      setPassword,
-      checkPassword,
-      inProgress,
-      destroyWallet,
-    } = this.props
+    const { password, setPassword, checkPassword, inProgress, destroyWallet } = this.props
 
     return (
       <KeyboardAvoidingWrapper behavior="padding" enabled>
@@ -76,7 +66,7 @@ class Password extends Component<Props, State> {
           <React.Fragment>
             <FlexGrow />
             <FormTextInput
-              autoFocus={true}
+              autoFocus={false}
               secureTextEntry={true}
               onChange={password => {
                 setPassword(password)
@@ -84,49 +74,47 @@ class Password extends Component<Props, State> {
               value={password}
               placeholder="Enter password"
             />
-            <Forget>
-              <NativeButton
-                title="Forgot?"
-                disabled={false}
-                onPress={() => {
-                  Alert.alert(
-                    'Forgot password',
-                    'There is no way to restore the password. You can destroy the wallet and restore it if you have recovery passphrase backed up. Then you can provide a new password.',
-                    [
-                      {
-                        text: 'Back',
-                        onPress: () => console.log('Cancel Pressed'),
-                        style: 'cancel',
-                      },
-                      {
-                        text: 'Destroy the wallet',
-                        style: 'destructive',
-                        onPress: () => {
-                          Alert.alert(
-                            'Destroy the wallet',
-                            'This action would remove all of your data!',
-                            [
-                              {
-                                text: 'Cancel',
-                                onPress: () => console.log('Cancel Pressed'),
-                                style: 'cancel',
+            <NativeButton
+              title="Forgot?"
+              disabled={false}
+              onPress={() => {
+                Alert.alert(
+                  'Forgot password',
+                  'There is no way to restore the password. You can destroy the wallet and restore it if you have recovery passphrase backed up. Then you can provide a new password.',
+                  [
+                    {
+                      text: 'Back',
+                      onPress: () => console.log('Cancel Pressed'),
+                      style: 'cancel',
+                    },
+                    {
+                      text: 'Destroy the wallet',
+                      style: 'destructive',
+                      onPress: () => {
+                        Alert.alert(
+                          'Destroy the wallet',
+                          'This action would remove all of your data!',
+                          [
+                            {
+                              text: 'Cancel',
+                              onPress: () => console.log('Cancel Pressed'),
+                              style: 'cancel',
+                            },
+                            {
+                              text: 'Destroy',
+                              style: 'destructive',
+                              onPress: () => {
+                                destroyWallet()
                               },
-                              {
-                                text: 'Destroy',
-                                style: 'destructive',
-                                onPress: () => {
-                                  destroyWallet()
-                                },
-                              },
-                            ]
-                          )
-                        },
+                            },
+                          ]
+                        )
                       },
-                    ]
-                  )
-                }}
-              />
-            </Forget>
+                    },
+                  ]
+                )
+              }}
+            />
             <FlexGrow />
             <Submit
               title="Unlock"
@@ -160,6 +148,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   destroyWallet: () => {
     dispatch({ type: 'WALLET_DESTROY_REQUEST' })
   },
+  clearToast: () => dispatch({ type: 'TOAST_CLEAR' }),
 })
 
 export default connect(
