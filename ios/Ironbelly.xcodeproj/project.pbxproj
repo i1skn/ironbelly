@@ -498,7 +498,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/BugsnagReactNative/BugsnagReactNative.framework",
 				"${BUILT_PRODUCTS_DIR}/DoubleConversion/DoubleConversion.framework",
 				"${BUILT_PRODUCTS_DIR}/Folly/folly.framework",
@@ -529,7 +529,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B4B65182060AEDB2836EFF42 /* [CP] Check Pods Manifest.lock */ = {
