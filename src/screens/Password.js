@@ -15,15 +15,26 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { View, ActivityIndicator, Alert, Button as NativeButton } from 'react-native'
+import {
+  View,
+  TouchableWithoutFeedback,
+  ActivityIndicator,
+  Alert,
+  Button as NativeButton,
+  Keyboard,
+} from 'react-native'
+import { Text } from 'components/CustomFont'
 import FormTextInput from 'components/FormTextInput'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
+import { BIOMETRY_STATUS } from 'modules/settings'
+import { getBiometryTitle } from 'common'
 
 import { Spacer, KeyboardAvoidingWrapper, FlexGrow, LoaderView } from 'common'
 import colors from 'common/colors'
 import { Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
+import * as Keychain from 'react-native-keychain'
 
 type Props = {
   navigation: Navigation,
@@ -35,14 +46,31 @@ type Props = {
   inProgress: boolean,
   destroyWallet: () => void,
   clearToast: () => void,
+  biometryEnabled: boolean,
+  biometryType: ?string,
+  checkPasswordFromBiometry: (password: string) => void,
 }
+
 type State = {}
 
 const Submit = styled(Button)``
 
+const ForgotButton = styled.TouchableOpacity`
+  margin-top: -46px;
+  margin-bottom: 40px;
+  align-self: flex-end;
+`
+
 class Password extends Component<Props, State> {
   static navigationOptions = {
     header: null,
+  }
+
+  componentDidMount(prevProps) {
+    const { biometryEnabled, biometryType } = this.props
+    if (biometryEnabled && biometryType !== Keychain.BIOMETRY_TYPE.FACE_ID) {
+      setTimeout(() => this._getPasswordFromBiometry(), 250)
+    }
   }
 
   componentDidUpdate(prevProps) {
@@ -53,18 +81,79 @@ class Password extends Component<Props, State> {
     }
   }
 
+  _getPasswordFromBiometry() {
+    const { checkPasswordFromBiometry, biometryType } = this.props
+    const authenticationPrompt =
+      biometryType === Keychain.BIOMETRY_TYPE.FACE_ID
+        ? 'Use Face ID to unlock your wallet'
+        : 'Place your finger to unlock your wallet'
+    Keychain.getGenericPassword({ authenticationPrompt }).then(creds => {
+      if (typeof creds.password === 'string') {
+        checkPasswordFromBiometry(creds.password)
+      }
+    })
+  }
+
+  _onForgot = () => {
+    Alert.alert(
+      'Forgot password',
+      'There is no way to restore the password. You can destroy the wallet and restore it if you have recovery passphrase backed up. Then you can provide a new password.',
+      [
+        {
+          text: 'Back',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
+        },
+        {
+          text: 'Destroy the wallet',
+          style: 'destructive',
+          onPress: this._onDestroy,
+        },
+      ]
+    )
+  }
+
+  _onDestroy = () => {
+    Alert.alert('Destroy the wallet', 'This action would remove all of your data!', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'Destroy',
+        style: 'destructive',
+        onPress: () => {
+          this.props.destroyWallet()
+        },
+      },
+    ])
+  }
+
   render() {
-    const { password, setPassword, checkPassword, inProgress, destroyWallet } = this.props
+    const {
+      biometryEnabled,
+      biometryType,
+      password,
+      setPassword,
+      checkPassword,
+      inProgress,
+    } = this.props
 
     return (
-      <KeyboardAvoidingWrapper behavior="padding" enabled>
-        {(inProgress && (
-          <LoaderView>
-            <ActivityIndicator size="large" color={colors.primary} />
-          </LoaderView>
-        )) || (
-          <React.Fragment>
-            <FlexGrow />
+      <KeyboardAvoidingWrapper
+        behavior="padding"
+        style={{
+          flex: 1,
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss()
+          }}
+        >
+          <View style={{ flex: 1 }}>
+            <View style={{ flexGrow: 1, flexShrink: 1, flexBasis: '40%' }} />
             <FormTextInput
               autoFocus={false}
               secureTextEntry={true}
@@ -74,58 +163,25 @@ class Password extends Component<Props, State> {
               value={password}
               placeholder="Enter password"
             />
-            <NativeButton
-              title="Forgot?"
-              disabled={false}
-              onPress={() => {
-                Alert.alert(
-                  'Forgot password',
-                  'There is no way to restore the password. You can destroy the wallet and restore it if you have recovery passphrase backed up. Then you can provide a new password.',
-                  [
-                    {
-                      text: 'Back',
-                      onPress: () => console.log('Cancel Pressed'),
-                      style: 'cancel',
-                    },
-                    {
-                      text: 'Destroy the wallet',
-                      style: 'destructive',
-                      onPress: () => {
-                        Alert.alert(
-                          'Destroy the wallet',
-                          'This action would remove all of your data!',
-                          [
-                            {
-                              text: 'Cancel',
-                              onPress: () => console.log('Cancel Pressed'),
-                              style: 'cancel',
-                            },
-                            {
-                              text: 'Destroy',
-                              style: 'destructive',
-                              onPress: () => {
-                                destroyWallet()
-                              },
-                            },
-                          ]
-                        )
-                      },
-                    },
-                  ]
-                )
-              }}
-            />
-            <FlexGrow />
+            <ForgotButton disabled={false} onPress={this._onForgot}>
+              <Text>Forgot?</Text>
+            </ForgotButton>
             <Submit
-              title="Unlock"
-              disabled={false}
+              title={`Unlock${
+                biometryEnabled && !password ? ' with ' + getBiometryTitle(biometryType) : ''
+              }`}
+              disabled={inProgress}
               onPress={() => {
-                checkPassword()
+                if (biometryEnabled && !password) {
+                  this._getPasswordFromBiometry()
+                } else {
+                  checkPassword()
+                }
               }}
             />
-            <Spacer />
-          </React.Fragment>
-        )}
+            <View style={{ flexGrow: 10, flexShrink: 0, flexBasis: 16 }} />
+          </View>
+        </TouchableWithoutFeedback>
       </KeyboardAvoidingWrapper>
     )
   }
@@ -136,11 +192,16 @@ const mapStateToProps = (state: ReduxState) => ({
   error: state.wallet.password.error,
   password: state.wallet.password.value,
   inProgress: state.wallet.password.inProgress,
+  biometryEnabled: state.settings.biometryStatus === BIOMETRY_STATUS.enabled,
+  biometryType: state.settings.biometryType,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
   setPassword: password => {
     dispatch({ type: 'SET_PASSWORD', password })
+  },
+  checkPasswordFromBiometry: (password: string) => {
+    dispatch({ type: 'CHECK_PASSWORD_FROM_BIOMETRY', password })
   },
   checkPassword: () => {
     dispatch({ type: 'CHECK_PASSWORD' })

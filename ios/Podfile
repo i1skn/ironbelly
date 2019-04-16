@@ -46,7 +46,12 @@ target 'Ironbelly' do
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
   # Add new pods below this line
+  pod 'TouchID', :path => '../node_modules/react-native-touch-id'
+
+  pod 'RNKeychain', :path => '../node_modules/react-native-keychain'
+
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+  pod 'LaunchScreenSnapshot'
 
   pod 'react-native-async-storage', :path => '../node_modules/@react-native-community/async-storage'
 

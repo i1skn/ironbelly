@@ -11,6 +11,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - LaunchScreenSnapshot (1.2.0)
   - React (0.59.3):
     - React/Core (= 0.59.3)
   - react-native-async-storage (1.2.2):
@@ -74,7 +75,11 @@ PODS:
     - React
   - RNGestureHandler (1.1.0):
     - React
+  - RNKeychain (3.1.1):
+    - React
   - RNVectorIcons (6.4.2):
+    - React
+  - TouchID (4.4.1):
     - React
   - yoga (0.59.3.React)
 
@@ -83,6 +88,7 @@ DEPENDENCIES:
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - LaunchScreenSnapshot
   - "react-native-async-storage (from `../node_modules/@react-native-community/async-storage`)"
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
@@ -101,12 +107,15 @@ DEPENDENCIES:
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler/RNGestureHandler.podspec`)
+  - RNKeychain (from `../node_modules/react-native-keychain`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
+  - TouchID (from `../node_modules/react-native-touch-id`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - boost-for-react-native
+    - LaunchScreenSnapshot
 
 EXTERNAL SOURCES:
   BugsnagReactNative:
@@ -127,8 +136,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :podspec: "../node_modules/react-native-gesture-handler/RNGestureHandler.podspec"
+  RNKeychain:
+    :path: "../node_modules/react-native-keychain"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
+  TouchID:
+    :path: "../node_modules/react-native-touch-id"
   yoga:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
@@ -138,14 +151,17 @@ SPEC CHECKSUMS:
   DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
   Folly: de497beb10f102453a1afa9edbf8cf8a251890de
   glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
+  LaunchScreenSnapshot: cee0c0fec0d9b9186c76a1fd010c5c4677ccb6fc
   React: b52fdb80565505b7e4592b313a38868f5df51641
   react-native-async-storage: 9f540b8bb09f7e31e3fb951de2f8f8b6d0332280
   RNDeviceInfo: 3a4a9c6b1792d7a7d0d7b5428edb03107be90528
   RNFS: c9bbde46b0d59619f8e7b735991c60e0f73d22c1
   RNGestureHandler: b65d391f4f570178d657b99a16ec99d09b8656b0
+  RNKeychain: 1a121521011702409f5a1009eb8a1effa81000f3
   RNVectorIcons: 6607bd3a30291d0edb56f9bbe7ae411ee2b928b0
+  TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   yoga: 1a492113f66a35e9e583bb0434f4b8cc668dd839
 
-PODFILE CHECKSUM: c0165564b4d18b9ddb4a47f6858513dbe7f9c09f
+PODFILE CHECKSUM: c09e3c6c0eed78896505e78668cce592404f95f3
 
 COCOAPODS: 1.6.1

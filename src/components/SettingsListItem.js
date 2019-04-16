@@ -14,6 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import * as React from 'react'
+import { Switch } from 'react-native'
 import { Text } from 'components/CustomFont'
 import Icon from 'react-native-vector-icons/Ionicons'
 import styled from 'styled-components/native'
@@ -42,20 +43,34 @@ const ChevronIcon = styled(Icon)`
   padding-right: 16px;
 `
 
-type Props = {
+const StyledSwitch = styled(Switch)`
+  margin-right: 16px;
+`
+
+export type Props = {
   title: string,
-  value?: string,
+  value?: string | boolean,
   titleStyle?: any,
   hideChevron?: boolean,
-  onPress: () => void,
+  onPress?: () => void,
+  onValueChange?: (value: boolean) => void,
 }
-const SettingsListItem = ({ title, titleStyle, value, onPress, hideChevron }: Props) => {
+const SettingsListItem = ({
+  title,
+  titleStyle,
+  value,
+  onPress,
+  hideChevron,
+  onValueChange,
+}: Props) => {
+  const isSwitch = typeof value === 'boolean'
   return (
-    <Wrapper onPress={onPress}>
+    <Wrapper onPress={!isSwitch ? onPress : null}>
       <Title style={titleStyle}>{title}</Title>
       <FlexGrow />
-      {value && <Value>{value}</Value>}
+      {!isSwitch && <Value>{value}</Value>}
       {!hideChevron && <ChevronIcon name="ios-arrow-forward" size={20} />}
+      {isSwitch && <StyledSwitch value={value} onValueChange={onValueChange} />}
     </Wrapper>
   )
 }

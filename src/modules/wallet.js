@@ -26,6 +26,7 @@ import {
   type walletMigrateToMainnetRequestAction,
   type walletRepairRequestAction,
   type checkPasswordAction,
+  type checkPasswordFromBiometryAction,
   type Store,
 } from 'common/types'
 import { log } from 'common/logger'
@@ -384,10 +385,20 @@ export const sideEffects = {
         }, 1000) // Time-out to prevent a bruteforce attack)
       })
   },
+  ['CHECK_PASSWORD_FROM_BIOMETRY']: (action: checkPasswordFromBiometryAction, store: Store) => {
+    return GrinBridge.checkPassword(getStateForRust(store.getState()), action.password)
+      .then((mnemonic: string) => {
+        store.dispatch({ type: 'SET_PASSWORD', password: action.password })
+        store.dispatch({ type: 'VALID_PASSWORD' })
+      })
+      .catch(error => {
+        store.dispatch({ type: 'DISABLE_BIOMETRY_REQUEST' })
+      })
+  },
   ['INVALID_PASSWORD']: (action: invalidPasswordAction, store: Store) => {
     store.dispatch({
       type: 'TOAST_SHOW',
-      text: 'Wrong password!',
+      text: 'Wrong password',
     })
   },
   ['WALLET_PHRASE_REQUEST']: (action: walletPhraseRequestAction, store: Store) => {

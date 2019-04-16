@@ -88,9 +88,39 @@ export type setSettingsAction = { type: 'SET_SETTINGS', newSettings: SettingsSta
 export type switchToMainnetAction = { type: 'SWITCH_TO_MAINNET' }
 export type switchToFloonetAction = { type: 'SWITCH_TO_FLOONET' }
 export type acceptLegalDisclamerAction = { type: 'ACCEPT_LEGAL_DISCLAIMER', buildNumber: number }
+
+export type enableBiometryRequestAction = { type: 'ENABLE_BIOMETRY_REQUEST' }
+export type enableBiometrySuccessAction = { type: 'ENABLE_BIOMETRY_SUCCESS' }
+export type enableBiometryFalureAction = {
+  type: 'ENABLE_BIOMETRY_FAILURE',
+  code?: number,
+  message: string,
+}
+
+export type disableBiometryRequestAction = { type: 'DISABLE_BIOMETRY_REQUEST' }
+export type disableBiometrySuccessAction = { type: 'DISABLE_BIOMETRY_SUCCESS' }
+export type disableBiometryFalureAction = {
+  type: 'DISABLE_BIOMETRY_FAILURE',
+  code?: number,
+  message: string,
+}
+
+export type checkBiometryRequestAction = { type: 'CHECK_BIOMETRY_REQUEST' }
+export type checkBiometrySuccessAction = { type: 'CHECK_BIOMETRY_SUCCESS', biometryType: ?string }
+export type checkBiometryFalureAction = {
+  type: 'CHECK_BIOMETRY_FAILURE',
+  code?: number,
+  message: string,
+}
+
 export type setPasswordAction = { type: 'SET_PASSWORD', password: string }
 export type setApiSecretAction = { type: 'SET_API_SECRET', apiSecret: string }
 export type checkPasswordAction = { type: 'CHECK_PASSWORD' }
+export type checkPasswordFromBiometryAction = {
+  type: 'CHECK_PASSWORD_FROM_BIOMETRY',
+  password: string,
+}
+
 export type validPasswordAction = { type: 'VALID_PASSWORD' }
 export type invalidPasswordAction = { type: 'INVALID_PASSWORD' }
 export type clearPasswordAction = { type: 'CLEAR_PASSWORD' }
@@ -272,9 +302,19 @@ export type Action =
   | switchToMainnetAction
   | switchToFloonetAction
   | acceptLegalDisclamerAction
+  | enableBiometryRequestAction
+  | enableBiometrySuccessAction
+  | enableBiometryFalureAction
+  | disableBiometryRequestAction
+  | disableBiometrySuccessAction
+  | disableBiometryFalureAction
+  | checkBiometryRequestAction
+  | checkBiometrySuccessAction
+  | checkBiometryFalureAction
   | setPasswordAction
   | setApiSecretAction
   | checkPasswordAction
+  | checkPasswordFromBiometryAction
   | validPasswordAction
   | invalidPasswordAction
   | clearPasswordAction

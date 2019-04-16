@@ -15,8 +15,9 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { TouchableHighlight, TouchableOpacity, RefreshControl, View } from 'react-native'
+import { Alert, TouchableHighlight, TouchableOpacity, RefreshControl, View } from 'react-native'
 import { connect } from 'react-redux'
+import { getSupportedBiometryType } from 'react-native-keychain'
 import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text, Button } from 'components/CustomFont'
@@ -25,6 +26,7 @@ import RecoveryProgress from 'components/RecoveryProgress'
 import HeaderSpan from 'components/HeaderSpan'
 import TxListItem from 'components/TxListItem'
 import { isIphoneX } from 'react-native-iphone-x-helper'
+import { BIOMETRY_STATUS } from 'modules/settings'
 
 import {
   type Balance as BalanceType,
@@ -33,6 +35,7 @@ import {
   type Navigation,
 } from 'common/types'
 import colors from 'common/colors'
+import { getBiometryTitle } from 'common'
 
 import { type WalletInitState } from 'modules/wallet'
 import { type State as SettingsState } from 'modules/settings'
@@ -48,6 +51,7 @@ type Props = {
   txCancel: (id: number, slateId: string, isResponse: boolean) => void,
   txsGet: (showLoader: boolean, refreshFromNode: boolean) => void,
   resetTxForm: () => void,
+  enableBiometry: () => void,
   txConfirm: (txSlateId: string) => void,
   txFinalize: (txSlateId: string) => void,
   slateShare: (id: string, isResponse: boolean) => void,
@@ -120,14 +124,38 @@ class Overview extends Component<Props, State> {
   constructor(props) {
     super(props)
   }
+
+  _onDisableBiometry = () => {}
+  _onEnableBiometry = () => {
+    this.props.enableBiometry()
+  }
   componentDidMount() {
-    if (!this.props.walletInit.inProgress) {
+    const { walletInit, settings } = this.props
+    if (!walletInit.inProgress) {
       this.props.getBalance()
       this.props.txsGet(false, true)
     }
     const { responseSlatePath } = this.props.navigation.state.params
     if (responseSlatePath) {
       this.props.txFinalize(responseSlatePath)
+    }
+    if (settings.biometryType && settings.biometryStatus === BIOMETRY_STATUS.unknown) {
+      const biometryName = getBiometryTitle(settings.biometryType)
+      biometryName &&
+        Alert.alert(
+          `Enable ${biometryName}`,
+          `Would like to activate ${biometryName} to access the wallet?`,
+          [
+            {
+              text: 'No',
+              onPress: this._onDisableBiometry,
+            },
+            {
+              text: 'Yes',
+              onPress: this._onEnableBiometry,
+            },
+          ]
+        )
     }
   }
   componentDidUpdate(prevProps) {
@@ -323,6 +351,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   txConfirm: txSlateId => {
     dispatch({ type: 'TX_POST_SHOW', txSlateId })
+  },
+  enableBiometry: () => {
+    dispatch({ type: 'ENABLE_BIOMETRY_REQUEST' })
+  },
+  disableBiometry: () => {
+    dispatch({ type: 'DISABLE_BIOMETRY_REQUEST' })
   },
 })
 

@@ -18,9 +18,11 @@ import React, { Component, Fragment } from 'react'
 import { FlatList, Alert, Linking } from 'react-native'
 import { connect } from 'react-redux'
 
-import SettingsListItem from 'components/SettingsListItem'
-import { type State as ReduxState, type Currency, type Error, type Navigation } from 'common/types'
+import SettingsListItem, { type Props as SettingsItem } from 'components/SettingsListItem'
+import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 import colors from 'common/colors'
+import { type State as SettingsState, BIOMETRY_STATUS } from 'modules/settings'
+import { getBiometryTitle } from 'common'
 
 type Props = {
   setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void,
@@ -29,28 +31,18 @@ type Props = {
   destroyWallet: () => void,
   repairWallet: () => void,
   migrateToMainnet: () => void,
-  settings: {
-    currency: Currency,
-    checkNodeApiHttpAddr: string,
-  },
+  settings: SettingsState,
   error: Error,
   isCreated: boolean,
   navigation: Navigation,
   isFloonet: boolean,
+  enableBiometry: () => void,
+  disableBiometry: () => void,
 }
 type State = {
   inputValue: string,
   amount: number,
   valid: boolean,
-}
-
-type SettingsItem = {
-  key: string,
-  title: string,
-  hideChevron?: boolean,
-  titleColor?: string,
-  value?: string,
-  onPress: () => void,
 }
 
 class Settings extends Component<Props, State> {
@@ -128,7 +120,7 @@ class Settings extends Component<Props, State> {
   }
 
   render() {
-    const { navigation, getPhrase, isFloonet } = this.props
+    const { settings, navigation, getPhrase, isFloonet } = this.props
     const listData = [
       // { key: 'currency', title: 'Currency', value: 'EUR', onPress: () => {} },
       {
@@ -176,6 +168,21 @@ class Settings extends Component<Props, State> {
         onPress: () => this._onDestroyWallet(),
       },
     ]
+    if (settings.biometryType) {
+      listData.splice(0, 0, {
+        key: 'biometryEnabled',
+        title: getBiometryTitle(settings.biometryType),
+        hideChevron: true,
+        value: settings.biometryStatus === BIOMETRY_STATUS.enabled,
+        onValueChange: (value: boolean) => {
+          if (value) {
+            this.props.enableBiometry()
+          } else {
+            this.props.disableBiometry()
+          }
+        },
+      })
+    }
     if (isFloonet) {
       listData.splice(0, 0, {
         key: 'chain',
@@ -222,6 +229,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   migrateToMainnet: () => {
     dispatch({ type: 'WALLET_MIGRATE_TO_MAINNET_REQUEST' })
+  },
+  enableBiometry: () => {
+    dispatch({ type: 'ENABLE_BIOMETRY_REQUEST' })
+  },
+  disableBiometry: () => {
+    dispatch({ type: 'DISABLE_BIOMETRY_REQUEST' })
   },
 })
 

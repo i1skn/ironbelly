@@ -30,6 +30,7 @@ type Props = {
   isCreated: boolean,
   navigation: Navigation,
   switchToMainnet: () => void,
+  checkBiometry: () => void,
 }
 type State = {}
 
@@ -41,7 +42,8 @@ class Initial extends Component<Props, State> {
   state = {}
 
   componentDidMount() {
-    const { navigation, settings } = this.props
+    const { checkBiometry, navigation, settings } = this.props
+    checkBiometry()
     isWalletInitialized().then(exists => {
       if (exists) {
         navigation.navigate('Password', { nextScreen: { name: 'Main' } })
@@ -72,6 +74,9 @@ const mapStateToProps = (state: ReduxState) => ({
 const mapDispatchToProps = (dispatch, ownProps) => ({
   switchToMainnet: () => {
     dispatch({ type: 'SWITCH_TO_MAINNET' })
+  },
+  checkBiometry: () => {
+    dispatch({ type: 'CHECK_BIOMETRY_REQUEST' })
   },
 })
 

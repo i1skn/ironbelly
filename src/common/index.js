@@ -31,6 +31,7 @@ import colors from 'common/colors'
 import styled from 'styled-components/native'
 import { Text } from 'components/CustomFont'
 import { isIphoneX } from 'react-native-iphone-x-helper'
+import { BIOMETRY_TYPE } from 'react-native-keychain'
 
 export const hrGrin = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
@@ -222,3 +223,16 @@ export const UnderHeaderBlock = styled.View`
   background-color: ${colors.primary};
   padding: 0 16px 16px 16px;
 `
+
+export const getBiometryTitle = (biometryType: ?string) => {
+  switch (biometryType) {
+    case BIOMETRY_TYPE.TOUCH_ID:
+      return 'Touch ID'
+    case BIOMETRY_TYPE.FACE_ID:
+      return 'Face ID'
+    case BIOMETRY_TYPE.FINGERPRINT:
+      return 'Fingerprint'
+    default:
+      return ''
+  }
+}

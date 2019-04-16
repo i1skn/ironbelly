@@ -14,6 +14,7 @@
 
 
 import UIKit
+import LaunchScreenSnapshot
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -44,6 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()
 
+        LaunchScreenSnapshot.protect(with: nil, trigger: .didEnterBackground)
+        
         return true
     }
 

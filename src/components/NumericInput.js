@@ -25,6 +25,7 @@ type Props = {
   value: string,
   onChange: (value: string) => void,
   autoFocus: boolean,
+  style: any,
 }
 type State = {}
 
