@@ -415,6 +415,7 @@ export const sideEffects = {
     try {
       await RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
         store.dispatch({ type: 'TX_LIST_CLEAR' })
+        store.dispatch({ type: 'RESET_BIOMETRY_REQUEST' })
         store.dispatch({ type: 'WALLET_DESTROY_SUCCESS' })
       })
     } catch (error) {

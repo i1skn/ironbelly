@@ -105,6 +105,14 @@ export type disableBiometryFalureAction = {
   message: string,
 }
 
+export type resetBiometryRequestAction = { type: 'RESET_BIOMETRY_REQUEST' }
+export type resetBiometrySuccessAction = { type: 'RESET_BIOMETRY_SUCCESS' }
+export type resetBiometryFalureAction = {
+  type: 'RESET_BIOMETRY_FAILURE',
+  code?: number,
+  message: string,
+}
+
 export type checkBiometryRequestAction = { type: 'CHECK_BIOMETRY_REQUEST' }
 export type checkBiometrySuccessAction = { type: 'CHECK_BIOMETRY_SUCCESS', biometryType: ?string }
 export type checkBiometryFalureAction = {
@@ -308,6 +316,9 @@ export type Action =
   | disableBiometryRequestAction
   | disableBiometrySuccessAction
   | disableBiometryFalureAction
+  | resetBiometryRequestAction
+  | resetBiometrySuccessAction
+  | resetBiometryFalureAction
   | checkBiometryRequestAction
   | checkBiometrySuccessAction
   | checkBiometryFalureAction

@@ -24,6 +24,7 @@ import {
   type enableBiometryRequestAction,
   type checkBiometryRequestAction,
   type disableBiometryRequestAction,
+  type resetBiometryRequestAction,
 } from 'common/types'
 import RNFS from 'react-native-fs'
 import { APPLICATION_SUPPORT_DIRECTORY } from 'common'
@@ -110,6 +111,11 @@ export const reducer = (state: State = initialState, action: Action): State => {
         ...state,
         biometryStatus: BIOMETRY_STATUS.disabled,
       }
+    case 'RESET_BIOMETRY_SUCCESS':
+      return {
+        ...state,
+        biometryStatus: BIOMETRY_STATUS.unknown,
+      }
     case 'CHECK_BIOMETRY_SUCCESS':
       return {
         ...state,
@@ -164,7 +170,7 @@ export const sideEffects = {
       }
     } catch (error) {
       store.dispatch({ type: 'ENABLE_BIOMETRY_FAILURE', message: error.message })
-      log(error, true)
+      log(error, false)
     }
   },
   ['DISABLE_BIOMETRY_REQUEST']: async (action: disableBiometryRequestAction, store: Store) => {
@@ -173,6 +179,15 @@ export const sideEffects = {
       store.dispatch({ type: 'DISABLE_BIOMETRY_SUCCESS' })
     } catch (error) {
       store.dispatch({ type: 'DISABLE_BIOMETRY_FAILURE', message: error.message })
+      log(error, true)
+    }
+  },
+  ['RESET_BIOMETRY_REQUEST']: async (action: resetBiometryRequestAction, store: Store) => {
+    try {
+      await Keychain.resetGenericPassword()
+      store.dispatch({ type: 'RESET_BIOMETRY_SUCCESS' })
+    } catch (error) {
+      store.dispatch({ type: 'RESET_BIOMETRY_FAILURE', message: error.message })
       log(error, true)
     }
   },
