@@ -16,6 +16,7 @@
 
 import React, { Component, Fragment } from 'react'
 import { FlatList, Alert, Linking } from 'react-native'
+import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
 
 import SettingsListItem, { type Props as SettingsItem } from 'components/SettingsListItem'
@@ -99,10 +100,23 @@ class Settings extends Component<Props, State> {
     this.props.navigation.navigate('SettingsGrinNode')
   }
   _onRepairWallet = () => {
-    return Alert.alert(
-      'Repair this wallet',
-      "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required",
-      [
+    let title = 'Repair this wallet'
+    let desc =
+      "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
+    NetInfo.getConnectionInfo().then(({ type }) => {
+      if (type === 'none') {
+        Alert.alert(`Device is offline`, `Wallet recovery requires connection to the internet!`, [
+          {
+            text: 'Ok',
+            onPress: () => {},
+          },
+        ])
+        return
+      }
+      if (type !== 'wifi') {
+        desc = `${desc}. It requires to download A LOT OF DATA. Consider, that depend on your internet provider additional costs may occur!`
+      }
+      Alert.alert(title, desc, [
         {
           text: 'Cancel',
           onPress: () => console.log('Cancel Pressed'),
@@ -115,8 +129,8 @@ class Settings extends Component<Props, State> {
             this.props.navigation.navigate('WalletRepair')
           },
         },
-      ]
-    )
+      ])
+    })
   }
 
   render() {

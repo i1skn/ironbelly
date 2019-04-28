@@ -14,9 +14,8 @@
 
 
 #import <React/RCTBridgeModule.h>
-#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(GrinBridge, RCTEventEmitter)
+@interface RCT_EXTERN_MODULE(GrinBridge, NSObject)
 
 RCT_EXTERN_METHOD(balance:(NSString*)state refreshFromNode:(BOOL)refreshFromNode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
@@ -42,7 +41,9 @@ RCT_EXTERN_METHOD(seedNew:(NSUInteger)seedLength resolve:(RCTPromiseResolveBlock
 
 RCT_EXTERN_METHOD(walletPhrase:(NSString*)state resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(walletInit:(NSString*)state phrase:(NSString*)phrase password:(NSString*)password isNew:(BOOL)isNew resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(walletInit:(NSString*)state phrase:(NSString*)phrase password:(NSString*)password resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(walletRecovery:(NSString*)state startIndex:(int64_t)startIndex limit:(int64_t)limit resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(walletRepair:(NSString*)state resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 

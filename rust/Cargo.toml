@@ -7,33 +7,41 @@ publish = false
 edition = "2018"
 
 [dependencies]
-libc = "0.2.45"
-blake2-rfc = "0.2"
-chrono = "0.4.4"
-clap = "2.31"
+clap = { version = "2.31", features = ["yaml"] }
+rpassword = "2.0.0"
 ctrlc = { version = "3.1", features = ["termination"] }
-cursive = "0.9.0"
-humansize = "1.1.0"
-daemonize = "0.3"
+failure = "0.1"
+failure_derive = "0.1"
+prettytable-rs = "0.7"
+log = "0.4"
+uuid = "0.7.4"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 serde_derive = "1"
-log = "0.4"
-term = "0.5"
-prettytable-rs = "0.7"
-uuid = "0.6.5"
 
-grin_wallet = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
-grin_core = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
-grin_util = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
-grin_keychain = { git = "https://github.com/cyclefortytwo/grin", rev = "4de4cd1584d95e7893305f96fc1d28d4cd2cc9d4" }
+# For Release
+# ^
+# Does not exist yet
+
+# For bleeding edge
+grin_wallet_api = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_impls = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_libwallet = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_config = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_util = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+
+
+# For local testing
+# grin_wallet_api = { path = "../../../mimblewimble/grin-wallet/api", version = "1.1.0-beta.2" }
+# grin_wallet_impls = { path = "../../../mimblewimble/grin-wallet/impls", version = "1.1.0-beta.2" }
+# grin_wallet_libwallet = { path = "../../../mimblewimble/grin-wallet/libwallet", version = "1.1.0-beta.2" }
+# grin_wallet_config = { path = "../../../mimblewimble/grin-wallet/config", version = "1.1.0-beta.2" }
+# grin_wallet_util = { path = "../../../mimblewimble/grin-wallet/util", version = "1.1.0-beta.2" }
+
 
 
 [build-dependencies]
 built = "0.3"
-reqwest = "0.9"
-flate2 = "1.0"
-tar = "0.4"
 cbindgen = "0.8.3"
 
 
@@ -42,4 +50,4 @@ name = "wallet"
 crate-type = ["staticlib"]
 
 [patch.crates-io]
-croaring = { path = "./croaring-rs" }
+croaring = { path = "./croaring-rs", version = "0.3.9" }

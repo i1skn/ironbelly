@@ -17,7 +17,6 @@
 import React, { Component } from 'react'
 import { Alert, TouchableHighlight, TouchableOpacity, RefreshControl, View } from 'react-native'
 import { connect } from 'react-redux'
-import { getSupportedBiometryType } from 'react-native-keychain'
 import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text, Button } from 'components/CustomFont'
@@ -52,6 +51,7 @@ type Props = {
   txsGet: (showLoader: boolean, refreshFromNode: boolean) => void,
   resetTxForm: () => void,
   enableBiometry: () => void,
+  disableBiometry: () => void,
   txConfirm: (txSlateId: string) => void,
   txFinalize: (txSlateId: string) => void,
   slateShare: (id: string, isResponse: boolean) => void,
@@ -125,7 +125,9 @@ class Overview extends Component<Props, State> {
     super(props)
   }
 
-  _onDisableBiometry = () => {}
+  _onDisableBiometry = () => {
+    this.props.disableBiometry()
+  }
   _onEnableBiometry = () => {
     this.props.enableBiometry()
   }

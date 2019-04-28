@@ -16,6 +16,10 @@ PODS:
     - React/Core (= 0.59.3)
   - react-native-async-storage (1.2.2):
     - React
+  - react-native-keep-awake (4.0.0):
+    - React
+  - react-native-netinfo (2.0.5):
+    - React
   - React/Core (0.59.3):
     - yoga (= 0.59.3.React)
   - React/CxxBridge (0.59.3):
@@ -77,6 +81,8 @@ PODS:
     - React
   - RNKeychain (3.1.1):
     - React
+  - RNSVG (9.4.0):
+    - React
   - RNVectorIcons (6.4.2):
     - React
   - TouchID (4.4.1):
@@ -90,6 +96,8 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - LaunchScreenSnapshot
   - "react-native-async-storage (from `../node_modules/@react-native-community/async-storage`)"
+  - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
+  - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - React/Core (from `../node_modules/react-native`)
   - React/CxxBridge (from `../node_modules/react-native`)
   - React/DevSupport (from `../node_modules/react-native`)
@@ -108,6 +116,7 @@ DEPENDENCIES:
   - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler/RNGestureHandler.podspec`)
   - RNKeychain (from `../node_modules/react-native-keychain`)
+  - RNSVG (from `../node_modules/react-native-svg`)
   - RNVectorIcons (from `../node_modules/react-native-vector-icons`)
   - TouchID (from `../node_modules/react-native-touch-id`)
   - yoga (from `../node_modules/react-native/ReactCommon/yoga`)
@@ -130,6 +139,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native"
   react-native-async-storage:
     :path: "../node_modules/@react-native-community/async-storage"
+  react-native-keep-awake:
+    :path: "../node_modules/react-native-keep-awake"
+  react-native-netinfo:
+    :path: "../node_modules/@react-native-community/netinfo"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFS:
@@ -138,6 +151,8 @@ EXTERNAL SOURCES:
     :podspec: "../node_modules/react-native-gesture-handler/RNGestureHandler.podspec"
   RNKeychain:
     :path: "../node_modules/react-native-keychain"
+  RNSVG:
+    :path: "../node_modules/react-native-svg"
   RNVectorIcons:
     :path: "../node_modules/react-native-vector-icons"
   TouchID:
@@ -154,14 +169,17 @@ SPEC CHECKSUMS:
   LaunchScreenSnapshot: cee0c0fec0d9b9186c76a1fd010c5c4677ccb6fc
   React: b52fdb80565505b7e4592b313a38868f5df51641
   react-native-async-storage: 9f540b8bb09f7e31e3fb951de2f8f8b6d0332280
+  react-native-keep-awake: eba3137546b10003361b37c761f6c429b59814ae
+  react-native-netinfo: 2cfb4a903d90f1beda31c2990a058c51130b53aa
   RNDeviceInfo: 3a4a9c6b1792d7a7d0d7b5428edb03107be90528
   RNFS: c9bbde46b0d59619f8e7b735991c60e0f73d22c1
   RNGestureHandler: b65d391f4f570178d657b99a16ec99d09b8656b0
   RNKeychain: 1a121521011702409f5a1009eb8a1effa81000f3
+  RNSVG: 9cb6e958c4b6a1f58185ac72a350b148947d6fed
   RNVectorIcons: 6607bd3a30291d0edb56f9bbe7ae411ee2b928b0
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   yoga: 1a492113f66a35e9e583bb0434f4b8cc668dd839
 
-PODFILE CHECKSUM: c09e3c6c0eed78896505e78668cce592404f95f3
+PODFILE CHECKSUM: 1233294d6306d9bda5b4e3c55f525af70af366b6
 
 COCOAPODS: 1.6.1

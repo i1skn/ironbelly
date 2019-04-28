@@ -31,6 +31,7 @@ type Props = {
   navigation: Navigation,
   switchToMainnet: () => void,
   checkBiometry: () => void,
+  recoveryStarted: boolean,
 }
 type State = {}
 
@@ -42,11 +43,15 @@ class Initial extends Component<Props, State> {
   state = {}
 
   componentDidMount() {
-    const { checkBiometry, navigation, settings } = this.props
+    const { checkBiometry, navigation, settings, recoveryStarted } = this.props
     checkBiometry()
     isWalletInitialized().then(exists => {
       if (exists) {
-        navigation.navigate('Password', { nextScreen: { name: 'Main' } })
+        navigation.navigate('Password', {
+          nextScreen: recoveryStarted
+            ? { name: 'WalletPrepare', params: { isNew: false } }
+            : { name: 'Main' },
+        })
       } else {
         if (settings.chain === FLOONET_CHAIN) {
           this.props.switchToMainnet()
@@ -69,6 +74,7 @@ class Initial extends Component<Props, State> {
 
 const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
+  recoveryStarted: state.wallet.walletInit.started,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

@@ -28,7 +28,7 @@ import urlParser from 'url'
 import Modal from 'react-native-modal'
 import { decode as atob } from 'base-64'
 import { PersistGate } from 'redux-persist/integration/react'
-import Toast, { DURATION } from 'react-native-easy-toast'
+import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 
 import { type Dispatch, type State as GlobalState, type Url } from 'common/types'
@@ -36,12 +36,7 @@ import { store, persistor } from 'common/redux'
 import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 import { AppContainer } from 'modules/navigation'
 import { type NavigationState, NavigationActions } from 'react-navigation'
-import {
-  MAINNET_CHAIN,
-  FLOONET_CHAIN,
-  MAINNET_API_SECRET,
-  FLOONET_API_SECRET,
-} from 'modules/settings'
+import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'modules/settings'
 import { type State as ToasterState } from 'modules/toaster'
 
 // Filesystem
@@ -57,6 +52,7 @@ type Props = {
   setApiSecret: (apiSecret: string) => void,
   chain: string,
   dispatch: Dispatch,
+  recoveryStarted: boolean,
 }
 type State = {}
 
@@ -129,13 +125,21 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleAppStateChange = nextAppState => {
+    const { recoveryStarted } = this.props
     if (nextAppState === 'background') {
       isWalletInitialized().then(exists => {
         if (exists) {
           this.props.dispatch(
             NavigationActions.navigate({
               routeName: 'Password',
-              params: { nextScreen: { name: 'Main' } },
+              params: {
+                nextScreen: recoveryStarted
+                  ? {
+                      name: 'WalletPrepare',
+                      params: { isNew: false },
+                    }
+                  : { name: 'Main' },
+              },
             })
           )
           this.props.dispatch({ type: 'CLEAR_PASSWORD' })
@@ -178,6 +182,7 @@ const RealAppConnected = connect(
     toastMessage: state.toaster,
     showTxConfirmationModal: state.tx.txPost.showModal,
     chain: state.settings.chain,
+    recoveryStarted: state.wallet.walletInit.started,
   }),
   (dispatch, ownProps) => ({
     closeTxPostModal: () => dispatch({ type: 'TX_POST_CLOSE' }),

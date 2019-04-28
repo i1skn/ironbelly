@@ -24,6 +24,7 @@ import colors from 'common/colors'
 import { type State as ReduxState, type Navigation } from 'common/types'
 import { Text, Button } from 'components/CustomFont'
 import { type WalletRepairState } from 'modules/wallet'
+import KeepAwake from 'react-native-keep-awake'
 
 type Props = WalletRepairState & {
   navigation: Navigation,
@@ -68,6 +69,7 @@ class WalletRepair extends Component<Props, State> {
       <Wrapper>
         {(!repaired && (
           <Fragment>
+            <KeepAwake />
             <ActivityIndicator size="large" color={colors.primary} />
             <Spacer />
             <StatusText style={{ textAlign: 'center' }}>Repair in progress</StatusText>

@@ -33,6 +33,8 @@ import { Text } from 'components/CustomFont'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_TYPE } from 'react-native-keychain'
 
+console.log(RNFS.LibraryDirectoryPath)
+
 export const hrGrin = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -68,8 +70,11 @@ export const mapRustTx = (rTx: RustTx): Tx => {
     type: rTx.tx_type,
     confirmed: rTx.confirmed,
     creationTime: moment(rTx.creation_ts),
-    amount: rTx.amount_credited - rTx.amount_debited + rTx.fee,
-    fee: rTx.fee,
+    amount:
+      parseInt(rTx.amount_credited || '0', 10) -
+      parseInt(rTx.amount_debited || '0', 10) +
+      parseInt(rTx.fee || '0', 10),
+    fee: parseInt(rTx.fee || '0', 10),
   }
 }
 

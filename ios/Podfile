@@ -46,6 +46,12 @@ target 'Ironbelly' do
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
   # Add new pods below this line
+  pod 'react-native-netinfo', :path => '../node_modules/@react-native-community/netinfo'
+
+  pod 'react-native-keep-awake', :path => '../node_modules/react-native-keep-awake'
+
+  pod 'RNSVG', :path => '../node_modules/react-native-svg'
+
   pod 'TouchID', :path => '../node_modules/react-native-touch-id'
 
   pod 'RNKeychain', :path => '../node_modules/react-native-keychain'

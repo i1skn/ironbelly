@@ -193,11 +193,14 @@ export type walletInitSetConfirmPasswordAction = {
 
 export type walletRecoveryRequestAction = {
   type: 'WALLET_RECOVERY_REQUEST',
+  startIndex: number,
+  limit: number,
 }
-export type walletRecoverySuccessAction = { type: 'WALLET_RECOVERY_SUCCESS' }
-export type walletRecoveryProgressUpdateAction = {
-  type: 'WALLET_RECOVERY_PROGRESS_UPDATE',
-  progress: number,
+export type walletRecoverySuccessAction = {
+  type: 'WALLET_RECOVERY_SUCCESS',
+  lastRetrievedIndex: number,
+  highestIndex: number,
+  downloadedInBytes: number,
 }
 export type walletRecoveryFalureAction = {
   type: 'WALLET_RECOVERY_FAILURE',
@@ -372,7 +375,6 @@ export type Action =
   | walletRecoveryFalureAction
   | walletRecoverySetPhraseAction
   | walletRecoverySetPasswordAction
-  | walletRecoveryProgressUpdateAction
   | walletPhraseRequestAction
   | walletPhraseSuccessAction
   | walletPhraseFalureAction

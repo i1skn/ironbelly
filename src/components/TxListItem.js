@@ -81,7 +81,7 @@ const TxListItem = (props: Props) => {
       <View style={{ flexGrow: 1 }}>
         <View style={{ flexDirection: 'row' }}>
           <AmountGrin isSent={isSent}>{hrGrin(amount - fee)}</AmountGrin>
-          {fee && <Fee> (incl. {hrGrin(fee)} fee)</Fee>}
+          {!!fee && <Fee> (incl. {hrGrin(fee)} fee)</Fee>}
         </View>
         {confirmed ? (
           <Time>{creationTime.fromNow()}</Time>

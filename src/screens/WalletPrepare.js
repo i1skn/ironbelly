@@ -23,16 +23,21 @@ import { Spacer, LoaderView } from 'common'
 import colors from 'common/colors'
 import { type State as ReduxState, type Navigation } from 'common/types'
 import { Text, Button } from 'components/CustomFont'
-import { type WalletInitState } from 'modules/wallet'
+import { RECOVERY_LIMIT, type WalletInitState } from 'modules/wallet'
+import { AnimatedCircularProgress } from 'react-native-circular-progress'
+import KeepAwake from 'react-native-keep-awake'
 
 type Props = WalletInitState & {
   navigation: Navigation,
-  createWallet: (password: string, mnemonic: string, isNew: boolean) => void,
+  recoverWallet: (startIndex: number) => void,
 }
 type State = {}
 
 const StatusText = styled(Text)`
   font-size: 24;
+`
+const ProgressText = styled(Text)`
+  font-size: 28;
 `
 
 const Wrapper = styled(LoaderView)`
@@ -47,11 +52,9 @@ class WalletPrepare extends Component<Props, State> {
   state = {}
 
   componentDidMount() {
-    const { password, created, createWallet, isNew, navigation } = this.props
-    if (!created && navigation.state.params && navigation.state.params.phrase) {
-      createWallet(password, navigation.state.params.phrase, isNew)
-    } else {
-      navigation.goBack()
+    const { recoverWallet, created, lastRetrievedIndex, inProgress } = this.props
+    if (!created && !inProgress && lastRetrievedIndex) {
+      recoverWallet(lastRetrievedIndex + 1)
     }
   }
 
@@ -59,26 +62,38 @@ class WalletPrepare extends Component<Props, State> {
     if (this.props.error.message && !prevProps.error.message) {
       this.props.navigation.goBack()
     }
+    const { recoverWallet, created, lastRetrievedIndex, inProgress } = this.props
+    if (!created && !inProgress && lastRetrievedIndex) {
+      recoverWallet(lastRetrievedIndex + 1)
+    }
   }
 
   render() {
-    const { navigation, created, isNew } = this.props
+    const { navigation, created, isNew, progress } = this.props
     return (
       <Wrapper>
+        <KeepAwake />
         {(!created && (
           <Fragment>
-            <ActivityIndicator size="large" color={colors.primary} />
-            {!isNew && (
+            {(!isNew && (
               <Fragment>
+                <AnimatedCircularProgress
+                  style={{ alignSelf: 'center' }}
+                  size={120}
+                  backgroundWidth={4}
+                  width={6}
+                  fill={progress}
+                  tintColor={colors.black}
+                  rotation={0}
+                  onAnimationComplete={() => console.log('onAnimationComplete')}
+                  backgroundColor={colors.primary}
+                >
+                  {fill => <ProgressText>{`${progress}%`}</ProgressText>}
+                </AnimatedCircularProgress>
                 <Spacer />
                 <StatusText style={{ textAlign: 'center' }}>Recovery in progress</StatusText>
-                <Spacer />
-                <Text style={{ textAlign: 'center' }}>
-                  Please do not close or background the app during this process. It can take a
-                  couple of minutes to finish.
-                </Text>
               </Fragment>
-            )}
+            )) || <ActivityIndicator size="large" color={colors.primary} />}
           </Fragment>
         )) || (
           <Fragment>
@@ -104,8 +119,8 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  createWallet: (password, phrase, isNew) => {
-    dispatch({ type: 'WALLET_INIT_REQUEST', password, phrase, isNew })
+  recoverWallet: startIndex => {
+    dispatch({ type: 'WALLET_RECOVERY_REQUEST', startIndex, limit: RECOVERY_LIMIT })
   },
 })
 

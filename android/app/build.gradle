@@ -137,6 +137,9 @@ android {
 }
 
 dependencies {
+    implementation project(':@react-native-community_netinfo')
+    implementation project(':react-native-keep-awake')
+    implementation project(':react-native-svg')
     implementation project(':react-native-touch-id')
     implementation project(':react-native-keychain')
     implementation project(':react-native-vector-icons')

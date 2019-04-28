@@ -45,10 +45,14 @@ const char *c_txs_get(const char *state_json, bool refresh_from_node, uint8_t *e
 const char *c_wallet_init(const char *state,
                           const char *phrase,
                           const char *password,
-                          bool is_new,
                           uint8_t *error);
 
 const char *c_wallet_phrase(const char *state_json, uint8_t *error);
+
+const char *c_wallet_recovery(const char *state,
+                              uint64_t start_height,
+                              uint64_t limit,
+                              uint8_t *error);
 
 const char *c_wallet_repair(const char *state, uint8_t *error);
 

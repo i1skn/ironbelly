@@ -15,20 +15,22 @@
 // limitations under the License.
 
 import React, { Component, Fragment } from 'react'
+import { Alert } from 'react-native'
 // $FlowFixMe
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import MnemonicWordTextInput from 'components/MnemonicWordTextInput'
 
+import NetInfo from '@react-native-community/netinfo'
 import { UnderHeaderBlock, FlexGrow, Spacer } from 'common'
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
+import { type WalletInitState } from 'modules/wallet'
 
-type Props = {
-  mnemonic: string,
+type Props = WalletInitState & {
   navigation: Navigation,
-  newWallet: boolean,
+  createWallet: (password: string, mnemonic: string, isNew: boolean) => void,
 }
 type State = {
   inputValue: string,
@@ -83,14 +85,61 @@ class Verify extends Component<Props, State> {
     // })
   }
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps) {
+    if (this.props.inProgress && !prevProps.inProgress) {
+      this.props.navigation.navigate('WalletPrepare')
+    }
+  }
 
+  _onContinuePress = currentUserPhrase => {
+    return () => {
+      const { isNew, password, createWallet } = this.props
+      if (!isNew) {
+        NetInfo.getConnectionInfo().then(({ type }) => {
+          if (type === 'none') {
+            Alert.alert(
+              `Device is offline`,
+              `Wallet recovery requires connection to the internet!`,
+              [
+                {
+                  text: 'Ok',
+                  onPress: () => {},
+                },
+              ]
+            )
+          } else if (type !== 'wifi') {
+            Alert.alert(
+              `Warning`,
+              `Wallet recovery requires to download A LOT OF DATA. Consider, that depend on your internet provider additional costs may occur!`,
+              [
+                {
+                  text: 'Cancel',
+                  onPress: () => {},
+                },
+                {
+                  text: 'Continue',
+                  style: 'destructive',
+                  onPress: () => {
+                    createWallet(password, currentUserPhrase, isNew)
+                  },
+                },
+              ]
+            )
+          } else {
+            createWallet(password, currentUserPhrase, isNew)
+          }
+        })
+      } else {
+        createWallet(password, currentUserPhrase, isNew)
+      }
+    }
+  }
   render() {
-    const { navigation, mnemonic, newWallet } = this.props
+    const { mnemonic, isNew } = this.props
     const { mnemonicWords, wordsCount } = this.state
 
     const currentUserPhrase = mnemonicWords.map(w => w.toLowerCase()).join(' ')
-    const verified = newWallet
+    const verified = isNew
       ? mnemonic === currentUserPhrase
       : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) === wordsCount
 
@@ -100,7 +149,7 @@ class Verify extends Component<Props, State> {
           <Fragment>
             <UnderHeaderBlock>
               <Text>
-                {newWallet
+                {isNew
                   ? 'Enter the paper key you have just written to verify its correctness.'
                   : 'Enter the paper key to continue.'}
               </Text>
@@ -112,7 +161,7 @@ class Verify extends Component<Props, State> {
                 paddingRight: 16,
               }}
               keyboardShouldPersistTaps={'handled'}
-              extraHeight={8}
+              extraScrollHeight={8}
               enableResetScrollToCoords={false}
               keyboardOpeningTime={0}
             >
@@ -158,9 +207,7 @@ class Verify extends Component<Props, State> {
                 testID="VerifyPaperKeyContinueButton"
                 title="Continue"
                 disabled={!verified}
-                onPress={() => {
-                  navigation.navigate('WalletPrepare', { phrase: currentUserPhrase })
-                }}
+                onPress={this._onContinuePress(currentUserPhrase)}
               />
               <Spacer />
             </KeyboardAwareScrollView>
@@ -173,11 +220,14 @@ class Verify extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: ReduxState) => ({
-  mnemonic: state.wallet.walletInit.mnemonic,
-  newWallet: state.wallet.walletInit.isNew,
+  ...state.wallet.walletInit,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({})
+const mapDispatchToProps = (dispatch, ownProps) => ({
+  createWallet: (password, phrase, isNew) => {
+    dispatch({ type: 'WALLET_INIT_REQUEST', password, phrase, isNew })
+  },
+})
 
 export default connect(
   mapStateToProps,

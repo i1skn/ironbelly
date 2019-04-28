@@ -15,9 +15,12 @@
 // limitations under the License.
 
 import { NativeModules } from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
+import { persistReducer } from 'redux-persist'
 import {
   type Action,
   type walletInitRequestAction,
+  type walletRecoveryRequestAction,
   type seedNewRequestAction,
   type walletPhraseRequestAction,
   type invalidPasswordAction,
@@ -37,14 +40,19 @@ import { WALLET_DATA_DIRECTORY } from 'common'
 import { NavigationActions } from 'react-navigation'
 
 const { GrinBridge } = NativeModules
+export const RECOVERY_LIMIT = 1000
 
 export type WalletInitState = {|
   inProgress: boolean,
+  progress: number,
   mnemonic: string,
   password: string,
   confirmPassword: string,
-  progress: number,
+  lastRetrievedIndex: number,
+  highestIndex: number,
+  downloadedInBytes: number,
   created: boolean,
+  started: boolean,
   isNew: boolean,
   error: {
     message: string,
@@ -87,10 +95,14 @@ export type State = {
 const initialState: State = {
   walletInit: {
     inProgress: false,
+    progress: 0,
     password: '',
     confirmPassword: '',
     mnemonic: '',
-    progress: 0,
+    lastRetrievedIndex: 0,
+    highestIndex: 0,
+    downloadedInBytes: 0,
+    started: false,
     created: false,
     isNew: true,
     error: {
@@ -128,16 +140,18 @@ const walletInit = function(
 ): WalletInitState {
   switch (action.type) {
     case 'WALLET_CLEAR': {
-      return initialState.walletInit
+      return { ...initialState.walletInit }
     }
     case 'WALLET_DESTROY_SUCCESS': {
-      return initialState.walletInit
+      return { ...initialState.walletInit }
     }
     case 'WALLET_INIT_REQUEST':
       return {
         ...state,
+        lastRetrievedIndex: 0,
+        highestIndex: 0,
+        downloadedInBytes: 0,
         inProgress: true,
-        progress: 0,
         mnemonic: '',
         error: {
           message: '',
@@ -168,7 +182,7 @@ const walletInit = function(
       return {
         ...state,
         inProgress: false,
-        created: true,
+        created: state.isNew,
       }
     case 'WALLET_INIT_FAILURE':
       return {
@@ -183,20 +197,25 @@ const walletInit = function(
       return {
         ...state,
         inProgress: true,
+        started: !!action.startIndex ? true : state.started,
         error: {
           message: '',
           code: 0,
         },
       }
     case 'WALLET_RECOVERY_SUCCESS':
+      const created = action.lastRetrievedIndex === action.highestIndex
       return {
         ...state,
+        progress:
+          action.highestIndex &&
+          Math.floor((action.lastRetrievedIndex * 100) / action.highestIndex),
         inProgress: false,
-      }
-    case 'WALLET_RECOVERY_PROGRESS_UPDATE':
-      return {
-        progress: action.progress,
-        ...state,
+        created,
+        started: !created,
+        lastRetrievedIndex: action.lastRetrievedIndex,
+        highestIndex: action.highestIndex,
+        downloadedInBytes: action.downloadedInBytes,
       }
     case 'WALLET_RECOVERY_FAILURE':
       return {
@@ -341,9 +360,23 @@ const password = function(
   }
 }
 
+const walletInitPersistConfig = {
+  key: 'walletInit',
+  storage: AsyncStorage,
+  whitelist: [
+    'isNew',
+    'created',
+    'started',
+    'progress',
+    'lastRetrievedIndex',
+    'highestIndex',
+    'downloadedInBytes',
+  ],
+}
+
 export const reducer = combineReducers({
   password,
-  walletInit,
+  walletInit: persistReducer(walletInitPersistConfig, walletInit),
   walletPhrase,
   walletRepair,
 })
@@ -359,19 +392,39 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_INIT_REQUEST']: (action: walletInitRequestAction, store: Store) => {
+  ['WALLET_INIT_REQUEST']: async (action: walletInitRequestAction, store: Store) => {
     const { password, phrase, isNew } = action
-    return checkWalletDataDirectory().then(() => {
-      return GrinBridge.walletInit(getStateForRust(store.getState()), phrase, password, isNew)
-        .then(() => {
-          store.dispatch({ type: 'WALLET_INIT_SUCCESS' })
-          store.dispatch({ type: 'SET_PASSWORD', password })
+    await checkWalletDataDirectory()
+    return GrinBridge.walletInit(getStateForRust(store.getState()), phrase, password)
+      .then(() => {
+        store.dispatch({ type: 'WALLET_INIT_SUCCESS' })
+        store.dispatch({ type: 'SET_PASSWORD', password })
+        if (!isNew) {
+          store.dispatch({ type: 'WALLET_RECOVERY_REQUEST', startIndex: 0, limit: RECOVERY_LIMIT })
+        }
+      })
+      .catch(error => {
+        store.dispatch({ type: 'WALLET_INIT_FAILURE', message: error.message })
+        log(error, true)
+      })
+  },
+  ['WALLET_RECOVERY_REQUEST']: async (action: walletRecoveryRequestAction, store: Store) => {
+    const { startIndex, limit } = action
+    await checkWalletDataDirectory()
+    return GrinBridge.walletRecovery(getStateForRust(store.getState()), startIndex, limit)
+      .then(JSON.parse)
+      .then(({ lastRetrievedIndex, highestIndex, downloadedInBytes }) => {
+        store.dispatch({
+          type: 'WALLET_RECOVERY_SUCCESS',
+          lastRetrievedIndex,
+          highestIndex,
+          downloadedInBytes,
         })
-        .catch(error => {
-          store.dispatch({ type: 'WALLET_INIT_FAILURE', message: error.message })
-          log(error, true)
-        })
-    })
+      })
+      .catch(error => {
+        store.dispatch({ type: 'WALLET_RECOVERY_FAILURE', message: error.message })
+        log(error, true)
+      })
   },
   ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
     const { value } = store.getState().wallet.password

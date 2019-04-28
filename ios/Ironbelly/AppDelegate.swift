@@ -22,9 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        if let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.path {
-            print("Application Support: \(appSupport)")
-        }
         #if DEBUG
         let jsCodeLocation = URL(string: "http://localhost:8081/index.bundle?platform=ios")
         #else
