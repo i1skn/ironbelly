@@ -98,7 +98,7 @@ class TxDetails extends Component<Props, State> {
                 value={hrGrin(tx.amount)}
               />
 
-              {tx.fee && (
+              {!!tx.fee && (
                 <React.Fragment>
                   <FieldTitle>Fee</FieldTitle>
                   <FormTextInput
