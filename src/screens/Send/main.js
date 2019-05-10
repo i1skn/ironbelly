@@ -57,6 +57,9 @@ type State = {}
 
 class Send extends Component<Props, State> {
   steps = [Amount, Strategy, Message, Transport, Address]
+  static navigationOptions = {
+    header: null,
+  }
 
   componentDidUpdate(prevProps) {
     if (

@@ -21,11 +21,11 @@ import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text, Button } from 'components/CustomFont'
 import Balance from 'components/Balance'
-import RecoveryProgress from 'components/RecoveryProgress'
 import HeaderSpan from 'components/HeaderSpan'
 import TxListItem from 'components/TxListItem'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_STATUS } from 'modules/settings'
+import FeatherIcon from 'react-native-vector-icons/Feather'
 
 import {
   type Balance as BalanceType,
@@ -38,9 +38,6 @@ import { getBiometryTitle } from 'common'
 
 import { type WalletInitState } from 'modules/wallet'
 import { type State as SettingsState } from 'modules/settings'
-
-//Images
-import SendTXImg from 'assets/images/SendTX.png'
 
 type Props = {
   getBalance: () => void,
@@ -67,42 +64,31 @@ type State = {}
 const Wrapper = styled.View`
   height: 100%;
 `
-const ActionButtonTH = styled.TouchableOpacity`
-  position: absolute;
-  bottom: ${isIphoneX() ? -40 : -50};
-  justify-content: center;
-  align-items: center;
-  width: 120;
-  height: 120;
+
+const Footer = styled.View`
+  flex-direction: row;
+  height: 64;
+  padding-bottom: ${isIphoneX() ? 12 : 0};
   background-color: ${() => colors.primary};
-  border-radius: 60;
-  align-self: center;
-  opacity: ${props => (props.disabled ? '0.3' : '1')};
 `
 
-const ActionButtonIcon = styled.Image`
-  width: 28;
-  height: 28;
-  margin-top: -40;
+const ActionButton = styled.TouchableOpacity`
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
+  opacity: ${props => (props.disabled ? '0.3' : '1')};
+  flex: 1;
 `
+
 const ActionButtonText = styled(Text)`
-  font-size: 16;
+  font-size: 20;
+  padding-left: 8px;
+  line-height: 28px;
 `
 
 const NoTxsView = styled.View`
   padding: 16px;
 `
-const ActionButton = (props: any) => {
-  const { title, icon } = props
-  return (
-    <ActionButtonTH onPress={props.onPress} disabled={props.disabled}>
-      <React.Fragment>
-        <ActionButtonIcon source={icon} />
-        <ActionButtonText>{title}</ActionButtonText>
-      </React.Fragment>
-    </ActionButtonTH>
-  )
-}
 
 const ListItemSeparator = styled.View`
   height: 1;
@@ -132,11 +118,9 @@ class Overview extends Component<Props, State> {
     this.props.enableBiometry()
   }
   componentDidMount() {
-    const { walletInit, settings } = this.props
-    if (!walletInit.inProgress) {
-      this.props.getBalance()
-      this.props.txsGet(false, true)
-    }
+    const { settings } = this.props
+    this.props.getBalance()
+    this.props.txsGet(false, true)
     const { responseSlatePath } = this.props.navigation.state.params
     if (responseSlatePath) {
       this.props.txFinalize(responseSlatePath)
@@ -161,16 +145,6 @@ class Overview extends Component<Props, State> {
     }
   }
   componentDidUpdate(prevProps) {
-    if (this.props.walletInit.error.message && !prevProps.walletInit.error.message) {
-      this.props.navigation.navigate('Initial')
-    }
-    if (
-      this.props.walletInit.inProgress !== prevProps.walletInit.inProgress &&
-      !this.props.walletInit.inProgress
-    ) {
-      this.props.txsGet(false, true)
-    }
-
     if (
       this.props.navigation.state.params.responseSlatePath !==
       prevProps.navigation.state.params.responseSlatePath
@@ -191,7 +165,6 @@ class Overview extends Component<Props, State> {
       slateShare,
       settings,
       resetTxForm,
-      walletInit,
       isOffline,
       firstLoading,
       txConfirm,
@@ -201,31 +174,27 @@ class Overview extends Component<Props, State> {
       <Wrapper>
         <HeaderSpan bgColor={colors.primary} />
 
-        {(walletInit.inProgress && <RecoveryProgress />) || (
-          <Balance
-            isFloonet={chain === 'floonet'}
-            balance={balance}
-            currency={currency}
-            isOffline={isOffline}
-            navigation={navigation}
-            minimumConfirmations={minimumConfirmations}
-          />
-        )}
+        <Balance
+          isFloonet={chain === 'floonet'}
+          balance={balance}
+          currency={currency}
+          isOffline={isOffline}
+          navigation={navigation}
+          minimumConfirmations={minimumConfirmations}
+        />
         <SwipeListView
           useFlatList
           data={txs}
           ListEmptyComponent={
-            !walletInit.inProgress && (
-              <NoTxsView>
-                {(firstLoading && <EmptyTxListMessage>Loading...</EmptyTxListMessage>) || (
-                  <Button
-                    testID="TopUpButton"
-                    onPress={() => navigation.navigate('Topup')}
-                    title="Top up balance?"
-                  />
-                )}
-              </NoTxsView>
-            )
+            <NoTxsView>
+              {(firstLoading && <EmptyTxListMessage>Loading...</EmptyTxListMessage>) || (
+                <Button
+                  testID="TopUpButton"
+                  onPress={() => navigation.navigate('Topup')}
+                  title="Top up balance?"
+                />
+              )}
+            </NoTxsView>
           }
           ItemSeparatorComponent={ListItemSeparator}
           renderItem={(data: { item: Tx }, rowMap) => (
@@ -303,17 +272,27 @@ class Overview extends Component<Props, State> {
             />
           }
         />
-        {!walletInit.inProgress && (
+        <Footer>
           <ActionButton
-            title="Send"
-            disabled={!balance.amountCurrentlySpendable}
-            icon={SendTXImg}
             onPress={() => {
               resetTxForm()
               navigation.navigate('Send')
             }}
-          />
-        )}
+            disabled={!balance.amountCurrentlySpendable}
+          >
+            <FeatherIcon name="arrow-up-circle" size={28} />
+            <ActionButtonText>Send</ActionButtonText>
+          </ActionButton>
+          <ActionButton
+            onPress={() => {
+              navigation.navigate('ReceiveInfo')
+            }}
+            disabled={false}
+          >
+            <FeatherIcon name="arrow-down-circle" size={28} />
+            <ActionButtonText>Receive</ActionButtonText>
+          </ActionButton>
+        </Footer>
       </Wrapper>
     )
   }

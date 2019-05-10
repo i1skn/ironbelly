@@ -53,6 +53,10 @@ type State = {}
 import CloseImg from 'assets/images/x.png'
 
 class SendLink extends Component<Props, State> {
+  static navigationOptions = {
+    header: null,
+  }
+
   componentDidUpdate(prevProps) {
     if (
       (!prevProps.txForm.outputStrategies_error && this.props.txForm.outputStrategies_error) ||

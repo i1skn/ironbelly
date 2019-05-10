@@ -19,6 +19,7 @@ import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send/main'
 import SendLinkScreen from 'screens/SendLink/main'
 import ReceiveScreen from 'screens/Receive'
+import ReceiveInfoScreen from 'screens/ReceiveInfo'
 import SettingsScreen from 'screens/Settings'
 import TxDetailsScreen from 'screens/TxDetails'
 import LandingScreen from 'screens/Landing'
@@ -60,7 +61,6 @@ const MainStack = createStackNavigator(
       params: { alreadyAccepted: true },
     },
     WalletRepair: WalletRepairScreen,
-
     Overview: {
       screen: OverviewScreen,
       params: {},
@@ -77,6 +77,11 @@ const MainStack = createStackNavigator(
   }
 )
 
+MainStack.navigationOptions = {
+  header: null,
+  headerBackTitle: 'Close',
+}
+
 const AppStack = createStackNavigator(
   {
     Main: MainStack,
@@ -84,11 +89,11 @@ const AppStack = createStackNavigator(
     SendLink: SendLinkScreen,
     Topup: TopupScreen,
     Receive: ReceiveScreen,
+    ReceiveInfo: ReceiveInfoScreen,
   },
   {
     initialRouteName: 'Main',
     mode: 'modal',
-    headerMode: 'none',
     defaultNavigationOptions,
   }
 )
