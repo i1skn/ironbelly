@@ -16,14 +16,22 @@
 
 import React, { Component, Fragment } from 'react'
 import { FlatList, Alert, Linking } from 'react-native'
+import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
+import styled from 'styled-components/native'
 
 import SettingsListItem, { type Props as SettingsItem } from 'components/SettingsListItem'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 import colors from 'common/colors'
 import { type State as SettingsState, BIOMETRY_STATUS } from 'modules/settings'
 import { getBiometryTitle } from 'common'
+import { Text } from 'components/CustomFont'
+
+const VerionText = styled(Text)`
+  text-align: center;
+  padding-bottom: 16px;
+`
 
 type Props = {
   setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void,
@@ -216,6 +224,9 @@ class Settings extends Component<Props, State> {
           data={listData}
           renderItem={({ item }: { item: SettingsItem }) => <SettingsListItem {...item} />}
         />
+        <VerionText style={{}}>
+          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
+        </VerionText>
       </Fragment>
     )
   }
