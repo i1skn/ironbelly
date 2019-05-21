@@ -16,11 +16,18 @@
 
 import React, { Component, Fragment } from 'react'
 import { FlatList, View } from 'react-native'
+import { TouchableOpacity } from 'react-native'
+
 import SettingsListItem, { type Props as SettingsItem } from 'components/SettingsListItem'
 
 import { connect } from 'react-redux'
 
 import { type State as GlobalState, type Navigation, type Slate } from 'common/types'
+import { Text } from 'components/CustomFont'
+import { Spacer } from 'common'
+import styled from 'styled-components/native'
+import colors from 'common/colors'
+import receiveFromAnotherPersonGuide from 'documents/receive-from-another-person'
 
 type Props = {
   navigation: Navigation,
@@ -32,10 +39,22 @@ type Props = {
 
 type State = {}
 
+const TextBox = styled.View`
+  padding: 16px;
+`
+
 class Receive extends Component<Props, State> {
   static navigationOptions = {
     title: 'Receive',
-    headerBackImage: <View style={{ width: 12 }} />,
+    headerLeft: ({ scene }) => {
+      return (
+        <View style={{ marginLeft: 12 }}>
+          <TouchableOpacity onPress={() => scene.descriptor.navigation.goBack(null)}>
+            <Text style={{ fontSize: 18 }}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      )
+    },
   }
 
   state = {}
@@ -46,13 +65,33 @@ class Receive extends Component<Props, State> {
     const listData = [
       // { key: 'currency', title: 'Currency', value: 'EUR', onPress: () => {} },
       {
-        key: 'from_another_wallet',
-        title: 'From another wallet',
-        onPress: () => {},
+        key: 'receive_from_another_wallet',
+        title: 'Receive from another person',
+        onPress: () => {
+          this.props.navigation.navigate('ReceiveGuide', {
+            guide: receiveFromAnotherPersonGuide,
+          })
+        },
+      },
+      {
+        key: 'more',
+        title: 'More guides are coming . . .',
+        hideChevron: true,
+        titleStyle: { color: colors.grey[400] },
       },
     ]
     return (
       <Fragment>
+        <TextBox>
+          <Text>
+            Grin is different from the other blockchains: to transfer funds both a sender and a
+            receiver need to interact.
+          </Text>
+          <Spacer />
+          <Text>Ironbelly at the moment supports only receiving Grin via file.</Text>
+          <Spacer />
+          <Text>Below you can find some guides on how to receive Grin from different sources</Text>
+        </TextBox>
         <FlatList
           style={{ paddingLeft: 16 }}
           data={listData}

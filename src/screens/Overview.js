@@ -19,7 +19,7 @@ import { Alert, TouchableHighlight, TouchableOpacity, RefreshControl, View } fro
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
-import { Text, Button } from 'components/CustomFont'
+import { Text } from 'components/CustomFont'
 import Balance from 'components/Balance'
 import HeaderSpan from 'components/HeaderSpan'
 import TxListItem from 'components/TxListItem'
@@ -188,11 +188,7 @@ class Overview extends Component<Props, State> {
           ListEmptyComponent={
             <NoTxsView>
               {(firstLoading && <EmptyTxListMessage>Loading...</EmptyTxListMessage>) || (
-                <Button
-                  testID="TopUpButton"
-                  onPress={() => navigation.navigate('Topup')}
-                  title="Top up balance?"
-                />
+                <Text>Here you will see your transactions, when you've made them!</Text>
               )}
             </NoTxsView>
           }
@@ -258,7 +254,6 @@ class Overview extends Component<Props, State> {
             </SwipeRow>
           )}
           contentContainerStyle={{
-            paddingBottom: 110,
             backgroundColor: '#fff',
           }}
           keyExtractor={item => `${item.id}`}
@@ -275,6 +270,15 @@ class Overview extends Component<Props, State> {
         <Footer>
           <ActionButton
             onPress={() => {
+              navigation.navigate('ReceiveInfo')
+            }}
+            disabled={false}
+          >
+            <FeatherIcon name="arrow-down-circle" size={28} />
+            <ActionButtonText>Receive</ActionButtonText>
+          </ActionButton>
+          <ActionButton
+            onPress={() => {
               resetTxForm()
               navigation.navigate('Send')
             }}
@@ -282,15 +286,6 @@ class Overview extends Component<Props, State> {
           >
             <FeatherIcon name="arrow-up-circle" size={28} />
             <ActionButtonText>Send</ActionButtonText>
-          </ActionButton>
-          <ActionButton
-            onPress={() => {
-              navigation.navigate('ReceiveInfo')
-            }}
-            disabled={false}
-          >
-            <FeatherIcon name="arrow-down-circle" size={28} />
-            <ActionButtonText>Receive</ActionButtonText>
           </ActionButton>
         </Footer>
       </Wrapper>

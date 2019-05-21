@@ -20,13 +20,13 @@ import SendScreen from 'screens/Send/main'
 import SendLinkScreen from 'screens/SendLink/main'
 import ReceiveScreen from 'screens/Receive'
 import ReceiveInfoScreen from 'screens/ReceiveInfo'
+import ReceiveGuideScreen from 'screens/ReceiveGuide'
 import SettingsScreen from 'screens/Settings'
 import TxDetailsScreen from 'screens/TxDetails'
 import LandingScreen from 'screens/Landing'
 import InitialScreen from 'screens/Initial'
 import ShowPaperKeyScreen from 'screens/PaperKey/Show'
 import VerifyPaperKeyScreen from 'screens/PaperKey/Verify'
-import TopupScreen from 'screens/Topup'
 import PasswordScreen from 'screens/Password'
 import NewPasswordScreen from 'screens/NewPassword'
 import WalletPrepareScreen from 'screens/WalletPrepare'
@@ -82,14 +82,25 @@ MainStack.navigationOptions = {
   headerBackTitle: 'Close',
 }
 
+const ReceiveInfoStack = createStackNavigator(
+  {
+    ReceiveInfo: ReceiveInfoScreen,
+    ReceiveGuide: ReceiveGuideScreen,
+  },
+  { initialRouteName: 'ReceiveInfo', defaultNavigationOptions }
+)
+
+ReceiveInfoStack.navigationOptions = {
+  header: null,
+}
+
 const AppStack = createStackNavigator(
   {
     Main: MainStack,
     Send: SendScreen,
     SendLink: SendLinkScreen,
-    Topup: TopupScreen,
     Receive: ReceiveScreen,
-    ReceiveInfo: ReceiveInfoScreen,
+    ReceiveInfoStack: ReceiveInfoStack,
   },
   {
     initialRouteName: 'Main',
