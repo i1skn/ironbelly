@@ -22,7 +22,7 @@ import Header from 'components/Header'
 
 import { Text, Button } from 'components/CustomFont'
 
-import { TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
+import { LoaderView, TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
 import colors from 'common/colors'
 import { type State as GlobalState, type Navigation, type Slate } from 'common/types'
 
@@ -48,11 +48,6 @@ const Title = styled(Text)`
   font-size: 27;
   font-weight: 500;
   margin-bottom: 20;
-`
-
-const LoaderView = styled.View`
-  flex-grow: 1;
-  justify-content: center;
 `
 
 class Receive extends Component<Props, State> {

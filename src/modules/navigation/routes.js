@@ -33,6 +33,7 @@ import WalletPrepareScreen from 'screens/WalletPrepare'
 import WalletRepairScreen from 'screens/WalletRepair'
 import SettingsGrinNodeScreen from 'screens/Settings/GrinNode'
 import LegalDisclaimerScreen from 'screens/LegalDisclaimer'
+import ScanQRCodeScreen from 'screens/ScanQRCode'
 
 import colors from 'common/colors'
 import { appFont } from 'components/CustomFont'
@@ -101,6 +102,7 @@ const AppStack = createStackNavigator(
     SendLink: SendLinkScreen,
     Receive: ReceiveScreen,
     ReceiveInfoStack: ReceiveInfoStack,
+    ScanQRCode: ScanQRCodeScreen,
   },
   {
     initialRouteName: 'Main',

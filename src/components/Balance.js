@@ -21,8 +21,8 @@ import styled from 'styled-components/native'
 import { hrGrin } from 'common'
 import colors from 'common/colors'
 import { type Balance, type Navigation } from 'common/types'
-import SettingsImg from 'assets/images/Settings.png'
-import { isIphoneX } from 'react-native-iphone-x-helper'
+import AntDesignIcon from 'react-native-vector-icons/AntDesign'
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 
 const BalanceTitle = styled(Text)`
   font-weight: 600;
@@ -69,19 +69,17 @@ const Wrapper = styled.View`
 `
 
 const Floonet = styled(Text)`
-  width: 64;
-  height: 24;
+  font-weight: 600;
+  font-size: 16;
+  background: ${() => colors.orange[800]};
+  padding: 6px 8px;
+  color: #fff;
+  text-align: center;
 `
 
-const SettingsIcon = styled.TouchableOpacity`
-  width: 64;
-  height: 24;
-  align-items: flex-end;
-`
-
-const SettingsIconImage = styled.Image`
-  width: 24;
-  height: 24;
+const TopIcon = styled.TouchableOpacity`
+  width: 28;
+  height: 28;
 `
 
 const TopLine = styled.View`
@@ -115,11 +113,14 @@ const BalanceComponent = ({
     <React.Fragment>
       <Wrapper>
         <TopLine>
-          <Floonet>{isFloonet && 'Testnet'}</Floonet>
+          <TopIcon onPress={() => navigation.navigate('ScanQRCode')}>
+            <AntDesignIcon name="qrcode" size={28} />
+          </TopIcon>
           <BalanceTitle>Balance</BalanceTitle>
-          <SettingsIcon onPress={() => navigation.navigate('Settings')}>
-            <SettingsIconImage source={SettingsImg} />
-          </SettingsIcon>
+
+          <TopIcon onPress={() => navigation.navigate('Settings')}>
+            <FontAwesomeIcon name="cog" size={28} />
+          </TopIcon>
         </TopLine>
         <BalanceEq>
           <Amount>
@@ -149,6 +150,8 @@ const BalanceComponent = ({
           {/*<BalanceFiat>{hrFiat(totalFiat, currency)}</BalanceFiat>*/}
         </View>
       </Wrapper>
+      {isFloonet && <Floonet>You are using Testnet</Floonet>}
+
       {isOffline && <OfflineText>Grin node is not reachable</OfflineText>}
     </React.Fragment>
   )

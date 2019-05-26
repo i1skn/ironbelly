@@ -16,6 +16,8 @@ PODS:
     - React/Core (= 0.59.3)
   - react-native-async-storage (1.2.2):
     - React
+  - react-native-camera-kit (8.0.0):
+    - React
   - react-native-keep-awake (4.0.0):
     - React
   - react-native-netinfo (2.0.5):
@@ -96,6 +98,7 @@ DEPENDENCIES:
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
   - LaunchScreenSnapshot
   - "react-native-async-storage (from `../node_modules/@react-native-community/async-storage`)"
+  - react-native-camera-kit (from `../node_modules/react-native-camera-kit`)
   - react-native-keep-awake (from `../node_modules/react-native-keep-awake`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - React/Core (from `../node_modules/react-native`)
@@ -139,6 +142,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native"
   react-native-async-storage:
     :path: "../node_modules/@react-native-community/async-storage"
+  react-native-camera-kit:
+    :path: "../node_modules/react-native-camera-kit"
   react-native-keep-awake:
     :path: "../node_modules/react-native-keep-awake"
   react-native-netinfo:
@@ -169,6 +174,7 @@ SPEC CHECKSUMS:
   LaunchScreenSnapshot: cee0c0fec0d9b9186c76a1fd010c5c4677ccb6fc
   React: b52fdb80565505b7e4592b313a38868f5df51641
   react-native-async-storage: 9f540b8bb09f7e31e3fb951de2f8f8b6d0332280
+  react-native-camera-kit: 4fcf5f5a79f02e8bd128ab4de099a1e56afe1a56
   react-native-keep-awake: eba3137546b10003361b37c761f6c429b59814ae
   react-native-netinfo: 2cfb4a903d90f1beda31c2990a058c51130b53aa
   RNDeviceInfo: 3a4a9c6b1792d7a7d0d7b5428edb03107be90528
@@ -180,6 +186,6 @@ SPEC CHECKSUMS:
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   yoga: 1a492113f66a35e9e583bb0434f4b8cc668dd839
 
-PODFILE CHECKSUM: 1233294d6306d9bda5b4e3c55f525af70af366b6
+PODFILE CHECKSUM: 69cb1d4863173bb45afd88bef663bd3d9c61779c
 
 COCOAPODS: 1.6.1

@@ -319,8 +319,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch({ type: 'SLATE_SHARE_REQUEST', id, isResponse })
   },
   resetTxForm: () => {
-    dispatch({ type: 'TX_FORM_SET_AMOUNT', amount: 0, textAmount: '' })
-    dispatch({ type: 'TX_FORM_SET_MESSAGE', message: '' })
+    dispatch({ type: 'TX_FORM_RESET' })
   },
   txFinalize: responseSlatePath => {
     dispatch({ type: 'TX_FINALIZE_REQUEST', responseSlatePath })

@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		09201BD079F64179B185E58A /* Settings@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 32A59E6CBD68439EB5B0B486 /* Settings@3x.png */; };
 		1F81488E3DED4690B5AF60A5 /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 998300B9168649DEA2FD5C5E /* Share.png */; };
 		254C25164FE84EB58BFE1EB0 /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9F0249B6C0A5423E9965D4CA /* FontAwesome5_Solid.ttf */; };
 		2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */; };
@@ -40,7 +39,6 @@
 		A0A6DD67270E4CA1A252BA47 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FC26FA724A1F442EB149A9B6 /* MaterialIcons.ttf */; };
 		A36E30975B964EB3A72AA76E /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD8265B1332846E88DE6AB3B /* Octicons.ttf */; };
 		A763F40521314DE4BF29FFB6 /* AntDesign.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6CB236B77FB64FA0AC4856B3 /* AntDesign.ttf */; };
-		A91305F43818499099E75226 /* Settings@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 18CED6B847864E8C82A0779A /* Settings@2x.png */; };
 		AE9C71C754744856A2C998BE /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */; };
 		B061F339986847BE91EFD112 /* Close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21484D9BE7F14E6280C4EBFB /* Close@3x.png */; };
 		B7AAF7350C2F4DC4A7A7C6D8 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */; };
@@ -54,7 +52,6 @@
 		ECCE93AE6498495CAADFC639 /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 56CDAF79D9F34B2A99B3F0D6 /* FontAwesome5_Regular.ttf */; };
 		EDB950DC147048F2B934670B /* FontAwesome5_Brands.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8869E3860CAF4ACDBB7BB069 /* FontAwesome5_Brands.ttf */; };
 		EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AEB4E1B47E9D4CB1B965F729 /* x@3x.png */; };
-		F25177D78A534E4094054368 /* Settings.png in Resources */ = {isa = PBXBuildFile; fileRef = 55BE2A9C431741909FC0589D /* Settings.png */; };
 		F617A2EC22105D1D00FDF0C0 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */; };
 		F617A2F022105D9300FDF0C0 /* AppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = F617A2EF22105D9300FDF0C0 /* AppConfig.m */; };
 		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
@@ -413,9 +410,6 @@
 				711C1EA9968047B287305679 /* ChevronLeft.png in Resources */,
 				2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */,
 				6E4A767318F143E4A1B520A8 /* ChevronLeft@3x.png in Resources */,
-				F25177D78A534E4094054368 /* Settings.png in Resources */,
-				A91305F43818499099E75226 /* Settings@2x.png in Resources */,
-				09201BD079F64179B185E58A /* Settings@3x.png in Resources */,
 				1F81488E3DED4690B5AF60A5 /* Share.png in Resources */,
 				C41C0D8B147746A6BA0AA3D3 /* Share@2x.png in Resources */,
 				C6DC0496AC154B7CB9441330 /* Share@3x.png in Resources */,
@@ -501,6 +495,7 @@
 				"${BUILT_PRODUCTS_DIR}/TouchID/TouchID.framework",
 				"${BUILT_PRODUCTS_DIR}/glog/glog.framework",
 				"${BUILT_PRODUCTS_DIR}/react-native-async-storage/react_native_async_storage.framework",
+				"${BUILT_PRODUCTS_DIR}/react-native-camera-kit/react_native_camera_kit.framework",
 				"${BUILT_PRODUCTS_DIR}/react-native-keep-awake/react_native_keep_awake.framework",
 				"${BUILT_PRODUCTS_DIR}/react-native-netinfo/react_native_netinfo.framework",
 				"${BUILT_PRODUCTS_DIR}/yoga/yoga.framework",
@@ -523,6 +518,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TouchID.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/glog.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_async_storage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_camera_kit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_keep_awake.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_netinfo.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/yoga.framework",
@@ -756,7 +752,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = F4EWDSV84U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;
@@ -782,7 +778,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_TEAM = F4EWDSV84U;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;

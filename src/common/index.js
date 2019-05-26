@@ -26,12 +26,14 @@ import {
   type Balance,
   type State,
   type RustState,
+  type UrlQuery,
 } from 'common/types'
 import colors from 'common/colors'
 import styled from 'styled-components/native'
 import { Text } from 'components/CustomFont'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_TYPE } from 'react-native-keychain'
+import { decode as atob } from 'base-64'
 
 console.log(RNFS.LibraryDirectoryPath)
 
@@ -222,6 +224,7 @@ export const KeyboardAvoidingWrapper = styled(KeyboardAvoidingView)`
 export const LoaderView = styled.View`
   flex-grow: 1;
   justify-content: center;
+  align-items: center;
 `
 
 export const UnderHeaderBlock = styled.View`
@@ -240,4 +243,11 @@ export const getBiometryTitle = (biometryType: ?string) => {
     default:
       return ''
   }
+}
+
+export const parseSendLink = (query: UrlQuery) => {
+  const amount = parseFloat(query.amount)
+  const destination = query.destination.trim()
+  const message = atob(query.message).trim()
+  return { amount, destination, message }
 }

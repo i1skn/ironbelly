@@ -23,7 +23,7 @@ import styled from 'styled-components/native'
 import MnemonicWordTextInput from 'components/MnemonicWordTextInput'
 
 import NetInfo from '@react-native-community/netinfo'
-import { UnderHeaderBlock, FlexGrow, Spacer } from 'common'
+import { UnderHeaderBlock, Spacer } from 'common'
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
 import { type WalletInitState } from 'modules/wallet'

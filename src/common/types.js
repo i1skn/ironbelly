@@ -251,6 +251,14 @@ export type walletMigrateToMainnetFalureAction = {
 export type toastShowAction = { type: 'TOAST_SHOW', text: string, duration?: number }
 export type toastClearAction = { type: 'TOAST_CLEAR' }
 
+export type txFormSetFromLinkAction = {
+  type: 'TX_FORM_SET_FROM_LINK',
+  amount: number,
+  message: string,
+  url: string,
+  textAmount: string,
+}
+
 export type txFormSetAmountAction = {
   type: 'TX_FORM_SET_AMOUNT',
   amount: number,
@@ -352,6 +360,7 @@ export type Action =
   | slateShareFalureAction
   | toastShowAction
   | toastClearAction
+  | txFormSetFromLinkAction
   | txFormSetAmountAction
   | txFormSetUrlAction
   | txFormSetMessageAction
@@ -504,6 +513,7 @@ export type Error = {
   message: string,
 }
 
+export type UrlQuery = Object
 export type Url = {
   protocol: string,
   slashes: boolean,
@@ -515,7 +525,7 @@ export type Url = {
   port: string,
   pathname: string,
   path: string,
-  query: Object,
+  query: UrlQuery,
   hash: string,
   href: string,
   origin: string,

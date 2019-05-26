@@ -15,11 +15,12 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
+import { ActivityIndicator } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { type State as SettingsState } from 'modules/settings'
 
-import { hrGrin, Spacer, FlexGrow, Title } from 'common'
+import { LoaderView, hrGrin, Spacer, FlexGrow, Title } from 'common'
 import colors from 'common/colors'
 import {
   type State as ReduxState,
@@ -87,11 +88,22 @@ class Strategy extends Component<Props, State> {
     }
   }
 
+  componentDidMount() {
+    const { txForm } = this.props
+    this.props.requestStrategies(txForm.amount)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (!prevProps.txForm.outputStrategies_error && this.props.txForm.outputStrategies_error) {
+      this.props.move(-1)
+    }
+  }
+
   render() {
     const { txForm, setOutputStrategy, balance } = this.props
-    return (
+    return txForm.outputStrategies.length ? (
       <React.Fragment>
-        {txForm.outputStrategies.length > 1 && <Title>Choose strategy</Title>}
+        <Title>{txForm.outputStrategies.length > 1 ? 'Choose strategy' : 'Overview'}</Title>
         <Spacer />
         <FlexGrow>
           {txForm.outputStrategies.map((outputStrategy, i) => (
@@ -113,11 +125,16 @@ class Strategy extends Component<Props, State> {
           {/*<FiatAmount>{hrFiat(convertToFiat(txForm.amount, currency), currency)}</FiatAmount>*/}
         </FlexGrow>
       </React.Fragment>
+    ) : (
+      <LoaderView>
+        <ActivityIndicator style={{ marginTop: '75%' }} size="large" color={colors.primary} />
+      </LoaderView>
     )
   }
 }
 
 type Props = {
+  requestStrategies: (amount: number) => void,
   setOutputStrategy: (outputStrategy: OutputStrategy) => void,
   settings: SettingsState,
   balance: Balance,
@@ -125,6 +142,7 @@ type Props = {
   isCreated: boolean,
   navigation: Navigation,
   txForm: TxForm,
+  move: MoveFunc,
 }
 
 const mapStateToProps = (state: ReduxState) => ({
@@ -135,6 +153,7 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
+  requestStrategies: amount => dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_REQUEST', amount }),
   setOutputStrategy: outputStrategy => {
     dispatch({ type: 'TX_FORM_SET_OUTPUT_STRATEGY', outputStrategy })
   },

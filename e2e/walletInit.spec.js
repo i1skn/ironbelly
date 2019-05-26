@@ -71,7 +71,5 @@ describe('Ironbelly', () => {
     nextButton = element(by.id('ShowMeButton'))
     await expect(nextButton).toBeVisible()
     await nextButton.tap()
-
-    await expect(element(by.id('TopUpButton'))).toBeVisible()
   })
 })

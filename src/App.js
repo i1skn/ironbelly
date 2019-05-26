@@ -23,10 +23,10 @@ import {
   checkApplicationSupportDirectory,
   checkApiSecret,
   isWalletInitialized,
+  parseSendLink,
 } from 'common'
 import urlParser from 'url'
 import Modal from 'react-native-modal'
-import { decode as atob } from 'base-64'
 import { PersistGate } from 'redux-persist/integration/react'
 import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
@@ -53,6 +53,7 @@ type Props = {
   chain: string,
   dispatch: Dispatch,
   recoveryStarted: boolean,
+  setFromLink: (amount: number, message: string, url: string) => void,
 }
 type State = {}
 
@@ -80,6 +81,7 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleOpenURL = event => {
+    const { setFromLink } = this.props
     isWalletInitialized().then(exists => {
       if (exists) {
         // $FlowFixMe
@@ -87,13 +89,12 @@ class RealApp extends React.Component<Props, State> {
         let nextScreen
         if (link.protocol === 'grin:') {
           if (link.host === 'send') {
-            const amount = parseFloat(link.query.amount)
-            const destination = link.query.destination
-            const message = atob(link.query.message)
+            const { amount, destination, message } = parseSendLink(link.query)
             if (!isNaN(amount) && destination) {
+              setFromLink(amount, message, destination)
               nextScreen = {
-                name: 'SendLink',
-                params: { amount, url: destination, message },
+                name: 'Send',
+                params: {},
               }
             }
           }
@@ -191,6 +192,14 @@ const RealAppConnected = connect(
     },
     clearToast: () => dispatch({ type: 'TOAST_CLEAR' }),
     dispatch,
+    setFromLink: (amount, message, url) =>
+      dispatch({
+        type: 'TX_FORM_SET_FROM_LINK',
+        amount,
+        textAmount: amount.toString(),
+        message,
+        url,
+      }),
   })
 )(RealApp)
 

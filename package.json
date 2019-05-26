@@ -21,6 +21,7 @@
     "plist": "^3.0.1",
     "react": "16.8.6",
     "react-native": "^0.59.3",
+    "react-native-camera-kit": "^8.0.0",
     "react-native-circular-progress": "^1.1.0",
     "react-native-device-info": "^1.0.0",
     "react-native-easy-toast": "^1.2.0",

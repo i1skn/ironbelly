@@ -759,6 +759,15 @@ const txFinalize = function(
 
 const txForm = function(state: TxForm = initialState.txForm, action: Action): TxForm {
   switch (action.type) {
+    case 'TX_FORM_SET_FROM_LINK':
+      return {
+        ...initialState.txForm,
+        amount: action.amount,
+        textAmount: action.textAmount,
+        url: action.url,
+        message: action.message,
+      }
+
     case 'TX_FORM_SET_AMOUNT':
       return {
         ...state,
@@ -808,7 +817,7 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         message: action.message,
       }
     case 'TX_FORM_RESET':
-      return initialState.txForm
+      return { ...initialState.txForm }
     default:
       return state
   }

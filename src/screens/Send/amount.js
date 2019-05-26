@@ -40,7 +40,6 @@ type Props = {
     currency: Currency,
   },
   error: Error,
-  isCreated: boolean,
   navigation: Navigation,
   txForm: TxForm,
   move: MoveFunc,
@@ -67,8 +66,7 @@ class Send extends Component<Props, State> {
   }
   static nextButtonClick = (move: MoveFunc) => {
     return () => {
-      const amount = store.getState().tx.txForm.amount
-      store.dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_REQUEST', amount })
+      move(1)
     }
   }
 
@@ -76,9 +74,6 @@ class Send extends Component<Props, State> {
     this.props.resetStrategies()
   }
   componentDidUpdate(prevProps) {
-    if (!prevProps.isCreated && this.props.isCreated) {
-      this.props.navigation.goBack()
-    }
     if (!prevProps.txForm.outputStrategies.length && this.props.txForm.outputStrategies.length) {
       this.props.move(1)
     }
@@ -115,7 +110,6 @@ class Send extends Component<Props, State> {
 const mapStateToProps = (state: ReduxState) => ({
   txForm: state.tx.txForm,
   settings: state.settings,
-  isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,
 })
 

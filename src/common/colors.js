@@ -329,8 +329,10 @@ export default {
   warning: red['500'],
   success: green['A700'],
   grey,
+  red,
   green,
   yellow,
   black,
   white,
+  orange,
 }
