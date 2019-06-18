@@ -27,6 +27,7 @@ import {
   type State,
   type RustState,
   type UrlQuery,
+  type Currency,
 } from 'common/types'
 import colors from 'common/colors'
 import styled from 'styled-components/native'
@@ -47,21 +48,17 @@ export const hrGrin = (amount: number): string => {
     .replace(/\$/, 'ツ')
 }
 
-export const hrFiat = (amount: number, currency: string): string => {
+export const hrFiat = (amount: number, currency: Currency): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency,
-    minimumFractionDigits: 2,
+    currency: currency.code,
+    minimumFractionDigits: currency.fractionDigits,
   }).format(amount)
 }
 
-const CURRENCY_RATES = {
-  EUR: 0.0,
-  USD: 0.0,
-}
-
-export const convertToFiat = (amount: number, currency: string): number => {
-  return amount * CURRENCY_RATES[currency]
+export const convertToFiat = (amount: number, currency: Currency, rates: Object): number => {
+  const multiplier = rates[currency.code.toLowerCase()]
+  return (amount / 1000000000) * (multiplier || 0)
 }
 
 export const mapRustTx = (rTx: RustTx): Tx => {
@@ -71,7 +68,7 @@ export const mapRustTx = (rTx: RustTx): Tx => {
     storedTx: rTx.stored_tx,
     type: rTx.tx_type,
     confirmed: rTx.confirmed,
-    creationTime: moment(rTx.creation_ts),
+    creationTime: rTx.creation_ts,
     amount:
       parseInt(rTx.amount_credited || '0', 10) -
       parseInt(rTx.amount_debited || '0', 10) +
@@ -82,13 +79,13 @@ export const mapRustTx = (rTx: RustTx): Tx => {
 
 export const mapRustBalance = (rB: RustBalance): Balance => {
   return {
-    amountAwaitingConfirmation: rB.amount_awaiting_confirmation,
-    amountCurrentlySpendable: rB.amount_currently_spendable,
-    amountImmature: rB.amount_immature,
-    amountLocked: rB.amount_locked,
-    lastConfirmedHeight: rB.last_confirmed_height,
-    minimumConfirmations: rB.minimum_confirmations,
-    total: rB.total,
+    amountAwaitingConfirmation: parseInt(rB.amount_awaiting_confirmation, 10),
+    amountCurrentlySpendable: parseInt(rB.amount_currently_spendable, 10),
+    amountImmature: parseInt(rB.amount_immature, 10),
+    amountLocked: parseInt(rB.amount_locked, 10),
+    lastConfirmedHeight: parseInt(rB.last_confirmed_height, 10),
+    minimumConfirmations: parseInt(rB.minimum_confirmations, 10),
+    total: parseInt(rB.total, 10),
   }
 }
 
@@ -226,6 +223,11 @@ export const LoaderView = styled.View`
   justify-content: center;
   align-items: center;
 `
+export const ListItemSeparator = styled.View`
+  height: 1;
+  width: 100%;
+  background-color: ${() => colors.grey[200]};
+`
 
 export const UnderHeaderBlock = styled.View`
   background-color: ${colors.primary};
@@ -251,3 +253,64 @@ export const parseSendLink = (query: UrlQuery) => {
   const message = atob(query.message).trim()
   return { amount, destination, message }
 }
+
+export const formatDate = (date: moment) => date.format('DD MMMM YYYY')
+export const formatTime = (time: moment) => time.format('HH:mm DD MMMM YYYY')
+
+export const currencyList = [
+  { code: 'btc', fractionDigits: 3 },
+  { code: 'eth', fractionDigits: 3 },
+  { code: 'ltc', fractionDigits: 3 },
+  { code: 'bch', fractionDigits: 3 },
+  { code: 'bnb', fractionDigits: 3 },
+  { code: 'eos', fractionDigits: 3 },
+  { code: 'xrp', fractionDigits: 3 },
+  { code: 'xlm', fractionDigits: 3 },
+  { code: 'usd', fractionDigits: 2 },
+  { code: 'aed', fractionDigits: 2 },
+  { code: 'ars', fractionDigits: 2 },
+  { code: 'aud', fractionDigits: 2 },
+  { code: 'bdt', fractionDigits: 2 },
+  { code: 'bhd', fractionDigits: 2 },
+  { code: 'bmd', fractionDigits: 2 },
+  { code: 'brl', fractionDigits: 2 },
+  { code: 'cad', fractionDigits: 2 },
+  { code: 'chf', fractionDigits: 2 },
+  { code: 'clp', fractionDigits: 2 },
+  { code: 'cny', fractionDigits: 2 },
+  { code: 'czk', fractionDigits: 2 },
+  { code: 'dkk', fractionDigits: 2 },
+  { code: 'eur', fractionDigits: 2 },
+  { code: 'gbp', fractionDigits: 2 },
+  { code: 'hkd', fractionDigits: 2 },
+  { code: 'huf', fractionDigits: 2 },
+  { code: 'idr', fractionDigits: 2 },
+  { code: 'ils', fractionDigits: 2 },
+  { code: 'inr', fractionDigits: 2 },
+  { code: 'jpy', fractionDigits: 2 },
+  { code: 'krw', fractionDigits: 2 },
+  { code: 'kwd', fractionDigits: 2 },
+  { code: 'lkr', fractionDigits: 2 },
+  { code: 'mmk', fractionDigits: 2 },
+  { code: 'mxn', fractionDigits: 2 },
+  { code: 'myr', fractionDigits: 2 },
+  { code: 'nok', fractionDigits: 2 },
+  { code: 'nzd', fractionDigits: 2 },
+  { code: 'php', fractionDigits: 2 },
+  { code: 'pkr', fractionDigits: 2 },
+  { code: 'pln', fractionDigits: 2 },
+  { code: 'rub', fractionDigits: 2 },
+  { code: 'sar', fractionDigits: 2 },
+  { code: 'sek', fractionDigits: 2 },
+  { code: 'sgd', fractionDigits: 2 },
+  { code: 'thb', fractionDigits: 2 },
+  { code: 'try', fractionDigits: 2 },
+  { code: 'twd', fractionDigits: 2 },
+  { code: 'uah', fractionDigits: 2 },
+  { code: 'vef', fractionDigits: 2 },
+  { code: 'vnd', fractionDigits: 2 },
+  { code: 'zar', fractionDigits: 2 },
+  { code: 'xdr', fractionDigits: 2 },
+  { code: 'xag', fractionDigits: 2 },
+  { code: 'xau', fractionDigits: 2 },
+]

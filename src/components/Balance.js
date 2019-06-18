@@ -15,12 +15,11 @@
 // limitations under the License.
 
 import * as React from 'react'
-import { View } from 'react-native'
 import { Text } from 'components/CustomFont'
 import styled from 'styled-components/native'
-import { hrGrin } from 'common'
+import { hrGrin, hrFiat, convertToFiat } from 'common'
 import colors from 'common/colors'
-import { type Balance, type Navigation } from 'common/types'
+import { type Balance, type Navigation, type Currency } from 'common/types'
 import AntDesignIcon from 'react-native-vector-icons/AntDesign'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 
@@ -37,21 +36,38 @@ const Amount = styled.View`
   justify-content: space-between;
 `
 
+const AmountTotal = styled.View`
+  align-items: flex-end;
+  justify-content: flex-end;
+`
+
 const AmountGrin = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 300)};
   font-size: 20;
   line-height: 24;
 `
+
+const AmountGrinTotal = styled(Text)`
+  font-weight: ${({ bold }) => (bold ? 600 : 300)};
+  font-size: 24;
+`
+
+const AmountFiatTotal = styled(Text)`
+  font-weight: 400;
+  font-size: 16;
+  margin-top: -8px;
+  color: ${() => colors.grey[900]};
+`
+
 const AmountTitle = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 400)};
   font-size: 16;
 `
 
-// const BalanceFiat = styled(Text)`
-// font-weight: 600;
-// font-size: 16;
-// bottom: 12;
-// `
+const AmountTitleTotal = styled(Text)`
+  font-weight: ${({ bold }) => (bold ? 600 : 400)};
+  font-size: 20;
+`
 
 const OfflineText = styled(Text)`
   font-weight: 600;
@@ -94,11 +110,12 @@ const BalanceEq = styled.View`
 
 type Props = {
   balance: Balance,
-  currency: string,
+  currency: Currency,
   isOffline: boolean,
   navigation: Navigation,
   isFloonet: boolean,
   minimumConfirmations: number,
+  rates: Object,
 }
 
 const BalanceComponent = ({
@@ -106,6 +123,7 @@ const BalanceComponent = ({
   isFloonet,
   balance,
   currency,
+  rates,
   isOffline,
   navigation,
 }: Props) => {
@@ -124,31 +142,32 @@ const BalanceComponent = ({
         </TopLine>
         <BalanceEq>
           <Amount>
-            <AmountTitle bold={!!balance.total}>Total</AmountTitle>
-            <AmountGrin bold={!!balance.total}>{hrGrin(balance.total)}</AmountGrin>
+            <AmountTitle>Awaiting {minimumConfirmations} confirmations</AmountTitle>
+            <AmountGrin>{hrGrin(balance.amountAwaitingConfirmation)}</AmountGrin>
           </Amount>
           <Amount>
-            <AmountTitle bold={!!balance.amountAwaitingConfirmation}>
-              Awaiting {minimumConfirmations} confirmations
-            </AmountTitle>
-            <AmountGrin bold={!!balance.amountAwaitingConfirmation}>
-              {hrGrin(balance.amountAwaitingConfirmation)}
-            </AmountGrin>
+            <AmountTitle>Currently spendable</AmountTitle>
+            <AmountGrin>{hrGrin(balance.amountCurrentlySpendable)}</AmountGrin>
           </Amount>
           <Amount>
-            <AmountTitle bold={!!balance.amountCurrentlySpendable}>Currently spendable</AmountTitle>
-            <AmountGrin bold={!!balance.amountCurrentlySpendable}>
-              {hrGrin(balance.amountCurrentlySpendable)}
-            </AmountGrin>
+            <AmountTitle>Locked</AmountTitle>
+            <AmountGrin>{hrGrin(balance.amountLocked)}</AmountGrin>
           </Amount>
           <Amount>
-            <AmountTitle bold={!!balance.amountLocked}>Locked</AmountTitle>
-            <AmountGrin bold={!!balance.amountLocked}>{hrGrin(balance.amountLocked)}</AmountGrin>
+            <AmountTitleTotal bold={true}>Total</AmountTitleTotal>
+            <AmountTotal>
+              <AmountGrinTotal bold={true}>
+                {hrGrin(balance.total + balance.amountLocked)}
+              </AmountGrinTotal>
+              <AmountFiatTotal>
+                {hrFiat(
+                  convertToFiat(balance.total + balance.amountLocked, currency, rates),
+                  currency
+                )}
+              </AmountFiatTotal>
+            </AmountTotal>
           </Amount>
         </BalanceEq>
-        <View style={{ justifyContent: 'space-between', alignItems: 'flex-end' }}>
-          {/*<BalanceFiat>{hrFiat(totalFiat, currency)}</BalanceFiat>*/}
-        </View>
       </Wrapper>
       {isFloonet && <Floonet>You are using Testnet</Floonet>}
 

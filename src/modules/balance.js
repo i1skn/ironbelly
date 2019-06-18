@@ -31,8 +31,8 @@ const { GrinBridge } = NativeModules
 
 export type State = {
   data: Balance,
-  loading: boolean,
-  lastUpdated: ?moment,
+  inProgress: boolean,
+  lastUpdated: number,
   error: ?Error,
 }
 
@@ -46,9 +46,9 @@ const initialState: State = {
     minimumConfirmations: 0,
     total: 0,
   },
-  loading: false,
+  inProgress: false,
   error: null,
-  lastUpdated: null,
+  lastUpdated: 0,
 }
 
 export const sideEffects = {
@@ -70,19 +70,19 @@ export const reducer = (state: State = initialState, action: Action): State => {
     case 'BALANCE_REQUEST':
       return {
         ...state,
-        loading: true,
+        inProgress: true,
       }
     case 'BALANCE_FAILURE':
       return {
         ...state,
-        loading: false,
+        inProgress: false,
       }
     case 'BALANCE_SUCCESS':
       return {
         ...state,
         data: action.data,
-        loading: false,
-        lastUpdated: moment(),
+        inProgress: false,
+        lastUpdated: Date.now(),
       }
     default:
       return state

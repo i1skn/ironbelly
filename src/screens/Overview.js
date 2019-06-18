@@ -26,6 +26,7 @@ import TxListItem from 'components/TxListItem'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_STATUS } from 'modules/settings'
 import FeatherIcon from 'react-native-vector-icons/Feather'
+import { type State as CurrencyRatesState } from 'modules/currency-rates'
 
 import {
   type Balance as BalanceType,
@@ -34,7 +35,7 @@ import {
   type Navigation,
 } from 'common/types'
 import colors from 'common/colors'
-import { getBiometryTitle } from 'common'
+import { getBiometryTitle, ListItemSeparator } from 'common'
 
 import { type WalletInitState } from 'modules/wallet'
 import { type State as SettingsState } from 'modules/settings'
@@ -57,6 +58,7 @@ type Props = {
   isOffline: boolean,
   firstLoading: boolean,
   walletInit: WalletInitState,
+  currencyRates: CurrencyRatesState,
 }
 
 type State = {}
@@ -90,12 +92,6 @@ const NoTxsView = styled.View`
   padding: 16px;
 `
 
-const ListItemSeparator = styled.View`
-  height: 1;
-  width: 100%;
-  background-color: #dedede;
-`
-
 const EmptyTxListMessage = styled(Text)`
   font-size: 18;
   text-align: center;
@@ -120,7 +116,7 @@ class Overview extends Component<Props, State> {
   componentDidMount() {
     const { settings } = this.props
     this.props.getBalance()
-    this.props.txsGet(false, true)
+    this.props.txsGet(false, false)
     const { responseSlatePath } = this.props.navigation.state.params
     if (responseSlatePath) {
       this.props.txFinalize(responseSlatePath)
@@ -168,8 +164,9 @@ class Overview extends Component<Props, State> {
       isOffline,
       firstLoading,
       txConfirm,
+      currencyRates,
     } = this.props
-    const { currency, chain, minimumConfirmations } = settings
+    const { currencyObject, chain, minimumConfirmations } = settings
     return (
       <Wrapper>
         <HeaderSpan bgColor={colors.primary} />
@@ -177,7 +174,8 @@ class Overview extends Component<Props, State> {
         <Balance
           isFloonet={chain === 'floonet'}
           balance={balance}
-          currency={currency}
+          rates={currencyRates.rates}
+          currency={currencyObject}
           isOffline={isOffline}
           navigation={navigation}
           minimumConfirmations={minimumConfirmations}
@@ -246,7 +244,8 @@ class Overview extends Component<Props, State> {
                 underlayColor={'#FBFBFB'}
               >
                 <TxListItem
-                  currency={currency}
+                  currency={currencyObject}
+                  rates={currencyRates.rates}
                   tx={data.item}
                   minimumConfirmations={minimumConfirmations}
                 />
@@ -301,6 +300,7 @@ const mapStateToProps = (state: GlobalState) => {
     firstLoading: state.tx.list.lastUpdated === null,
     isOffline: state.tx.list.isOffline,
     settings: state.settings,
+    currencyRates: state.currencyRates,
     walletInit: state.wallet.walletInit,
   }
 }

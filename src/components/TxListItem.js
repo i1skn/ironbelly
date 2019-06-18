@@ -16,10 +16,11 @@
 
 import * as React from 'react'
 import { View } from 'react-native'
+import moment from 'moment'
 
 import { Text } from 'components/CustomFont'
 import styled from 'styled-components/native'
-import { hrGrin } from 'common'
+import { hrGrin, hrFiat, convertToFiat, formatDate } from 'common'
 import { type Tx, type Currency } from 'common/types'
 import ShareImg from 'assets/images/Share.png'
 import ChevronRightImg from 'assets/images/ChevronRight.png'
@@ -36,13 +37,23 @@ const UnconfirmedGuide = styled(Text)`
 
 const AmountGrin = styled(Text)`
   font-weight: 600;
-  font-size: 20;
+  font-size: 18;
   color: ${props => (props.isSent && colors.black) || colors.success};
+`
+const AmountFiat = styled(Text)`
+  font-size: 14;
+  color: ${() => colors.grey[700]};
 `
 
 const Fee = styled(Text)`
   font-weight: 500;
   font-size: 12;
+  color: #000;
+`
+
+const Title = styled(Text)`
+  font-weight: 500;
+  font-size: 18;
   color: #000;
 `
 
@@ -59,32 +70,38 @@ const Wrapper = styled.View`
 const ShareIcon = styled.Image`
   width: 19;
   height: 22;
+  margin-left: 16;
 `
 
 const DetailsChevron = styled.Image`
   width: 20;
   height: 20;
-  margin-right: -4;
-  margin-left: 8;
+  margin-left: 16;
 `
 
 type Props = {
   tx: Tx,
   currency: Currency,
+  rates: Object,
   minimumConfirmations: number,
 }
 const TxListItem = (props: Props) => {
-  const { type, confirmed, creationTime, amount, fee } = props.tx
+  const { currency, rates } = props
+  const { type, confirmed, creationTime, amount } = props.tx
+  const momentCreationTime = moment(creationTime)
   const isSent = type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
+  const dateField =
+    moment().diff(momentCreationTime, 'hours', true) > 2
+      ? formatDate(momentCreationTime)
+      : momentCreationTime.fromNow()
   return (
     <Wrapper>
       <View style={{ flexGrow: 1 }}>
         <View style={{ flexDirection: 'row' }}>
-          <AmountGrin isSent={isSent}>{hrGrin(amount - fee)}</AmountGrin>
-          {!!fee && <Fee> (incl. {hrGrin(fee)} fee)</Fee>}
+          <Title>{isSent ? 'Outgoing' : 'Incoming'}</Title>
         </View>
         {confirmed ? (
-          <Time>{creationTime.fromNow()}</Time>
+          <Time>{dateField}</Time>
         ) : (
           <UnconfirmedGuide>
             {type === 'TxPosted'
@@ -97,9 +114,10 @@ const TxListItem = (props: Props) => {
           </UnconfirmedGuide>
         )}
       </View>
-      {/*<View style={{ alignItems: 'flex-start' }}>
-        <AmountFiat>{hrFiat(convertToFiat(amount, currency), currency)}</AmountFiat>
-      </View>*/}
+      <View style={{ alignItems: 'flex-end' }}>
+        <AmountGrin isSent={isSent}>{hrGrin(amount)}</AmountGrin>
+        <AmountFiat>{hrFiat(convertToFiat(amount, currency, rates), currency)}</AmountFiat>
+      </View>
 
       {(!confirmed && type !== 'TxPosted' && <ShareIcon source={ShareImg} />) || (
         <DetailsChevron source={ChevronRightImg} />

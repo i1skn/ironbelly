@@ -32,6 +32,7 @@ import * as Keychain from 'react-native-keychain'
 import { log } from 'common/logger'
 import TouchID from 'react-native-touch-id'
 import { getBiometryTitle } from 'common'
+import { currencyList } from 'common'
 
 export const BIOMETRY_STATUS = {
   unknown: 'unknown',
@@ -40,7 +41,7 @@ export const BIOMETRY_STATUS = {
 }
 
 export type State = {
-  currency: Currency,
+  currencyObject: Currency,
   checkNodeApiHttpAddr: string,
   chain: 'floonet' | 'mainnet',
   minimumConfirmations: number,
@@ -58,7 +59,7 @@ export const FLOONET_API_SECRET = 'ac9rOHFKASTRzZ4SNJun'
 export const FLOONET_DEFAULT_NODE = 'http://floonode.cycle42.com:13413'
 
 export const initialState: State = {
-  currency: 'USD',
+  currencyObject: currencyList[8], // USD
   checkNodeApiHttpAddr: FLOONET_DEFAULT_NODE,
   chain: FLOONET_CHAIN,
   minimumConfirmations: 1,

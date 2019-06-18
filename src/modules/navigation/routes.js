@@ -32,6 +32,7 @@ import NewPasswordScreen from 'screens/NewPassword'
 import WalletPrepareScreen from 'screens/WalletPrepare'
 import WalletRepairScreen from 'screens/WalletRepair'
 import SettingsGrinNodeScreen from 'screens/Settings/GrinNode'
+import SettingsCurrencyScreen from 'screens/Settings/Currency'
 import LegalDisclaimerScreen from 'screens/LegalDisclaimer'
 import ScanQRCodeScreen from 'screens/ScanQRCode'
 
@@ -57,6 +58,7 @@ const MainStack = createStackNavigator(
   {
     Settings: SettingsScreen,
     SettingsGrinNode: SettingsGrinNodeScreen,
+    SettingsCurrency: SettingsCurrencyScreen,
     SettingsLegalDisclaimer: {
       screen: LegalDisclaimerScreen,
       params: { alreadyAccepted: true },

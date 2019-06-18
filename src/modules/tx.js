@@ -19,6 +19,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'
+import { persistReducer } from 'redux-persist'
 
 import { getStateForRust, mapRustTx, mapRustOutputStrategy, getSlatePath } from 'common'
 import { log } from 'common/logger'
@@ -854,8 +855,14 @@ const slate = function(state: SlateState = initialState.slate, action): SlateSta
   }
 }
 
+const listPersistConfig = {
+  key: 'list',
+  storage: AsyncStorage,
+  whitelist: ['data'],
+}
+
 export const reducer = combineReducers({
-  list,
+  list: persistReducer(listPersistConfig, list),
   txCreate,
   txSend,
   txPost,

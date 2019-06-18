@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use grin_wallet_libwallet::types::{InitTxArgs, NodeClient, WalletInst};
+use grin_wallet_libwallet::{slate_versions, InitTxArgs, NodeClient, WalletInst};
 use grin_wallet_util::grin_core::global::ChainTypes;
 use grin_wallet_util::grin_keychain::ExtKeychain;
 use grin_wallet_util::grin_util::file::get_first_line;
@@ -340,7 +340,7 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
         estimate_only: Some(true),
         send_args: None,
     };
-    if let Ok(smallest) = api.initiate_tx(args.clone()) {
+    if let Ok(smallest) = api.init_send_tx(args.clone()) {
         result.push(Strategy {
             selection_strategy_is_use_all: false,
             total: smallest.amount,
@@ -348,7 +348,7 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
         })
     }
     args.selection_strategy_is_use_all = true;
-    let all = api.initiate_tx(args).map_err(|e| Error::from(e))?;
+    let all = api.init_send_tx(args).map_err(|e| Error::from(e))?;
     result.push(Strategy {
         selection_strategy_is_use_all: true,
         total: all.amount,
@@ -387,9 +387,15 @@ fn tx_create(
         estimate_only: Some(false),
         send_args: None,
     };
-    let slate = api.initiate_tx(args).unwrap();
-    api.tx_lock_outputs(&slate)?;
-    Ok(slate.serialize_to_version(Some(1))?)
+    let slate = api.init_send_tx(args).unwrap();
+    api.tx_lock_outputs(&slate, 0)?;
+    Ok(
+        serde_json::to_string(&slate_versions::VersionedSlate::into_version(
+            slate.clone(),
+            slate_versions::SlateVersion::V0,
+        ))
+        .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
+    )
 }
 
 #[no_mangle]
@@ -436,7 +442,8 @@ fn tx_receive(state_json: &str, slate_path: &str, message: &str) -> Result<Strin
     api.verify_slate_messages(&slate)?;
     if let Some(account) = state.account {
         slate = api.receive_tx(&slate, Some(&account), Some(message.to_owned()))?;
-        Ok(slate.serialize_to_version(Some(slate.version_info.orig_version))?)
+        // Ok(slate.serialize_to_version(Some(slate.version_info.orig_version))?)
+        Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
     } else {
         Err(Error::from(ErrorKind::GenericError(
             "Account is not specified".to_owned(),
@@ -468,7 +475,8 @@ fn tx_finalize(state_json: &str, slate_path: &str) -> Result<String, Error> {
     let mut slate = adapter.receive_tx_async(&slate_path)?;
     api.verify_slate_messages(&slate)?;
     slate = api.finalize_tx(&slate)?;
-    Ok(slate.serialize_to_version(Some(slate.version_info.orig_version))?)
+    // Ok(slate.serialize_to_version(Some(slate.version_info.orig_version))?)
+    Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
 #[no_mangle]
@@ -506,13 +514,20 @@ fn tx_send_https(
         estimate_only: Some(false),
         send_args: None,
     };
-    let slate = api.initiate_tx(args)?;
-    api.tx_lock_outputs(&slate)?;
+    let slate = api.init_send_tx(args)?;
+    api.tx_lock_outputs(&slate, 0)?;
     match adapter.send_tx_sync(url, &slate) {
         Ok(mut slate) => {
             api.verify_slate_messages(&slate)?;
             api.finalize_tx(&mut slate)?;
-            Ok(slate.serialize_to_version(Some(1))?)
+            // Ok(slate.serialize_to_version(Some(1))?)
+            Ok(
+                serde_json::to_string(&slate_versions::VersionedSlate::into_version(
+                    slate.clone(),
+                    slate_versions::SlateVersion::V0,
+                ))
+                .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
+            )
         }
         Err(e) => {
             api.cancel_tx(None, Some(slate.id))?;

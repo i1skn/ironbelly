@@ -28,7 +28,7 @@ import { type State as SettingsState, BIOMETRY_STATUS } from 'modules/settings'
 import { getBiometryTitle } from 'common'
 import { Text } from 'components/CustomFont'
 
-const VerionText = styled(Text)`
+const VersionText = styled(Text)`
   text-align: center;
   padding-bottom: 16px;
 `
@@ -107,6 +107,9 @@ class Settings extends Component<Props, State> {
   _onGrinNode = () => {
     this.props.navigation.navigate('SettingsGrinNode')
   }
+  _onCurrency = () => {
+    this.props.navigation.navigate('SettingsCurrency')
+  }
   _onRepairWallet = () => {
     let title = 'Repair this wallet'
     let desc =
@@ -149,6 +152,12 @@ class Settings extends Component<Props, State> {
         key: 'grin_node',
         title: 'Grin node',
         onPress: this._onGrinNode,
+      },
+      {
+        key: 'currency',
+        title: 'Currency',
+        value: settings.currencyObject.code.toUpperCase(),
+        onPress: this._onCurrency,
       },
       {
         key: 'paperkey',
@@ -224,9 +233,9 @@ class Settings extends Component<Props, State> {
           data={listData}
           renderItem={({ item }: { item: SettingsItem }) => <SettingsListItem {...item} />}
         />
-        <VerionText style={{}}>
+        <VersionText style={{}}>
           Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
-        </VerionText>
+        </VersionText>
       </Fragment>
     )
   }

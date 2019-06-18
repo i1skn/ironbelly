@@ -38,6 +38,7 @@ import { AppContainer } from 'modules/navigation'
 import { type NavigationState, NavigationActions } from 'react-navigation'
 import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'modules/settings'
 import { type State as ToasterState } from 'modules/toaster'
+import { type State as CurrencyRatesState } from 'modules/currency-rates'
 
 // Filesystem
 checkSlatesDirectory()
@@ -53,7 +54,9 @@ type Props = {
   chain: string,
   dispatch: Dispatch,
   recoveryStarted: boolean,
+  currencyRates: CurrencyRatesState,
   setFromLink: (amount: number, message: string, url: string) => void,
+  requestCurrencyRates: () => void,
 }
 type State = {}
 
@@ -75,6 +78,7 @@ class RealApp extends React.Component<Props, State> {
       )
     })
   }
+
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL)
     AppState.removeEventListener('change', this._handleAppStateChange)
@@ -162,6 +166,11 @@ class RealApp extends React.Component<Props, State> {
         }
       }
     }
+
+    const sinceLastCurrencyRatesUpdate = Date.now() - this.props.currencyRates.lastUpdated
+    if (sinceLastCurrencyRatesUpdate > 5 * 60 * 1000 && !this.props.currencyRates.inProgress) {
+      this.props.requestCurrencyRates()
+    }
   }
 
   render() {
@@ -184,6 +193,7 @@ const RealAppConnected = connect(
     showTxConfirmationModal: state.tx.txPost.showModal,
     chain: state.settings.chain,
     recoveryStarted: state.wallet.walletInit.started,
+    currencyRates: state.currencyRates,
   }),
   (dispatch, ownProps) => ({
     closeTxPostModal: () => dispatch({ type: 'TX_POST_CLOSE' }),
@@ -199,6 +209,10 @@ const RealAppConnected = connect(
         textAmount: amount.toString(),
         message,
         url,
+      }),
+    requestCurrencyRates: () =>
+      dispatch({
+        type: 'CURRENCY_RATES_REQUEST',
       }),
   })
 )(RealApp)

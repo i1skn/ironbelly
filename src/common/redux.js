@@ -20,6 +20,10 @@ import { combineReducers } from 'redux'
 import { reducer as balanceReducer, sideEffects as balanceSideEffects } from 'modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'modules/tx'
 import { reducer as settingsReducer, sideEffects as settingsEffects } from 'modules/settings'
+import {
+  reducer as currencyRates,
+  sideEffects as currencyRatesEffects,
+} from 'modules/currency-rates'
 import { reducer as toasterReducer, sideEffects as toasterEffects } from 'modules/toaster'
 import { reducer as walletReducer, sideEffects as walletEffects } from 'modules/wallet'
 import { type Store, type Action, type PromiseAction } from 'common/types'
@@ -32,9 +36,24 @@ import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 type Effect = (action: any, store: Store) => ?(Action | PromiseAction)
 type Effects = { [string]: Effect }
 
+const balanceConfig = {
+  key: 'balance',
+  stateReconciler: autoMergeLevel2,
+  storage: AsyncStorage,
+  whitelist: ['data'],
+}
+
+const currencyRatesConfig = {
+  key: 'currencyRates',
+  stateReconciler: autoMergeLevel2,
+  storage: AsyncStorage,
+  whitelist: ['rates', 'lastUpdated'],
+}
+
 export const rootReducer = combineReducers({
-  balance: balanceReducer,
+  balance: persistReducer(balanceConfig, balanceReducer),
   tx: txReducer,
+  currencyRates: persistReducer(currencyRatesConfig, currencyRates),
   settings: settingsReducer,
   toaster: toasterReducer,
   wallet: walletReducer,
@@ -62,6 +81,7 @@ const sideEffects = {
   ...walletEffects,
   ...toasterEffects,
   ...settingsEffects,
+  ...currencyRatesEffects,
 }
 
 const logger = createLogger({})

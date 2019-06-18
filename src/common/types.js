@@ -19,6 +19,7 @@ import { type State as TxState } from 'modules/tx'
 import { type State as SettingsState } from 'modules/settings'
 import { type State as ToastedState } from 'modules/toaster'
 import { type State as WalletState } from 'modules/wallet'
+import { type State as CurrencyRatesState } from 'modules/currency-rates'
 
 import { type NavigationState } from 'react-navigation'
 
@@ -291,6 +292,13 @@ export type txFormOutputStrategiesFalureAction = {
 
 export type txFormSetMessageAction = { type: 'TX_FORM_SET_MESSAGE', message: string }
 export type txFormResetAction = { type: 'TX_FORM_RESET' }
+export type currencyRatesRequestAction = { type: 'CURRENCY_RATES_REQUEST' }
+export type currencyRatesSuccessAction = { type: 'CURRENCY_RATES_SUCCESS', rates: Object }
+export type currencyRatesFalureAction = {
+  type: 'CURRENCY_RATES_FAILURE',
+  code?: number,
+  message: string,
+}
 
 export type Action =
   | balanceRequestAction
@@ -397,8 +405,11 @@ export type Action =
   | walletMigrateToMainnetRequestAction
   | walletMigrateToMainnetSuccessAction
   | walletMigrateToMainnetFalureAction
+  | currencyRatesRequestAction
+  | currencyRatesSuccessAction
+  | currencyRatesFalureAction
 
-export type Currency = 'EUR' | 'USD'
+export type Currency = { code: string, fractionDigits: number }
 export type State = {
   settings: SettingsState,
   balance: BalanceState,
@@ -406,6 +417,7 @@ export type State = {
   toaster: ToastedState,
   wallet: WalletState,
   nav: NavigationState,
+  currencyRates: CurrencyRatesState,
 }
 
 export type GetState = () => State

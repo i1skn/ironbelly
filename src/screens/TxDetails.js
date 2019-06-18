@@ -19,6 +19,8 @@ import { KeyboardAvoidingView, View } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import Header from 'components/Header'
+import { formatTime } from 'common'
+import moment from 'moment'
 
 import FormTextInput from 'components/FormTextInput'
 import { hrGrin } from 'common'
@@ -109,12 +111,12 @@ class TxDetails extends Component<Props, State> {
                   />
                 </React.Fragment>
               )}
-              <FieldTitle>Date</FieldTitle>
+              <FieldTitle>Time</FieldTitle>
               <FormTextInput
                 autoFocus={false}
                 readonly={true}
                 onChange={() => {}}
-                value={tx.creationTime.fromNow()}
+                value={formatTime(moment(tx.creationTime))}
               />
             </View>
           )}

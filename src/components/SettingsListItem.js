@@ -35,7 +35,7 @@ const Title = styled(Text)`
 `
 const Value = styled(Text)`
   padding-right: 16px;
-  font-weight: 700;
+  color: ${colors.grey[500]};
 `
 
 const ChevronIcon = styled(Icon)`
