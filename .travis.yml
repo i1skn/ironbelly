@@ -1,6 +1,10 @@
 language: swift
 osx_image: xcode10.2
 
+branches:
+  only: 
+    - master
+    
 cache:
   directories:
   - $HOME/.cargo
