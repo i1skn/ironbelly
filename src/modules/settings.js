@@ -53,6 +53,7 @@ export type State = {
 export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = 'H2vnwhAjhhTAVEYgNRen'
 export const MAINNET_DEFAULT_NODE = 'http://grinnode.cycle42.com:3413'
+export const MAINNET_DEFAULT_NODE_V2 = 'http://grinnode.cycle42.com:23413'
 
 export const FLOONET_CHAIN = 'floonet'
 export const FLOONET_API_SECRET = 'ac9rOHFKASTRzZ4SNJun'
@@ -60,9 +61,9 @@ export const FLOONET_DEFAULT_NODE = 'http://floonode.cycle42.com:13413'
 
 export const initialState: State = {
   currencyObject: currencyList[8], // USD
-  checkNodeApiHttpAddr: FLOONET_DEFAULT_NODE,
-  chain: FLOONET_CHAIN,
-  minimumConfirmations: 1,
+  checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE_V2,
+  chain: MAINNET_CHAIN,
+  minimumConfirmations: 10,
   acceptedLegalDisclaimerBuildNumber: 0,
   biometryStatus: 'unknown',
   biometryType: null,
@@ -79,7 +80,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
       return {
         ...state,
         chain: MAINNET_CHAIN,
-        checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
+        checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE_V2,
         minimumConfirmations: 10,
         acceptedLegalDisclaimerBuildNumber: 0,
       }

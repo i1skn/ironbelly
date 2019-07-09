@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 
 import { isWalletInitialized, LoaderView } from 'common'
 import colors from 'common/colors'
-import { FLOONET_CHAIN } from 'modules/settings'
+import { FLOONET_CHAIN, MAINNET_CHAIN, MAINNET_DEFAULT_NODE } from 'modules/settings'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 import { type State as SettingsState } from 'modules/settings'
 
@@ -46,6 +46,17 @@ class Initial extends Component<Props, State> {
     const { checkBiometry, navigation, settings, recoveryStarted } = this.props
     checkBiometry()
     isWalletInitialized().then(exists => {
+      // TODO: should be reverted after all the users have migrated to v2
+      //
+      // If a user still has default node HTTP address
+      // set to MAINNET_DEFAULT_NODE let's override it
+      // to MAINNET_DEFAULT_NODE_V2
+      if (
+        settings.chain === MAINNET_CHAIN &&
+        settings.checkNodeApiHttpAddr === MAINNET_DEFAULT_NODE
+      ) {
+        this.props.switchToMainnet()
+      }
       if (exists) {
         navigation.navigate('Password', {
           nextScreen: recoveryStarted

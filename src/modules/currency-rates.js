@@ -64,7 +64,6 @@ export const sideEffects = {
       store.dispatch({ type: 'CURRENCY_RATES_SUCCESS', rates })
     } catch (error) {
       store.dispatch({ type: 'CURRENCY_RATES_FAILURE', message: error.message })
-      log(error, true)
     }
   },
 }

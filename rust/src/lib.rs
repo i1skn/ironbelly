@@ -336,7 +336,7 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
         num_change_outputs: 1,
         selection_strategy_is_use_all: false,
         message: None,
-        target_slate_version: Some(0),
+        target_slate_version: None,
         estimate_only: Some(true),
         send_args: None,
     };
@@ -383,7 +383,7 @@ fn tx_create(
         num_change_outputs: 1,
         selection_strategy_is_use_all: selection_strategy_is_use_all,
         message: Some(message.to_owned()),
-        target_slate_version: Some(0),
+        target_slate_version: None,
         estimate_only: Some(false),
         send_args: None,
     };
@@ -392,7 +392,7 @@ fn tx_create(
     Ok(
         serde_json::to_string(&slate_versions::VersionedSlate::into_version(
             slate.clone(),
-            slate_versions::SlateVersion::V0,
+            slate_versions::SlateVersion::V2,
         ))
         .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
     )
@@ -436,13 +436,12 @@ pub unsafe extern "C" fn c_tx_cancel(
 fn tx_receive(state_json: &str, slate_path: &str, message: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Foreign::new(wallet.clone());
+    let api = Foreign::new(wallet.clone(), None);
     let adapter = FileWalletCommAdapter::new();
     let mut slate = adapter.receive_tx_async(&slate_path)?;
     api.verify_slate_messages(&slate)?;
     if let Some(account) = state.account {
         slate = api.receive_tx(&slate, Some(&account), Some(message.to_owned()))?;
-        // Ok(slate.serialize_to_version(Some(slate.version_info.orig_version))?)
         Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
     } else {
         Err(Error::from(ErrorKind::GenericError(
@@ -475,7 +474,6 @@ fn tx_finalize(state_json: &str, slate_path: &str) -> Result<String, Error> {
     let mut slate = adapter.receive_tx_async(&slate_path)?;
     api.verify_slate_messages(&slate)?;
     slate = api.finalize_tx(&slate)?;
-    // Ok(slate.serialize_to_version(Some(slate.version_info.orig_version))?)
     Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
@@ -510,7 +508,7 @@ fn tx_send_https(
         num_change_outputs: 1,
         selection_strategy_is_use_all: selection_strategy_is_use_all,
         message: Some(message.to_owned()),
-        target_slate_version: Some(0),
+        target_slate_version: None,
         estimate_only: Some(false),
         send_args: None,
     };
@@ -524,7 +522,7 @@ fn tx_send_https(
             Ok(
                 serde_json::to_string(&slate_versions::VersionedSlate::into_version(
                     slate.clone(),
-                    slate_versions::SlateVersion::V0,
+                    slate_versions::SlateVersion::V2,
                 ))
                 .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
             )

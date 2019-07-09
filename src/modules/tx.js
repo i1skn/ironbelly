@@ -373,9 +373,8 @@ export const sideEffects = {
         store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
         store.dispatch({ type: 'BALANCE_REQUEST' })
       })
-      .catch(error => {
-        const e = JSON.parse(error.message)
-        store.dispatch({ type: 'TX_RECEIVE_FAILURE', ...e })
+      .catch(e => {
+        store.dispatch({ type: 'TX_RECEIVE_FAILURE', message: e.message })
         log(e, true)
       })
   },
