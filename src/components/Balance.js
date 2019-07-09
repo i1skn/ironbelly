@@ -20,7 +20,7 @@ import styled from 'styled-components/native'
 import { hrGrin, hrFiat, convertToFiat } from 'common'
 import colors from 'common/colors'
 import { type Balance, type Navigation, type Currency } from 'common/types'
-import AntDesignIcon from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
 
 const BalanceTitle = styled(Text)`
@@ -94,7 +94,7 @@ const Floonet = styled(Text)`
 `
 
 const TopIcon = styled.TouchableOpacity`
-  width: 28;
+  width: 30;
   height: 28;
 `
 
@@ -132,12 +132,12 @@ const BalanceComponent = ({
       <Wrapper>
         <TopLine>
           <TopIcon onPress={() => navigation.navigate('ScanQRCode')}>
-            <AntDesignIcon name="qrcode" size={28} />
+            <MaterialCommunityIcons name="qrcode-scan" size={26} />
           </TopIcon>
           <BalanceTitle>Balance</BalanceTitle>
 
           <TopIcon onPress={() => navigation.navigate('Settings')}>
-            <FontAwesomeIcon name="cog" size={28} />
+            <FontAwesomeIcon name="cogs" size={28} />
           </TopIcon>
         </TopLine>
         <BalanceEq>
