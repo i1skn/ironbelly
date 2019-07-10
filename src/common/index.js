@@ -16,7 +16,7 @@
 
 import moment from 'moment'
 import RNFS from 'react-native-fs'
-import { KeyboardAvoidingView } from 'react-native'
+import { Platform, KeyboardAvoidingView } from 'react-native'
 import {
   type RustTx,
   type Tx,
@@ -36,7 +36,9 @@ import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_TYPE } from 'react-native-keychain'
 import { decode as atob } from 'base-64'
 
-console.log(RNFS.LibraryDirectoryPath)
+export const isAndroid = Platform.OS === 'android'
+
+console.log(isAndroid ? RNFS.DocumentDirectoryPath : RNFS.LibraryDirectoryPath)
 
 export const hrGrin = (amount: number): string => {
   return new Intl.NumberFormat('en-US', {
@@ -110,7 +112,9 @@ export const getStateForRust = (state: State): string => {
 }
 
 export const SLATES_DIRECTORY = RNFS.DocumentDirectoryPath + `/slates`
-export const APPLICATION_SUPPORT_DIRECTORY = RNFS.LibraryDirectoryPath + '/Application Support'
+export const APPLICATION_SUPPORT_DIRECTORY = isAndroid
+  ? RNFS.DocumentDirectoryPath
+  : RNFS.LibraryDirectoryPath + '/Application Support'
 export const WALLET_DATA_DIRECTORY = APPLICATION_SUPPORT_DIRECTORY + '/wallet_data'
 
 export const checkSlatesDirectory = () => {

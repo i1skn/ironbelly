@@ -602,3 +602,105 @@ fn wallet_repair(state_json: &str) -> Result<String, Error> {
 pub unsafe extern "C" fn c_wallet_repair(state: *const c_char, error: *mut u8) -> *const c_char {
     unwrap_to_c!(wallet_repair(&c_str_to_rust(state),), error)
 }
+
+/// Expose the JNI interface for android below
+#[cfg(target_os = "android")]
+#[allow(non_snake_case)]
+pub mod android {
+    extern crate jni;
+
+    use self::jni::objects::{JClass, JString};
+    use self::jni::sys::{jint, jstring};
+    use self::jni::JNIEnv;
+    use super::*;
+
+    macro_rules! unwrap_to_jni (
+    ($env:expr, $func:expr) => (
+        match $func {
+            Ok(res) => {
+                $env.new_string(res).unwrap().into_inner()
+            }
+            Err(e) => {
+                let result = $env.new_string("").unwrap().into_inner();
+        		$env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
+                result
+            }
+        }
+        ));
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_balance(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        refresh_from_node: bool,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, balance(&state_json, refresh_from_node))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_seedNew(
+        env: JNIEnv,
+        _: JClass,
+        seed_length: jint,
+    ) -> jstring {
+        unwrap_to_jni!(
+            env,
+            WalletSeed::init_new(seed_length as usize).to_mnemonic()
+        )
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletInit(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        phrase: JString,
+        password: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let phrase: String = env.get_string(phrase).expect("Invalid phrase").into();
+        let password: String = env.get_string(password).expect("Invalid password").into();
+        unwrap_to_jni!(env, wallet_init(&state_json, &phrase, &password))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txsGet(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        refresh_from_node: bool,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, txs_get(&state_json, refresh_from_node))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_checkPassword(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        password: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let password: String = env.get_string(password).expect("Invalid password").into();
+        unwrap_to_jni!(env, check_password(&state_json, &password))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletRecovery(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        start_height: jint,
+        limit: jint,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(
+            env,
+            wallet_recovery(&state_json, start_height as u64, limit as u64)
+        )
+    }
+
+}

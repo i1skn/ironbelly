@@ -132,12 +132,12 @@ const BalanceComponent = ({
       <Wrapper>
         <TopLine>
           <TopIcon onPress={() => navigation.navigate('ScanQRCode')}>
-            <MaterialCommunityIcons name="qrcode-scan" size={26} />
+            <MaterialCommunityIcons name="qrcode-scan" size={26} style={{ color: colors.black }} />
           </TopIcon>
           <BalanceTitle>Balance</BalanceTitle>
 
           <TopIcon onPress={() => navigation.navigate('Settings')}>
-            <FontAwesomeIcon name="cogs" size={28} />
+            <FontAwesomeIcon name="cogs" size={28} style={{ color: colors.black }} />
           </TopIcon>
         </TopLine>
         <BalanceEq>

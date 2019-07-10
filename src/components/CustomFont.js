@@ -25,6 +25,7 @@ export const monoSpaceFont = 'Menlo'
 export const Text = styled.Text`
   font-family: ${appFont};
   font-size: ${props => (props.fontSize ? props.fontSize : '16px')};
+  color: ${() => colors.black};
 `
 
 export const Link = (props: { url: string, title: string }) => {
@@ -59,6 +60,7 @@ const ButtonTitle = styled(Text)`
   text-align: center;
   color: ${props => (props.danger ? '#FFF' : '#000')};
 `
+
 export const Button = (props: any) => {
   return (
     <StyledButton {...props}>

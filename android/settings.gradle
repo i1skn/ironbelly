@@ -3,8 +3,8 @@ include ':react-native-torch'
 project(':react-native-torch').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-torch/android')
 include ':react-native-camera-kit'
 project(':react-native-camera-kit').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-camera-kit/android')
-include ':@react-native-community_netinfo'
-project(':@react-native-community_netinfo').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/netinfo/android')
+include ':react-native-community_netinfo'
+project(':react-native-community_netinfo').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/netinfo/android')
 include ':react-native-keep-awake'
 project(':react-native-keep-awake').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-keep-awake/android')
 include ':react-native-svg'
@@ -23,7 +23,7 @@ include ':react-native-device-info'
 project(':react-native-device-info').projectDir = new File(rootProject.projectDir, '../node_modules/react-native-device-info/android')
 include ':bugsnag-react-native'
 project(':bugsnag-react-native').projectDir = new File(rootProject.projectDir, '../node_modules/bugsnag-react-native/android')
-include ':@react-native-community_async-storage'
-project(':@react-native-community_async-storage').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/async-storage/android')
+include ':react-native-community_async-storage'
+project(':react-native-community_async-storage').projectDir = new File(rootProject.projectDir, '../node_modules/@react-native-community/async-storage/android')
 
 include ':app'

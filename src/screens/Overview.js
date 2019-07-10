@@ -273,7 +273,7 @@ class Overview extends Component<Props, State> {
             }}
             disabled={false}
           >
-            <FeatherIcon name="arrow-down-circle" size={28} />
+            <FeatherIcon name="arrow-down-circle" size={28} style={{ color: colors.black }} />
             <ActionButtonText>Receive</ActionButtonText>
           </ActionButton>
           <ActionButton
@@ -283,7 +283,7 @@ class Overview extends Component<Props, State> {
             }}
             disabled={!balance.amountCurrentlySpendable}
           >
-            <FeatherIcon name="arrow-up-circle" size={28} />
+            <FeatherIcon name="arrow-up-circle" size={28} style={{ color: colors.black }} />
             <ActionButtonText>Send</ActionButtonText>
           </ActionButton>
         </Footer>

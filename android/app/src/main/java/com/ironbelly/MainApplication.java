@@ -1,62 +1,61 @@
 package com.ironbelly;
 
 import android.app.Application;
-
-import com.facebook.react.ReactApplication;
-import com.cubicphuse.RCTTorch.RCTTorchPackage;
-import com.wix.RNCameraKit.RNCameraKitPackage;
-import com.reactnativecommunity.netinfo.NetInfoPackage;
-import com.corbt.keepawake.KCKeepAwakePackage;
-import com.horcrux.svg.SvgPackage;
-import com.rnfingerprint.FingerprintAuthPackage;
-import com.oblador.keychain.KeychainPackage;
-import com.oblador.vectoricons.VectorIconsPackage;
-import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.rnfs.RNFSPackage;
-import com.learnium.RNDeviceInfo.RNDeviceInfo;
 import com.bugsnag.BugsnagReactNative;
-import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.corbt.keepawake.KCKeepAwakePackage;
+import com.cubicphuse.RCTTorch.RCTTorchPackage;
+import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-
+import com.horcrux.svg.SvgPackage;
+import com.learnium.RNDeviceInfo.RNDeviceInfo;
+import com.oblador.keychain.KeychainPackage;
+import com.oblador.vectoricons.VectorIconsPackage;
+import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
+import com.reactnativecommunity.netinfo.NetInfoPackage;
+import com.rnfingerprint.FingerprintAuthPackage;
+import com.rnfs.RNFSPackage;
+import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+import com.wix.RNCameraKit.RNCameraKitPackage;
 import java.util.Arrays;
 import java.util.List;
 
 public class MainApplication extends Application implements ReactApplication {
 
-  private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
-    @Override
-    public boolean getUseDeveloperSupport() {
-      return BuildConfig.DEBUG;
-    }
+  private final ReactNativeHost mReactNativeHost =
+      new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+          return BuildConfig.DEBUG;
+        }
 
-    @Override
-    protected List<ReactPackage> getPackages() {
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-            new RCTTorchPackage(),
-            new RNCameraKitPackage(),
-            new NetInfoPackage(),
-            new KCKeepAwakePackage(),
-            new SvgPackage(),
-            new FingerprintAuthPackage(),
-            new KeychainPackage(),
-            new VectorIconsPackage(),
-            new RNGestureHandlerPackage(),
-            new RNFSPackage(),
-            new RNDeviceInfo(),
-            BugsnagReactNative.getPackage(),
-            new AsyncStoragePackage()
-      );
-    }
+        @Override
+        protected List<ReactPackage> getPackages() {
+          return Arrays.<ReactPackage>asList(
+              new MainReactPackage(),
+              new RCTTorchPackage(),
+              new CustomGrinBridge(),
+              new RNCameraKitPackage(),
+              new NetInfoPackage(),
+              new KCKeepAwakePackage(),
+              new SvgPackage(),
+              new FingerprintAuthPackage(),
+              new KeychainPackage(),
+              new VectorIconsPackage(),
+              new RNGestureHandlerPackage(),
+              new RNFSPackage(),
+              new RNDeviceInfo(),
+              BugsnagReactNative.getPackage(),
+              new AsyncStoragePackage());
+        }
 
-    @Override
-    protected String getJSMainModuleName() {
-      return "index";
-    }
-  };
+        @Override
+        protected String getJSMainModuleName() {
+          return "index";
+        }
+      };
 
   @Override
   public ReactNativeHost getReactNativeHost() {
