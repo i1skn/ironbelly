@@ -2,12 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To read QR codes</string>
-	<key>NSCameraUsageDescription</key>
-	<string>To scan QR codes</string>
-	<key>NSFaceIDUsageDescription</key>
-	<string>Enabling Face ID allows you quick and secure access to your wallet.</string>
 	<key>BugsnagAPIKey</key>
 	<string>5a7142175552dab1f8d9a566b43c5ec9</string>
 	<key>CFBundleDevelopmentRegion</key>
@@ -49,6 +43,10 @@
 			<array/>
 			<key>CFBundleTypeName</key>
 			<string>All files</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSHandlerRank</key>
+			<string>Default</string>
 			<key>LSItemContentTypes</key>
 			<array>
 				<string>public.data</string>
@@ -101,10 +99,16 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>To scan QR codes</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Enabling Face ID allows you quick and secure access to your wallet.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>Need access while using app to access your location.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Need access while using app to access your location.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To read QR codes</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Poppins-Black.ttf</string>
