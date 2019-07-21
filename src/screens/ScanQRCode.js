@@ -90,6 +90,18 @@ class ScanQRCode extends Component<Props, State> {
     }
     this.qrCodeProcessing = false
   }
+  componentDidUpdate(prevProps) {}
+  componentDidMount() {
+    CameraKitCamera.checkDeviceCameraAuthorizationStatus()
+      .then(res => {
+        if (res === -1) {
+          CameraKitCamera.requestDeviceCameraAuthorization()
+            .then(console.log)
+            .catch(console.log)
+        }
+      })
+      .catch(console.log)
+  }
 
   componentWillUnmount(prevProps) {
     Torch.switchState(false)

@@ -3,6 +3,9 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
 
     <application
       android:name=".MainApplication"
@@ -19,9 +22,26 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.SEND"/>
+		<action android:name="android.intent.action.VIEW"/>
+		<action android:name="android.intent.action.EDIT"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:mimeType="*/*" />
+	</intent-filter>
       </activity>
+
       <meta-data android:name="com.bugsnag.android.API_KEY"
              android:value="5a7142175552dab1f8d9a566b43c5ec9"/>
+     <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.ironbelly.provider"
+            android:grantUriPermissions="true"
+            android:exported="false">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/filepaths" />
+	</provider>
       <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
 

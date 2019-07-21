@@ -1,8 +1,8 @@
 NDK_STANDALONE = $(HOME)/.NDK/
 ARCHS_IOS = x86_64-apple-ios aarch64-apple-ios
 # ARCHS_ANDROID = aarch64-linux-android armv7-linux-androideabi i686-linux-android
-# ARCHS_ANDROID = aarch64-linux-android i686-linux-android
-ARCHS_ANDROID = i686-linux-android
+ARCHS_ANDROID = aarch64-linux-android i686-linux-android
+# ARCHS_ANDROID = i686-linux-android
 LIB=libwallet.a
 
 all: ios android

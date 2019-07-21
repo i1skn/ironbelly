@@ -15,6 +15,8 @@
 // limitations under the License.
 
 import moment from 'moment'
+import 'intl'
+import 'intl/locale-data/jsonp/en'
 import RNFS from 'react-native-fs'
 import { Platform, KeyboardAvoidingView } from 'react-native'
 import {

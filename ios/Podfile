@@ -46,6 +46,8 @@ target 'Ironbelly' do
   pod 'RNDeviceInfo', :path => '../node_modules/react-native-device-info'
 
   # Add new pods below this line
+  pod 'RNShare', :path => '../node_modules/react-native-share'
+
   pod 'react-native-torch', :path => '../node_modules/react-native-torch'
 
   pod 'react-native-camera-kit', :path => '../node_modules/react-native-camera-kit'

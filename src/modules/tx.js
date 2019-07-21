@@ -14,7 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Share, NativeModules } from 'react-native'
+import { NativeModules, PermissionsAndroid } from 'react-native'
+import Share from 'react-native-share'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
@@ -391,6 +392,26 @@ export const sideEffects = {
       if (!finalized) {
         finalized = []
       }
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Cool Photo App Camera Permission',
+            message:
+              'Cool Photo App needs access to your camera ' + 'so you can take awesome pictures.',
+            buttonNeutral: 'Ask Me Later',
+            buttonNegative: 'Cancel',
+            buttonPositive: 'OK',
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the camera')
+        } else {
+          console.log('Camera permission denied')
+        }
+      } catch (err) {
+        console.warn(err)
+      }
       const slate = await GrinBridge.txFinalize(
         getStateForRust(store.getState()),
         action.responseSlatePath
@@ -445,8 +466,9 @@ export const sideEffects = {
   },
   ['SLATE_SHARE_REQUEST']: (action: slateShareRequestAction, store: Store) => {
     const path = getSlatePath(action.id, action.isResponse)
-    return Share.share({
-      url: path,
+    return Share.open({
+      url: `file://${path}`,
+      type: 'application/json',
     })
       .then(success => {
         store.dispatch({ type: 'SLATE_SHARE_SUCCESS' })

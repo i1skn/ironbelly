@@ -455,6 +455,7 @@ export const sideEffects = {
     })
   },
   ['WALLET_PHRASE_REQUEST']: (action: walletPhraseRequestAction, store: Store) => {
+    // return GrinBridge.walletPhrase(getStateForRust(store.getState()), 'her')
     return GrinBridge.walletPhrase(getStateForRust(store.getState()))
       .then((phrase: string) => {
         store.dispatch({ type: 'WALLET_PHRASE_SUCCESS', phrase })

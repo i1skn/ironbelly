@@ -14,28 +14,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AppRegistry, NativeModules } from 'react-native'
+import { AppRegistry } from 'react-native'
 import App from './src/App'
 import { name as appName } from './app.json'
-// eslint-disable-next-line no-unused-vars
-// import { getInstance } from './src/common/bugsnag'
-const { GrinBridge } = NativeModules
-
-GrinBridge.walletPhrase('ds', 'ds').then((phrase: string) => {
-  console.log(phrase)
-})
-
-// type Props = {}
-// type State = {}
-
-// class App extends React.Component<Props, State> {
-// render() {
-// return (
-// <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-// <Text>Ironbelly is coming to Android!</Text>
-// </View>
-// )
-// }
-// }
 
 AppRegistry.registerComponent(appName, () => App)

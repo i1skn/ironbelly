@@ -17,7 +17,5 @@
 import { AppRegistry } from 'react-native'
 import App from './src/App'
 import { name as appName } from './app.json'
-// eslint-disable-next-line no-unused-vars
-import { getInstance } from './src/common/bugsnag'
 
 AppRegistry.registerComponent(appName, () => App)

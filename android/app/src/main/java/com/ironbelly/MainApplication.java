@@ -1,6 +1,8 @@
 package com.ironbelly;
 
 import android.app.Application;
+import cl.json.RNSharePackage;
+import cl.json.ShareApplication;
 import com.bugsnag.BugsnagReactNative;
 import com.corbt.keepawake.KCKeepAwakePackage;
 import com.cubicphuse.RCTTorch.RCTTorchPackage;
@@ -22,7 +24,12 @@ import com.wix.RNCameraKit.RNCameraKitPackage;
 import java.util.Arrays;
 import java.util.List;
 
-public class MainApplication extends Application implements ReactApplication {
+public class MainApplication extends Application implements ShareApplication, ReactApplication {
+
+  @Override
+  public String getFileProviderAuthority() {
+    return BuildConfig.APPLICATION_ID + ".provider";
+  }
 
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
@@ -35,6 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected List<ReactPackage> getPackages() {
           return Arrays.<ReactPackage>asList(
               new MainReactPackage(),
+              new RNSharePackage(),
               new RCTTorchPackage(),
               new CustomGrinBridge(),
               new RNCameraKitPackage(),

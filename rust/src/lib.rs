@@ -666,6 +666,22 @@ pub mod android {
     }
 
     #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txGet(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        refresh_from_node: bool,
+        tx_slate_id: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let tx_slate_id: String = env
+            .get_string(tx_slate_id)
+            .expect("Invalid tx_slate_id")
+            .into();
+        unwrap_to_jni!(env, tx_get(&state_json, refresh_from_node, &tx_slate_id))
+    }
+
+    #[no_mangle]
     pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txsGet(
         env: JNIEnv,
         _: JClass,
@@ -701,6 +717,142 @@ pub mod android {
             env,
             wallet_recovery(&state_json, start_height as u64, limit as u64)
         )
+    }
+    // -----
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletPhrase(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, wallet_phrase(&state_json))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txStrategies(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        amount: jint,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, tx_strategies(&state_json, amount as u64))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txCreate(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        message: JString,
+        amount: jint,
+        selection_strategy_is_use_all: bool,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let message: String = env.get_string(message).expect("Invalid message").into();
+        unwrap_to_jni!(
+            env,
+            tx_create(
+                &state_json,
+                &message,
+                amount as u64,
+                selection_strategy_is_use_all
+            )
+        )
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txCancel(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        id: jint,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, tx_cancel(&state_json, id as u32,))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txReceive(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        slate_path: JString,
+        message: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let slate_path: String = env
+            .get_string(slate_path)
+            .expect("Invalid slate_path")
+            .into();
+        let message: String = env.get_string(message).expect("Invalid message").into();
+        unwrap_to_jni!(env, tx_receive(&state_json, &slate_path, &message,))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txFinalize(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        slate_path: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let slate_path: String = env
+            .get_string(slate_path)
+            .expect("Invalid slate_path")
+            .into();
+        unwrap_to_jni!(env, tx_finalize(&state_json, &slate_path))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txSendHttps(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        amount: jint,
+        selection_strategy_is_use_all: bool,
+        message: JString,
+        url: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let message: String = env.get_string(message).expect("Invalid message").into();
+        let url: String = env.get_string(url).expect("Invalid url").into();
+        unwrap_to_jni!(
+            env,
+            tx_send_https(
+                &state_json,
+                &message,
+                &url,
+                amount as u64,
+                selection_strategy_is_use_all
+            )
+        )
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txPost(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        tx_slate_id: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let tx_slate_id: String = env
+            .get_string(tx_slate_id)
+            .expect("Invalid tx_slate_id")
+            .into();
+        unwrap_to_jni!(env, tx_post(&state_json, &tx_slate_id))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletRepair(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, wallet_repair(&state_json))
     }
 
 }

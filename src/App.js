@@ -30,6 +30,7 @@ import Modal from 'react-native-modal'
 import { PersistGate } from 'redux-persist/integration/react'
 import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
+import RNFS from 'react-native-fs'
 
 import { type Dispatch, type State as GlobalState } from 'common/types'
 import { store, persistor } from 'common/redux'
@@ -65,7 +66,11 @@ class RealApp extends React.Component<Props, State> {
   componentDidMount() {
     Linking.getInitialURL()
       .then(url => {
+        console.log('initial URL', url)
         if (url) {
+          RNFS.readFile(url)
+            .then(console.log)
+            .catch(console.log)
           this._handleOpenURL({ url })
         }
       })
