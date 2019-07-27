@@ -20,7 +20,7 @@ import { processColor, StatusBar } from 'react-native'
 
 import { parseSendLink } from 'common'
 import colors from 'common/colors'
-import { type Url, type State as GlobalState, type Navigation } from 'common/types'
+import { type State as GlobalState, type Navigation } from 'common/types'
 import { CameraKitCamera } from 'react-native-camera-kit'
 import urlParser from 'url'
 import styled from 'styled-components/native'
@@ -72,8 +72,7 @@ class ScanQRCode extends Component<Props, State> {
   _onScanQRCode = url => {
     this.qrCodeProcessing = true
     const { setFromLink, setHttpAddress } = this.props
-    // $FlowFixMe
-    const link: Url = urlParser.parse(url, true)
+    const link = urlParser.parse(url, true)
 
     if (link.protocol === 'grin:') {
       if (link.host === 'send') {

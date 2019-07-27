@@ -24,7 +24,7 @@ import AppNavigator from 'modules/navigation/routes'
 
 const reducer = (AppNavigator: any) => {
   const navReducer = createNavigationReducer(AppNavigator)
-  const navMiddleware = createReactNavigationReduxMiddleware('root', state => state.nav)
+  const navMiddleware = createReactNavigationReduxMiddleware(state => state.nav, 'root')
 
   return { navReducer, navMiddleware }
 }

@@ -20,7 +20,6 @@ import { isIphoneX } from 'react-native-iphone-x-helper'
 
 import { connect } from 'react-redux'
 import FormTextInput from 'components/FormTextInput'
-// $FlowFixMe
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { type State as ReduxState, type Error, type Navigation } from 'common/types'
 import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'common'

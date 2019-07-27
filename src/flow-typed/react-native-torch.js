@@ -14,20 +14,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  createReduxContainer,
-  createReactNavigationReduxMiddleware,
-  createNavigationReducer,
-} from 'react-navigation-redux-helpers'
-import AppNavigator from 'modules/navigation/routes'
-import { type Dispatch } from 'common/types'
-import { type NavigationState } from 'react-navigation'
-
-const navReducer = createNavigationReducer(AppNavigator)
-const navMiddleware = createReactNavigationReduxMiddleware(state => state.nav)
-
-const AppContainer = createReduxContainer<{}, { state: NavigationState, dispatch: Dispatch }>(
-  AppNavigator
-)
-
-export { AppContainer, navReducer, navMiddleware }
+declare module 'react-native-torch' {
+  declare module.exports: any
+}

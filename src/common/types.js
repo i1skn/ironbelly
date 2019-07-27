@@ -421,7 +421,6 @@ export type State = {
 }
 
 export type GetState = () => State
-export type PromiseAction = Promise<Action>
 export type Dispatch = (action: Action) => any
 export type Store = {
   dispatch: Dispatch,
@@ -526,22 +525,3 @@ export type Error = {
 }
 
 export type UrlQuery = Object
-export type Url = {
-  protocol: string,
-  slashes: boolean,
-  auth: string,
-  username: string,
-  password: string,
-  host: string,
-  hostname: string,
-  port: string,
-  pathname: string,
-  path: string,
-  query: UrlQuery,
-  hash: string,
-  href: string,
-  origin: string,
-  set: (part: string, value: mixed, fn?: boolean | ((value: mixed) => Object)) => Url,
-  toString: () => string,
-  lolcation: (loc?: Object | string) => Object,
-}

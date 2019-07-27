@@ -21,7 +21,6 @@ import NumericInput from 'components/NumericInput'
 import FormTextInput from 'components/FormTextInput'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-// $FlowFixMe
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { connect } from 'react-redux'

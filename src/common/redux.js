@@ -26,14 +26,14 @@ import {
 } from 'modules/currency-rates'
 import { reducer as toasterReducer, sideEffects as toasterEffects } from 'modules/toaster'
 import { reducer as walletReducer, sideEffects as walletEffects } from 'modules/wallet'
-import { type Store, type Action, type PromiseAction } from 'common/types'
+import { type Store, type Action } from 'common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
 import { persistStore, persistReducer } from 'redux-persist'
 import { navReducer, navMiddleware } from 'modules/navigation'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 
-type Effect = (action: any, store: Store) => ?(Action | PromiseAction)
+type Effect = (action: any, store: Store) => ?(Action | Promise<?Action>)
 type Effects = { [string]: Effect }
 
 const balanceConfig = {
@@ -70,7 +70,7 @@ const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => 
     if (result && !(result instanceof Promise) && isFSA(result)) {
       store.dispatch(result)
     } else if (result instanceof Promise) {
-      result.then(res => isFSA(res) && store.dispatch(res))
+      result.then(res => res && isFSA(res) && store.dispatch(res))
     }
   }
   return initAction

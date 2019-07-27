@@ -31,7 +31,7 @@ import { PersistGate } from 'redux-persist/integration/react'
 import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 
-import { type Dispatch, type State as GlobalState, type Url } from 'common/types'
+import { type Dispatch, type State as GlobalState } from 'common/types'
 import { store, persistor } from 'common/redux'
 import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 import { AppContainer } from 'modules/navigation'

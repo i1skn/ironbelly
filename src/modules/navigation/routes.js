@@ -17,7 +17,6 @@ import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 
 import OverviewScreen from 'screens/Overview'
 import SendScreen from 'screens/Send'
-import SendLinkScreen from 'screens/SendLink/main'
 import ReceiveScreen from 'screens/Receive'
 import ReceiveInfoScreen from 'screens/ReceiveInfo'
 import ReceiveGuideScreen from 'screens/ReceiveGuide'
@@ -101,7 +100,6 @@ const AppStack = createStackNavigator(
   {
     Main: MainStack,
     Send: SendScreen,
-    SendLink: SendLinkScreen,
     Receive: ReceiveScreen,
     ReceiveInfoStack: ReceiveInfoStack,
     ScanQRCode: ScanQRCodeScreen,
