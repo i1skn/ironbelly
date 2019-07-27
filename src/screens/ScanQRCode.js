@@ -31,6 +31,7 @@ import Torch from 'react-native-torch'
 type Props = {
   navigation: Navigation,
   setFromLink: (amount: number, message: string, url: string) => void,
+  setHttpAddress: (url: string) => void,
 }
 
 type State = {
@@ -70,7 +71,7 @@ class ScanQRCode extends Component<Props, State> {
 
   _onScanQRCode = url => {
     this.qrCodeProcessing = true
-    const { setFromLink } = this.props
+    const { setFromLink, setHttpAddress } = this.props
     // $FlowFixMe
     const link: Url = urlParser.parse(url, true)
 
@@ -84,13 +85,13 @@ class ScanQRCode extends Component<Props, State> {
         }
       }
     } else if (['http:', 'https:'].indexOf(link.protocol) !== -1) {
-      setFromLink(0, '', url)
+      setHttpAddress(url)
       this.props.navigation.goBack()
       this.props.navigation.navigate('Send')
     }
     this.qrCodeProcessing = false
   }
-  componentDidUpdate(prevProps) {}
+
   componentWillUnmount(prevProps) {
     Torch.switchState(false)
   }
@@ -101,7 +102,6 @@ class ScanQRCode extends Component<Props, State> {
       <Overlay>
         <StatusBar hidden />
         <CameraKitCamera
-          // ref={cam => (this.camera = cam)}
           style={{ flex: 1, justifyContent: 'flex-end' }}
           cameraOptions={{
             focusMode: 'on',
@@ -148,8 +148,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch({
       type: 'TX_FORM_SET_FROM_LINK',
       amount,
-      textAmount: amount ? amount.toString() : '',
+      textAmount: amount ? (amount / 1e9).toString() : '',
       message,
+      url,
+    }),
+  setHttpAddress: url =>
+    dispatch({
+      type: 'TX_FORM_SET_URL',
       url,
     }),
 })

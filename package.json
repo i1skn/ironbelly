@@ -16,6 +16,7 @@
     "base-64": "^0.1.0",
     "bugsnag-react-native": "^2.15.0",
     "create-react-context": "^0.2.3",
+    "debounce": "^1.2.0",
     "flux-standard-action": "^2.0.4",
     "moment": "^2.24.0",
     "plist": "^3.0.1",

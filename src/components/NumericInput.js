@@ -17,6 +17,7 @@
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
 import { Text, TextInput } from 'components/CustomFont'
+import colors from 'common/colors'
 
 type Props = {
   units?: string,
@@ -31,20 +32,23 @@ type State = {}
 
 const Layout = styled.View`
   flex-direction: row;
-  justify-content: flex-start;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-grow: 1;
   align-items: center;
-  width: 100%;
 `
 const Spacer = styled(Text)`
-  margin-right: 5;
-  font-size: 48;
+  color: ${colors.black};
+  font-size: 22;
+  height: 32;
 `
 
 const StyledInput = styled(TextInput)`
-  font-size: 48;
-  font-weight: 400;
-  text-align: center;
-  height: 48;
+  font-size: ${props => (props.value ? 36 : 18)};
+  font-weight: 600;
+  flex-grow: 1;
+  color: ${colors.black} 
+  height: 42;
 `
 
 export default class NumericInput extends Component<Props, State> {
@@ -52,9 +56,8 @@ export default class NumericInput extends Component<Props, State> {
     const { units, maxLength, style, onChange, value, autoFocus, placeholder } = this.props
     return (
       <Layout style={style}>
-        {units && <Spacer>{units}</Spacer>}
         <StyledInput
-          selectionColor={'#ABABAB'}
+          selectionColor={colors.grey[700]}
           autoFocus={autoFocus}
           onChangeText={onChange}
           value={value}
@@ -62,6 +65,7 @@ export default class NumericInput extends Component<Props, State> {
           maxLength={maxLength}
           placeholder={placeholder}
         />
+        {units && <Spacer>{units}</Spacer>}
       </Layout>
     )
   }

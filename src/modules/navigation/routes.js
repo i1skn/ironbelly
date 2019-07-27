@@ -16,7 +16,7 @@
 import { createStackNavigator, createSwitchNavigator } from 'react-navigation'
 
 import OverviewScreen from 'screens/Overview'
-import SendScreen from 'screens/Send/main'
+import SendScreen from 'screens/Send'
 import SendLinkScreen from 'screens/SendLink/main'
 import ReceiveScreen from 'screens/Receive'
 import ReceiveInfoScreen from 'screens/ReceiveInfo'

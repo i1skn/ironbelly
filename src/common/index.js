@@ -125,6 +125,9 @@ export const checkSlatesDirectory = () => {
   })
 }
 
+export const FILE_TRANSPORT_METHOD = 'file'
+export const HTTP_TRANSPORT_METHOD = 'http'
+
 export const checkApplicationSupportDirectory = () => {
   RNFS.exists(APPLICATION_SUPPORT_DIRECTORY).then(exists => {
     if (!exists) {

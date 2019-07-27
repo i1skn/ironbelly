@@ -21,7 +21,14 @@ import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'
 import { persistReducer } from 'redux-persist'
 
-import { getStateForRust, mapRustTx, mapRustOutputStrategy, getSlatePath } from 'common'
+import {
+  HTTP_TRANSPORT_METHOD,
+  hrGrin,
+  getStateForRust,
+  mapRustTx,
+  mapRustOutputStrategy,
+  getSlatePath,
+} from 'common'
 import { log } from 'common/logger'
 import {
   type RustTx,
@@ -459,12 +466,23 @@ export const sideEffects = {
         store.dispatch({ type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS', outputStrategies })
       })
       .catch(error => {
+        const notEnoughFundsError = error.message.match(
+          /Required:\s([\d\.]+), Available:\s([\d\.]+)/
+        )
+
+        const message = notEnoughFundsError
+          ? `Not enough funds! Available: ${hrGrin(
+              parseFloat(notEnoughFundsError[2]) * 1000000000
+            )}`
+          : error.message
         store.dispatch({
           type: 'TX_FORM_OUTPUT_STRATEGIES_FAILURE',
           code: 1,
-          message: error.message,
+          message,
         })
-        log(error, true)
+        if (!notEnoughFundsError) {
+          log(error, true)
+        }
       })
   },
 }
@@ -541,6 +559,11 @@ const txCreate = function(state: TxCreateState = initialState.txCreate, action):
         created: false,
         inProgress: false,
       }
+    case 'TX_FORM_RESET':
+      return {
+        ...state,
+        created: false,
+      }
     default:
       return state
   }
@@ -570,6 +593,11 @@ const txSend = function(state: TxSendState = initialState.txSend, action): TxSen
         },
         sent: false,
         inProgress: false,
+      }
+    case 'TX_FORM_RESET':
+      return {
+        ...state,
+        sent: false,
       }
     default:
       return state
@@ -789,12 +817,16 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         ...state,
         outputStrategies_inProgress: true,
         outputStrategies_error: '',
+        outputStrategies: [],
+        outputStrategy: null,
       }
     case 'TX_FORM_OUTPUT_STRATEGIES_FAILURE':
       return {
         ...state,
         outputStrategies_inProgress: false,
         outputStrategies_error: action.message,
+        outputStrategies: [],
+        outputStrategy: null,
       }
 
     case 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS':
@@ -804,12 +836,15 @@ const txForm = function(state: TxForm = initialState.txForm, action: Action): Tx
         action.outputStrategies[0].total == action.outputStrategies[1].total
           ? [action.outputStrategies[0]]
           : action.outputStrategies
-      const outputStrategies = strategies.map(mapRustOutputStrategy)
+      const outputStrategies = strategies.map(mapRustOutputStrategy).sort((a, b) => {
+        return a.fee - b.fee
+      })
       return {
         ...state,
         outputStrategies,
         outputStrategy: outputStrategies.length ? outputStrategies[0] : null,
         outputStrategies_inProgress: false,
+        outputStrategies_error: '',
       }
     case 'TX_FORM_SET_MESSAGE':
       return {
@@ -858,6 +893,18 @@ const listPersistConfig = {
   key: 'list',
   storage: AsyncStorage,
   whitelist: ['data'],
+}
+
+export const isTxFormValid = (txForm: TxForm, transferMethod: string) => {
+  const { url, amount, outputStrategy } = txForm
+  if (
+    !amount ||
+    !outputStrategy ||
+    (transferMethod === HTTP_TRANSPORT_METHOD && url.toLowerCase().indexOf('http') === -1)
+  ) {
+    return true
+  }
+  return false
 }
 
 export const reducer = combineReducers({

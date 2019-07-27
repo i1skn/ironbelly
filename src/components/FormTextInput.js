@@ -36,6 +36,7 @@ type Props = {
   getRef?: any => void,
   returnKeyType?: string,
   onSubmitEditing?: any => void,
+  multiline?: boolean,
 }
 type State = {}
 
@@ -82,6 +83,7 @@ export default class FormTextInput extends Component<Props, State> {
       returnKeyType,
       getRef,
       onSubmitEditing,
+      multiline,
     } = this.props
     return (
       <React.Fragment>
@@ -90,6 +92,7 @@ export default class FormTextInput extends Component<Props, State> {
           <StyledInput
             selectionColor={'#ABABAB'}
             secureTextEntry={secureTextEntry}
+            multiline={multiline}
             autoFocus={autoFocus}
             onChangeText={onChange}
             ref={getRef}
