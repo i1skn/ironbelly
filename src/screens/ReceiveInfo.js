@@ -15,8 +15,7 @@
 // limitations under the License.
 
 import React, { Component, Fragment } from 'react'
-import { FlatList, View } from 'react-native'
-import { TouchableOpacity } from 'react-native'
+import { FlatList } from 'react-native'
 
 import SettingsListItem, { type Props as SettingsItem } from 'components/SettingsListItem'
 
@@ -24,10 +23,11 @@ import { connect } from 'react-redux'
 
 import { type State as GlobalState, type Navigation, type Slate } from 'common/types'
 import { Text } from 'components/CustomFont'
-import { Spacer } from 'common'
+import { isAndroid, Spacer } from 'common'
 import styled from 'styled-components/native'
 import colors from 'common/colors'
 import receiveFromAnotherPersonGuide from 'documents/receive-from-another-person'
+import { HeaderBackButton } from 'react-navigation'
 
 type Props = {
   navigation: Navigation,
@@ -48,11 +48,11 @@ class Receive extends Component<Props, State> {
     title: 'Receive',
     headerLeft: ({ scene }) => {
       return (
-        <View style={{ marginLeft: 12 }}>
-          <TouchableOpacity onPress={() => scene.descriptor.navigation.goBack(null)}>
-            <Text style={{ fontSize: 18 }}>Close</Text>
-          </TouchableOpacity>
-        </View>
+        <HeaderBackButton
+          tintColor={colors.black}
+          backTitleVisible={!isAndroid}
+          onPress={() => scene.descriptor.navigation.goBack(null)}
+        />
       )
     },
   }

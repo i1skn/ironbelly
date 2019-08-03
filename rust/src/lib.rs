@@ -610,7 +610,7 @@ pub mod android {
     extern crate jni;
 
     use self::jni::objects::{JClass, JString};
-    use self::jni::sys::{jint, jstring};
+    use self::jni::sys::{jlong, jstring};
     use self::jni::JNIEnv;
     use super::*;
 
@@ -643,7 +643,7 @@ pub mod android {
     pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_seedNew(
         env: JNIEnv,
         _: JClass,
-        seed_length: jint,
+        seed_length: jlong,
     ) -> jstring {
         unwrap_to_jni!(
             env,
@@ -709,8 +709,8 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        start_height: jint,
-        limit: jint,
+        start_height: jlong,
+        limit: jlong,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(
@@ -734,7 +734,7 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        amount: jint,
+        amount: jlong,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(env, tx_strategies(&state_json, amount as u64))
@@ -746,7 +746,7 @@ pub mod android {
         _: JClass,
         state_json: JString,
         message: JString,
-        amount: jint,
+        amount: jlong,
         selection_strategy_is_use_all: bool,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
@@ -767,7 +767,7 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        id: jint,
+        id: jlong,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(env, tx_cancel(&state_json, id as u32,))
@@ -810,7 +810,7 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        amount: jint,
+        amount: jlong,
         selection_strategy_is_use_all: bool,
         message: JString,
         url: JString,

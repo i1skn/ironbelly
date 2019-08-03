@@ -48,7 +48,6 @@ const Layout = styled.View`
 `
 
 const StyledInput = styled(TextInput)`
-  font-family: Poppins;
   margin-left: -20;
   padding: 20px;
   margin-right: -20;

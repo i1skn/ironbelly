@@ -36,20 +36,17 @@ import LegalDisclaimerScreen from 'screens/LegalDisclaimer'
 import ScanQRCodeScreen from 'screens/ScanQRCode'
 
 import colors from 'common/colors'
-import { appFont } from 'components/CustomFont'
 
 const defaultNavigationOptions = {
   headerTintColor: colors.black,
   headerTitleStyle: {
     fontWeight: 'bold',
-    fontFamily: appFont,
   },
   headerStyle: {
     borderBottomWidth: 0,
     backgroundColor: colors.primary,
   },
   headerBackTitleStyle: {
-    fontFamily: appFont,
     color: colors.black,
   },
 }
@@ -77,7 +74,7 @@ const MainStack = createStackNavigator(
 
 MainStack.navigationOptions = {
   header: null,
-  headerBackTitle: 'Close',
+  headerBackTitle: 'Back',
 }
 
 const ReceiveInfoStack = createStackNavigator(

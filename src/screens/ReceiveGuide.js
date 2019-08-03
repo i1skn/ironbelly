@@ -18,9 +18,7 @@ import React, { Component } from 'react'
 import { ScrollView, StyleSheet } from 'react-native'
 import { type Navigation } from 'common/types'
 
-import { appFont } from 'components/CustomFont'
 import Markdown, { styles as markdownDefaultStyles } from 'react-native-markdown-renderer'
-import { isIphoneX } from 'react-native-iphone-x-helper'
 
 type Props = {
   navigation: Navigation,
@@ -41,7 +39,6 @@ const markdownStyles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    fontFamily: appFont,
   },
 })
 

@@ -15,7 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { Linking, AppState } from 'react-native'
+import { Linking, AppState, StatusBar, PermissionsAndroid } from 'react-native'
 import { Provider, connect } from 'react-redux'
 import {
   isResponseSlate,
@@ -36,6 +36,8 @@ import { type Dispatch, type State as GlobalState } from 'common/types'
 import { store, persistor } from 'common/redux'
 import TxPostConfirmationModal from 'components/TxPostConfirmationModal'
 import { AppContainer } from 'modules/navigation'
+import { isAndroid } from 'common'
+
 import { type NavigationState, NavigationActions } from 'react-navigation'
 import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'modules/settings'
 import { type State as ToasterState } from 'modules/toaster'
@@ -58,23 +60,27 @@ type Props = {
   currencyRates: CurrencyRatesState,
   setFromLink: (amount: number, message: string, url: string) => void,
   requestCurrencyRates: () => void,
+  sharingInProgress: boolean,
+  slateUrl: ?string,
 }
 type State = {}
 
 class RealApp extends React.Component<Props, State> {
   navigation: any
   componentDidMount() {
-    Linking.getInitialURL()
-      .then(url => {
-        console.log('initial URL', url)
-        if (url) {
-          RNFS.readFile(url)
-            .then(console.log)
-            .catch(console.log)
-          this._handleOpenURL({ url })
-        }
-      })
-      .catch(err => console.error('An error occurred', err))
+    StatusBar.setBarStyle('dark-content')
+    const { slateUrl } = this.props
+    if (slateUrl) {
+      this._handleOpenURL({ url: `file://${slateUrl}` })
+    } else {
+      Linking.getInitialURL()
+        .then(url => {
+          if (url) {
+            this._handleOpenURL({ url })
+          }
+        })
+        .catch(err => console.error('An error occurred', err))
+    }
     Linking.addEventListener('url', this._handleOpenURL)
     AppState.addEventListener('change', this._handleAppStateChange)
     checkApiSecret(() => {
@@ -91,7 +97,7 @@ class RealApp extends React.Component<Props, State> {
 
   _handleOpenURL = event => {
     const { setFromLink } = this.props
-    isWalletInitialized().then(exists => {
+    isWalletInitialized().then(async exists => {
       if (exists) {
         // $FlowFixMe
         const link: Url = urlParser.parse(event.url, true)
@@ -108,14 +114,35 @@ class RealApp extends React.Component<Props, State> {
             }
           }
         } else if (link.protocol === 'file:') {
+          if (isAndroid) {
+            try {
+              const granted = await PermissionsAndroid.request(
+                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                {
+                  title: 'Storage access',
+                  message: 'Ironbelly needs to save and open slate files.',
+                  buttonNegative: 'Decline',
+                  buttonPositive: 'Accept',
+                }
+              )
+              if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+                console.log('Can not access file system')
+                return
+              }
+            } catch (err) {
+              console.warn(err)
+              return
+            }
+          }
+
           nextScreen = isResponseSlate(link.path)
             ? {
                 name: 'Overview',
-                params: { responseSlatePath: link.path },
+                params: { responseSlatePath: decodeURI(link.path) },
               }
             : {
                 name: 'Receive',
-                params: { slatePath: link.path },
+                params: { slatePath: decodeURI(link.path) },
               }
         }
         if (nextScreen) {
@@ -135,8 +162,8 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleAppStateChange = nextAppState => {
-    const { recoveryStarted } = this.props
-    if (nextAppState === 'background') {
+    const { recoveryStarted, sharingInProgress } = this.props
+    if (nextAppState === 'background' && !sharingInProgress) {
       isWalletInitialized().then(exists => {
         if (exists) {
           this.props.dispatch(
@@ -199,6 +226,7 @@ const RealAppConnected = connect(
     chain: state.settings.chain,
     recoveryStarted: state.wallet.walletInit.started,
     currencyRates: state.currencyRates,
+    sharingInProgress: state.tx.slateShare.inProgress,
   }),
   (dispatch, ownProps) => ({
     closeTxPostModal: () => dispatch({ type: 'TX_POST_CLOSE' }),
@@ -227,7 +255,7 @@ export default class App extends Component<{}, {}> {
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <RealAppConnected />
+          <RealAppConnected slateUrl={this.props.url} />
         </PersistGate>
       </Provider>
     )

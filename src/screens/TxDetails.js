@@ -18,8 +18,7 @@ import React, { Component } from 'react'
 import { KeyboardAvoidingView, View } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
-import Header from 'components/Header'
-import { formatTime } from 'common'
+import { isAndroid, formatTime } from 'common'
 import moment from 'moment'
 
 import FormTextInput from 'components/FormTextInput'
@@ -32,9 +31,6 @@ import {
   type Error,
   type Navigation,
 } from 'common/types'
-
-//Images
-import ChevronLeftImg from 'assets/images/ChevronLeft.png'
 
 type Props = {
   txGet: (id: number) => void,
@@ -53,7 +49,7 @@ type State = {
 }
 
 const Wrapper = styled(KeyboardAvoidingView)`
-  padding: 16px;
+  padding: 0 16px;
   flex-grow: 1;
 `
 
@@ -66,7 +62,7 @@ const FieldTitle = styled(Text)`
 
 class TxDetails extends Component<Props, State> {
   static navigationOptions = {
-    header: null,
+    title: 'Transaction',
   }
 
   state = {
@@ -80,16 +76,10 @@ class TxDetails extends Component<Props, State> {
   componentDidUpdate(prevProps) {}
 
   render() {
-    const { navigation, tx } = this.props
+    const { tx } = this.props
     return (
       <React.Fragment>
-        <Header
-          leftIcon={ChevronLeftImg}
-          leftText={'Back'}
-          leftAction={() => navigation.goBack()}
-        />
-
-        <Wrapper behavior="padding">
+        <Wrapper behavior={isAndroid ? '' : 'padding'}>
           {tx && (
             <View style={{ flexGrow: 1 }}>
               <FieldTitle>Amount</FieldTitle>

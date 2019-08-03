@@ -20,7 +20,7 @@ import moment from 'moment'
 
 import { Text } from 'components/CustomFont'
 import styled from 'styled-components/native'
-import { hrGrin, hrFiat, convertToFiat, formatDate } from 'common'
+import { isAndroid, hrGrin, hrFiat, convertToFiat, formatDate } from 'common'
 import { type Tx, type Currency } from 'common/types'
 import ShareImg from 'assets/images/Share.png'
 import ChevronRightImg from 'assets/images/ChevronRight.png'
@@ -119,9 +119,8 @@ const TxListItem = (props: Props) => {
         <AmountFiat>{hrFiat(convertToFiat(amount, currency, rates), currency)}</AmountFiat>
       </View>
 
-      {(!confirmed && type !== 'TxPosted' && <ShareIcon source={ShareImg} />) || (
-        <DetailsChevron source={ChevronRightImg} />
-      )}
+      {(!confirmed && type !== 'TxPosted' && <ShareIcon source={ShareImg} />) ||
+        (!isAndroid && <DetailsChevron source={ChevronRightImg} />)}
     </Wrapper>
   )
 }

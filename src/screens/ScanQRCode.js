@@ -18,7 +18,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { processColor, StatusBar } from 'react-native'
 
-import { parseSendLink } from 'common'
+import { isAndroid, parseSendLink } from 'common'
 import colors from 'common/colors'
 import { type State as GlobalState, type Navigation } from 'common/types'
 import { CameraKitCamera } from 'react-native-camera-kit'
@@ -91,20 +91,25 @@ class ScanQRCode extends Component<Props, State> {
     this.qrCodeProcessing = false
   }
   componentDidUpdate(prevProps) {}
-  componentDidMount() {
-    CameraKitCamera.checkDeviceCameraAuthorizationStatus()
-      .then(res => {
-        if (res === -1) {
-          CameraKitCamera.requestDeviceCameraAuthorization()
-            .then(console.log)
-            .catch(console.log)
-        }
-      })
-      .catch(console.log)
+  async componentDidMount() {
+    try {
+      const checkResult = await CameraKitCamera.checkDeviceCameraAuthorizationStatus()
+      if (checkResult === -1 && isAndroid) {
+        CameraKitCamera.requestDeviceCameraAuthorization()
+          .then(console.log)
+          .catch(console.log)
+      }
+    } catch (e) {
+      console.log(e)
+    }
   }
 
-  componentWillUnmount(prevProps) {
-    Torch.switchState(false)
+  async componentWillUnmount(prevProps) {
+    try {
+      await Torch.switchState(false)
+    } catch (e) {
+      console.log(e)
+    }
   }
   render() {
     const { navigation } = this.props
@@ -133,9 +138,13 @@ class ScanQRCode extends Component<Props, State> {
           }}
         />
         <Flashlight
-          onPress={() => {
+          onPress={async () => {
             this.setState({ torch: !torch })
-            Torch.switchState(!torch)
+            try {
+              await Torch.switchState(!torch)
+            } catch (e) {
+              console.log(e)
+            }
           }}
         >
           <MaterialCommunityIcons

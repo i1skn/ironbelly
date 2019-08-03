@@ -32,23 +32,23 @@ type State = {}
 
 const Layout = styled.View`
   flex-direction: row;
-  align-items: flex-end;
-  justify-content: flex-end;
+  justify-content: flex-start;
   flex-grow: 1;
   align-items: center;
 `
 const Spacer = styled(Text)`
   color: ${colors.black};
-  font-size: 22;
-  height: 32;
+  font-size: 36;
+  height: 58;
 `
 
 const StyledInput = styled(TextInput)`
-  font-size: ${props => (props.value ? 36 : 18)};
-  font-weight: 600;
+  font-size: ${props => (props.value ? 36 : 36)};
+  font-weight: ${props => (props.value ? 600 : 300)};
   flex-grow: 1;
   color: ${colors.black} 
-  height: 42;
+  height: 58;
+  text-align-vertical: center;
 `
 
 export default class NumericInput extends Component<Props, State> {

@@ -19,12 +19,12 @@ import styled from 'styled-components/native'
 import colors from 'common/colors'
 import { Linking } from 'react-native'
 
-export const appFont = 'Poppins'
 export const monoSpaceFont = 'Menlo'
 
 export const Text = styled.Text`
   font-family: ${appFont};
   font-size: ${props => (props.fontSize ? props.fontSize : '16px')};
+  font-weight: normal;
   color: ${() => colors.black};
 `
 
@@ -38,7 +38,7 @@ export const Link = (props: { url: string, title: string }) => {
 }
 
 export const TextInput = styled.TextInput`
-  font-family: ${appFont};
+  font-weight: normal;
 `
 
 function getBackgroundColor(props: any) {

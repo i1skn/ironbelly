@@ -17,7 +17,7 @@
 import * as React from 'react'
 import { Text } from 'components/CustomFont'
 import styled from 'styled-components/native'
-import { hrGrin, hrFiat, convertToFiat } from 'common'
+import { isAndroid, hrGrin, hrFiat, convertToFiat } from 'common'
 import colors from 'common/colors'
 import { type Balance, type Navigation, type Currency } from 'common/types'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -55,7 +55,6 @@ const AmountGrinTotal = styled(Text)`
 const AmountFiatTotal = styled(Text)`
   font-weight: 400;
   font-size: 16;
-  margin-top: -8px;
   color: ${() => colors.grey[900]};
 `
 
@@ -80,7 +79,7 @@ const OfflineText = styled(Text)`
 
 const Wrapper = styled.View`
   justify-content: space-between;
-  padding: 28px 16px 0 16px;
+  padding: ${isAndroid ? '8px' : '28px'} 16px 0 16px;
   background-color: ${() => colors.primary};
 `
 
@@ -131,9 +130,15 @@ const BalanceComponent = ({
     <React.Fragment>
       <Wrapper>
         <TopLine>
-          <TopIcon onPress={() => navigation.navigate('ScanQRCode')}>
-            <MaterialCommunityIcons name="qrcode-scan" size={26} style={{ color: colors.black }} />
-          </TopIcon>
+          {!isAndroid && (
+            <TopIcon onPress={() => navigation.navigate('ScanQRCode')}>
+              <MaterialCommunityIcons
+                name="qrcode-scan"
+                size={26}
+                style={{ color: colors.black }}
+              />
+            </TopIcon>
+          )}
           <BalanceTitle>Balance</BalanceTitle>
 
           <TopIcon onPress={() => navigation.navigate('Settings')}>

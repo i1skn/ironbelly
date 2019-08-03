@@ -117,7 +117,7 @@ class Landing extends Component<Props, State> {
     const { isFloonet, switchToMainnet } = this.props
 
     return (
-      <Wrapper behavior="padding" testID="LandingScreen">
+      <Wrapper testID="LandingScreen">
         <FlexGrow />
         <View>
           <AppTitle>Ironbelly</AppTitle>

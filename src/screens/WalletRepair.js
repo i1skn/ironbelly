@@ -51,7 +51,9 @@ class WalletRepair extends Component<Props, State> {
   componentDidMount() {
     const { navigation, repaired, repairWallet } = this.props
     if (!repaired) {
-      repairWallet()
+      setTimeout(() => {
+        repairWallet()
+      }, 1000) // On slow devices this can started before render is finished
     } else {
       navigation.goBack()
     }

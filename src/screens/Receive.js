@@ -22,7 +22,7 @@ import Header from 'components/Header'
 
 import { Text, Button } from 'components/CustomFont'
 
-import { LoaderView, TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
+import { isAndroid, LoaderView, TextareaTitle, Textarea, hrGrin, Spacer } from 'common'
 import colors from 'common/colors'
 import { type State as GlobalState, type Navigation, type Slate } from 'common/types'
 
@@ -76,7 +76,7 @@ class Receive extends Component<Props, State> {
           leftText={'Cancel'}
           leftAction={() => navigation.navigate('Overview')}
         />
-        <Wrapper behavior="padding">
+        <Wrapper behavior={isAndroid ? '' : 'padding'}>
           {(slate && (
             <React.Fragment>
               <Title>{`Incoming ${hrGrin(slate.amount)}`}</Title>

@@ -14,7 +14,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { NativeModules, PermissionsAndroid } from 'react-native'
+import { NativeModules } from 'react-native'
 import Share from 'react-native-share'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
@@ -126,6 +126,10 @@ export type TxForm = {|
   url: string,
 |}
 
+export type SlateShareState = {|
+  inProgress: boolean,
+|}
+
 export type SlateState = {|
   data: ?Slate,
   inProgress: boolean,
@@ -143,6 +147,7 @@ export type State = $ReadOnly<{|
   txFinalize: TxFinalizeState,
   txForm: TxForm,
   slate: SlateState,
+  slateShare: SlateShareState,
 |}>
 
 const initialState: State = {
@@ -211,6 +216,9 @@ const initialState: State = {
     data: null,
     inProgress: false,
     error: null,
+  },
+  slateShare: {
+    inProgress: false,
   },
 }
 
@@ -371,7 +379,7 @@ export const sideEffects = {
       log(e, true)
     }
   },
-  ['TX_RECEIVE_REQUEST']: (action: txReceiveRequestAction, store: Store) => {
+  ['TX_RECEIVE_REQUEST']: async (action: txReceiveRequestAction, store: Store) => {
     return GrinBridge.txReceive(getStateForRust(store.getState()), action.slatePath, 'Received')
       .then((json: string) => JSON.parse(json))
       .then((slate: Slate) => {
@@ -391,26 +399,6 @@ export const sideEffects = {
       let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
       if (!finalized) {
         finalized = []
-      }
-      try {
-        const granted = await PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-          {
-            title: 'Cool Photo App Camera Permission',
-            message:
-              'Cool Photo App needs access to your camera ' + 'so you can take awesome pictures.',
-            buttonNeutral: 'Ask Me Later',
-            buttonNegative: 'Cancel',
-            buttonPositive: 'OK',
-          }
-        )
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log('You can use the camera')
-        } else {
-          console.log('Camera permission denied')
-        }
-      } catch (err) {
-        console.warn(err)
       }
       const slate = await GrinBridge.txFinalize(
         getStateForRust(store.getState()),
@@ -475,7 +463,6 @@ export const sideEffects = {
       })
       .catch(error => {
         store.dispatch({ type: 'SLATE_SHARE_FAILURE', code: 1, message: error.message })
-        log(error, true)
       })
   },
   ['TX_FORM_OUTPUT_STRATEGIES_REQUEST']: (
@@ -911,6 +898,31 @@ const slate = function(state: SlateState = initialState.slate, action): SlateSta
   }
 }
 
+const slateShare = function(
+  state: SlateShareState = initialState.slateShare,
+  action
+): SlateShareState {
+  switch (action.type) {
+    case 'SLATE_SHARE_REQUEST':
+      return {
+        ...state,
+        inProgress: true,
+      }
+    case 'SLATE_SHARE_SUCCESS':
+      return {
+        ...state,
+        inProgress: false,
+      }
+    case 'SLATE_SHARE_FAILURE':
+      return {
+        ...state,
+        inProgress: false,
+      }
+    default:
+      return state
+  }
+}
+
 const listPersistConfig = {
   key: 'list',
   storage: AsyncStorage,
@@ -940,4 +952,5 @@ export const reducer = combineReducers({
   txFinalize,
   txForm,
   slate,
+  slateShare,
 })

@@ -34,7 +34,7 @@ import {
   type Slate,
   type OutputStrategy,
 } from 'common/types'
-import { Text, Button } from 'components/CustomFont'
+import { Button } from 'components/CustomFont'
 import {
   FILE_TRANSPORT_METHOD,
   HTTP_TRANSPORT_METHOD,
@@ -42,6 +42,7 @@ import {
   hrFiat,
   convertToFiat,
   Spacer,
+  isAndroid,
 } from 'common'
 
 import styled from 'styled-components/native'
@@ -72,11 +73,11 @@ const TransportMethodTitle = styled.Text`
 
 const AlternativeAmount = styled.Text`
   color: ${colors.grey[700]};
-  font-size: 14;
+  font-size: 18;
   text-align: right;
   text-align: right;
-  height: 42;
-  line-height: 42;
+  height: 50;
+  line-height: 50;
   margin-left: 2;
 `
 
@@ -305,7 +306,7 @@ const Send = ({
                     autoCorrect={false}
                     multiline={true}
                   />
-                  {!url && (
+                  {!isAndroid && !url && (
                     <ScanQRCode onPress={() => navigation.navigate('ScanQRCode')}>
                       <MaterialCommunityIcons name="qrcode-scan" size={26} />
                     </ScanQRCode>
@@ -332,15 +333,6 @@ const Send = ({
 
 Send.navigationOptions = {
   title: 'Send',
-  headerLeft: ({ scene }) => {
-    return (
-      <View style={{ marginLeft: 12 }}>
-        <TouchableOpacity onPress={() => scene.descriptor.navigation.goBack(null)}>
-          <Text style={{ fontSize: 18 }}>Cancel</Text>
-        </TouchableOpacity>
-      </View>
-    )
-  },
 }
 
 const mapStateToProps = (state: GlobalState) => {

@@ -240,7 +240,7 @@ export const ListItemSeparator = styled.View`
 
 export const UnderHeaderBlock = styled.View`
   background-color: ${colors.primary};
-  padding: 0 16px 16px 16px;
+  padding: ${isAndroid ? '16px' : '8px'} 16px 16px 16px;
 `
 
 export const getBiometryTitle = (biometryType: ?string) => {

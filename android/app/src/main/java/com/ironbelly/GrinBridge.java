@@ -93,9 +93,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void txStrategies(String state, int amount, Promise promise) {
+  public void txStrategies(String state, double amount, Promise promise) {
     try {
-      promise.resolve(txStrategies(state, amount));
+      promise.resolve(txStrategies(state, (long) amount));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -104,12 +104,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   @ReactMethod
   public void txCreate(
       String state,
-      int amount,
+      double amount,
       Boolean selectionStrategyIsUseAll,
       String message,
       Promise promise) {
     try {
-      promise.resolve(txCreate(state, message, amount, selectionStrategyIsUseAll));
+      promise.resolve(txCreate(state, message, (long) amount, selectionStrategyIsUseAll));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -145,13 +145,13 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   @ReactMethod
   public void txSendHttps(
       String state,
-      int amount,
+      double amount,
       Boolean selectionStrategyIsUseAll,
       String message,
       String url,
       Promise promise) {
     try {
-      promise.resolve(txSendHttps(state, amount, selectionStrategyIsUseAll, message, url));
+      promise.resolve(txSendHttps(state, (long) amount, selectionStrategyIsUseAll, message, url));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -189,12 +189,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
   private static native String walletRecovery(String state, int startIndex, int limit);
 
-  private static native String txStrategies(String state, int amount);
+  private static native String txStrategies(String state, long amount);
 
   private static native String walletPhrase(String state);
 
   private static native String txCreate(
-      String state, String message, int amount, Boolean selectionStrategyIsUseAll);
+      String state, String message, long amount, Boolean selectionStrategyIsUseAll);
 
   private static native String txCancel(String state, int id);
 
@@ -203,7 +203,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   private static native String txFinalize(String state, String slatePath);
 
   private static native String txSendHttps(
-      String state, int amount, Boolean selectionStrategyIsUseAll, String message, String url);
+      String state, long amount, Boolean selectionStrategyIsUseAll, String message, String url);
 
   private static native String txPost(String state, String txSlateId);
 

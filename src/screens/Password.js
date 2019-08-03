@@ -28,7 +28,7 @@ import FormTextInput from 'components/FormTextInput'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { BIOMETRY_STATUS } from 'modules/settings'
-import { getBiometryTitle } from 'common'
+import { isAndroid, getBiometryTitle } from 'common'
 
 import { Spacer, KeyboardAvoidingWrapper, FlexGrow, LoaderView } from 'common'
 import colors from 'common/colors'
@@ -142,7 +142,7 @@ class Password extends Component<Props, State> {
 
     return (
       <KeyboardAvoidingWrapper
-        behavior="padding"
+        behavior={isAndroid ? '' : 'padding'}
         style={{
           flex: 1,
         }}
