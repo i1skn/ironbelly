@@ -1,4 +1,4 @@
-package com.ironbelly;
+package app.ironbelly;
 
 import android.content.Intent;
 import android.net.Uri;

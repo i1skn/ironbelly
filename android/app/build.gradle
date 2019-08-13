@@ -113,11 +113,11 @@ android {
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.ironbelly"
+        applicationId "app.ironbelly"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "alpha"
+        versionCode 5
+        versionName "0.0.1"
     }
     splits {
         abi {
@@ -163,8 +163,6 @@ dependencies {
     implementation project(':@react-native-community_netinfo')
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-share')
-    implementation project(':react-native-torch')
-    implementation project(':react-native-camera-kit')
     implementation project(':react-native-community_netinfo')
     implementation project(':react-native-keep-awake')
     implementation project(':react-native-svg')

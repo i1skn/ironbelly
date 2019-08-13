@@ -1,4 +1,4 @@
-package com.ironbelly;
+package app.ironbelly;
 
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;

@@ -40,6 +40,7 @@ const Spacer = styled(Text)`
   color: ${colors.black};
   font-size: 36;
   height: 58;
+  line-height: 58;
 `
 
 const StyledInput = styled(TextInput)`

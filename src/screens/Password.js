@@ -35,6 +35,7 @@ import colors from 'common/colors'
 import { Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
 import * as Keychain from 'react-native-keychain'
+import TouchID from 'react-native-touch-id'
 
 type Props = {
   navigation: Navigation,
@@ -81,17 +82,28 @@ class Password extends Component<Props, State> {
     }
   }
 
-  _getPasswordFromBiometry() {
+  async _getPasswordFromBiometry() {
     const { checkPasswordFromBiometry, biometryType } = this.props
     const authenticationPrompt =
       biometryType === Keychain.BIOMETRY_TYPE.FACE_ID
         ? 'Use Face ID to unlock your wallet'
         : 'Place your finger to unlock your wallet'
-    Keychain.getGenericPassword({ authenticationPrompt }).then(creds => {
+    try {
+      if (isAndroid) {
+        await TouchID.authenticate(authenticationPrompt, {
+          title: 'Authentication Required',
+          passcodeFallback: false,
+          cancelText: 'Cancel',
+          fallbackLabel: '',
+        })
+      }
+      const creds = await Keychain.getGenericPassword({ authenticationPrompt })
       if (typeof creds.password === 'string') {
         checkPasswordFromBiometry(creds.password)
       }
-    })
+    } catch (e) {
+      console.log(e)
+    }
   }
 
   _onForgot = () => {

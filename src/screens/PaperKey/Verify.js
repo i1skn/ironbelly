@@ -79,9 +79,11 @@ class Verify extends Component<Props, State> {
     // })
     //
     // Restore
-    // this.setState({
-    // mnemonicWords: ''.split(' '),
-    // })
+    this.setState({
+      mnemonicWords: 'kitten toddler paper antique depth sense live squirrel toss airport grab hard sport choose recycle raise traffic ignore dream memory romance client voyage present'.split(
+        ' '
+      ),
+    })
   }
 
   componentDidUpdate(prevProps) {

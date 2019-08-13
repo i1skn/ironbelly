@@ -629,7 +629,7 @@ pub mod android {
         ));
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_balance(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_balance(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -640,7 +640,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_seedNew(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_seedNew(
         env: JNIEnv,
         _: JClass,
         seed_length: jlong,
@@ -652,7 +652,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletInit(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletInit(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -666,7 +666,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txGet(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txGet(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -682,7 +682,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txsGet(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txsGet(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -693,7 +693,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_checkPassword(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_checkPassword(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -705,7 +705,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletRecovery(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletRecovery(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -720,7 +720,7 @@ pub mod android {
     }
     // -----
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletPhrase(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletPhrase(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -730,7 +730,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txStrategies(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txStrategies(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -741,7 +741,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txCreate(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txCreate(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -763,7 +763,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txCancel(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txCancel(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -774,7 +774,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txReceive(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txReceive(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -791,7 +791,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txFinalize(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txFinalize(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -806,7 +806,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txSendHttps(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txSendHttps(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -831,7 +831,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_txPost(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txPost(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -846,7 +846,7 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_com_ironbelly_GrinBridge_walletRepair(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletRepair(
         env: JNIEnv,
         _: JClass,
         state_json: JString,

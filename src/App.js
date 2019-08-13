@@ -15,7 +15,7 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { Linking, AppState, StatusBar, PermissionsAndroid } from 'react-native'
+import { BackHandler, Linking, AppState, StatusBar, PermissionsAndroid } from 'react-native'
 import { Provider, connect } from 'react-redux'
 import {
   isResponseSlate,
@@ -67,6 +67,7 @@ type State = {}
 
 class RealApp extends React.Component<Props, State> {
   navigation: any
+  backHandler: any
   componentDidMount() {
     StatusBar.setBarStyle('dark-content')
     const { slateUrl } = this.props
@@ -88,19 +89,48 @@ class RealApp extends React.Component<Props, State> {
         this.props.chain === MAINNET_CHAIN ? MAINNET_API_SECRET : FLOONET_API_SECRET
       )
     })
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
   }
 
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL)
     AppState.removeEventListener('change', this._handleAppStateChange)
+    this.backHandler.remove()
   }
 
   _handleOpenURL = event => {
     const { setFromLink } = this.props
     isWalletInitialized().then(async exists => {
+      console.log(event.url)
       if (exists) {
         // $FlowFixMe
-        const link: Url = urlParser.parse(event.url, true)
+        console.log('Path11before: ', event.url)
+        RNFS.readFile(event.url, 'utf8')
+          .then(console.log)
+          .catch(console.log)
+
+        if (isAndroid) {
+          try {
+            const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+              {
+                title: 'Storage access',
+                message: 'Ironbelly needs to save and open slate files.',
+                buttonNegative: 'Decline',
+                buttonPositive: 'Accept',
+              }
+            )
+            if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+              console.log('Can not access file system')
+              return
+            }
+          } catch (err) {
+            console.warn(err)
+            return
+          }
+        }
+
+        const link = urlParser.parse(event.url, true)
         let nextScreen
         if (link.protocol === 'grin:') {
           if (link.host === 'send') {
@@ -113,36 +143,25 @@ class RealApp extends React.Component<Props, State> {
               }
             }
           }
-        } else if (link.protocol === 'file:') {
-          if (isAndroid) {
-            try {
-              const granted = await PermissionsAndroid.request(
-                PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-                {
-                  title: 'Storage access',
-                  message: 'Ironbelly needs to save and open slate files.',
-                  buttonNegative: 'Decline',
-                  buttonPositive: 'Accept',
-                }
-              )
-              if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-                console.log('Can not access file system')
-                return
-              }
-            } catch (err) {
-              console.warn(err)
-              return
-            }
-          }
-
+        } else if (['file:'].indexOf(link.protocol) !== -1) {
           nextScreen = isResponseSlate(link.path)
             ? {
                 name: 'Overview',
-                params: { responseSlatePath: decodeURI(link.path) },
+                params: { responseSlatePath: event.url },
               }
             : {
                 name: 'Receive',
-                params: { slatePath: decodeURI(link.path) },
+                params: { slatePath: event.url },
+              }
+        } else if (['content:'].indexOf(link.protocol) !== -1) {
+          nextScreen = isResponseSlate(link.href)
+            ? {
+                name: 'Overview',
+                params: { responseSlatePath: event.url },
+              }
+            : {
+                name: 'Receive',
+                params: { slatePath: event.url },
               }
         }
         if (nextScreen) {
@@ -183,6 +202,29 @@ class RealApp extends React.Component<Props, State> {
         }
       })
     }
+  }
+
+  shouldGoBack(currentRoute: NavigationState) {
+    return ['WalletRepair', 'WalletPrepare'].indexOf(currentRoute.routeName) !== -1
+  }
+
+  shouldCloseApp(currentRoute: NavigationState) {
+    return ['Overview', 'Landing', 'Password'].indexOf(currentRoute.routeName) !== -1
+  }
+
+  getCurrentRoute(state: NavigationState) {
+    let route = state
+    while (route.hasOwnProperty('index')) {
+      route = route.routes[route.index]
+    }
+    return route
+  }
+
+  _handleBackPress = () => {
+    const { dispatch, nav } = this.props
+    if (this.shouldCloseApp(this.getCurrentRoute(nav))) return false
+    dispatch(NavigationActions.back())
+    return true
   }
 
   componentDidUpdate(prevProps) {
@@ -252,6 +294,7 @@ const RealAppConnected = connect(
 
 export default class App extends Component<{}, {}> {
   render() {
+    console.log(this.props)
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

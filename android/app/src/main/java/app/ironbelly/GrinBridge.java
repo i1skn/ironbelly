@@ -1,4 +1,4 @@
-package com.ironbelly;
+package app.ironbelly;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -39,9 +39,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void seedNew(int seedLength, Promise promise) {
+  public void seedNew(double seedLength, Promise promise) {
     try {
-      promise.resolve(seedNew(seedLength));
+      promise.resolve(seedNew((long) seedLength));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -75,9 +75,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void walletRecovery(String state, int startIndex, int limit, Promise promise) {
+  public void walletRecovery(String state, double startIndex, double limit, Promise promise) {
     try {
-      promise.resolve(walletRecovery(state, startIndex, limit));
+      promise.resolve(walletRecovery(state, (long) startIndex, (long) limit));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -116,9 +116,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void txCancel(String state, int id, Promise promise) {
+  public void txCancel(String state, double id, Promise promise) {
     try {
-      promise.resolve(txCancel(state, id));
+      promise.resolve(txCancel(state, (long) id));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -181,13 +181,13 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
   private static native String txsGet(String state, Boolean refreshFromNode);
 
-  private static native String seedNew(int seedLength);
+  private static native String seedNew(long seedLength);
 
   private static native String walletInit(String state, String phrase, String password);
 
   private static native String checkPassword(String state, String password);
 
-  private static native String walletRecovery(String state, int startIndex, int limit);
+  private static native String walletRecovery(String state, long startIndex, long limit);
 
   private static native String txStrategies(String state, long amount);
 
@@ -196,7 +196,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   private static native String txCreate(
       String state, String message, long amount, Boolean selectionStrategyIsUseAll);
 
-  private static native String txCancel(String state, int id);
+  private static native String txCancel(String state, long id);
 
   private static native String txReceive(String state, String slatePath, String message);
 

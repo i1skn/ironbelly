@@ -1,11 +1,10 @@
-package com.ironbelly;
+package app.ironbelly;
 
 import android.app.Application;
 import cl.json.RNSharePackage;
 import cl.json.ShareApplication;
 import com.bugsnag.BugsnagReactNative;
 import com.corbt.keepawake.KCKeepAwakePackage;
-import com.cubicphuse.RCTTorch.RCTTorchPackage;
 import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -20,7 +19,6 @@ import com.reactnativecommunity.netinfo.NetInfoPackage;
 import com.rnfingerprint.FingerprintAuthPackage;
 import com.rnfs.RNFSPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
-import com.wix.RNCameraKit.RNCameraKitPackage;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,9 +41,7 @@ public class MainApplication extends Application implements ShareApplication, Re
           return Arrays.<ReactPackage>asList(
               new MainReactPackage(),
               new RNSharePackage(),
-              new RCTTorchPackage(),
               new CustomGrinBridge(),
-              new RNCameraKitPackage(),
               new NetInfoPackage(),
               new KCKeepAwakePackage(),
               new SvgPackage(),

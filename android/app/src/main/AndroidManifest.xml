@@ -1,10 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.ironbelly">
+    package="app.ironbelly">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
 
     <application
@@ -30,6 +31,8 @@
 		<category android:name="android.intent.category.DEFAULT"/>
 		<category android:name="android.intent.category.BROWSABLE"/>
 		<data android:mimeType="*/*" />
+		<data android:scheme="files" />
+		<data android:host="*"/>
 	</intent-filter>
       </activity>
 
@@ -37,7 +40,7 @@
              android:value="5a7142175552dab1f8d9a566b43c5ec9"/>
      <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.ironbelly.provider"
+            android:authorities="app.ironbelly.provider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data

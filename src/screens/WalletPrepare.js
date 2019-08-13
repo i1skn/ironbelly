@@ -85,6 +85,7 @@ class WalletPrepare extends Component<Props, State> {
                   fill={progress}
                   tintColor={colors.black}
                   rotation={0}
+                  duration={100}
                   onAnimationComplete={() => console.log('onAnimationComplete')}
                   backgroundColor={colors.primary}
                 >

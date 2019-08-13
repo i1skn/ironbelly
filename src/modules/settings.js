@@ -32,7 +32,7 @@ import * as Keychain from 'react-native-keychain'
 import { log } from 'common/logger'
 import TouchID from 'react-native-touch-id'
 import { getBiometryTitle } from 'common'
-import { currencyList } from 'common'
+import { isAndroid, currencyList } from 'common'
 
 export const BIOMETRY_STATUS = {
   unknown: 'unknown',
@@ -143,9 +143,10 @@ export const sideEffects = {
     const { value: password } = store.getState().wallet.password
     try {
       if (
-        await Keychain.canImplyAuthentication({
+        isAndroid ||
+        (await Keychain.canImplyAuthentication({
           authenticationType: Keychain.AUTHENTICATION_TYPE.BIOMETRICS,
-        })
+        }))
       ) {
         await TouchID.authenticate(
           `Unlock this wallet in the future with ${getBiometryTitle(
@@ -154,7 +155,7 @@ export const sideEffects = {
           { passcodeFallback: false, fallbackLabel: '' }
         )
 
-        await Keychain.setGenericPassword('', password, {
+        await Keychain.setGenericPassword('user', password, {
           accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
           accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
         })

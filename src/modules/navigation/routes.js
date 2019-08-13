@@ -123,9 +123,9 @@ const WalletCreateStack = createStackNavigator(
 
 const RootStack = createSwitchNavigator(
   {
-    Password: PasswordScreen,
     App: AppStack,
     Initial: InitialScreen,
+    Password: PasswordScreen,
     WalletCreate: WalletCreateStack,
   },
   {

@@ -36,6 +36,7 @@ android/app/src/main/jniLibs/arm64-v8a/libwallet.so
 android/app/src/main/jniLibs/armeabi-v7a/libsigner.so
 android/app/src/main/jniLibs/x86/libwallet.so
 android/app/src/main/jniLibs/x86_64/libwallet.so
+android/key.json
 
 
 # node.js
