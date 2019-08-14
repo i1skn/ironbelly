@@ -58,10 +58,6 @@ const MainStack = createStackNavigator(
     Settings: SettingsScreen,
     SettingsGrinNode: SettingsGrinNodeScreen,
     SettingsCurrency: SettingsCurrencyScreen,
-    SettingsLegalDisclaimer: {
-      screen: LegalDisclaimerScreen,
-      params: { alreadyAccepted: true },
-    },
     WalletRepair: WalletRepairScreen,
     Overview: {
       screen: OverviewScreen,
@@ -116,7 +112,6 @@ const WalletCreateStack = createStackNavigator(
     Landing: LandingScreen,
     LegalDisclaimer: {
       screen: LegalDisclaimerScreen,
-      params: { alreadyAccepted: false },
     },
     NewPassword: NewPasswordScreen,
     ShowPaperKey: ShowPaperKeyScreen,

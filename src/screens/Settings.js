@@ -27,6 +27,7 @@ import colors from 'common/colors'
 import { type State as SettingsState, BIOMETRY_STATUS } from 'modules/settings'
 import { getBiometryTitle } from 'common'
 import { Text } from 'components/CustomFont'
+import { termsUrl, privacyUrl } from 'screens/LegalDisclaimer'
 
 const VersionText = styled(Text)`
   text-align: center;
@@ -168,26 +169,34 @@ class Settings extends Component<Props, State> {
         },
       },
       {
-        key: 'legal_disclaimer',
-        title: 'Legal disclaimer',
-        onPress: () => {
-          navigation.navigate('SettingsLegalDisclaimer')
-        },
+        key: 'repair',
+        title: 'Repair this wallet',
+        onPress: this._onRepairWallet,
+        hideChevron: true,
       },
-
       {
         key: 'feedback',
         title: 'Got feeback?',
         hideChevron: true,
         onPress: () => {
-          Linking.openURL('mailto:ironbelly@cycle42.com')
+          Linking.openURL('mailto:support@ironbelly.app')
         },
       },
       {
-        key: 'repair',
-        title: 'Repair this wallet',
-        onPress: this._onRepairWallet,
+        key: 'terms',
+        title: 'Terms of Use',
         hideChevron: true,
+        onPress: () => {
+          Linking.openURL(termsUrl)
+        },
+      },
+      {
+        key: 'privacy',
+        title: 'Privacy Policy',
+        hideChevron: true,
+        onPress: () => {
+          Linking.openURL(privacyUrl)
+        },
       },
       {
         key: 'destroy',

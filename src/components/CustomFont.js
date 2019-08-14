@@ -17,14 +17,24 @@
 import * as React from 'react'
 import styled from 'styled-components/native'
 import colors from 'common/colors'
+import { Linking } from 'react-native'
 
 export const appFont = 'Poppins'
 export const monoSpaceFont = 'Menlo'
 
 export const Text = styled.Text`
   font-family: ${appFont};
-  font-size: 16px;
+  font-size: ${props => (props.fontSize ? props.fontSize : '16px')};
 `
+
+export const Link = (props: { url: string, title: string }) => {
+  const { url, title } = props
+  return (
+    <Text {...props} style={{ color: colors.link }} onPress={() => Linking.openURL(url)}>
+      {title}
+    </Text>
+  )
+}
 
 export const TextInput = styled.TextInput`
   font-family: ${appFont};

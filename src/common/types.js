@@ -88,7 +88,6 @@ export type txPostFalureAction = { type: 'TX_POST_FAILURE', code?: number, messa
 export type setSettingsAction = { type: 'SET_SETTINGS', newSettings: SettingsState }
 export type switchToMainnetAction = { type: 'SWITCH_TO_MAINNET' }
 export type switchToFloonetAction = { type: 'SWITCH_TO_FLOONET' }
-export type acceptLegalDisclamerAction = { type: 'ACCEPT_LEGAL_DISCLAIMER', buildNumber: number }
 
 export type enableBiometryRequestAction = { type: 'ENABLE_BIOMETRY_REQUEST' }
 export type enableBiometrySuccessAction = { type: 'ENABLE_BIOMETRY_SUCCESS' }

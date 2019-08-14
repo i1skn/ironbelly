@@ -14,99 +14,92 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { Component } from 'react'
-import { ScrollView, StyleSheet } from 'react-native'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
-import { Spacer } from 'common'
-import { appFont, Button } from 'components/CustomFont'
-import { type State as ReduxState, type Error, type Navigation } from 'common/types'
-import Markdown, { styles as markdownDefaultStyles } from 'react-native-markdown-renderer'
-import legalDisclaimer from 'documents/legal-disclaimer'
+import CheckBox from 'react-native-check-box'
+import { Wrapper, Spacer } from 'common'
+import { Text, Link, Button } from 'components/CustomFont'
+import { type State as ReduxState, type Navigation } from 'common/types'
+
+export const termsUrl = 'https://ironbelly.app/terms'
+export const privacyUrl = 'https://ironbelly.app/privacy'
+export const grinUrl = 'https://grin-tech.org/'
 
 type Props = {
   accept: (buildNumber: number) => void,
-  acceptedBuildNumber: number,
   navigation: Navigation,
 }
 
-type State = {}
-
-const Wrapper = styled.View`
+const RightText = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
   flex: 1;
+  padding-left: 16px;
 `
 
-const markdownStyles = StyleSheet.create({
-  heading1: {
-    fontSize: 24,
-    paddingTop: 16,
-    paddingBottom: 16,
-  },
-  listUnorderedItemIcon: {
-    ...markdownDefaultStyles.listUnorderedItemIcon,
-    marginLeft: 0,
-    marginRight: 8,
-  },
-  text: {
-    fontSize: 16,
-    fontFamily: appFont,
-  },
-})
-class LegalDisclaimer extends Component<Props, State> {
-  state = {}
-  static fromBuildNumber = 11
-  static navigationOptions = {
-    title: 'Legal Disclaimer',
-  }
+const Main = styled.View`
+  flex-wrap: wrap;
+  flex-direction: row;
+  flex: 1;
+  padding-top: 16px;
+`
 
-  componentDidUpdate() {
-    const { acceptedBuildNumber, navigation } = this.props
-    const { nextScreen, alreadyAccepted } = navigation.state.params
-
-    if (!alreadyAccepted && acceptedBuildNumber >= LegalDisclaimer.fromBuildNumber) {
-      navigation.replace(nextScreen.name, nextScreen.params)
-    }
-  }
-
-  render() {
-    const { navigation, accept } = this.props
-    const { buildNumber, alreadyAccepted } = navigation.state.params
-    return (
-      <Wrapper>
-        <ScrollView
-          style={{
-            paddingLeft: 16,
-            paddingRight: 16,
-          }}
-          testID="LegalDisclaimerScrollView"
-          showsVerticalScrollIndicator={true}
-        >
-          <Markdown style={markdownStyles}>{legalDisclaimer}</Markdown>
-          <Spacer />
-          <Button
-            testID="IAgree"
-            title={alreadyAccepted ? 'Already accepted' : 'I Agree'}
-            disabled={alreadyAccepted}
-            onPress={() => {
-              accept(buildNumber)
-            }}
-          />
-          <Spacer />
-        </ScrollView>
-      </Wrapper>
-    )
-  }
+const LegalDisclaimer = ({ navigation }: Props) => {
+  const { nextScreen } = navigation.state.params
+  const [checked, setChecked] = useState(false)
+  return (
+    <Wrapper>
+      <Main>
+        <Text fontSize={20}>Ironbelly - mobile wallet for </Text>
+        <Link fontSize={20} url={grinUrl} title={'Grin'} />
+        <Text fontSize={20}>. </Text>
+        <Text fontSize={20}>
+          Please, if you are not familiar with the blockchain technology, learn it first. It is
+          important, that you know what you are doing!
+        </Text>
+        <Text fontSize={20}>
+          Then read carefully Terms of Use and Privacy Policy and only then start using the app.
+        </Text>
+      </Main>
+      <CheckBox
+        style={{}}
+        onClick={() => {
+          setChecked(!checked)
+        }}
+        isChecked={checked}
+        rightTextView={
+          <RightText>
+            <Text>I agree to the </Text>
+            <Link url={termsUrl} title="Terms of Use" />
+            <Text> and the </Text>
+            <Link url={privacyUrl} title="Privacy Policy" />
+            <Text>.</Text>
+          </RightText>
+        }
+      />
+      <Spacer />
+      <Button
+        testID="IAgree"
+        title={'Next'}
+        disabled={!checked}
+        onPress={() => {
+          navigation.navigate(nextScreen.name, nextScreen.params)
+        }}
+      />
+      <Spacer />
+    </Wrapper>
+  )
 }
 
-const mapStateToProps = (state: ReduxState) => ({
-  acceptedBuildNumber: state.settings.acceptedLegalDisclaimerBuildNumber,
-})
+LegalDisclaimer.navigationOptions = {
+  title: 'Welcome',
+  headerBackTitle: ' ',
+}
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  accept: buildNumber => {
-    dispatch({ type: 'ACCEPT_LEGAL_DISCLAIMER', buildNumber })
-  },
-})
+const mapStateToProps = (state: ReduxState) => ({})
+
+const mapDispatchToProps = (dispatch, ownProps) => ({})
 
 export default connect(
   mapStateToProps,

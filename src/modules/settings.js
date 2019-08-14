@@ -45,7 +45,6 @@ export type State = {
   checkNodeApiHttpAddr: string,
   chain: 'floonet' | 'mainnet',
   minimumConfirmations: number,
-  acceptedLegalDisclaimerBuildNumber: number,
   biometryStatus: 'unknown' | 'disabled' | 'enabled',
   biometryType: ?string,
 }
@@ -64,7 +63,6 @@ export const initialState: State = {
   checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE_V2,
   chain: MAINNET_CHAIN,
   minimumConfirmations: 10,
-  acceptedLegalDisclaimerBuildNumber: 0,
   biometryStatus: 'unknown',
   biometryType: null,
 }
@@ -82,7 +80,6 @@ export const reducer = (state: State = initialState, action: Action): State => {
         chain: MAINNET_CHAIN,
         checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE_V2,
         minimumConfirmations: 10,
-        acceptedLegalDisclaimerBuildNumber: 0,
       }
     case 'SWITCH_TO_FLOONET':
       return {
@@ -90,14 +87,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
         checkNodeApiHttpAddr: FLOONET_DEFAULT_NODE,
         chain: FLOONET_CHAIN,
         minimumConfirmations: 1,
-        acceptedLegalDisclaimerBuildNumber: 0,
       }
-    case 'ACCEPT_LEGAL_DISCLAIMER':
-      return {
-        ...state,
-        acceptedLegalDisclaimerBuildNumber: action.buildNumber,
-      }
-
     case 'ENABLE_BIOMETRY_SUCCESS':
       return {
         ...state,

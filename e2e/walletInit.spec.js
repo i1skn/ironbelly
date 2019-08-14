@@ -11,9 +11,10 @@ describe('Ironbelly', () => {
     await element(by.id('NewWalletButton')).tap()
 
     //Legal
-    await element(by.id('LegalDisclaimerScrollView')).scrollTo('bottom')
     let nextButton = element(by.id('IAgree'))
     await expect(nextButton).toBeVisible()
+    await nextButton.tap()
+    await element(by.text('I agree to the ')).tap()
     await nextButton.tap()
 
     nextButton = element(by.id('SubmitPassword'))

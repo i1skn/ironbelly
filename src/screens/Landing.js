@@ -74,6 +74,7 @@ type State = {}
 class Landing extends Component<Props, State> {
   static navigationOptions = {
     header: null,
+    headerBackTitle: ' ',
   }
 
   state = {}
@@ -102,21 +103,13 @@ class Landing extends Component<Props, State> {
   _onNewWallet = (isNew: boolean) => {
     return () => {
       const actualBuildNumber = parseInt(DeviceInfo.getBuildNumber())
-      if (
-        !this.props.isFloonet &&
-        Math.min(LegalDisclaimer.fromBuildNumber, actualBuildNumber) >
-          this.props.settings.acceptedLegalDisclaimerBuildNumber
-      ) {
-        this.props.navigation.navigate('LegalDisclaimer', {
-          nextScreen: {
-            name: 'NewPassword',
-            params: { isNew },
-          },
-          buildNumber: actualBuildNumber,
-        })
-      } else {
-        this.props.navigation.navigate('NewPassword', { isNew })
-      }
+      this.props.navigation.navigate('LegalDisclaimer', {
+        nextScreen: {
+          name: 'NewPassword',
+          params: { isNew },
+        },
+        buildNumber: actualBuildNumber,
+      })
     }
   }
 
