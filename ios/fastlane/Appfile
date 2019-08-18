@@ -1,8 +1,8 @@
-app_identifier("com.cycle42.ironbelly") # The bundle identifier of your app
+app_identifier("app.ironbelly") # The bundle identifier of your app
 apple_id("ivan@sorokin.io") # Your Apple email address
 
-itc_team_id("117277289") # App Store Connect Team ID
-team_id("F4EWDSV84U") # Developer Portal Team ID
+itc_team_id("120279655") # App Store Connect Team ID
+team_id("4496JM56CN") # Developer Portal Team ID
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile

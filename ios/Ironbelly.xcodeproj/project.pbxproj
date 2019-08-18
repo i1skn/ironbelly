@@ -754,8 +754,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = F4EWDSV84U;
+				CURRENT_PROJECT_VERSION = 21;
+				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11;
@@ -764,7 +764,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust/target/universal/release";
-				PRODUCT_BUNDLE_IDENTIFIER = com.cycle42.ironbelly;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
@@ -780,8 +780,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 20;
-				DEVELOPMENT_TEAM = F4EWDSV84U;
+				CURRENT_PROJECT_VERSION = 21;
+				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11;
@@ -790,7 +790,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust/target/universal/release";
-				PRODUCT_BUNDLE_IDENTIFIER = com.cycle42.ironbelly;
+				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
