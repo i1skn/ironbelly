@@ -19,6 +19,7 @@ import { BackHandler, Linking, AppState, StatusBar, PermissionsAndroid } from 'r
 import { Provider, connect } from 'react-redux'
 import {
   isResponseSlate,
+  SLATES_DIRECTORY,
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
   checkApiSecret,
@@ -101,14 +102,7 @@ class RealApp extends React.Component<Props, State> {
   _handleOpenURL = event => {
     const { setFromLink } = this.props
     isWalletInitialized().then(async exists => {
-      console.log(event.url)
       if (exists) {
-        // $FlowFixMe
-        console.log('Path11before: ', event.url)
-        RNFS.readFile(event.url, 'utf8')
-          .then(console.log)
-          .catch(console.log)
-
         if (isAndroid) {
           try {
             const granted = await PermissionsAndroid.request(
@@ -121,7 +115,6 @@ class RealApp extends React.Component<Props, State> {
               }
             )
             if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-              console.log('Can not access file system')
               return
             }
           } catch (err) {
@@ -143,7 +136,7 @@ class RealApp extends React.Component<Props, State> {
               }
             }
           }
-        } else if (['file:'].indexOf(link.protocol) !== -1) {
+        } else if (['file:'].indexOf(link.protocol) !== -1 && link.path) {
           nextScreen = isResponseSlate(link.path)
             ? {
                 name: 'Overview',
@@ -154,14 +147,19 @@ class RealApp extends React.Component<Props, State> {
                 params: { slatePath: event.url },
               }
         } else if (['content:'].indexOf(link.protocol) !== -1) {
+          // Copy the file, because we can not operate on content://
+          // from inside rust code
+          const fileName = event.url.split('/').pop()
+          const destPath = `${SLATES_DIRECTORY}/${fileName}`
+          await RNFS.copyFile(event.url, destPath)
           nextScreen = isResponseSlate(link.href)
             ? {
                 name: 'Overview',
-                params: { responseSlatePath: event.url },
+                params: { responseSlatePath: destPath },
               }
             : {
                 name: 'Receive',
-                params: { slatePath: event.url },
+                params: { slatePath: destPath },
               }
         }
         if (nextScreen) {
@@ -292,9 +290,8 @@ const RealAppConnected = connect(
   })
 )(RealApp)
 
-export default class App extends Component<{}, {}> {
+export default class App extends Component<{ url: string }, {}> {
   render() {
-    console.log(this.props)
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>

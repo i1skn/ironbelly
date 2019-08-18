@@ -416,7 +416,6 @@ export const sideEffects = {
     }
   },
   ['SLATE_LOAD_REQUEST']: (action: slateLoadRequestAction, store: Store) => {
-    console.log('Path11after: ', action.slatePath)
     return RNFS.readFile(action.slatePath, 'utf8')
       .then((json: string) => JSON.parse(json))
       .then(slate => {

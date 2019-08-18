@@ -59,6 +59,7 @@ type Props = {
   firstLoading: boolean,
   walletInit: WalletInitState,
   currencyRates: CurrencyRatesState,
+  txFinalizeInProgress: boolean,
 }
 
 type State = {}
@@ -114,11 +115,11 @@ class Overview extends Component<Props, State> {
     this.props.enableBiometry()
   }
   componentDidMount() {
-    const { settings } = this.props
+    const { settings, txFinalizeInProgress } = this.props
     this.props.getBalance()
     this.props.txsGet(false, false)
     const { responseSlatePath } = this.props.navigation.state.params
-    if (responseSlatePath) {
+    if (responseSlatePath && !txFinalizeInProgress) {
       this.props.txFinalize(responseSlatePath)
     }
     if (settings.biometryType && settings.biometryStatus === BIOMETRY_STATUS.unknown) {
@@ -302,6 +303,7 @@ const mapStateToProps = (state: GlobalState) => {
     settings: state.settings,
     currencyRates: state.currencyRates,
     walletInit: state.wallet.walletInit,
+    txFinalizeInProgress: state.tx.txFinalize.inProgress,
   }
 }
 
