@@ -1,14 +1,16 @@
 [![Build Status](https://travis-ci.com/cyclefortytwo/ironbelly.svg?branch=master)](https://travis-ci.com/cyclefortytwo/ironbelly)
 [![Join the chat at https://gitter.im/ironbelly-wallet/community](https://badges.gitter.im/ironbelly-wallet/community.svg)](https://gitter.im/ironbelly-wallet/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+<a href="https://apps.apple.com/us/app/ironbelly/id1475413396" target="_blank"><img height="75" src="https://ironbelly.app/assets/appstore.png"></a>
+
 # Ironbelly
 
 Named after a species of dragon - [Ukrainian Ironbelly](http://harrypotter.wikia.com/wiki/Ukrainian_Ironbelly). One of them guarded some of the oldest and deepest vaults in Gringotts.
 This wallet uses React-Native for the UI and official [Grin](https://github.com/mimblewimble/grin/) source code written in Rust.
-## Beta testing
-Join iOS beta testing - [https://testflight.apple.com/join/GrqGPx9W](https://testflight.apple.com/join/GrqGPx9W)
+
 ## Contributing
-### Set up the environment
+### iOS
+#### Set up the environment
 
 Let's install Xcode build tools first
 
@@ -26,7 +28,7 @@ install cargo-lipo, which is a cargo subcommand which automatically creates a un
 
 `cargo install cargo-lipo`
 
-### Build the project
+#### Build the project
 
 ```
 # Clone this repo somewhere
@@ -47,6 +49,12 @@ npm start # this will start React Native server
 ```
 
 After all of these, please open `ios/Ironbelly.xcworkspace` in XCode and run `Product -> Build (⌘B)`
+
+## Beta testing
+### iOS - Testflight
+[https://testflight.apple.com/join/GrqGPx9W](https://testflight.apple.com/join/GrqGPx9W)
+### Android
+Coming soon!
 
 ## License
 
