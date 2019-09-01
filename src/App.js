@@ -15,7 +15,14 @@
 // limitations under the License.
 
 import React, { Component } from 'react'
-import { BackHandler, Linking, AppState, StatusBar, PermissionsAndroid } from 'react-native'
+import {
+  NativeModules,
+  BackHandler,
+  Linking,
+  AppState,
+  StatusBar,
+  PermissionsAndroid,
+} from 'react-native'
 import { Provider, connect } from 'react-redux'
 import {
   isResponseSlate,
@@ -137,21 +144,27 @@ class RealApp extends React.Component<Props, State> {
             }
           }
         } else if (['file:'].indexOf(link.protocol) !== -1 && link.path) {
+          const path = isAndroid ? decodeURIComponent(link.path) : link.path
           nextScreen = isResponseSlate(link.path)
             ? {
                 name: 'Overview',
-                params: { responseSlatePath: event.url },
+                params: { responseSlatePath: path },
               }
             : {
                 name: 'Receive',
-                params: { slatePath: event.url },
+                params: { slatePath: path },
               }
         } else if (['content:'].indexOf(link.protocol) !== -1) {
           // Copy the file, because we can not operate on content://
           // from inside rust code
-          const fileName = event.url.split('/').pop()
+          const url = event.url
+          const fileName = url
+            .split('/')
+            .pop()
+            .split('%2F')
+            .pop()
           const destPath = `${SLATES_DIRECTORY}/${fileName}`
-          await RNFS.copyFile(event.url, destPath)
+          await RNFS.copyFile(url, destPath)
           nextScreen = isResponseSlate(link.href)
             ? {
                 name: 'Overview',

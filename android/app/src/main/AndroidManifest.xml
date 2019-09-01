@@ -6,13 +6,16 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    
 
 
     <application
       android:name=".MainApplication"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
+      android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
+      android:launchMode="singleTask"
       android:theme="@style/AppTheme">
       <activity
         android:name=".MainActivity"
@@ -26,12 +29,39 @@
         </intent-filter>
 	<intent-filter>
 		<action android:name="android.intent.action.VIEW"/>
-		<action android:name="android.intent.action.EDIT"/>
 		<category android:name="android.intent.category.DEFAULT"/>
-		<category android:name="android.intent.category.BROWSABLE"/>
-		<data android:mimeType="*/*" />
 		<data android:host="*"/>
+		<data android:scheme="content" />
+		<data android:scheme="file" />
+		<data android:mimeType="application/octet-stream" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.response" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\.response" />
+		<data android:pathPattern=".*\\..*\\..*\\.response" />
+		<data android:pathPattern=".*\\..*\\.response" />
+		<data android:pathPattern=".*\\.response" />
 	</intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:host="*"/>
+		<data android:scheme="content" />
+		<data android:scheme="file" />
+		<data android:mimeType="application/octet-stream" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.grinslate" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\.grinslate" />
+		<data android:pathPattern=".*\\..*\\..*\\.grinslate" />
+		<data android:pathPattern=".*\\..*\\.grinslate" />
+		<data android:pathPattern=".*\\.grinslate" />
+	</intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:host="*"/>
+		<data android:scheme="content" />
+		<data android:scheme="file" />
+		<data android:mimeType="application/json" />
+	</intent-filter>
+
       </activity>
 
       <meta-data android:name="com.bugsnag.android.API_KEY"

@@ -22,7 +22,6 @@ import { Linking } from 'react-native'
 export const monoSpaceFont = 'Menlo'
 
 export const Text = styled.Text`
-  font-family: ${appFont};
   font-size: ${props => (props.fontSize ? props.fontSize : '16px')};
   font-weight: normal;
   color: ${() => colors.black};

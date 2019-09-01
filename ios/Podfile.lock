@@ -177,27 +177,27 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
-  BugsnagReactNative: 0acbd9b570c54a41a836f145f788ff28e652c831
+  BugsnagReactNative: 0b7626917d3612281d07aea84e5041f123290fee
   DoubleConversion: bb338842f62ab1d708ceb63ec3d999f0f3d98ecd
   Folly: de497beb10f102453a1afa9edbf8cf8a251890de
   glog: aefd1eb5dda2ab95ba0938556f34b98e2da3a60d
   LaunchScreenSnapshot: cee0c0fec0d9b9186c76a1fd010c5c4677ccb6fc
-  React: b52fdb80565505b7e4592b313a38868f5df51641
-  react-native-async-storage: 9f540b8bb09f7e31e3fb951de2f8f8b6d0332280
-  react-native-camera-kit: 41091fc33ab06bc0d16c453275a49292defa7dc3
-  react-native-keep-awake: eba3137546b10003361b37c761f6c429b59814ae
-  react-native-netinfo: 2cfb4a903d90f1beda31c2990a058c51130b53aa
-  react-native-torch: f0efa6803d5fbe932b86c45f3c98635bad1f2b66
-  RNDeviceInfo: 5a3ae865d1736d2305be149578928b0c7198e852
-  RNFS: c9bbde46b0d59619f8e7b735991c60e0f73d22c1
+  React: 1d605e098d69bdf08960787f3446f0a9dc2e2ccf
+  react-native-async-storage: 8b91703e95887488a180f3cae839981f55687dd5
+  react-native-camera-kit: b8be082835610287985ce574a8d02460e5a48372
+  react-native-keep-awake: 0de4bd66de0c23178107dce0c2fcc3354b2a8e94
+  react-native-netinfo: f4039dc64d3a55da59d6d03d4bd667d0a9f5450e
+  react-native-torch: f973a898e0d02ff7274f8884a5e8721333cb906e
+  RNDeviceInfo: 5b5b42b12587207b6bd686441ac42d19d8e07933
+  RNFS: bbb1a64eb245763daf34aea86f97c97c4e85f74c
   RNGestureHandler: b65d391f4f570178d657b99a16ec99d09b8656b0
-  RNKeychain: 1a121521011702409f5a1009eb8a1effa81000f3
-  RNShare: 48cf88cadf9ca2143cdaa557c1ec7f8808040ffc
-  RNSVG: 9cb6e958c4b6a1f58185ac72a350b148947d6fed
-  RNVectorIcons: 6607bd3a30291d0edb56f9bbe7ae411ee2b928b0
-  TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
-  yoga: 1a492113f66a35e9e583bb0434f4b8cc668dd839
+  RNKeychain: 5381e340056c23de103d73ae59cbddc6ffc21d97
+  RNShare: d875e8e37f3e5e8eb7a103ae01e06490af1796f6
+  RNSVG: 4834be1d644eb77f0e3f6de851881b83758a3124
+  RNVectorIcons: 8c52e1e8da1153613fdef44748e865c25556cb9c
+  TouchID: b0640fedb86fa2db2fe1df15b61594ad49e76288
+  yoga: 128daf064cacaede0c3bb27424b6b4c71052e6cd
 
 PODFILE CHECKSUM: 4a640eb544e1c2a1fffca8e528958d5e64d1f9d2
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.5.3

@@ -142,11 +142,12 @@ class Overview extends Component<Props, State> {
     }
   }
   componentDidUpdate(prevProps) {
-    if (
-      this.props.navigation.state.params.responseSlatePath !==
-      prevProps.navigation.state.params.responseSlatePath
-    ) {
-      this.props.txFinalize(this.props.navigation.state.params.responseSlatePath)
+    const { txFinalizeInProgress } = this.props
+    const { responseSlatePath } = this.props.navigation.state.params
+    if (responseSlatePath !== prevProps.navigation.state.params.responseSlatePath) {
+      if (responseSlatePath && !txFinalizeInProgress) {
+        this.props.txFinalize(responseSlatePath)
+      }
     }
   }
 

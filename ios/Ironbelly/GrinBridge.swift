@@ -83,7 +83,7 @@ class GrinBridge: NSObject {
 
     @objc func txReceive(_ state: String, slatePath: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_tx_receive(state, slatePath,message, &error)
+        let cResult = c_tx_receive(state, slatePath, message, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
@@ -126,7 +126,7 @@ class GrinBridge: NSObject {
         let cResult = c_wallet_init(state, phrase, password, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
-    
+
     @objc func walletRecovery(_ state:String, startIndex: UInt64, limit: UInt64, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_wallet_recovery(state , startIndex, limit, &error)

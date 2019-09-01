@@ -88,7 +88,9 @@ fn create_wallet_config(state: State) -> Result<WalletConfig, Error> {
     })
 }
 
-fn get_wallet(state: State) -> Result<Arc<Mutex<WalletInst<impl NodeClient, ExtKeychain>>>, Error> {
+fn get_wallet(
+    state: State,
+) -> Result<Arc<Mutex<dyn WalletInst<impl NodeClient, ExtKeychain>>>, Error> {
     let wallet_config = create_wallet_config(state.clone())?;
     let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
 
