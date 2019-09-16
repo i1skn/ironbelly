@@ -37,7 +37,7 @@ public class MainActivity extends ReactActivity {
         Bundle bundle = new Bundle();
         Uri slateUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
         if (slateUri != null) {
-          bundle.putString("url", slateUri.getPath());
+          bundle.putString("url", slateUri.toString());
         }
         return bundle;
       }

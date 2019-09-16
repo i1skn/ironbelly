@@ -80,7 +80,7 @@ class RealApp extends React.Component<Props, State> {
     StatusBar.setBarStyle('dark-content')
     const { slateUrl } = this.props
     if (slateUrl) {
-      this._handleOpenURL({ url: `file://${slateUrl}` })
+      this._handleOpenURL({ url: slateUrl })
     } else {
       Linking.getInitialURL()
         .then(url => {

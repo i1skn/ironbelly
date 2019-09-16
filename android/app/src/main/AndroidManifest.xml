@@ -33,7 +33,7 @@
 		<data android:host="*"/>
 		<data android:scheme="content" />
 		<data android:scheme="file" />
-		<data android:mimeType="application/octet-stream" />
+		<data android:mimeType="*/*" />
 		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.response" />
 		<data android:pathPattern=".*\\..*\\..*\\..*\\.response" />
 		<data android:pathPattern=".*\\..*\\..*\\.response" />
@@ -46,7 +46,7 @@
 		<data android:host="*"/>
 		<data android:scheme="content" />
 		<data android:scheme="file" />
-		<data android:mimeType="application/octet-stream" />
+		<data android:mimeType="*/*" />
 		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.grinslate" />
 		<data android:pathPattern=".*\\..*\\..*\\..*\\.grinslate" />
 		<data android:pathPattern=".*\\..*\\..*\\.grinslate" />
@@ -59,8 +59,32 @@
 		<data android:host="*"/>
 		<data android:scheme="content" />
 		<data android:scheme="file" />
-		<data android:mimeType="application/json" />
+		<data android:mimeType="*/*" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.json" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\.json" />
+		<data android:pathPattern=".*\\..*\\..*\\.json" />
+		<data android:pathPattern=".*\\..*\\.json" />
+		<data android:pathPattern=".*\\.json" />
 	</intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:host="*"/>
+		<data android:scheme="content" />
+		<data android:scheme="file" />
+		<data android:mimeType="*/*" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.slate" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\.slate" />
+		<data android:pathPattern=".*\\..*\\..*\\.slate" />
+		<data android:pathPattern=".*\\..*\\.slate" />
+		<data android:pathPattern=".*\\.slate" />
+	</intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.SEND"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:mimeType="*/*" />
+	</intent-filter>
+
 
       </activity>
 

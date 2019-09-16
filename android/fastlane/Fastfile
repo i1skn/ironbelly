@@ -21,18 +21,9 @@ platform :android do
     gradle(task: "test")
   end
 
-  desc "Submit a new Internal Test Build to Play Market"
-  lane :beta do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store(track: 'internal')
-
-    # sh "your_script.sh"
-    # You can also use other beta testing services here
-  end
-
-  desc "Deploy a new version to the Google Play"
-  lane :deploy do
-    gradle(task: "clean assembleRelease")
-    upload_to_play_store
+  desc "Submit a new Alpha Build to Play Market"
+  lane :alpha do
+    gradle(task: "clean bundleRelease")
+    upload_to_play_store(track: 'alpha')
   end
 end
