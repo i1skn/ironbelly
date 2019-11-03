@@ -1,7 +1,9 @@
 [![Build Status](https://travis-ci.com/cyclefortytwo/ironbelly.svg?branch=master)](https://travis-ci.com/cyclefortytwo/ironbelly)
 [![Join the chat at https://gitter.im/ironbelly-wallet/community](https://badges.gitter.im/ironbelly-wallet/community.svg)](https://gitter.im/ironbelly-wallet/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-<a href="https://apps.apple.com/us/app/ironbelly/id1475413396" target="_blank"><img height="75" src="https://ironbelly.app/assets/appstore.png"></a>
+<a href="https://apps.apple.com/us/app/ironbelly/id1475413396" target="_blank"><img height="75" src="https://ironbelly.app/assets/appstore.png"></a>&nbsp;&nbsp;&nbsp;
+<a href="https://play.google.com/store/apps/details?id=app.ironbelly"><img height="75" src="https://ironbelly.app/assets/playstore.png"/></a>
+
 
 # Ironbelly
 
@@ -93,7 +95,7 @@ Go to the root of the repo and run `react-native run-android`
 ### iOS - Testflight
 [https://testflight.apple.com/join/GrqGPx9W](https://testflight.apple.com/join/GrqGPx9W)
 ### Android
-Coming soon!
+[https://play.google.com/store/apps/details?id=app.ironbelly](https://play.google.com/store/apps/details?id=app.ironbelly)
 
 ## License
 
