@@ -21,7 +21,7 @@
     "moment": "^2.24.0",
     "plist": "^3.0.1",
     "react": "16.8.6",
-    "react-native": "^0.59.3",
+    "react-native": "^0.59.8",
     "react-native-camera-kit": "^7.3.7",
     "react-native-check-box": "^2.1.7",
     "react-native-circular-progress": "^1.1.0",
