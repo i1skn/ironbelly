@@ -23,6 +23,7 @@ DerivedData
 *.dSYM.zip
 *.xcuserstate
 project.xcworkspace
+rust/libwallet.a
 
 # Android/IntelliJ
 #

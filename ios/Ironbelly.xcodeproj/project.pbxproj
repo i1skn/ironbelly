@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -58,9 +58,9 @@
 		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
 		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
 		F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = F64186FF2188968D00A99CA0 /* libresolv.tbd */; };
+		F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F67AD98B23C15A5100FC4CEA /* libwallet.a */; };
 		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
 		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
-		F6E9509621C79ACB0066C203 /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6E9509521C79ACB0066C203 /* libwallet.a */; };
 		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
 /* End PBXBuildFile section */
 
@@ -151,12 +151,12 @@
 		F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IronbellyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186FF2188968D00A99CA0 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		F669249426C949548172D721 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
+		F67AD98B23C15A5100FC4CEA /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/libwallet.a; sourceTree = "<group>"; };
 		F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Wallet-Bridging-Header.h"; path = "Ironbelly/Wallet-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		F6DDC63F2197893300B51AAE /* bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bindings.h; path = ../../rust/bindings.h; sourceTree = "<group>"; };
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
 		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
-		F6E9509521C79ACB0066C203 /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/target/universal/release/libwallet.a; sourceTree = "<group>"; };
 		F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../src/assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		F9E3B3C7257947359B7DDDE9 /* Share@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@2x.png"; path = "../src/assets/images/Share@2x.png"; sourceTree = "<group>"; };
 		FC26FA724A1F442EB149A9B6 /* MaterialIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = MaterialIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/MaterialIcons.ttf"; sourceTree = "<group>"; };
@@ -168,7 +168,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F6E9509621C79ACB0066C203 /* libwallet.a in Frameworks */,
+				F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */,
 				F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */,
 				2D9490C0C18F3781E43746DF /* Pods_Ironbelly.framework in Frameworks */,
 			);
@@ -296,7 +296,7 @@
 		F64186FC2188967A00A99CA0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				F6E9509521C79ACB0066C203 /* libwallet.a */,
+				F67AD98B23C15A5100FC4CEA /* libwallet.a */,
 				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
 				76167AF6FD5AA2CC815D8205 /* Pods_Ironbelly.framework */,
 				DAE36CB964869151D5C2A258 /* Pods_IronbellyTests.framework */,
@@ -478,58 +478,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/BugsnagReactNative/BugsnagReactNative.framework",
-				"${BUILT_PRODUCTS_DIR}/DoubleConversion/DoubleConversion.framework",
-				"${BUILT_PRODUCTS_DIR}/Folly/folly.framework",
-				"${BUILT_PRODUCTS_DIR}/LaunchScreenSnapshot/LaunchScreenSnapshot.framework",
-				"${BUILT_PRODUCTS_DIR}/RNDeviceInfo/RNDeviceInfo.framework",
-				"${BUILT_PRODUCTS_DIR}/RNFS/RNFS.framework",
-				"${BUILT_PRODUCTS_DIR}/RNGestureHandler/RNGestureHandler.framework",
-				"${BUILT_PRODUCTS_DIR}/RNKeychain/RNKeychain.framework",
-				"${BUILT_PRODUCTS_DIR}/RNSVG/RNSVG.framework",
-				"${BUILT_PRODUCTS_DIR}/RNShare/RNShare.framework",
-				"${BUILT_PRODUCTS_DIR}/RNVectorIcons/RNVectorIcons.framework",
-				"${BUILT_PRODUCTS_DIR}/React/React.framework",
-				"${BUILT_PRODUCTS_DIR}/TouchID/TouchID.framework",
-				"${BUILT_PRODUCTS_DIR}/glog/glog.framework",
-				"${BUILT_PRODUCTS_DIR}/react-native-async-storage/react_native_async_storage.framework",
-				"${BUILT_PRODUCTS_DIR}/react-native-camera-kit/react_native_camera_kit.framework",
-				"${BUILT_PRODUCTS_DIR}/react-native-keep-awake/react_native_keep_awake.framework",
-				"${BUILT_PRODUCTS_DIR}/react-native-netinfo/react_native_netinfo.framework",
-				"${BUILT_PRODUCTS_DIR}/react-native-torch/react_native_torch.framework",
-				"${BUILT_PRODUCTS_DIR}/yoga/yoga.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/BugsnagReactNative.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DoubleConversion.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/folly.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/LaunchScreenSnapshot.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNDeviceInfo.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNFS.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNGestureHandler.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNKeychain.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNSVG.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNShare.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RNVectorIcons.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/React.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TouchID.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/glog.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_async_storage.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_camera_kit.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_keep_awake.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_netinfo.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/react_native_torch.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/yoga.framework",
+				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		B4B65182060AEDB2836EFF42 /* [CP] Check Pods Manifest.lock */ = {
@@ -765,7 +722,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust/target/universal/release";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust";
 				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
@@ -791,7 +748,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust/target/universal/release";
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust";
 				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";

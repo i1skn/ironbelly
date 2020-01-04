@@ -26,6 +26,8 @@ add iOS architectures to rustup
 
 `rustup target add aarch64-apple-ios x86_64-apple-ios`
 
+`rustup toolchain install 1.39.0`
+
 install cargo-lipo, which is a cargo subcommand which automatically creates a universal library for use with iOS
 
 `cargo install cargo-lipo`
@@ -34,19 +36,18 @@ install cargo-lipo, which is a cargo subcommand which automatically creates a un
 
 ```
 # Clone this repo somewhere
-git clone --recurse-submodules https://github.com/cyclefortytwo/ironbelly.git # it uses submodules
+git clone --recurse-submodules https://github.com/i1skn/ironbelly.git # it uses submodules
 cd ironbelly
 # Build staticlib from Rust Grin code
 # All Rust related code lives in `rust/` directory
 cd rust
-cargo lipo --release
-cd ..
-npm install
+make ios
 # All iOS related code lives in `ios/` directory
-cd ios/
+cd ../ios
 sudo gem install cocoapods
 pod install
 cd ..
+npm install
 npm start # this will start React Native server
 ```
 
@@ -59,7 +60,7 @@ Install needed dependencies for React-Native
 
 https://facebook.github.io/react-native/docs/getting-started#installing-dependencies-1
 
-add iOS architectures to rustup
+add Android architectures to rustup
 
 `rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android`
 
