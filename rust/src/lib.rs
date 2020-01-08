@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use grin_wallet_libwallet::{slate_versions, InitTxArgs, NodeClient, WalletInst};
+use grin_wallet_libwallet::{
+    slate_versions, wallet_lock, InitTxArgs, NodeClient, WalletInst, WalletLCProvider,
+};
 use grin_wallet_util::grin_core::global::ChainTypes;
-use grin_wallet_util::grin_keychain::ExtKeychain;
+use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
 use grin_wallet_util::grin_util::file::get_first_line;
 use grin_wallet_util::grin_util::Mutex;
+use grin_wallet_util::grin_util::ZeroingString;
 
-use grin_wallet_config::WalletConfig;
+use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_impls::{
-    instantiate_wallet, Error, ErrorKind, FileWalletCommAdapter, HTTPNodeClient,
-    HTTPWalletCommAdapter, LMDBBackend, WalletSeed,
+    DefaultLCProvider, DefaultWalletImpl, Error, ErrorKind, HTTPNodeClient, HttpSlateSender,
+    PathToSlate, SlateGetter, SlateSender, WalletSeed,
 };
 
 use grin_wallet_api::{Foreign, Owner};
@@ -37,6 +40,7 @@ fn c_str_to_rust(s: *const c_char) -> String {
 }
 
 #[no_mangle]
+
 pub unsafe extern "C" fn cstr_free(s: *mut c_char) {
     if s.is_null() {
         return;
@@ -77,7 +81,7 @@ fn create_wallet_config(state: State) -> Result<WalletConfig, Error> {
         api_secret_path: Some(".api_secret".to_string()),
         node_api_secret_path: Some(state.wallet_dir.clone() + "/.api_secret"),
         check_node_api_http_addr: state.check_node_api_http_addr,
-        data_file_dir: state.wallet_dir + "/wallet_data",
+        data_file_dir: state.wallet_dir,
         tls_certificate_file: None,
         tls_certificate_key: None,
         dark_background_color_scheme: Some(true),
@@ -90,22 +94,67 @@ fn create_wallet_config(state: State) -> Result<WalletConfig, Error> {
 
 fn get_wallet(
     state: State,
-) -> Result<Arc<Mutex<dyn WalletInst<impl NodeClient, ExtKeychain>>>, Error> {
+) -> Result<
+    Arc<
+        Mutex<
+            Box<
+                dyn WalletInst<
+                    'static,
+                    DefaultLCProvider<'static, HTTPNodeClient, ExtKeychain>,
+                    HTTPNodeClient,
+                    ExtKeychain,
+                >,
+            >,
+        >,
+    >,
+    Error,
+> {
     let wallet_config = create_wallet_config(state.clone())?;
     let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
 
     let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
-    if let Some(account) = state.account {
-        return instantiate_wallet(
-            wallet_config.clone(),
-            node_client,
-            &state.password,
-            &account,
-        );
+    let wallet = inst_wallet::<
+        DefaultLCProvider<HTTPNodeClient, ExtKeychain>,
+        HTTPNodeClient,
+        ExtKeychain,
+    >(wallet_config.clone(), node_client)
+    .unwrap_or_else(|e| {
+        println!("{}", e);
+        std::process::exit(1);
+    });
+
+    {
+        let mut wallet_lock = wallet.lock();
+        let lc = wallet_lock.lc_provider().unwrap();
+        if let Ok(open_wallet) = lc.wallet_exists(None) {
+            if open_wallet {
+                lc.open_wallet(None, ZeroingString::from(state.password), false, false)?;
+                if let Some(account) = state.account {
+                    let wallet_inst = lc.wallet_inst()?;
+                    wallet_inst.set_parent_key_id_by_name(&account)?;
+                }
+            }
+        }
     }
-    Err(Error::from(ErrorKind::GenericError(
-        "Password or Account is not specified".to_owned(),
-    )))
+
+    return Ok(wallet);
+}
+
+fn inst_wallet<L, C, K>(
+    config: WalletConfig,
+    node_client: C,
+) -> Result<Arc<Mutex<Box<dyn WalletInst<'static, L, C, K>>>>, Error>
+where
+    DefaultWalletImpl<'static, C>: WalletInst<'static, L, C, K>,
+    L: WalletLCProvider<'static, C, K>,
+    C: NodeClient + 'static,
+    K: Keychain + 'static,
+{
+    let mut wallet = Box::new(DefaultWalletImpl::<'static, C>::new(node_client.clone()).unwrap())
+        as Box<dyn WalletInst<'static, L, C, K>>;
+    let lc = wallet.lc_provider().unwrap();
+    let _ = lc.set_top_level_directory(&config.data_file_dir);
+    Ok(Arc::new(Mutex::new(wallet)))
 }
 
 macro_rules! unwrap_to_c (
@@ -138,9 +187,13 @@ macro_rules! unwrap_to_c_with_e2e (
         }
         ));
 
-fn check_password(state_json: &str, password: &str) -> Result<String, Error> {
+fn check_password(state_json: &str, password: ZeroingString) -> Result<String, Error> {
     let wallet_config = create_wallet_config(State::from_str(state_json)?)?;
-    WalletSeed::from_file(&wallet_config, &password).map_err(|e| Error::from(e))?;
+    WalletSeed::from_file(
+        &format!("{}/{}", &wallet_config.data_file_dir, GRIN_WALLET_DIR),
+        password,
+    )
+    .map_err(|e| Error::from(e))?;
     Ok("".to_owned())
 }
 
@@ -151,7 +204,10 @@ pub unsafe extern "C" fn c_check_password(
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        check_password(&c_str_to_rust(state_str), &c_str_to_rust(password)),
+        check_password(
+            &c_str_to_rust(state_str),
+            ZeroingString::from(c_str_to_rust(password))
+        ),
         error
     )
 }
@@ -170,39 +226,17 @@ pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c
 }
 
 fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String, Error> {
-    let state = State::from_str(state_json)?;
-    let wallet_config = create_wallet_config(state.clone())?;
-    WalletSeed::recover_from_phrase(&wallet_config, &phrase, &password)?;
-    let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
-    let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
-    let _: LMDBBackend<HTTPNodeClient, ExtKeychain> =
-        LMDBBackend::new(wallet_config, &password, node_client)?;
+    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let mut wallet_lock = wallet.lock();
+    let lc = wallet_lock.lc_provider()?;
+    lc.create_wallet(
+        None,
+        Some(ZeroingString::from(phrase)),
+        32,
+        ZeroingString::from(password),
+        false,
+    )?;
     Ok("".to_owned())
-}
-
-fn wallet_recovery(state_json: &str, start_height: u64, limit: u64) -> Result<String, Error> {
-    let state = State::from_str(state_json)?;
-    let wallet_config = create_wallet_config(state.clone())?;
-    let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
-    let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
-    if let Some(account) = state.account {
-        let wallet = instantiate_wallet(wallet_config, node_client, &state.password, &account)?;
-        let api = Owner::new(wallet.clone());
-
-        let (highest_index, last_retrieved_index) = api
-            .restore_interactively(start_height, limit)
-            .map_err(|e| Error::from(e))?;
-        Ok(json!({
-            "lastRetrievedIndex": last_retrieved_index,
-            "highestIndex": highest_index,
-            "downloadedInBytes" : 0,
-        })
-        .to_string())
-    } else {
-        Err(Error::from(ErrorKind::GenericError(
-            "Account is not specified".to_owned(),
-        )))
-    }
 }
 
 #[no_mangle]
@@ -222,6 +256,28 @@ pub unsafe extern "C" fn c_wallet_init(
     )
 }
 
+fn wallet_recovery(state_json: &str, start_height: u64, limit: u64) -> Result<String, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state)?;
+    let api = Owner::new(wallet.clone());
+    api.scan(
+        None,
+        Some(start_height),
+        Some(start_height + limit - 1),
+        true,
+    )?;
+    wallet_lock!(wallet, w);
+    let last_scanned_block = w.last_scanned_block()?;
+    let tip = w.w2n_client().get_chain_tip()?;
+    let result = json!({
+        "lastRetrievedIndex": last_scanned_block.height,
+        "highestIndex": tip.0,
+        "downloadedInBytes" : 0,
+    })
+    .to_string();
+    Ok(result)
+}
+
 #[no_mangle]
 pub unsafe extern "C" fn c_wallet_recovery(
     state: *const c_char,
@@ -237,8 +293,10 @@ pub unsafe extern "C" fn c_wallet_recovery(
 
 fn wallet_phrase(state_json: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
-    let wallet_config = create_wallet_config(state.clone())?;
-    let seed = WalletSeed::from_file(&wallet_config, &state.password)?;
+    let seed = WalletSeed::from_file(
+        &format!("{}/{}", &state.wallet_dir, GRIN_WALLET_DIR),
+        ZeroingString::from(state.password),
+    )?;
     seed.to_mnemonic()
 }
 
@@ -254,7 +312,7 @@ fn tx_get(state_json: &str, refresh_from_node: bool, tx_slate_id: &str) -> Resul
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone());
     let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    let txs = api.retrieve_txs(refresh_from_node, None, Some(uuid))?;
+    let txs = api.retrieve_txs(None, refresh_from_node, None, Some(uuid))?;
     Ok(serde_json::to_string(&txs).unwrap())
 }
 
@@ -279,7 +337,7 @@ fn txs_get(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone());
 
-    match api.retrieve_txs(refresh_from_node, None, None) {
+    match api.retrieve_txs(None, refresh_from_node, None, None) {
         Ok(txs) => Ok(serde_json::to_string(&txs).unwrap()),
         Err(e) => Err(Error::from(e)),
     }
@@ -302,7 +360,7 @@ fn balance(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
     let wallet = get_wallet(state.clone())?;
     let api = Owner::new(wallet.clone());
     let (_validated, wallet_info) =
-        api.retrieve_summary_info(refresh_from_node, state.minimum_confirmations)?;
+        api.retrieve_summary_info(None, refresh_from_node, state.minimum_confirmations)?;
     Ok(serde_json::to_string(&wallet_info).unwrap())
 }
 
@@ -332,7 +390,7 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
     let mut result = vec![];
     let mut args = InitTxArgs {
         src_acct_name: None,
-        amount: amount,
+        amount,
         minimum_confirmations: state.minimum_confirmations,
         max_outputs: 500,
         num_change_outputs: 1,
@@ -341,8 +399,10 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
         target_slate_version: None,
         estimate_only: Some(true),
         send_args: None,
+        payment_proof_recipient_address: None,
+        ttl_blocks: None,
     };
-    if let Ok(smallest) = api.init_send_tx(args.clone()) {
+    if let Ok(smallest) = api.init_send_tx(None, args.clone()) {
         result.push(Strategy {
             selection_strategy_is_use_all: false,
             total: smallest.amount,
@@ -350,7 +410,7 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
         })
     }
     args.selection_strategy_is_use_all = true;
-    let all = api.init_send_tx(args).map_err(|e| Error::from(e))?;
+    let all = api.init_send_tx(None, args).map_err(|e| Error::from(e))?;
     result.push(Strategy {
         selection_strategy_is_use_all: true,
         total: all.amount,
@@ -379,18 +439,20 @@ fn tx_create(
     let api = Owner::new(wallet.clone());
     let args = InitTxArgs {
         src_acct_name: None,
-        amount: amount,
+        amount,
         minimum_confirmations: state.minimum_confirmations,
         max_outputs: 500,
         num_change_outputs: 1,
-        selection_strategy_is_use_all: selection_strategy_is_use_all,
+        selection_strategy_is_use_all,
         message: Some(message.to_owned()),
         target_slate_version: None,
         estimate_only: Some(false),
         send_args: None,
+        payment_proof_recipient_address: None,
+        ttl_blocks: None,
     };
-    let slate = api.init_send_tx(args).unwrap();
-    api.tx_lock_outputs(&slate, 0)?;
+    let slate = api.init_send_tx(None, args).unwrap();
+    api.tx_lock_outputs(None, &slate, 0)?;
     Ok(
         serde_json::to_string(&slate_versions::VersionedSlate::into_version(
             slate.clone(),
@@ -422,7 +484,7 @@ pub unsafe extern "C" fn c_tx_create(
 fn tx_cancel(state_json: &str, id: u32) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone());
-    api.cancel_tx(Some(id), None)?;
+    api.cancel_tx(None, Some(id), None)?;
     Ok("".to_owned())
 }
 
@@ -438,9 +500,8 @@ pub unsafe extern "C" fn c_tx_cancel(
 fn tx_receive(state_json: &str, slate_path: &str, message: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Foreign::new(wallet.clone(), None);
-    let adapter = FileWalletCommAdapter::new();
-    let mut slate = adapter.receive_tx_async(&slate_path)?;
+    let api = Foreign::new(wallet.clone(), None, None);
+    let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
     api.verify_slate_messages(&slate)?;
     if let Some(account) = state.account {
         slate = api.receive_tx(&slate, Some(&account), Some(message.to_owned()))?;
@@ -472,10 +533,9 @@ pub unsafe extern "C" fn c_tx_receive(
 fn tx_finalize(state_json: &str, slate_path: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone());
-    let adapter = FileWalletCommAdapter::new();
-    let mut slate = adapter.receive_tx_async(&slate_path)?;
-    api.verify_slate_messages(&slate)?;
-    slate = api.finalize_tx(&slate)?;
+    let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
+    api.verify_slate_messages(None, &slate)?;
+    slate = api.finalize_tx(None, &slate)?;
     Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
@@ -501,26 +561,30 @@ fn tx_send_https(
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
     let api = Owner::new(wallet.clone());
-    let adapter = HTTPWalletCommAdapter::new();
     let args = InitTxArgs {
         src_acct_name: None,
-        amount: amount,
+        amount,
         minimum_confirmations: state.minimum_confirmations,
         max_outputs: 500,
         num_change_outputs: 1,
-        selection_strategy_is_use_all: selection_strategy_is_use_all,
+        selection_strategy_is_use_all,
         message: Some(message.to_owned()),
         target_slate_version: None,
         estimate_only: Some(false),
         send_args: None,
+        payment_proof_recipient_address: None,
+        ttl_blocks: None,
     };
-    let slate = api.init_send_tx(args)?;
-    api.tx_lock_outputs(&slate, 0)?;
-    match adapter.send_tx_sync(url, &slate) {
+    let slate = api.init_send_tx(None, args)?;
+    let sender = Box::new(
+        HttpSlateSender::new(url)
+            .map_err(|_| ErrorKind::GenericError(format!("Invalid destination URL: {}", url)))?,
+    );
+    api.tx_lock_outputs(None, &slate, 0)?;
+    match sender.send_tx(&slate) {
         Ok(mut slate) => {
-            api.verify_slate_messages(&slate)?;
-            api.finalize_tx(&mut slate)?;
-            // Ok(slate.serialize_to_version(Some(1))?)
+            api.verify_slate_messages(None, &slate)?;
+            api.finalize_tx(None, &mut slate)?;
             Ok(
                 serde_json::to_string(&slate_versions::VersionedSlate::into_version(
                     slate.clone(),
@@ -530,7 +594,7 @@ fn tx_send_https(
             )
         }
         Err(e) => {
-            api.cancel_tx(None, Some(slate.id))?;
+            api.cancel_tx(None, None, Some(slate.id))?;
             Err(Error::from(e))
         }
     }
@@ -561,17 +625,17 @@ fn tx_post(state_json: &str, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone());
     let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    let (_, txs) = api.retrieve_txs(true, None, Some(uuid))?;
+    let (_, txs) = api.retrieve_txs(None, true, None, Some(uuid))?;
     if txs[0].confirmed {
         return Err(Error::from(ErrorKind::GenericError(format!(
-            "Transaction with id {} is confirmed. Not posting.",
+            "Transaction with id {} is already confirmed. Not posting.",
             tx_slate_id
         ))));
     }
-    let stored_tx = api.get_stored_tx(&txs[0])?;
+    let stored_tx = api.get_stored_tx(None, &txs[0])?;
     match stored_tx {
         Some(stored_tx) => {
-            api.post_tx(&stored_tx, true)?;
+            api.post_tx(None, &stored_tx, true)?;
             Ok("".to_owned())
         }
         None => Err(Error::from(ErrorKind::GenericError(format!(
@@ -596,7 +660,7 @@ pub unsafe extern "C" fn c_tx_post(
 fn wallet_repair(state_json: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone());
-    api.check_repair(true)?;
+    api.scan(None, None, None, true)?;
     Ok("".to_owned())
 }
 
@@ -617,18 +681,18 @@ pub mod android {
     use super::*;
 
     macro_rules! unwrap_to_jni (
-    ($env:expr, $func:expr) => (
-        match $func {
-            Ok(res) => {
-                $env.new_string(res).unwrap().into_inner()
-            }
-            Err(e) => {
-                let result = $env.new_string("").unwrap().into_inner();
-        		$env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
-                result
-            }
-        }
-        ));
+($env:expr, $func:expr) => (
+match $func {
+Ok(res) => {
+$env.new_string(res).unwrap().into_inner()
+}
+Err(e) => {
+let result = $env.new_string("").unwrap().into_inner();
+$env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
+result
+}
+}
+));
 
     #[no_mangle]
     pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_balance(
@@ -856,5 +920,4 @@ pub mod android {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(env, wallet_repair(&state_json))
     }
-
 }

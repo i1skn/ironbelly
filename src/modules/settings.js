@@ -52,7 +52,7 @@ export type State = {
 export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = 'H2vnwhAjhhTAVEYgNRen'
 export const MAINNET_DEFAULT_NODE = 'http://grinnode.cycle42.com:3413'
-export const MAINNET_DEFAULT_NODE_V2 = 'http://grinnode.cycle42.com:23413'
+export const MAINNET_DEFAULT_NODE_V2 = 'http://127.0.0.1:3413'
 
 export const FLOONET_CHAIN = 'floonet'
 export const FLOONET_API_SECRET = 'ac9rOHFKASTRzZ4SNJun'

@@ -25,19 +25,20 @@ serde_derive = "1"
 # Does not exist yet
 
 # For bleeding edge
-grin_wallet_api = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-grin_wallet_impls = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-grin_wallet_libwallet = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-grin_wallet_config = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-grin_wallet_util = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+# grin_wallet_api = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+# grin_wallet_impls = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+# grin_wallet_libwallet = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+# grin_wallet_config = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+# grin_wallet_util = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
 
 
 # For local testing
-# grin_wallet_api = { path = "../../../mimblewimble/grin-wallet/api", version = "2.0.1-beta.1" }
-# grin_wallet_impls = { path = "../../../mimblewimble/grin-wallet/impls", version = "2.0.1-beta.1" }
-# grin_wallet_libwallet = { path = "../../../mimblewimble/grin-wallet/libwallet", version = "2.0.1-beta.1" }
-# grin_wallet_config = { path = "../../../mimblewimble/grin-wallet/config", version = "2.0.1-beta.1" }
-# grin_wallet_util = { path = "../../../mimblewimble/grin-wallet/util", version = "2.0.1-beta.1" }
+grin_wallet_api = { path = "../../../cyclefortytwo/grin-wallet/api", version = "3.1.0-beta.1" }
+grin_wallet_impls = { path = "../../../cyclefortytwo/grin-wallet/impls", version = "3.1.0-beta.1" }
+grin_wallet_libwallet = { path = "../../../cyclefortytwo/grin-wallet/libwallet", version = "3.1.0-beta.1" }
+grin_wallet_config = { path = "../../../cyclefortytwo/grin-wallet/config", version = "3.1.0-beta.1" }
+grin_wallet_util = { path = "../../../cyclefortytwo/grin-wallet/util", version = "3.1.0-beta.1" }
+grin_wallet_controller = { path = "../../../cyclefortytwo/grin-wallet/controller", version = "3.1.0-beta.1" }
 
 
 
