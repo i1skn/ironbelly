@@ -75,9 +75,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void walletRecovery(String state, double startIndex, double limit, Promise promise) {
+  public void walletScan(String state, double startIndex, double limit, Promise promise) {
     try {
-      promise.resolve(walletRecovery(state, (long) startIndex, (long) limit));
+      promise.resolve(walletScan(state, (long) startIndex, (long) limit));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -166,15 +166,6 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
   }
 
-  @ReactMethod
-  public void walletRepair(String state, Promise promise) {
-    try {
-      promise.resolve(walletRepair(state));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
-  }
-
   private static native String balance(String state, Boolean refreshFromNode);
 
   private static native String txGet(String state, Boolean refreshFromNode, String txSlateId);
@@ -187,7 +178,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
   private static native String checkPassword(String state, String password);
 
-  private static native String walletRecovery(String state, long startIndex, long limit);
+  private static native String walletScan(String state, long startIndex, long limit);
 
   private static native String txStrategies(String state, long amount);
 
@@ -206,6 +197,4 @@ public class GrinBridge extends ReactContextBaseJavaModule {
       String state, long amount, Boolean selectionStrategyIsUseAll, String message, String url);
 
   private static native String txPost(String state, String txSlateId);
-
-  private static native String walletRepair(String state);
 }

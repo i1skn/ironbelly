@@ -23,13 +23,14 @@ import { Spacer, LoaderView } from 'common'
 import colors from 'common/colors'
 import { type State as ReduxState, type Navigation } from 'common/types'
 import { Text, Button } from 'components/CustomFont'
-import { RECOVERY_LIMIT, type WalletInitState } from 'modules/wallet'
+import { RECOVERY_LIMIT, type WalletScanState } from 'modules/wallet'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import KeepAwake from 'react-native-keep-awake'
 
-type Props = WalletInitState & {
+type Props = WalletScanState & {
   navigation: Navigation,
-  recoverWallet: (startIndex: number) => void,
+  scanRequest: (startIndex: number) => void,
+  scanReset: () => void,
 }
 type State = {}
 
@@ -44,7 +45,7 @@ const Wrapper = styled(LoaderView)`
   padding: 16px;
 `
 
-class WalletPrepare extends Component<Props, State> {
+class WalletScan extends Component<Props, State> {
   static navigationOptions = {
     header: null,
   }
@@ -52,9 +53,9 @@ class WalletPrepare extends Component<Props, State> {
   state = {}
 
   componentDidMount() {
-    const { recoverWallet, created, lastRetrievedIndex, inProgress } = this.props
-    if (!created && !inProgress && lastRetrievedIndex) {
-      recoverWallet(lastRetrievedIndex + 1)
+    const { scanRequest, lastRetrievedIndex, inProgress } = this.props
+    if (inProgress) {
+      scanRequest(lastRetrievedIndex + 1)
     }
   }
 
@@ -62,20 +63,34 @@ class WalletPrepare extends Component<Props, State> {
     if (this.props.error.message && !prevProps.error.message) {
       this.props.navigation.goBack()
     }
-    const { recoverWallet, created, lastRetrievedIndex, inProgress } = this.props
-    if (!created && !inProgress && lastRetrievedIndex) {
-      recoverWallet(lastRetrievedIndex + 1)
+    const { scanRequest, lastRetrievedIndex, inProgress } = this.props
+    if (inProgress && lastRetrievedIndex !== prevProps.lastRetrievedIndex) {
+      scanRequest(lastRetrievedIndex + 1)
     }
   }
 
   render() {
-    const { navigation, created, isNew, progress } = this.props
+    const { navigation, isDone, inProgress, progress, scanReset } = this.props
     return (
       <Wrapper>
         <KeepAwake />
-        {(!created && (
+        {(isDone && (
+          <>
+            <StatusText>Your wallet is ready to use!</StatusText>
+            <Spacer />
+            <Button
+              testID="ShowMeButton"
+              title="Show me"
+              disabled={false}
+              onPress={() => {
+                navigation.navigate('Main')
+                scanReset()
+              }}
+            />
+          </>
+        )) || (
           <Fragment>
-            {(!isNew && (
+            {(inProgress && (
               <Fragment>
                 <AnimatedCircularProgress
                   style={{ alignSelf: 'center' }}
@@ -91,22 +106,9 @@ class WalletPrepare extends Component<Props, State> {
                   {fill => <ProgressText>{`${progress}%`}</ProgressText>}
                 </AnimatedCircularProgress>
                 <Spacer />
-                <StatusText style={{ textAlign: 'center' }}>Recovery in progress</StatusText>
+                <StatusText style={{ textAlign: 'center' }}>Syncing...</StatusText>
               </Fragment>
             )) || <ActivityIndicator size="large" color={colors.primary} />}
-          </Fragment>
-        )) || (
-          <Fragment>
-            <StatusText>Your wallet was succesfully created!</StatusText>
-            <Spacer />
-            <Button
-              testID="ShowMeButton"
-              title="Show me"
-              disabled={false}
-              onPress={() => {
-                navigation.navigate('Main')
-              }}
-            />
           </Fragment>
         )}
       </Wrapper>
@@ -115,16 +117,19 @@ class WalletPrepare extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: ReduxState) => ({
-  ...state.wallet.walletInit,
+  ...state.wallet.walletScan,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  recoverWallet: startIndex => {
-    dispatch({ type: 'WALLET_RECOVERY_REQUEST', startIndex, limit: RECOVERY_LIMIT })
+  scanRequest: startIndex => {
+    dispatch({ type: 'WALLET_SCAN_REQUEST', startIndex, limit: RECOVERY_LIMIT })
+  },
+  scanReset: () => {
+    dispatch({ type: 'WALLET_SCAN_RESET' })
   },
 })
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(WalletPrepare)
+)(WalletScan)

@@ -20,14 +20,13 @@ import { persistReducer } from 'redux-persist'
 import {
   type Action,
   type walletInitRequestAction,
-  type walletRecoveryRequestAction,
   type seedNewRequestAction,
   type walletPhraseRequestAction,
   type invalidPasswordAction,
   type walletDestroyRequestAction,
   type walletDestroySuccessAction,
   type walletMigrateToMainnetRequestAction,
-  type walletRepairRequestAction,
+  type walletScanRequestAction,
   type checkPasswordAction,
   type checkPasswordFromBiometryAction,
   type Store,
@@ -43,16 +42,9 @@ const { GrinBridge } = NativeModules
 export const RECOVERY_LIMIT = 1000
 
 export type WalletInitState = {|
-  inProgress: boolean,
-  progress: number,
   mnemonic: string,
   password: string,
   confirmPassword: string,
-  lastRetrievedIndex: number,
-  highestIndex: number,
-  downloadedInBytes: number,
-  created: boolean,
-  started: boolean,
   isNew: boolean,
   error: {
     message: string,
@@ -60,10 +52,13 @@ export type WalletInitState = {|
   },
 |}
 
-export type WalletRepairState = {|
+export type WalletScanState = {|
   inProgress: boolean,
   progress: number,
-  repaired: boolean,
+  isDone: boolean,
+  lastRetrievedIndex: number,
+  highestIndex: number,
+  downloadedInBytes: number,
   error: {
     message: string,
     code?: number,
@@ -88,32 +83,28 @@ export type PasswordState = {
 export type State = {
   walletInit: WalletInitState,
   walletPhrase: WalletPhraseState,
-  walletRepair: WalletRepairState,
+  walletScan: WalletScanState,
   password: PasswordState,
 }
 
 const initialState: State = {
   walletInit: {
-    inProgress: false,
-    progress: 0,
     password: '',
     confirmPassword: '',
     mnemonic: '',
-    lastRetrievedIndex: 0,
-    highestIndex: 0,
-    downloadedInBytes: 0,
-    started: false,
-    created: false,
     isNew: true,
     error: {
       message: '',
       code: 0,
     },
   },
-  walletRepair: {
+  walletScan: {
     inProgress: false,
     progress: 0,
-    repaired: false,
+    isDone: false,
+    lastRetrievedIndex: 0,
+    highestIndex: 0,
+    downloadedInBytes: 0,
     error: {
       message: '',
       code: 0,
@@ -142,16 +133,9 @@ const walletInit = function(
     case 'WALLET_CLEAR': {
       return { ...initialState.walletInit }
     }
-    case 'WALLET_DESTROY_SUCCESS': {
-      return { ...initialState.walletInit }
-    }
     case 'WALLET_INIT_REQUEST':
       return {
         ...state,
-        lastRetrievedIndex: 0,
-        highestIndex: 0,
-        downloadedInBytes: 0,
-        inProgress: true,
         mnemonic: '',
         error: {
           message: '',
@@ -178,110 +162,70 @@ const walletInit = function(
         ...state,
         mnemonic: action.mnemonic,
       }
-    case 'WALLET_INIT_SUCCESS':
-      return {
-        ...state,
-        inProgress: false,
-        created: state.isNew,
-      }
     case 'WALLET_INIT_FAILURE':
       return {
         ...state,
-        inProgress: false,
         error: {
           message: action.message,
           code: 0,
         },
       }
-    case 'WALLET_RECOVERY_REQUEST':
-      return {
-        ...state,
-        inProgress: true,
-        started: !!action.startIndex ? true : state.started,
-        error: {
-          message: '',
-          code: 0,
-        },
-      }
-    case 'WALLET_RECOVERY_SUCCESS':
-      const created = action.lastRetrievedIndex === action.highestIndex
-      return {
-        ...state,
-        progress:
-          action.highestIndex &&
-          Math.floor((action.lastRetrievedIndex * 100) / action.highestIndex),
-        inProgress: false,
-        created,
-        started: !created,
-        lastRetrievedIndex: action.lastRetrievedIndex,
-        highestIndex: action.highestIndex,
-        downloadedInBytes: action.downloadedInBytes,
-      }
-    case 'WALLET_RECOVERY_FAILURE':
-      return {
-        ...state,
-        inProgress: false,
-        mnemonic: '',
-        error: {
-          message: action.message,
-        },
-      }
-    case 'WALLET_RECOVERY_SET_PASSWORD':
-      return {
-        ...state,
-        password: action.password,
-      }
-    case 'WALLET_RECOVERY_SET_MNEMONIC':
-      return {
-        ...state,
-        mnemonic: action.mnemonic,
-      }
-
     default:
       return state
   }
 }
 
-const walletRepair = function(
-  state: WalletRepairState = initialState.walletRepair,
+const walletScan = function(
+  state: WalletScanState = initialState.walletScan,
   action: Action
-): WalletRepairState {
+): WalletScanState {
   switch (action.type) {
-    case 'WALLET_REPAIR_REQUEST':
+    case 'WALLET_SCAN_DONE':
+      return {
+        ...state,
+        progress: 0,
+        inProgress: false,
+        isDone: true,
+        lastRetrievedIndex: 0,
+        highestIndex: 0,
+        downloadedInBytes: 0,
+      }
+    case 'WALLET_SCAN_RESET':
+      return {
+        ...state,
+        progress: 0,
+        inProgress: false,
+        isDone: false,
+        lastRetrievedIndex: 0,
+        highestIndex: 0,
+        downloadedInBytes: 0,
+      }
+    case 'WALLET_SCAN_REQUEST':
       return {
         ...state,
         inProgress: true,
-        progress: 0,
-        repaired: false,
         error: {
           message: '',
           code: 0,
         },
       }
-    case 'WALLET_REPAIR_SUCCESS':
+    case 'WALLET_SCAN_SUCCESS':
       return {
         ...state,
-        inProgress: false,
-        repaired: true,
+        progress:
+          action.highestIndex &&
+          Math.floor((action.lastRetrievedIndex * 100) / action.highestIndex),
+        lastRetrievedIndex: action.lastRetrievedIndex,
+        highestIndex: action.highestIndex,
+        downloadedInBytes: action.downloadedInBytes,
       }
-    case 'WALLET_REPAIR_FAILURE':
+    case 'WALLET_SCAN_FAILURE':
       return {
         ...state,
         inProgress: false,
+        isDone: true,
         error: {
           message: action.message,
-          code: 0,
-        },
-      }
-    case 'WALLET_REPAIR_RESET':
-      return {
-        ...state,
-        inProgress: true,
-        progress: 0,
-        repaired: false,
-        error: {
-          message: '',
-          code: 0,
         },
       }
     default:
@@ -360,25 +304,32 @@ const password = function(
   }
 }
 
-const walletInitPersistConfig = {
-  key: 'walletInit',
-  storage: AsyncStorage,
-  whitelist: [
-    'isNew',
-    'created',
-    'started',
-    'progress',
-    'lastRetrievedIndex',
-    'highestIndex',
-    'downloadedInBytes',
-  ],
-}
-
 export const reducer = combineReducers({
   password,
-  walletInit: persistReducer(walletInitPersistConfig, walletInit),
+  walletInit: persistReducer(
+    {
+      key: 'walletInit',
+      storage: AsyncStorage,
+      whitelist: ['isNew'],
+    },
+    walletInit
+  ),
+  walletScan: persistReducer(
+    {
+      key: 'walletScan',
+      storage: AsyncStorage,
+      whitelist: [
+        'inProgress',
+        'isDone',
+        'progress',
+        'lastRetrievedIndex',
+        'highestIndex',
+        'downloadedInBytes',
+      ],
+    },
+    walletScan
+  ),
   walletPhrase,
-  walletRepair,
 })
 
 export const sideEffects = {
@@ -399,8 +350,10 @@ export const sideEffects = {
       .then(() => {
         store.dispatch({ type: 'WALLET_INIT_SUCCESS' })
         store.dispatch({ type: 'SET_PASSWORD', password })
-        if (!isNew) {
-          store.dispatch({ type: 'WALLET_RECOVERY_REQUEST', startIndex: 0, limit: RECOVERY_LIMIT })
+        if (isNew) {
+          store.dispatch({ type: 'WALLET_SCAN_DONE' })
+        } else {
+          store.dispatch({ type: 'WALLET_SCAN_REQUEST', startIndex: 0, limit: RECOVERY_LIMIT })
         }
       })
       .catch(error => {
@@ -408,21 +361,27 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_RECOVERY_REQUEST']: async (action: walletRecoveryRequestAction, store: Store) => {
+  ['WALLET_SCAN_REQUEST']: async (action: walletScanRequestAction, store: Store) => {
     const { startIndex, limit } = action
     await checkWalletDataDirectory()
-    return GrinBridge.walletRecovery(getStateForRust(store.getState()), startIndex, limit)
+    return GrinBridge.walletScan(getStateForRust(store.getState()), startIndex, limit)
       .then(JSON.parse)
       .then(({ lastRetrievedIndex, highestIndex, downloadedInBytes }) => {
-        store.dispatch({
-          type: 'WALLET_RECOVERY_SUCCESS',
-          lastRetrievedIndex,
-          highestIndex,
-          downloadedInBytes,
-        })
+        if (lastRetrievedIndex === highestIndex) {
+          store.dispatch({
+            type: 'WALLET_SCAN_DONE',
+          })
+        } else {
+          store.dispatch({
+            type: 'WALLET_SCAN_SUCCESS',
+            lastRetrievedIndex,
+            highestIndex,
+            downloadedInBytes,
+          })
+        }
       })
       .catch(error => {
-        store.dispatch({ type: 'WALLET_RECOVERY_FAILURE', message: error.message })
+        store.dispatch({ type: 'WALLET_SCAN_FAILURE', message: error.message })
         log(error, true)
       })
   },
@@ -478,6 +437,7 @@ export const sideEffects = {
     }
   },
   ['WALLET_DESTROY_SUCCESS']: (action: walletDestroySuccessAction, store: Store) => {
+    store.dispatch({ type: 'WALLET_CLEAR' })
     store.dispatch(NavigationActions.navigate({ routeName: 'Initial' }))
   },
   ['WALLET_MIGRATE_TO_MAINNET_REQUEST']: (
@@ -486,15 +446,5 @@ export const sideEffects = {
   ) => {
     store.dispatch({ type: 'SWITCH_TO_MAINNET' })
     store.dispatch({ type: 'WALLET_DESTROY_REQUEST' })
-  },
-  ['WALLET_REPAIR_REQUEST']: async (action: walletRepairRequestAction, store: Store) => {
-    return GrinBridge.walletRepair(getStateForRust(store.getState()))
-      .then(() => {
-        store.dispatch({ type: 'WALLET_REPAIR_SUCCESS' })
-      })
-      .catch(error => {
-        store.dispatch({ type: 'WALLET_REPAIR_FAILURE', message: error.message })
-        log(error, true)
-      })
   },
 }

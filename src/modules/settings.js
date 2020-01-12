@@ -2,9 +2,7 @@
 //
 // Copyright 2019 Ivan Sorokin.
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at
 //
 //     http://www.apache.org/licenses/LICENSE-2.0
 //
@@ -52,7 +50,7 @@ export type State = {
 export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = 'H2vnwhAjhhTAVEYgNRen'
 export const MAINNET_DEFAULT_NODE = 'http://grinnode.cycle42.com:3413'
-export const MAINNET_DEFAULT_NODE_V2 = 'http://127.0.0.1:3413'
+export const MAINNET_DEFAULT_NODE_V2 = 'http://grinnode.cycle42.com:23413'
 
 export const FLOONET_CHAIN = 'floonet'
 export const FLOONET_API_SECRET = 'ac9rOHFKASTRzZ4SNJun'
@@ -60,7 +58,7 @@ export const FLOONET_DEFAULT_NODE = 'http://floonode.cycle42.com:13413'
 
 export const initialState: State = {
   currencyObject: currencyList[8], // USD
-  checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE_V2,
+  checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
   chain: MAINNET_CHAIN,
   minimumConfirmations: 10,
   biometryStatus: 'unknown',
@@ -78,7 +76,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
       return {
         ...state,
         chain: MAINNET_CHAIN,
-        checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE_V2,
+        checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
         minimumConfirmations: 10,
       }
     case 'SWITCH_TO_FLOONET':

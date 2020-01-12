@@ -49,11 +49,6 @@ const char *c_wallet_init(const char *state,
 
 const char *c_wallet_phrase(const char *state_json, uint8_t *error);
 
-const char *c_wallet_recovery(const char *state,
-                              uint64_t start_height,
-                              uint64_t limit,
-                              uint8_t *error);
-
-const char *c_wallet_repair(const char *state, uint8_t *error);
+const char *c_wallet_scan(const char *state, uint64_t start_height, uint64_t limit, uint8_t *error);
 
 void cstr_free(char *s);

@@ -28,8 +28,7 @@ import ShowPaperKeyScreen from 'screens/PaperKey/Show'
 import VerifyPaperKeyScreen from 'screens/PaperKey/Verify'
 import PasswordScreen from 'screens/Password'
 import NewPasswordScreen from 'screens/NewPassword'
-import WalletPrepareScreen from 'screens/WalletPrepare'
-import WalletRepairScreen from 'screens/WalletRepair'
+import WalletScanScreen from 'screens/WalletScan'
 import SettingsGrinNodeScreen from 'screens/Settings/GrinNode'
 import SettingsCurrencyScreen from 'screens/Settings/Currency'
 import LegalDisclaimerScreen from 'screens/LegalDisclaimer'
@@ -55,7 +54,6 @@ const MainStack = createStackNavigator(
     Settings: SettingsScreen,
     SettingsGrinNode: SettingsGrinNodeScreen,
     SettingsCurrency: SettingsCurrencyScreen,
-    WalletRepair: WalletRepairScreen,
     Overview: {
       screen: OverviewScreen,
       params: {},
@@ -113,7 +111,7 @@ const WalletCreateStack = createStackNavigator(
     NewPassword: NewPasswordScreen,
     ShowPaperKey: ShowPaperKeyScreen,
     VerifyPaperKey: VerifyPaperKeyScreen,
-    WalletPrepare: WalletPrepareScreen,
+    WalletScan: WalletScanScreen,
   },
   {
     initialRouteName: 'Landing',

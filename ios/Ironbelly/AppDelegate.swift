@@ -23,7 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         #if DEBUG
-        let jsCodeLocation = URL(string: "http://localhost:8081/index.bundle?platform=ios")
+        let jsCodeLocation = URL(string: "http://192.168.1.106:8081/index.bundle?platform=ios")
         #else
         let jsCodeLocation: URL! =
             RCTBundleURLProvider.sharedSettings().jsBundleURL(

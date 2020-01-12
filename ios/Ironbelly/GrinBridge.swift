@@ -106,19 +106,11 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-
-    @objc func walletRepair(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        var error: UInt8 = 0
-        let cResult = c_wallet_repair(state, &error)
-        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
-    }
-
     @objc func checkPassword(_ state:String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_check_password(state, password, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
-
 
 
     @objc func walletInit(_ state:String, phrase: String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
@@ -127,9 +119,9 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func walletRecovery(_ state:String, startIndex: UInt64, limit: UInt64, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func walletScan(_ state:String, startIndex: UInt64, limit: UInt64, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_wallet_recovery(state , startIndex, limit, &error)
+        let cResult = c_wallet_scan(state , startIndex, limit, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 }

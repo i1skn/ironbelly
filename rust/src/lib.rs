@@ -117,15 +117,15 @@ fn get_wallet(
         DefaultLCProvider<HTTPNodeClient, ExtKeychain>,
         HTTPNodeClient,
         ExtKeychain,
-    >(wallet_config.clone(), node_client)
-    .unwrap_or_else(|e| {
-        println!("{}", e);
-        std::process::exit(1);
-    });
+    >(wallet_config.clone(), node_client)?;
+    // .unwrap_or_else(|e| {
+    // println!("{}", e);
+    // std::process::exit(1);
+    // });
 
     {
         let mut wallet_lock = wallet.lock();
-        let lc = wallet_lock.lc_provider().unwrap();
+        let lc = wallet_lock.lc_provider()?;
         if let Ok(open_wallet) = lc.wallet_exists(None) {
             if open_wallet {
                 lc.open_wallet(None, ZeroingString::from(state.password), false, false)?;
@@ -150,10 +150,10 @@ where
     C: NodeClient + 'static,
     K: Keychain + 'static,
 {
-    let mut wallet = Box::new(DefaultWalletImpl::<'static, C>::new(node_client.clone()).unwrap())
+    let mut wallet = Box::new(DefaultWalletImpl::<'static, C>::new(node_client.clone())?)
         as Box<dyn WalletInst<'static, L, C, K>>;
-    let lc = wallet.lc_provider().unwrap();
-    let _ = lc.set_top_level_directory(&config.data_file_dir);
+    let lc = wallet.lc_provider()?;
+    lc.set_top_level_directory(&config.data_file_dir)?;
     Ok(Arc::new(Mutex::new(wallet)))
 }
 
@@ -256,7 +256,7 @@ pub unsafe extern "C" fn c_wallet_init(
     )
 }
 
-fn wallet_recovery(state_json: &str, start_height: u64, limit: u64) -> Result<String, Error> {
+fn wallet_scan(state_json: &str, start_height: u64, limit: u64) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state)?;
     let api = Owner::new(wallet.clone());
@@ -270,23 +270,29 @@ fn wallet_recovery(state_json: &str, start_height: u64, limit: u64) -> Result<St
     let last_scanned_block = w.last_scanned_block()?;
     let tip = w.w2n_client().get_chain_tip()?;
     let result = json!({
-        "lastRetrievedIndex": last_scanned_block.height,
-        "highestIndex": tip.0,
-        "downloadedInBytes" : 0,
+    "lastRetrievedIndex": last_scanned_block.height,
+    "highestIndex": tip.0,
+    "downloadedInBytes" : 0,
     })
     .to_string();
+    // let result = json!({
+    // "lastRetrievedIndex": 1,
+    // "highestIndex": 1,
+    // "downloadedInBytes" : 0,
+    // })
+    // .to_string();
     Ok(result)
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn c_wallet_recovery(
+pub unsafe extern "C" fn c_wallet_scan(
     state: *const c_char,
     start_height: u64,
     limit: u64,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        wallet_recovery(&c_str_to_rust(state), start_height, limit,),
+        wallet_scan(&c_str_to_rust(state), start_height, limit),
         error
     )
 }
@@ -358,10 +364,11 @@ pub unsafe extern "C" fn c_txs_get(
 fn balance(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone());
-    let (_validated, wallet_info) =
-        api.retrieve_summary_info(None, refresh_from_node, state.minimum_confirmations)?;
-    Ok(serde_json::to_string(&wallet_info).unwrap())
+    // let api = Owner::new(wallet.clone());
+    // let (_validated, wallet_info) =
+    // api.retrieve_summary_info(None, refresh_from_node, state.minimum_confirmations)?;
+    // Ok(serde_json::to_string(&wallet_info).unwrap())
+    Ok("her".to_owned())
 }
 
 #[no_mangle]
@@ -657,18 +664,6 @@ pub unsafe extern "C" fn c_tx_post(
     )
 }
 
-fn wallet_repair(state_json: &str) -> Result<String, Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone());
-    api.scan(None, None, None, true)?;
-    Ok("".to_owned())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_wallet_repair(state: *const c_char, error: *mut u8) -> *const c_char {
-    unwrap_to_c!(wallet_repair(&c_str_to_rust(state),), error)
-}
-
 /// Expose the JNI interface for android below
 #[cfg(target_os = "android")]
 #[allow(non_snake_case)]
@@ -767,11 +762,14 @@ result
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         let password: String = env.get_string(password).expect("Invalid password").into();
-        unwrap_to_jni!(env, check_password(&state_json, &password))
+        unwrap_to_jni!(
+            env,
+            check_password(&state_json, ZeroingString::from(password))
+        )
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletRecovery(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletScan(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
@@ -781,7 +779,7 @@ result
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(
             env,
-            wallet_recovery(&state_json, start_height as u64, limit as u64)
+            wallet_scan(&state_json, start_height as u64, limit as u64)
         )
     }
     // -----
@@ -909,15 +907,5 @@ result
             .expect("Invalid tx_slate_id")
             .into();
         unwrap_to_jni!(env, tx_post(&state_json, &tx_slate_id))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletRepair(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, wallet_repair(&state_json))
     }
 }

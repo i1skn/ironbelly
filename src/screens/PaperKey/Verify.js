@@ -25,9 +25,12 @@ import NetInfo from '@react-native-community/netinfo'
 import { UnderHeaderBlock, Spacer } from 'common'
 import { Text, Button } from 'components/CustomFont'
 import { type State as ReduxState, type Navigation } from 'common/types'
-import { type WalletInitState } from 'modules/wallet'
+import { type WalletScanState, type WalletInitState } from 'modules/wallet'
 
-type Props = WalletInitState & {
+type Props = WalletScanState & {
+  isNew: boolean,
+  password: string,
+  mnemonic: string,
   navigation: Navigation,
   createWallet: (password: string, mnemonic: string, isNew: boolean) => void,
 }
@@ -86,7 +89,7 @@ class Verify extends Component<Props, State> {
 
   componentDidUpdate(prevProps) {
     if (this.props.inProgress && !prevProps.inProgress) {
-      this.props.navigation.navigate('WalletPrepare')
+      this.props.navigation.navigate('WalletScan')
     }
   }
 
@@ -219,7 +222,10 @@ class Verify extends Component<Props, State> {
 }
 
 const mapStateToProps = (state: ReduxState) => ({
-  ...state.wallet.walletInit,
+  ...state.wallet.walletScan,
+  isNew: state.wallet.walletInit.isNew,
+  password: state.wallet.walletInit.password,
+  mnemonic: state.wallet.walletInit.mnemonic,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

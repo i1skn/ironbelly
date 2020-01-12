@@ -31,7 +31,7 @@ type Props = {
   navigation: Navigation,
   switchToMainnet: () => void,
   checkBiometry: () => void,
-  recoveryStarted: boolean,
+  scanInProgress: boolean,
 }
 type State = {}
 
@@ -43,24 +43,13 @@ class Initial extends Component<Props, State> {
   state = {}
 
   componentDidMount() {
-    const { checkBiometry, navigation, settings, recoveryStarted } = this.props
+    const { checkBiometry, navigation, settings, scanInProgress } = this.props
     checkBiometry()
     isWalletInitialized().then(exists => {
-      // TODO: should be reverted after all the users have migrated to v2
-      //
-      // If a user still has default node HTTP address
-      // set to MAINNET_DEFAULT_NODE let's override it
-      // to MAINNET_DEFAULT_NODE_V2
-      if (
-        settings.chain === MAINNET_CHAIN &&
-        settings.checkNodeApiHttpAddr === MAINNET_DEFAULT_NODE
-      ) {
-        this.props.switchToMainnet()
-      }
       if (exists) {
         navigation.navigate('Password', {
-          nextScreen: recoveryStarted
-            ? { name: 'WalletPrepare', params: { isNew: false } }
+          nextScreen: scanInProgress
+            ? { name: 'WalletScan', params: { isNew: false } }
             : { name: 'Main' },
         })
       } else {
@@ -85,7 +74,7 @@ class Initial extends Component<Props, State> {
 
 const mapStateToProps = (state: ReduxState) => ({
   settings: state.settings,
-  recoveryStarted: state.wallet.walletInit.started,
+  scanInProgress: state.wallet.walletScan.inProgress,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

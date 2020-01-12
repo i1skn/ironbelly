@@ -191,29 +191,29 @@ export type walletInitSetConfirmPasswordAction = {
   confirmPassword: string,
 }
 
-export type walletRecoveryRequestAction = {
-  type: 'WALLET_RECOVERY_REQUEST',
+export type walletScanDoneAction = {
+  type: 'WALLET_SCAN_DONE',
+}
+
+export type walletScanResetAction = {
+  type: 'WALLET_SCAN_RESET',
+}
+
+export type walletScanRequestAction = {
+  type: 'WALLET_SCAN_REQUEST',
   startIndex: number,
   limit: number,
 }
-export type walletRecoverySuccessAction = {
-  type: 'WALLET_RECOVERY_SUCCESS',
+export type walletScanSuccessAction = {
+  type: 'WALLET_SCAN_SUCCESS',
   lastRetrievedIndex: number,
   highestIndex: number,
   downloadedInBytes: number,
 }
-export type walletRecoveryFalureAction = {
-  type: 'WALLET_RECOVERY_FAILURE',
+export type walletScanFalureAction = {
+  type: 'WALLET_SCAN_FAILURE',
   code?: number,
   message: string,
-}
-export type walletRecoverySetPhraseAction = {
-  type: 'WALLET_RECOVERY_SET_MNEMONIC',
-  mnemonic: string,
-}
-export type walletRecoverySetPasswordAction = {
-  type: 'WALLET_RECOVERY_SET_PASSWORD',
-  password: string,
 }
 
 export type walletPhraseRequestAction = { type: 'WALLET_PHRASE_REQUEST' }
@@ -232,14 +232,6 @@ export type walletDestroyFalureAction = {
   message: string,
 }
 
-export type walletRepairRequestAction = { type: 'WALLET_REPAIR_REQUEST' }
-export type walletRepairResetAction = { type: 'WALLET_REPAIR_RESET' }
-export type walletRepairSuccessAction = { type: 'WALLET_REPAIR_SUCCESS' }
-export type walletRepairFalureAction = {
-  type: 'WALLET_REPAIR_FAILURE',
-  code?: number,
-  message: string,
-}
 export type walletMigrateToMainnetRequestAction = { type: 'WALLET_MIGRATE_TO_MAINNET_REQUEST' }
 export type walletMigrateToMainnetSuccessAction = { type: 'WALLET_MIGRATE_TO_MAINNET_SUCCESS' }
 export type walletMigrateToMainnetFalureAction = {
@@ -327,7 +319,6 @@ export type Action =
   | setSettingsAction
   | switchToMainnetAction
   | switchToFloonetAction
-  | acceptLegalDisclamerAction
   | enableBiometryRequestAction
   | enableBiometrySuccessAction
   | enableBiometryFalureAction
@@ -386,21 +377,17 @@ export type Action =
   | walletInitSetIsNewAction
   | walletInitSetPasswordAction
   | walletInitSetConfirmPasswordAction
-  | walletRecoveryRequestAction
-  | walletRecoverySuccessAction
-  | walletRecoveryFalureAction
-  | walletRecoverySetPhraseAction
-  | walletRecoverySetPasswordAction
+  | walletScanResetAction
+  | walletScanDoneAction
+  | walletScanRequestAction
+  | walletScanSuccessAction
+  | walletScanFalureAction
   | walletPhraseRequestAction
   | walletPhraseSuccessAction
   | walletPhraseFalureAction
   | walletDestroyRequestAction
   | walletDestroySuccessAction
   | walletDestroyFalureAction
-  | walletRepairRequestAction
-  | walletRepairResetAction
-  | walletRepairSuccessAction
-  | walletRepairFalureAction
   | walletMigrateToMainnetRequestAction
   | walletMigrateToMainnetSuccessAction
   | walletMigrateToMainnetFalureAction

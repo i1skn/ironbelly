@@ -28,6 +28,7 @@ import { type State as SettingsState, BIOMETRY_STATUS } from 'modules/settings'
 import { getBiometryTitle } from 'common'
 import { Text } from 'components/CustomFont'
 import { termsUrl, privacyUrl } from 'screens/LegalDisclaimer'
+import { RECOVERY_LIMIT } from 'modules/wallet'
 
 const VersionText = styled(Text)`
   text-align: center;
@@ -48,6 +49,7 @@ type Props = {
   isFloonet: boolean,
   enableBiometry: () => void,
   disableBiometry: () => void,
+  walletScan: () => void,
 }
 type State = {
   inputValue: string,
@@ -138,7 +140,8 @@ class Settings extends Component<Props, State> {
           text: 'Continue',
           style: 'default',
           onPress: () => {
-            this.props.navigation.navigate('WalletRepair')
+            this.props.walletScan()
+            this.props.navigation.navigate('WalletScan')
           },
         },
       ])
@@ -278,6 +281,13 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   disableBiometry: () => {
     dispatch({ type: 'DISABLE_BIOMETRY_REQUEST' })
+  },
+  walletScan: () => {
+    dispatch({
+      type: 'WALLET_SCAN_REQUEST',
+      startIndex: 0,
+      limit: RECOVERY_LIMIT,
+    })
   },
 })
 

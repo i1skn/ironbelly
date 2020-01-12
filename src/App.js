@@ -64,7 +64,7 @@ type Props = {
   setApiSecret: (apiSecret: string) => void,
   chain: string,
   dispatch: Dispatch,
-  recoveryStarted: boolean,
+  scanInProgress: boolean,
   currencyRates: CurrencyRatesState,
   setFromLink: (amount: number, message: string, url: string) => void,
   requestCurrencyRates: () => void,
@@ -192,7 +192,7 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleAppStateChange = nextAppState => {
-    const { recoveryStarted, sharingInProgress } = this.props
+    const { scanInProgress, sharingInProgress } = this.props
     if (nextAppState === 'background' && !sharingInProgress) {
       isWalletInitialized().then(exists => {
         if (exists) {
@@ -200,10 +200,9 @@ class RealApp extends React.Component<Props, State> {
             NavigationActions.navigate({
               routeName: 'Password',
               params: {
-                nextScreen: recoveryStarted
+                nextScreen: scanInProgress
                   ? {
-                      name: 'WalletPrepare',
-                      params: { isNew: false },
+                      name: 'WalletScan',
                     }
                   : { name: 'Main' },
               },
@@ -213,10 +212,6 @@ class RealApp extends React.Component<Props, State> {
         }
       })
     }
-  }
-
-  shouldGoBack(currentRoute: NavigationState) {
-    return ['WalletRepair', 'WalletPrepare'].indexOf(currentRoute.routeName) !== -1
   }
 
   shouldCloseApp(currentRoute: NavigationState) {
@@ -277,7 +272,7 @@ const RealAppConnected = connect(
     toastMessage: state.toaster,
     showTxConfirmationModal: state.tx.txPost.showModal,
     chain: state.settings.chain,
-    recoveryStarted: state.wallet.walletInit.started,
+    scanInProgress: state.wallet.walletScan.inProgress,
     currencyRates: state.currencyRates,
     sharingInProgress: state.tx.slateShare.inProgress,
   }),

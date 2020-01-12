@@ -29,9 +29,10 @@ import { reducer as walletReducer, sideEffects as walletEffects } from 'modules/
 import { type Store, type Action } from 'common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
-import { persistStore, persistReducer } from 'redux-persist'
+import { createMigrate, persistStore, persistReducer } from 'redux-persist'
 import { navReducer, navMiddleware } from 'modules/navigation'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
+import { migrations } from 'common/migrations'
 
 type Effect = (action: any, store: Store) => ?(Action | Promise<?Action>)
 type Effects = { [string]: Effect }
@@ -84,14 +85,16 @@ const sideEffects = {
   ...currencyRatesEffects,
 }
 
-const logger = createLogger({})
+const logger = createLogger({ stateTransformer: () => {} })
 const sideEffectsMiddleware = createMiddleware(sideEffects)
 
 const persistConfig = {
   key: 'root',
   stateReconciler: autoMergeLevel2,
   storage: AsyncStorage,
+  version: 0, // default is -1, increment as we make migrations
   whitelist: ['settings'],
+  migrate: createMigrate(migrations, { debug: true }),
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

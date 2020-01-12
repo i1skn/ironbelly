@@ -64,32 +64,53 @@ add Android architectures to rustup
 
 `rustup target add aarch64-linux-android armv7-linux-androideabi i686-linux-android x86_64-linux-android`
 
-install Android NDK
+Install Android SDK / NDK / Platform Tools
 ```
-mkdir ~/.NDK
-cd $(ANDROID_HOME)/ndk/<your_version>/build/tools
-./make_standalone_toolchain.py --api 29 --arch arm64 --install-dir ~/.NDK/arm64;
-./make_standalone_toolchain.py --api 29 --arch arm --install-dir ~/.NDK/arm;
-./make_standalone_toolchain.py --api 29 --arch x86 --install-dir ~/.NDK/x86;
+brew cask install android-sdk android-ndk android-platform-tools
 ```
-create a file `~/.cargo/config` with the following content:
+
+Install [Android Studio](https://developer.android.com/studio)
+
+Add to your `.bashprofile` or `.zshrc`:
+```
+export ANDROID_HOME="$(brew --prefix)/share/android-sdk"
+export PATH=$PATH:$ANDROID_HOME/emulator:$ANDROID_HOME/tools:$ANDROID_HOME/tools/bin:$ANDROID_HOME/platform-tools
+export ANDROID_NDK="$(brew --prefix)/share/android-ndk"
+```
+
+Create `~/.cargo/config` file with the following content:
 ```
 [target.aarch64-linux-android]
-ar = ".NDK/arm64/bin/aarch64-linux-android-ar"
-linker = ".NDK/arm64/bin/aarch64-linux-android-clang"
+ar = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android-ar"
+linker = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/aarch64-linux-android28-clang"
 
 [target.armv7-linux-androideabi]
-ar = ".NDK/arm/bin/arm-linux-androideabi-ar"
-linker = ".NDK/arm/bin/arm-linux-androideabi-clang"
+ar = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/arm-linux-androideabi-ar"
+linker = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/armv7a-linux-androideabi28-clang"
 
 [target.i686-linux-android]
-ar = ".NDK/x86/bin/i686-linux-android-ar"
-linker = ".NDK/x86/bin/i686-linux-android-clang"
+ar = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android-ar"
+linker = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/i686-linux-android28-clang"
+
+[target.x86_64-linux-android]
+ar = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android-ar"
+linker = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bin/x86_64-linux-android28-clang"
 ```
 
 #### Build the project
 Run Android emulator or connect a real device. Now `adb devices` should show at least one device.
 
+``
+# Clone this repo somewhere
+git clone --recurse-submodules https://github.com/i1skn/ironbelly.git # it uses submodules
+cd ironbelly
+# Build staticlib from Rust Grin code
+# All Rust related code lives in `rust/` directory
+cd rust
+make android
+cd ..
+npm install
+```
 Go to the root of the repo and run `react-native run-android`
 
 ## Beta testing
