@@ -85,7 +85,9 @@ const sideEffects = {
   ...currencyRatesEffects,
 }
 
-const logger = createLogger({ stateTransformer: () => {} })
+const logger = createLogger({
+  /* stateTransformer: () => {} */
+})
 const sideEffectsMiddleware = createMiddleware(sideEffects)
 
 const persistConfig = {

@@ -40,7 +40,6 @@ fn c_str_to_rust(s: *const c_char) -> String {
 }
 
 #[no_mangle]
-
 pub unsafe extern "C" fn cstr_free(s: *mut c_char) {
     if s.is_null() {
         return;
@@ -118,11 +117,6 @@ fn get_wallet(
         HTTPNodeClient,
         ExtKeychain,
     >(wallet_config.clone(), node_client)?;
-    // .unwrap_or_else(|e| {
-    // println!("{}", e);
-    // std::process::exit(1);
-    // });
-
     {
         let mut wallet_lock = wallet.lock();
         let lc = wallet_lock.lc_provider()?;
@@ -235,6 +229,7 @@ fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String,
         32,
         ZeroingString::from(password),
         false,
+        true,
     )?;
     Ok("".to_owned())
 }
@@ -269,6 +264,11 @@ fn wallet_scan(state_json: &str, start_height: u64, limit: u64) -> Result<String
     wallet_lock!(wallet, w);
     let last_scanned_block = w.last_scanned_block()?;
     let tip = w.w2n_client().get_chain_tip()?;
+    // if last_scanned_block.height == tip.0 {
+    // let mut batch = w.batch(None)?;
+    // batch.save_init_status(WalletInitStatus::InitComplete)?;
+    // batch.commit()?;
+    // }
     let result = json!({
     "lastRetrievedIndex": last_scanned_block.height,
     "highestIndex": tip.0,
@@ -364,11 +364,10 @@ pub unsafe extern "C" fn c_txs_get(
 fn balance(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    // let api = Owner::new(wallet.clone());
-    // let (_validated, wallet_info) =
-    // api.retrieve_summary_info(None, refresh_from_node, state.minimum_confirmations)?;
-    // Ok(serde_json::to_string(&wallet_info).unwrap())
-    Ok("her".to_owned())
+    let api = Owner::new(wallet.clone());
+    let (_validated, wallet_info) =
+        api.retrieve_summary_info(None, refresh_from_node, state.minimum_confirmations)?;
+    Ok(serde_json::to_string(&wallet_info).unwrap())
 }
 
 #[no_mangle]
@@ -458,7 +457,9 @@ fn tx_create(
         payment_proof_recipient_address: None,
         ttl_blocks: None,
     };
-    let slate = api.init_send_tx(None, args).unwrap();
+    let mut slate = api.init_send_tx(None, args).unwrap();
+    slate.version_info.version = 2;
+    slate.version_info.orig_version = 2;
     api.tx_lock_outputs(None, &slate, 0)?;
     Ok(
         serde_json::to_string(&slate_versions::VersionedSlate::into_version(
@@ -582,7 +583,9 @@ fn tx_send_https(
         payment_proof_recipient_address: None,
         ttl_blocks: None,
     };
-    let slate = api.init_send_tx(None, args)?;
+    let mut slate = api.init_send_tx(None, args)?;
+    slate.version_info.version = 2;
+    slate.version_info.orig_version = 2;
     let sender = Box::new(
         HttpSlateSender::new(url)
             .map_err(|_| ErrorKind::GenericError(format!("Invalid destination URL: {}", url)))?,
@@ -675,6 +678,9 @@ pub mod android {
     use self::jni::JNIEnv;
     use super::*;
 
+    extern crate android_logger;
+    extern crate log;
+
     macro_rules! unwrap_to_jni (
 ($env:expr, $func:expr) => (
 match $func {
@@ -688,6 +694,14 @@ result
 }
 }
 ));
+
+    fn enable_android_logger(level: log::Level) {
+        android_logger::init_once(
+            android_logger::Config::default()
+                .with_min_level(level)
+                .with_tag("Ironbelly"),
+        );
+    }
 
     #[no_mangle]
     pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_balance(
@@ -749,6 +763,7 @@ result
         state_json: JString,
         refresh_from_node: bool,
     ) -> jstring {
+        // enable_android_logger(log::Level::Info);
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(env, txs_get(&state_json, refresh_from_node))
     }

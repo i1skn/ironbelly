@@ -88,7 +88,10 @@ class Verify extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.inProgress && !prevProps.inProgress) {
+    if (
+      (this.props.inProgress && !prevProps.inProgress) ||
+      (this.props.isDone && !prevProps.isDone)
+    ) {
       this.props.navigation.navigate('WalletScan')
     }
   }
