@@ -100,7 +100,7 @@ linker = "/usr/local/share/android-ndk/toolchains/llvm/prebuilt/darwin-x86_64/bi
 #### Build the project
 Run Android emulator or connect a real device. Now `adb devices` should show at least one device.
 
-``
+```
 # Clone this repo somewhere
 git clone --recurse-submodules https://github.com/i1skn/ironbelly.git # it uses submodules
 cd ironbelly
