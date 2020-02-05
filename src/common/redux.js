@@ -97,12 +97,15 @@ const persistConfig = {
   version: 0, // default is -1, increment as we make migrations
   whitelist: ['settings'],
   migrate: createMigrate(migrations, { debug: true }),
+  timeout: null,
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
 export const store = createStore(
   persistedReducer,
-  applyMiddleware(navMiddleware, sideEffectsMiddleware, logger)
+  process.env.NODE_ENV === 'development'
+    ? applyMiddleware(navMiddleware, sideEffectsMiddleware, logger)
+    : applyMiddleware(navMiddleware, sideEffectsMiddleware)
 )
 export const persistor = persistStore(store)

@@ -34,6 +34,9 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::sync::Arc;
 use uuid::Uuid;
+extern crate log;
+
+use simplelog::{Config, LevelFilter, SimpleLogger};
 
 fn c_str_to_rust(s: *const c_char) -> String {
     unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
@@ -180,6 +183,15 @@ macro_rules! unwrap_to_c_with_e2e (
             }
         }
         ));
+
+#[no_mangle]
+pub unsafe extern "C" fn c_set_logger(level: *const c_char, error: *mut u8) -> *const c_char {
+    unwrap_to_c!(
+        SimpleLogger::init(LevelFilter::Info, Config::default())
+            .map(|_| "Logger initiated successfully!"),
+        error
+    )
+}
 
 fn check_password(state_json: &str, password: ZeroingString) -> Result<String, Error> {
     let wallet_config = create_wallet_config(State::from_str(state_json)?)?;
@@ -679,7 +691,6 @@ pub mod android {
     use super::*;
 
     extern crate android_logger;
-    extern crate log;
 
     macro_rules! unwrap_to_jni (
 ($env:expr, $func:expr) => (
@@ -694,13 +705,20 @@ result
 }
 }
 ));
-
-    fn enable_android_logger(level: log::Level) {
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_setLogger(
+        env: JNIEnv,
+        _: JClass,
+        level: JString,
+    ) -> jstring {
         android_logger::init_once(
             android_logger::Config::default()
-                .with_min_level(level)
+                .with_min_level(log::Level::Info)
                 .with_tag("Ironbelly"),
         );
+        env.new_string("Logger initiated successfully!")
+            .unwrap()
+            .into_inner()
     }
 
     #[no_mangle]
@@ -763,7 +781,6 @@ result
         state_json: JString,
         refresh_from_node: bool,
     ) -> jstring {
-        // enable_android_logger(log::Level::Info);
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(env, txs_get(&state_json, refresh_from_node))
     }

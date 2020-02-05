@@ -39,6 +39,15 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void setLogger(String level, Promise promise) {
+    try {
+      promise.resolve(setLogger(level));
+    } catch (Exception e) {
+      promise.reject("", e.getMessage());
+    }
+  }
+
+  @ReactMethod
   public void seedNew(double seedLength, Promise promise) {
     try {
       promise.resolve(seedNew((long) seedLength));
@@ -165,6 +174,8 @@ public class GrinBridge extends ReactContextBaseJavaModule {
       promise.reject("", e.getMessage());
     }
   }
+
+  private static native String setLogger(String level);
 
   private static native String balance(String state, Boolean refreshFromNode);
 

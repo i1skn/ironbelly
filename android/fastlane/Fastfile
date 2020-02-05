@@ -26,4 +26,11 @@ platform :android do
     gradle(task: "clean bundleRelease")
     upload_to_play_store(track: 'alpha')
   end
+
+  desc "Submit a new Internal Build to Play Market"
+  lane :internal do
+    gradle(task: "clean bundleRelease")
+    upload_to_play_store(track: 'internal')
+  end
+
 end
