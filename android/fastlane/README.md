@@ -26,6 +26,11 @@ Runs all the tests
 fastlane android alpha
 ```
 Submit a new Alpha Build to Play Market
+### android internal
+```
+fastlane android internal
+```
+Submit a new Internal Build to Play Market
 
 ----
 

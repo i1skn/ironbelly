@@ -19,31 +19,31 @@ uuid = "0.7.4"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 serde_derive = "1"
+simplelog = "^0.7.4"
 
 # For Release
 # ^
 # Does not exist yet
 
 # For bleeding edge
-# grin_wallet_api = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-# grin_wallet_impls = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-# grin_wallet_libwallet = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-# grin_wallet_config = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
-# grin_wallet_util = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_api = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_impls = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_libwallet = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_config = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_util = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
+grin_wallet_controller = { git = "https://github.com/cyclefortytwo/grin-wallet", branch = "ironbelly" }
 
 
 # For local testing
-grin_wallet_api = { path = "../../../cyclefortytwo/grin-wallet/api", version = "3.1.0-beta.1" }
-grin_wallet_impls = { path = "../../../cyclefortytwo/grin-wallet/impls", version = "3.1.0-beta.1" }
-grin_wallet_libwallet = { path = "../../../cyclefortytwo/grin-wallet/libwallet", version = "3.1.0-beta.1" }
-grin_wallet_config = { path = "../../../cyclefortytwo/grin-wallet/config", version = "3.1.0-beta.1" }
-grin_wallet_util = { path = "../../../cyclefortytwo/grin-wallet/util", version = "3.1.0-beta.1" }
-grin_wallet_controller = { path = "../../../cyclefortytwo/grin-wallet/controller", version = "3.1.0-beta.1" }
+# grin_wallet_api = { path = "../../../cyclefortytwo/grin-wallet/api", version = "3.1.0-beta.1" }
+# grin_wallet_impls = { path = "../../../cyclefortytwo/grin-wallet/impls", version = "3.1.0-beta.1" }
+# grin_wallet_libwallet = { path = "../../../cyclefortytwo/grin-wallet/libwallet", version = "3.1.0-beta.1" }
+# grin_wallet_config = { path = "../../../cyclefortytwo/grin-wallet/config", version = "3.1.0-beta.1" }
+# grin_wallet_util = { path = "../../../cyclefortytwo/grin-wallet/util", version = "3.1.0-beta.1" }
+# grin_wallet_controller = { path = "../../../cyclefortytwo/grin-wallet/controller", version = "3.1.0-beta.1" }
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.8"
-
-
 
 [build-dependencies]
 built = "0.3"

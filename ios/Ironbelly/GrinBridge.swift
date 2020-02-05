@@ -33,6 +33,12 @@ class GrinBridge: NSObject {
         return false
     }
 
+    @objc func setLogger(_ level: String,resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_set_logger(level, &error)
+        returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
+    }
+    
     @objc func balance(_ state: String, refreshFromNode: Bool,resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_balance(state, refreshFromNode, &error)

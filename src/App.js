@@ -51,6 +51,8 @@ import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'modules/s
 import { type State as ToasterState } from 'modules/toaster'
 import { type State as CurrencyRatesState } from 'modules/currency-rates'
 
+const { GrinBridge } = NativeModules
+
 // Filesystem
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -78,6 +80,9 @@ class RealApp extends React.Component<Props, State> {
   backHandler: any
   componentDidMount() {
     StatusBar.setBarStyle('dark-content')
+    GrinBridge.setLogger('later')
+      .then(console.log)
+      .catch(console.log)
     const { slateUrl } = this.props
     if (slateUrl) {
       this._handleOpenURL({ url: slateUrl })
