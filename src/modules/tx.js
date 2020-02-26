@@ -90,7 +90,7 @@ export type TxPostState = {|
 
 export type TxGetState = {|
   data: ?Tx,
-  validated: boolean,
+  isRefreshed: boolean,
   inProgress: boolean,
   error: ?Error,
 |}
@@ -181,7 +181,7 @@ const initialState: State = {
   },
   txGet: {
     data: null,
-    validated: false,
+    isRefreshed: false,
     inProgress: false,
     error: null,
   },
@@ -264,7 +264,12 @@ export const sideEffects = {
         })
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(newFinalized))
       await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
-      store.dispatch({ type: 'TX_LIST_SUCCESS', data: mappedData, validated: data[0] })
+      store.dispatch({
+        type: 'TX_LIST_SUCCESS',
+        data: mappedData,
+        isRefreshed: data[0],
+        balance: data[2],
+      })
     } catch (e) {
       store.dispatch({ type: 'TX_LIST_FAILURE', message: e.message })
       log(e, true)
@@ -284,7 +289,6 @@ export const sideEffects = {
           showLoader: false,
           refreshFromNode: false,
         })
-        store.dispatch({ type: 'BALANCE_REQUEST' })
       })
       .catch(error => {
         const e = JSON.parse(error.message)
@@ -296,7 +300,7 @@ export const sideEffects = {
     return GrinBridge.txGet(getStateForRust(store.getState()), true, action.txSlateId)
       .then((json: string) => JSON.parse(json))
       .then(result => {
-        store.dispatch({ type: 'TX_GET_SUCCESS', validated: result[0], tx: result[1][0] })
+        store.dispatch({ type: 'TX_GET_SUCCESS', isRefreshed: result[0], tx: result[1][0] })
       })
       .catch(error => {
         const e = JSON.parse(error.message)
@@ -318,7 +322,6 @@ export const sideEffects = {
         store.dispatch({ type: 'SLATE_SHARE_REQUEST', id: slate.id, isResponse: false })
 
         store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-        store.dispatch({ type: 'BALANCE_REQUEST' })
       })
       .catch(error => {
         const e = JSON.parse(error.message)
@@ -344,7 +347,6 @@ export const sideEffects = {
       store.dispatch({ type: 'TX_SEND_HTTPS_SUCCESS' })
       store.dispatch({ type: 'TX_POST_SHOW', txSlateId: slate.id })
       store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-      store.dispatch({ type: 'BALANCE_REQUEST' })
     } catch (e) {
       store.dispatch({ type: 'TX_SEND_HTTPS_FAILURE', message: e.message })
       log(e, true)
@@ -370,7 +372,6 @@ export const sideEffects = {
       await AsyncStorage.setItem('@postedTxs', JSON.stringify(posted))
       store.dispatch({ type: 'TX_POST_SUCCESS' })
       store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-      store.dispatch({ type: 'BALANCE_REQUEST' })
       setTimeout(() => {
         store.dispatch({ type: 'TX_POST_CLOSE' })
       }, 3000)
@@ -387,7 +388,6 @@ export const sideEffects = {
         store.dispatch({ type: 'SLATE_SHARE_REQUEST', id: slate.id, isResponse: true })
         store.dispatch({ type: 'SLATE_SET_REQUEST', slate, isResponse: true })
         store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-        store.dispatch({ type: 'BALANCE_REQUEST' })
       })
       .catch(e => {
         store.dispatch({ type: 'TX_RECEIVE_FAILURE', message: e.message })
@@ -409,7 +409,6 @@ export const sideEffects = {
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({ type: 'TX_POST_SHOW', txSlateId: slate.id })
       store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
-      store.dispatch({ type: 'BALANCE_REQUEST' })
     } catch (e) {
       store.dispatch({ type: 'TX_FINALIZE_FAILURE', message: e.message })
       log(e, true)
@@ -521,7 +520,7 @@ const list = function(state: ListState = initialState.list, action): ListState {
         data: txs.map(mapRustTx),
         showLoader: false,
         refreshFromNode: false,
-        isOffline: state.refreshFromNode && !action.validated,
+        isOffline: state.refreshFromNode && !action.isRefreshed,
         lastUpdated: moment(),
         inProgress: false,
       }
@@ -663,14 +662,14 @@ const txGet = function(state: TxGetState = initialState.txGet, action): TxGetSta
       return {
         ...state,
         inProgress: true,
-        validated: false,
+        isRefreshed: false,
         error: null,
       }
     case 'TX_GET_SUCCESS':
       return {
         ...state,
         data: mapRustTx(action.tx),
-        validated: action.validated,
+        isRefreshed: action.isRefreshed,
         inProgress: false,
       }
     case 'TX_GET_FAILURE':
@@ -680,7 +679,7 @@ const txGet = function(state: TxGetState = initialState.txGet, action): TxGetSta
           code: action.code,
           message: action.message,
         },
-        validated: false,
+        isRefreshed: false,
         inProgress: false,
       }
     default:

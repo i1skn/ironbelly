@@ -17,7 +17,7 @@
 import { isFSA } from 'flux-standard-action'
 import AsyncStorage from '@react-native-community/async-storage'
 import { combineReducers } from 'redux'
-import { reducer as balanceReducer, sideEffects as balanceSideEffects } from 'modules/balance'
+import { reducer as balanceReducer } from 'modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'modules/tx'
 import { reducer as settingsReducer, sideEffects as settingsEffects } from 'modules/settings'
 import {
@@ -77,7 +77,6 @@ const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => 
   return initAction
 }
 const sideEffects = {
-  ...balanceSideEffects,
   ...txSideEffects,
   ...walletEffects,
   ...toasterEffects,

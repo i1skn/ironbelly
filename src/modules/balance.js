@@ -17,72 +17,29 @@
 import { NativeModules } from 'react-native'
 import moment from 'moment'
 import { getStateForRust, mapRustBalance } from 'common'
-import {
-  type Action,
-  type balanceRequestAction,
-  type Store,
-  type Balance,
-  type RustBalance,
-  type Error,
-} from 'common/types'
+import { type Action, type Store, type Balance, type RustBalance, type Error } from 'common/types'
 import { log } from 'common/logger'
 
 const { GrinBridge } = NativeModules
 
-export type State = {
-  data: Balance,
-  inProgress: boolean,
-  lastUpdated: number,
-  error: ?Error,
-}
+export type State = Balance
 
 const initialState: State = {
-  data: {
-    amountAwaitingConfirmation: 0,
-    amountCurrentlySpendable: 0,
-    amountImmature: 0,
-    amountLocked: 0,
-    lastConfirmedHeight: 0,
-    minimumConfirmations: 0,
-    total: 0,
-  },
-  inProgress: false,
-  error: null,
-  lastUpdated: 0,
-}
-
-export const sideEffects = {
-  ['BALANCE_REQUEST']: (action: balanceRequestAction, store: Store) => {
-    return GrinBridge.balance(getStateForRust(store.getState()), true)
-      .then((jsonBalance: string) => JSON.parse(jsonBalance))
-      .then((data: RustBalance) => {
-        store.dispatch({ type: 'BALANCE_SUCCESS', data: mapRustBalance(data) })
-      })
-      .catch(error => {
-        store.dispatch({ type: 'BALANCE_FAILURE', code: 1, message: error })
-        log(error, true)
-      })
-  },
+  amountAwaitingConfirmation: 0,
+  amountCurrentlySpendable: 0,
+  amountImmature: 0,
+  amountLocked: 0,
+  lastConfirmedHeight: 0,
+  minimumConfirmations: 0,
+  total: 0,
 }
 
 export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
-    case 'BALANCE_REQUEST':
+    case 'TX_LIST_SUCCESS':
       return {
         ...state,
-        inProgress: true,
-      }
-    case 'BALANCE_FAILURE':
-      return {
-        ...state,
-        inProgress: false,
-      }
-    case 'BALANCE_SUCCESS':
-      return {
-        ...state,
-        data: action.data,
-        inProgress: false,
-        lastUpdated: Date.now(),
+        ...mapRustBalance(action.balance),
       }
     default:
       return state

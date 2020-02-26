@@ -13,13 +13,15 @@
 // limitations under the License.
 
 use grin_wallet_libwallet::{
-    slate_versions, wallet_lock, InitTxArgs, NodeClient, WalletInst, WalletLCProvider,
+    scan, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient, WalletInst,
+    WalletLCProvider,
 };
 use grin_wallet_util::grin_core::global::ChainTypes;
 use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
 use grin_wallet_util::grin_util::file::get_first_line;
 use grin_wallet_util::grin_util::Mutex;
 use grin_wallet_util::grin_util::ZeroingString;
+use std::cmp;
 
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_impls::{
@@ -185,7 +187,7 @@ macro_rules! unwrap_to_c_with_e2e (
         ));
 
 #[no_mangle]
-pub unsafe extern "C" fn c_set_logger(level: *const c_char, error: *mut u8) -> *const c_char {
+pub unsafe extern "C" fn c_set_logger(_level: *const c_char, error: *mut u8) -> *const c_char {
     unwrap_to_c!(
         SimpleLogger::init(LevelFilter::Info, Config::default())
             .map(|_| "Logger initiated successfully!"),
@@ -266,33 +268,34 @@ pub unsafe extern "C" fn c_wallet_init(
 fn wallet_scan(state_json: &str, start_height: u64, limit: u64) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state)?;
-    let api = Owner::new(wallet.clone());
-    api.scan(
-        None,
-        Some(start_height),
-        Some(start_height + limit - 1),
-        true,
-    )?;
-    wallet_lock!(wallet, w);
-    let last_scanned_block = w.last_scanned_block()?;
-    let tip = w.w2n_client().get_chain_tip()?;
-    // if last_scanned_block.height == tip.0 {
-    // let mut batch = w.batch(None)?;
-    // batch.save_init_status(WalletInitStatus::InitComplete)?;
-    // batch.commit()?;
-    // }
+    let tip = {
+        wallet_lock!(wallet, w);
+        w.w2n_client().get_chain_tip()?
+    };
+
+    let end_height = cmp::min(tip.0, start_height + limit - 1);
+
+    let mut info = scan(wallet.clone(), None, false, start_height, end_height, &None)?;
+    info.hash = tip.1;
+
+    {
+        wallet_lock!(wallet, w);
+        let mut batch = w.batch(None)?;
+        batch.save_last_scanned_block(info)?;
+        batch.commit()?;
+    }
+
+    let last_scanned_block = {
+        wallet_lock!(wallet, w);
+        w.last_scanned_block()?
+    };
+
     let result = json!({
-    "lastRetrievedIndex": last_scanned_block.height,
-    "highestIndex": tip.0,
-    "downloadedInBytes" : 0,
+        "lastRetrievedIndex": last_scanned_block.height,
+        "highestIndex": tip.0,
+        "downloadedInBytes" : 0,
     })
     .to_string();
-    // let result = json!({
-    // "lastRetrievedIndex": 1,
-    // "highestIndex": 1,
-    // "downloadedInBytes" : 0,
-    // })
-    // .to_string();
     Ok(result)
 }
 
@@ -328,7 +331,7 @@ pub unsafe extern "C" fn c_wallet_phrase(
 
 fn tx_get(state_json: &str, refresh_from_node: bool, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
     let txs = api.retrieve_txs(None, refresh_from_node, None, Some(uuid))?;
     Ok(serde_json::to_string(&txs).unwrap())
@@ -351,14 +354,95 @@ pub unsafe extern "C" fn c_tx_get(
     )
 }
 
-fn txs_get(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone());
+fn update_state<'a, L, C, K>(
+    wallet_inst: Arc<Mutex<Box<dyn WalletInst<'a, L, C, K>>>>,
+) -> Result<bool, Error>
+where
+    L: WalletLCProvider<'a, C, K>,
+    C: NodeClient + 'a,
+    K: Keychain + 'a,
+{
+    let parent_key_id = {
+        wallet_lock!(wallet_inst, w);
+        w.parent_key_id().clone()
+    };
+    let mut client = {
+        wallet_lock!(wallet_inst, w);
+        w.w2n_client().clone()
+    };
+    let tip = client.get_chain_tip()?;
 
-    match api.retrieve_txs(None, refresh_from_node, None, None) {
-        Ok(txs) => Ok(serde_json::to_string(&txs).unwrap()),
-        Err(e) => Err(Error::from(e)),
+    // Step 1: Update outputs and transactions purely based on UTXO state
+
+    {
+        wallet_lock!(wallet_inst, w);
+        if !match updater::refresh_output_state(&mut **w, None, tip.0, &parent_key_id, true) {
+            Ok(_) => true,
+            Err(_) => false,
+        } {
+            // We are unable to contact the node
+            return Ok(false);
+        }
     }
+
+    let mut txs = {
+        wallet_lock!(wallet_inst, w);
+        updater::retrieve_txs(&mut **w, None, None, Some(&parent_key_id), true)?
+    };
+
+    for tx in txs.iter_mut() {
+        // Step 2: Cancel any transactions with an expired TTL
+        if let Some(e) = tx.ttl_cutoff_height {
+            if tip.0 >= e {
+                wallet_lock!(wallet_inst, w);
+                let parent_key_id = w.parent_key_id();
+                tx::cancel_tx(&mut **w, None, &parent_key_id, Some(tx.id), None)?;
+                continue;
+            }
+        }
+        // Step 3: Update outstanding transactions with no change outputs by kernel
+        if tx.confirmed {
+            continue;
+        }
+        if tx.amount_debited != 0 && tx.amount_credited != 0 {
+            continue;
+        }
+        if let Some(e) = tx.kernel_excess {
+            let res = client.get_kernel(&e, tx.kernel_lookup_min_height, Some(tip.0));
+            let kernel = match res {
+                Ok(k) => k,
+                Err(_) => return Ok(false),
+            };
+            if let Some(_k) = kernel {
+                // debug!("Kernel Retrieved: {:?}", _k);
+                wallet_lock!(wallet_inst, w);
+                let mut batch = w.batch(None)?;
+                tx.confirmed = true;
+                tx.update_confirmation_ts();
+                batch.save_tx_log_entry(tx.clone(), &parent_key_id)?;
+                batch.commit()?;
+            }
+        }
+    }
+
+    return Ok(true);
+}
+
+fn txs_get(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
+
+    let refreshed = refresh_from_node && update_state(wallet.clone()).unwrap_or(false);
+    let wallet_info = {
+        wallet_lock!(wallet, w);
+        let parent_key_id = w.parent_key_id();
+        updater::retrieve_info(&mut **w, &parent_key_id, state.minimum_confirmations)?
+    };
+    let api = Owner::new(wallet.clone(), None);
+
+    let txs = api.retrieve_txs(None, false, None, None)?;
+    let result = (refreshed, txs.1, wallet_info);
+    Ok(serde_json::to_string(&result).unwrap())
 }
 
 #[no_mangle]
@@ -373,27 +457,6 @@ pub unsafe extern "C" fn c_txs_get(
     )
 }
 
-fn balance(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
-    let state = State::from_str(state_json)?;
-    let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone());
-    let (_validated, wallet_info) =
-        api.retrieve_summary_info(None, refresh_from_node, state.minimum_confirmations)?;
-    Ok(serde_json::to_string(&wallet_info).unwrap())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_balance(
-    state_json: *const c_char,
-    refresh_from_node: bool,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        balance(&c_str_to_rust(state_json), refresh_from_node,),
-        error
-    )
-}
-
 #[derive(Serialize, Deserialize)]
 struct Strategy {
     selection_strategy_is_use_all: bool,
@@ -404,7 +467,7 @@ struct Strategy {
 fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     let mut result = vec![];
     let mut args = InitTxArgs {
         src_acct_name: None,
@@ -454,7 +517,7 @@ fn tx_create(
 ) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     let args = InitTxArgs {
         src_acct_name: None,
         amount,
@@ -503,7 +566,7 @@ pub unsafe extern "C" fn c_tx_create(
 
 fn tx_cancel(state_json: &str, id: u32) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     api.cancel_tx(None, Some(id), None)?;
     Ok("".to_owned())
 }
@@ -552,7 +615,7 @@ pub unsafe extern "C" fn c_tx_receive(
 
 fn tx_finalize(state_json: &str, slate_path: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
     api.verify_slate_messages(None, &slate)?;
     slate = api.finalize_tx(None, &slate)?;
@@ -580,7 +643,7 @@ fn tx_send_https(
 ) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     let args = InitTxArgs {
         src_acct_name: None,
         amount,
@@ -645,7 +708,7 @@ pub unsafe extern "C" fn c_tx_send_https(
 
 fn tx_post(state_json: &str, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone());
+    let api = Owner::new(wallet.clone(), None);
     let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
     let (_, txs) = api.retrieve_txs(None, true, None, Some(uuid))?;
     if txs[0].confirmed {
@@ -719,17 +782,6 @@ result
         env.new_string("Logger initiated successfully!")
             .unwrap()
             .into_inner()
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_balance(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        refresh_from_node: bool,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, balance(&state_json, refresh_from_node))
     }
 
     #[no_mangle]

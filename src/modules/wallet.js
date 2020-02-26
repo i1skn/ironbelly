@@ -102,7 +102,7 @@ const initialState: State = {
     inProgress: false,
     progress: 0,
     isDone: false,
-    lastRetrievedIndex: 0,
+    lastRetrievedIndex: -1,
     highestIndex: 0,
     downloadedInBytes: 0,
     error: {
@@ -180,25 +180,19 @@ const walletScan = function(
   action: Action
 ): WalletScanState {
   switch (action.type) {
+    case 'WALLET_SCAN_START':
+      return {
+        ...initialState.walletScan,
+        inProgress: true,
+      }
     case 'WALLET_SCAN_DONE':
       return {
-        ...state,
-        progress: 0,
-        inProgress: false,
+        ...initialState.walletScan,
         isDone: true,
-        lastRetrievedIndex: 0,
-        highestIndex: 0,
-        downloadedInBytes: 0,
       }
     case 'WALLET_SCAN_RESET':
       return {
-        ...state,
-        progress: 0,
-        inProgress: false,
-        isDone: false,
-        lastRetrievedIndex: 0,
-        highestIndex: 0,
-        downloadedInBytes: 0,
+        ...initialState.walletScan,
       }
     case 'WALLET_SCAN_REQUEST':
       return {
@@ -353,7 +347,7 @@ export const sideEffects = {
         if (isNew) {
           store.dispatch({ type: 'WALLET_SCAN_DONE' })
         } else {
-          store.dispatch({ type: 'WALLET_SCAN_REQUEST', startIndex: 0, limit: RECOVERY_LIMIT })
+          store.dispatch({ type: 'WALLET_SCAN_START' })
         }
       })
       .catch(error => {

@@ -340,7 +340,7 @@ const mapStateToProps = (state: GlobalState) => {
     currency: state.settings.currencyObject,
     txForm: state.tx.txForm,
     currencyRates: state.currencyRates,
-    balance: state.balance.data,
+    balance: state.balance,
     minimumConfirmations: state.settings.minimumConfirmations,
     isCreated: state.tx.txCreate.created,
     isSent: state.tx.txSend.sent,

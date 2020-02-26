@@ -284,9 +284,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
   walletScan: () => {
     dispatch({
-      type: 'WALLET_SCAN_REQUEST',
-      startIndex: 0,
-      limit: RECOVERY_LIMIT,
+      type: 'WALLET_SCAN_START',
     })
   },
 })

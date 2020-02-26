@@ -41,7 +41,6 @@ import { type WalletInitState } from 'modules/wallet'
 import { type State as SettingsState } from 'modules/settings'
 
 type Props = {
-  getBalance: () => void,
   balance: BalanceType,
   txs: Array<Tx>,
   settings: SettingsState,
@@ -116,7 +115,6 @@ class Overview extends Component<Props, State> {
   }
   componentDidMount() {
     const { settings, txFinalizeInProgress } = this.props
-    this.props.getBalance()
     this.props.txsGet(false, false)
     const { responseSlatePath } = this.props.navigation.state.params
     if (responseSlatePath && !txFinalizeInProgress) {
@@ -157,7 +155,6 @@ class Overview extends Component<Props, State> {
       txs,
       balance,
       navigation,
-      getBalance,
       txCancel,
       txsGet,
       slateShare,
@@ -262,7 +259,6 @@ class Overview extends Component<Props, State> {
             <RefreshControl
               refreshing={txListRefreshInProgress}
               onRefresh={() => {
-                getBalance()
                 txsGet(true, true)
               }}
             />
@@ -296,7 +292,7 @@ class Overview extends Component<Props, State> {
 
 const mapStateToProps = (state: GlobalState) => {
   return {
-    balance: state.balance.data,
+    balance: state.balance,
     txListRefreshInProgress: state.tx.list.showLoader,
     txs: state.tx.list.data,
     firstLoading: state.tx.list.lastUpdated === null,
@@ -309,9 +305,6 @@ const mapStateToProps = (state: GlobalState) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  getBalance: () => {
-    dispatch({ type: 'BALANCE_REQUEST' })
-  },
   txCancel: (id: number, slateId, isResponse: boolean) => {
     dispatch({ type: 'TX_CANCEL_REQUEST', id, slateId, isResponse })
   },

@@ -23,12 +23,6 @@ import { type State as CurrencyRatesState } from 'modules/currency-rates'
 
 import { type NavigationState } from 'react-navigation'
 
-export type balanceRequestAction = {
-  type: 'BALANCE_REQUEST',
-}
-export type balanceSuccessAction = { type: 'BALANCE_SUCCESS', data: Balance }
-export type balanceFailureAction = { type: 'BALANCE_FAILURE', code?: number, message: string }
-
 export type txListRequestAction = {
   type: 'TX_LIST_REQUEST',
   showLoader: boolean,
@@ -40,12 +34,13 @@ export type txListClearAction = {
 export type txListSuccessAction = {
   type: 'TX_LIST_SUCCESS',
   data: Array<RustTx>,
-  validated: boolean,
+  balance: RustBalance,
+  isRefreshed: boolean,
 }
 export type txListFailureAction = { type: 'TX_LIST_FAILURE', code?: number, message: string }
 
 export type txGetRequestAction = { type: 'TX_GET_REQUEST', txSlateId: string }
-export type txGetSuccessAction = { type: 'TX_GET_SUCCESS', tx: RustTx, validated: boolean }
+export type txGetSuccessAction = { type: 'TX_GET_SUCCESS', tx: RustTx, isRefreshed: boolean }
 export type txGetFalureAction = { type: 'TX_GET_FAILURE', code?: number, message: string }
 
 export type txCancelRequestAction = {
@@ -191,6 +186,10 @@ export type walletInitSetConfirmPasswordAction = {
   confirmPassword: string,
 }
 
+export type walletScanStartAction = {
+  type: 'WALLET_SCAN_START',
+}
+
 export type walletScanDoneAction = {
   type: 'WALLET_SCAN_DONE',
 }
@@ -292,9 +291,6 @@ export type currencyRatesFalureAction = {
 }
 
 export type Action =
-  | balanceRequestAction
-  | balanceSuccessAction
-  | balanceFailureAction
   | txListClearAction
   | txListRequestAction
   | txListSuccessAction
@@ -379,6 +375,7 @@ export type Action =
   | walletInitSetConfirmPasswordAction
   | walletScanResetAction
   | walletScanDoneAction
+  | walletScanStartAction
   | walletScanRequestAction
   | walletScanSuccessAction
   | walletScanFalureAction
