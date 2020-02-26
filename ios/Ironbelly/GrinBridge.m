@@ -17,7 +17,7 @@
 
 @interface RCT_EXTERN_MODULE(GrinBridge, NSObject)
 
-RCT_EXTERN_METHOD(setLogger:(NSString*)level resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(setLogger:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(balance:(NSString*)state refreshFromNode:(BOOL)refreshFromNode resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 

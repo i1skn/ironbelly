@@ -7,7 +7,7 @@ const char *c_check_password(const char *state_str, const char *password, uint8_
 
 const char *c_seed_new(uint8_t seed_length, uint8_t *error);
 
-const char *c_set_logger(const char *_level, uint8_t *error);
+const char *c_set_logger(uint8_t *error);
 
 const char *c_tx_cancel(const char *state_json, uint32_t id, uint8_t *error);
 

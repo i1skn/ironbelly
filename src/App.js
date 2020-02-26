@@ -80,7 +80,7 @@ class RealApp extends React.Component<Props, State> {
   backHandler: any
   componentDidMount() {
     StatusBar.setBarStyle('dark-content')
-    GrinBridge.setLogger('later')
+    GrinBridge.setLogger()
       .then(console.log)
       .catch(console.log)
     const { slateUrl } = this.props

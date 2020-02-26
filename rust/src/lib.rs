@@ -36,6 +36,7 @@ use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::sync::Arc;
 use uuid::Uuid;
+#[macro_use]
 extern crate log;
 
 use simplelog::{Config, LevelFilter, SimpleLogger};
@@ -187,10 +188,17 @@ macro_rules! unwrap_to_c_with_e2e (
         ));
 
 #[no_mangle]
-pub unsafe extern "C" fn c_set_logger(_level: *const c_char, error: *mut u8) -> *const c_char {
+pub unsafe extern "C" fn c_set_logger(error: *mut u8) -> *const c_char {
     unwrap_to_c!(
-        SimpleLogger::init(LevelFilter::Info, Config::default())
-            .map(|_| "Logger initiated successfully!"),
+        SimpleLogger::init(
+            if cfg!(debug_assertions) {
+                LevelFilter::Debug
+            } else {
+                LevelFilter::Info
+            },
+            Config::default()
+        )
+        .map(|_| "Logger initiated successfully!"),
         error
     )
 }
@@ -414,7 +422,6 @@ where
                 Err(_) => return Ok(false),
             };
             if let Some(_k) = kernel {
-                // debug!("Kernel Retrieved: {:?}", _k);
                 wallet_lock!(wallet_inst, w);
                 let mut batch = w.batch(None)?;
                 tx.confirmed = true;
@@ -756,27 +763,31 @@ pub mod android {
     extern crate android_logger;
 
     macro_rules! unwrap_to_jni (
-($env:expr, $func:expr) => (
-match $func {
-Ok(res) => {
-$env.new_string(res).unwrap().into_inner()
-}
-Err(e) => {
-let result = $env.new_string("").unwrap().into_inner();
-$env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
-result
-}
-}
-));
+        ($env:expr, $func:expr) => (
+            match $func {
+                Ok(res) => {
+                    $env.new_string(res).unwrap().into_inner()
+                }
+                Err(e) => {
+                    let result = $env.new_string("").unwrap().into_inner();
+                    $env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
+                    result
+                }
+            }
+        )
+    );
     #[no_mangle]
     pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_setLogger(
         env: JNIEnv,
         _: JClass,
-        level: JString,
     ) -> jstring {
         android_logger::init_once(
             android_logger::Config::default()
-                .with_min_level(log::Level::Info)
+                .with_min_level(if cfg!(debug_assertions) {
+                    log::Level::Debug
+                } else {
+                    log::Level::Info
+                })
                 .with_tag("Ironbelly"),
         );
         env.new_string("Logger initiated successfully!")

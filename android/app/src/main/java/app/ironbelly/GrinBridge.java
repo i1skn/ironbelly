@@ -4,6 +4,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import android.util.Log;
 
 public class GrinBridge extends ReactContextBaseJavaModule {
 
@@ -39,9 +40,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void setLogger(String level, Promise promise) {
+  public void setLogger(Promise promise) {
     try {
-      promise.resolve(setLogger(level));
+      promise.resolve(setLogger());
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -77,6 +78,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   @ReactMethod
   public void txsGet(String state, Boolean refreshFromNode, Promise promise) {
     try {
+      Log.v("Ironbelly", "refreshFromNode=" + refreshFromNode); 
       promise.resolve(txsGet(state, refreshFromNode));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
@@ -175,13 +177,13 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
   }
 
-  private static native String setLogger(String level);
+  private static native String setLogger();
 
-  private static native String balance(String state, Boolean refreshFromNode);
+  private static native String balance(String state, boolean refreshFromNode);
 
-  private static native String txGet(String state, Boolean refreshFromNode, String txSlateId);
+  private static native String txGet(String state, boolean refreshFromNode, String txSlateId);
 
-  private static native String txsGet(String state, Boolean refreshFromNode);
+  private static native String txsGet(String state, boolean refreshFromNode);
 
   private static native String seedNew(long seedLength);
 
@@ -196,7 +198,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   private static native String walletPhrase(String state);
 
   private static native String txCreate(
-      String state, String message, long amount, Boolean selectionStrategyIsUseAll);
+      String state, String message, long amount, boolean selectionStrategyIsUseAll);
 
   private static native String txCancel(String state, long id);
 
@@ -205,7 +207,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   private static native String txFinalize(String state, String slatePath);
 
   private static native String txSendHttps(
-      String state, long amount, Boolean selectionStrategyIsUseAll, String message, String url);
+      String state, long amount, boolean selectionStrategyIsUseAll, String message, String url);
 
   private static native String txPost(String state, String txSlateId);
 }
