@@ -33,6 +33,12 @@ class GrinBridge: NSObject {
         return false
     }
 
+    @objc func walletPmmrRange(_ state: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_wallet_pmmr_range(state, &error)
+        returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
+    }
+    
     @objc func setLogger(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_set_logger(&error)
@@ -119,9 +125,9 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func walletScan(_ state:String, startIndex: UInt64, limit: UInt64, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func walletScanOutputs(_ state:String, lastRetrievedIndex: UInt64, highestIndex: UInt64, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_wallet_scan(state , startIndex, limit, &error)
+        let cResult = c_wallet_scan_outputs(state, lastRetrievedIndex, highestIndex, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 }

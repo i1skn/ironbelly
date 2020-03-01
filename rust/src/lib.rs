@@ -21,7 +21,6 @@ use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
 use grin_wallet_util::grin_util::file::get_first_line;
 use grin_wallet_util::grin_util::Mutex;
 use grin_wallet_util::grin_util::ZeroingString;
-use std::cmp;
 
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_impls::{
@@ -31,7 +30,6 @@ use grin_wallet_impls::{
 
 use grin_wallet_api::{Foreign, Owner};
 use serde::{Deserialize, Serialize};
-use serde_json::json;
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
 use std::sync::Arc;
@@ -273,51 +271,68 @@ pub unsafe extern "C" fn c_wallet_init(
     )
 }
 
-fn wallet_scan(state_json: &str, start_height: u64, limit: u64) -> Result<String, Error> {
+fn wallet_scan_outputs(
+    state_json: &str,
+    last_retrieved_index: u64,
+    highest_index: u64,
+) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state)?;
-    let tip = {
+    let info = scan(
+        wallet.clone(),
+        None,
+        false,
+        (last_retrieved_index, highest_index),
+        &None,
+    )?;
+    debug!("Info: {:?}", info);
+
+    let result = info.last_pmmr_index;
+
+    let parent_key_id = {
         wallet_lock!(wallet, w);
-        w.w2n_client().get_chain_tip()?
+        w.parent_key_id().clone()
     };
-
-    let end_height = cmp::min(tip.0, start_height + limit - 1);
-
-    let mut info = scan(wallet.clone(), None, false, start_height, end_height, &None)?;
-    info.hash = tip.1;
-
     {
         wallet_lock!(wallet, w);
         let mut batch = w.batch(None)?;
-        batch.save_last_scanned_block(info)?;
+        batch.save_last_confirmed_height(&parent_key_id, info.height)?;
         batch.commit()?;
-    }
-
-    let last_scanned_block = {
-        wallet_lock!(wallet, w);
-        w.last_scanned_block()?
     };
 
-    let result = json!({
-        "lastRetrievedIndex": last_scanned_block.height,
-        "highestIndex": tip.0,
-        "downloadedInBytes" : 0,
-    })
-    .to_string();
-    Ok(result)
+    Ok(serde_json::to_string(&result).unwrap())
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn c_wallet_scan(
+pub unsafe extern "C" fn c_wallet_scan_outputs(
     state: *const c_char,
-    start_height: u64,
-    limit: u64,
+    last_retrieved_index: u64,
+    highest_index: u64,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        wallet_scan(&c_str_to_rust(state), start_height, limit),
+        wallet_scan_outputs(&c_str_to_rust(state), last_retrieved_index, highest_index),
         error
     )
+}
+
+fn wallet_pmmr_range(state_json: &str) -> Result<String, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state)?;
+    let client = {
+        wallet_lock!(wallet, w);
+        w.w2n_client().clone()
+    };
+    let pmmr_range = client.height_range_to_pmmr_indices(0, None)?;
+    Ok(serde_json::to_string(&pmmr_range).unwrap())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_wallet_pmmr_range(
+    state: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(wallet_pmmr_range(&c_str_to_rust(state)), error)
 }
 
 fn wallet_phrase(state_json: &str) -> Result<String, Error> {
@@ -864,20 +879,34 @@ pub mod android {
     }
 
     #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletScan(
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletPmmrRange(
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        start_height: jlong,
-        limit: jlong,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        unwrap_to_jni!(env, wallet_pmmr_range(&state_json))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletScanOutputs(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        last_retrieved_index: jlong,
+        highest_index: jlong,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
         unwrap_to_jni!(
             env,
-            wallet_scan(&state_json, start_height as u64, limit as u64)
+            wallet_scan_outputs(
+                &state_json,
+                last_retrieved_index as u64,
+                highest_index as u64
+            )
         )
     }
-    // -----
+
     #[no_mangle]
     pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletPhrase(
         env: JNIEnv,

@@ -198,19 +198,35 @@ export type walletScanResetAction = {
   type: 'WALLET_SCAN_RESET',
 }
 
-export type walletScanRequestAction = {
-  type: 'WALLET_SCAN_REQUEST',
-  startIndex: number,
-  limit: number,
-}
-export type walletScanSuccessAction = {
-  type: 'WALLET_SCAN_SUCCESS',
-  lastRetrievedIndex: number,
-  highestIndex: number,
-  downloadedInBytes: number,
-}
-export type walletScanFalureAction = {
+export type walletScanFailureAction = {
   type: 'WALLET_SCAN_FAILURE',
+  code?: number,
+  message: string,
+}
+
+export type walletScanPmmrRangeRequestAction = {
+  type: 'WALLET_SCAN_PMMR_RANGE_REQUEST',
+}
+export type walletScanPmmrRangeSuccessAction = {
+  type: 'WALLET_SCAN_PMMR_RANGE_SUCCESS',
+  range: PmmrRange,
+}
+export type walletScanPmmrRangeFalureAction = {
+  type: 'WALLET_SCAN_PMMR_RANGE_FAILURE',
+  code?: number,
+  message: string,
+}
+
+export type walletScanOutputsRequestAction = {
+  type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+}
+
+export type walletScanOutputsSuccessAction = {
+  type: 'WALLET_SCAN_OUTPUTS_SUCCESS',
+  lastRetrievedIndex: number,
+}
+export type walletScanOutputsFalureAction = {
+  type: 'WALLET_SCAN_OUTPUTS_FAILURE',
   code?: number,
   message: string,
 }
@@ -374,11 +390,15 @@ export type Action =
   | walletInitSetPasswordAction
   | walletInitSetConfirmPasswordAction
   | walletScanResetAction
+  | walletScanFailureAction
   | walletScanDoneAction
   | walletScanStartAction
-  | walletScanRequestAction
-  | walletScanSuccessAction
-  | walletScanFalureAction
+  | walletScanPmmrRangeRequestAction
+  | walletScanPmmrRangeSuccessAction
+  | walletScanPmmrRangeFalureAction
+  | walletScanOutputsRequestAction
+  | walletScanOutputsSuccessAction
+  | walletScanOutputsFalureAction
   | walletPhraseRequestAction
   | walletPhraseSuccessAction
   | walletPhraseFalureAction
@@ -425,6 +445,11 @@ export type OutputStrategy = {
   selectionStrategyIsUseAll: boolean,
   total: number,
   fee: number,
+}
+
+export type PmmrRange = {
+  lastRetrievedIndex: number,
+  highestIndex: number,
 }
 
 export type Balance = {
@@ -500,6 +525,8 @@ export type RustOutputStrategy = {
   total: number,
   fee: number,
 }
+
+export type RustPmmrRange = Array<number>
 
 // Redux
 export type Error = {

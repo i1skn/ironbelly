@@ -16,11 +16,6 @@ or alternatively using `brew cask install fastlane`
 
 # Available Actions
 ## Android
-### android test
-```
-fastlane android test
-```
-Runs all the tests
 ### android alpha
 ```
 fastlane android alpha
@@ -31,6 +26,11 @@ Submit a new Alpha Build to Play Market
 fastlane android internal
 ```
 Submit a new Internal Build to Play Market
+### android apk
+```
+fastlane android apk
+```
+Build Release APK
 
 ----
 

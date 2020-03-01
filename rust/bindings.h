@@ -49,6 +49,11 @@ const char *c_wallet_init(const char *state,
 
 const char *c_wallet_phrase(const char *state_json, uint8_t *error);
 
-const char *c_wallet_scan(const char *state, uint64_t start_height, uint64_t limit, uint8_t *error);
+const char *c_wallet_pmmr_range(const char *state, uint8_t *error);
+
+const char *c_wallet_scan_outputs(const char *state,
+                                  uint64_t last_retrieved_index,
+                                  uint64_t highest_index,
+                                  uint8_t *error);
 
 void cstr_free(char *s);

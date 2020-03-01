@@ -26,20 +26,31 @@ import {
   type walletDestroyRequestAction,
   type walletDestroySuccessAction,
   type walletMigrateToMainnetRequestAction,
-  type walletScanRequestAction,
+  type walletScanOutputsRequestAction,
   type checkPasswordAction,
   type checkPasswordFromBiometryAction,
   type Store,
+  type PmmrRange,
+  type RustPmmrRange,
+  type walletScanPmmrRangeFalureAction,
+  type walletScanPmmrRangeRequestAction,
+  type walletScanOutputsFalureAction,
+  type walletScanPmmrRangeSuccessAction,
+  type walletScanOutputsSuccessAction,
+  type walletScanFailureAction,
 } from 'common/types'
 import { log } from 'common/logger'
 import { combineReducers } from 'redux'
-import { getStateForRust, checkWalletDataDirectory } from 'common'
+import { mapPmmrRange, getStateForRust, checkWalletDataDirectory } from 'common'
 import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY } from 'common'
 import { NavigationActions } from 'react-navigation'
 
-const { GrinBridge } = NativeModules
+const MAX_RETRIES = 10
 export const RECOVERY_LIMIT = 1000
+const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
+
+const { GrinBridge } = NativeModules
 
 export type WalletInitState = {|
   mnemonic: string,
@@ -56,9 +67,12 @@ export type WalletScanState = {|
   inProgress: boolean,
   progress: number,
   isDone: boolean,
-  lastRetrievedIndex: number,
-  highestIndex: number,
-  downloadedInBytes: number,
+  lastRetrievedIndex?: number,
+  lowestIndex?: number,
+  highestIndex?: number,
+  pmmrRangeLastUpdated?: number,
+  currentPmmrIndex?: number,
+  retryCount: number,
   error: {
     message: string,
     code?: number,
@@ -102,9 +116,9 @@ const initialState: State = {
     inProgress: false,
     progress: 0,
     isDone: false,
-    lastRetrievedIndex: -1,
-    highestIndex: 0,
-    downloadedInBytes: 0,
+    currentPmmrIndex: 0,
+    retryCount: 0,
+    pmmrRangeLastUpdated: 0,
     error: {
       message: '',
       code: 0,
@@ -194,24 +208,45 @@ const walletScan = function(
       return {
         ...initialState.walletScan,
       }
-    case 'WALLET_SCAN_REQUEST':
+    case 'WALLET_SCAN_PMMR_RANGE_SUCCESS':
       return {
         ...state,
-        inProgress: true,
-        error: {
-          message: '',
-          code: 0,
-        },
+        lowestIndex: state.lowestIndex ? state.lowestIndex : action.range.lastRetrievedIndex,
+        lastRetrievedIndex: state.lastRetrievedIndex
+          ? state.lastRetrievedIndex
+          : action.range.lastRetrievedIndex,
+        highestIndex: action.range.highestIndex,
+        pmmrRangeLastUpdated: Date.now(),
+        retryCount: 0,
       }
-    case 'WALLET_SCAN_SUCCESS':
+    case 'WALLET_SCAN_PMMR_RANGE_FAILURE':
       return {
         ...state,
-        progress:
-          action.highestIndex &&
-          Math.floor((action.lastRetrievedIndex * 100) / action.highestIndex),
+        retryCount: state.retryCount + 1,
+      }
+    case 'WALLET_SCAN_OUTPUTS_REQUEST':
+      return {
+        ...state,
+        error: initialState.walletScan.error,
+      }
+    case 'WALLET_SCAN_OUTPUTS_SUCCESS':
+      if (!state.highestIndex || !state.lowestIndex) {
+        return state
+      }
+
+      const range = state.highestIndex - state.lowestIndex
+      const progress = action.lastRetrievedIndex - state.lowestIndex
+      const percentageComplete = Math.min(Math.round((progress / range) * 100), 99)
+      return {
+        ...state,
+        retryCount: 0,
+        progress: percentageComplete,
         lastRetrievedIndex: action.lastRetrievedIndex,
-        highestIndex: action.highestIndex,
-        downloadedInBytes: action.downloadedInBytes,
+      }
+    case 'WALLET_SCAN_OUTPUTS_FAILURE':
+      return {
+        ...state,
+        retryCount: state.retryCount + 1,
       }
     case 'WALLET_SCAN_FAILURE':
       return {
@@ -355,29 +390,97 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_SCAN_REQUEST']: async (action: walletScanRequestAction, store: Store) => {
-    const { startIndex, limit } = action
+  ['WALLET_SCAN_FAILURE']: async (action: walletScanFailureAction, store: Store) => {
+    log(action, true)
+  },
+  ['WALLET_SCAN_PMMR_RANGE_REQUEST']: async (
+    action: walletScanPmmrRangeRequestAction,
+    store: Store
+  ) => {
     await checkWalletDataDirectory()
-    return GrinBridge.walletScan(getStateForRust(store.getState()), startIndex, limit)
-      .then(JSON.parse)
-      .then(({ lastRetrievedIndex, highestIndex, downloadedInBytes }) => {
-        if (lastRetrievedIndex === highestIndex) {
-          store.dispatch({
-            type: 'WALLET_SCAN_DONE',
-          })
-        } else {
-          store.dispatch({
-            type: 'WALLET_SCAN_SUCCESS',
-            lastRetrievedIndex,
-            highestIndex,
-            downloadedInBytes,
-          })
-        }
+    try {
+      const range = mapPmmrRange(
+        JSON.parse(await GrinBridge.walletPmmrRange(getStateForRust(store.getState())))
+      )
+      store.dispatch({ type: 'WALLET_SCAN_PMMR_RANGE_SUCCESS', range })
+    } catch (error) {
+      store.dispatch({ type: 'WALLET_SCAN_PMMR_RANGE_FAILURE', message: error.message })
+    }
+  },
+  ['WALLET_SCAN_PMMR_RANGE_SUCCESS']: async (
+    action: walletScanPmmrRangeSuccessAction,
+    store: Store
+  ) => {
+    store.dispatch({ type: 'WALLET_SCAN_OUTPUTS_REQUEST' })
+  },
+  ['WALLET_SCAN_PMMR_RANGE_FAILURE']: async (
+    action: walletScanPmmrRangeFalureAction,
+    store: Store
+  ) => {
+    const isPasswordSet = !!store.getState().wallet.password.value
+    if (!isPasswordSet) {
+      return
+    }
+
+    const { message } = action
+    const { retryCount } = store.getState().wallet.walletScan
+    if (retryCount < MAX_RETRIES) {
+      store.dispatch({ type: 'WALLET_SCAN_PMMR_RANGE_REQUEST' })
+    } else {
+      store.dispatch({ type: 'WALLET_SCAN_FAILURE', message })
+    }
+  },
+  ['WALLET_SCAN_OUTPUTS_REQUEST']: async (action: walletScanOutputsRequestAction, store: Store) => {
+    const { lastRetrievedIndex, highestIndex, lowestIndex } = store.getState().wallet.walletScan
+    if (!lowestIndex || !highestIndex) {
+      store.dispatch({ type: 'WALLET_SCAN_PMMR_RANGE_REQUEST' })
+      return
+    }
+    await checkWalletDataDirectory()
+    try {
+      const newlastRetrievedIndex = JSON.parse(
+        await GrinBridge.walletScanOutputs(
+          getStateForRust(store.getState()),
+          lastRetrievedIndex,
+          highestIndex
+        )
+      )
+      store.dispatch({
+        type: 'WALLET_SCAN_OUTPUTS_SUCCESS',
+        lastRetrievedIndex: newlastRetrievedIndex,
       })
-      .catch(error => {
-        store.dispatch({ type: 'WALLET_SCAN_FAILURE', message: error.message })
-        log(error, true)
-      })
+    } catch (error) {
+      store.dispatch({ type: 'WALLET_SCAN_OUTPUTS_FAILURE', message: error.message })
+    }
+  },
+  ['WALLET_SCAN_OUTPUTS_SUCCESS']: async (action: walletScanOutputsSuccessAction, store: Store) => {
+    const {
+      lastRetrievedIndex,
+      highestIndex,
+      pmmrRangeLastUpdated,
+    } = store.getState().wallet.walletScan
+    if (!pmmrRangeLastUpdated || Date.now() - pmmrRangeLastUpdated > PMMR_RANGE_UPDATE_INTERVAL) {
+      store.dispatch({ type: 'WALLET_SCAN_PMMR_RANGE_REQUEST' })
+    } else {
+      if (lastRetrievedIndex == highestIndex) {
+        store.dispatch({ type: 'WALLET_SCAN_DONE' })
+      } else {
+        store.dispatch({ type: 'WALLET_SCAN_OUTPUTS_REQUEST' })
+      }
+    }
+  },
+  ['WALLET_SCAN_OUTPUTS_FAILURE']: async (action: walletScanOutputsFalureAction, store: Store) => {
+    const isPasswordSet = !!store.getState().wallet.password.value
+    if (!isPasswordSet) {
+      return
+    }
+    const { message } = action
+    const { retryCount } = store.getState().wallet.walletScan
+    if (retryCount < MAX_RETRIES) {
+      store.dispatch({ type: 'WALLET_SCAN_OUTPUTS_REQUEST' })
+    } else {
+      store.dispatch({ type: 'WALLET_SCAN_FAILURE', message })
+    }
   },
   ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
     const { value } = store.getState().wallet.password

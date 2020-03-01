@@ -116,8 +116,8 @@ android {
         applicationId "app.ironbelly"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 14
-        versionName "3.0.2"
+        versionCode 17
+        versionName "3.0.5"
     }
     splits {
         abi {

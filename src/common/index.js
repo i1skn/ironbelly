@@ -23,7 +23,9 @@ import {
   type RustTx,
   type Tx,
   type RustOutputStrategy,
+  type RustPmmrRange,
   type OutputStrategy,
+  type PmmrRange,
   type RustBalance,
   type Balance,
   type State,
@@ -98,6 +100,13 @@ export const mapRustOutputStrategy = (oS: RustOutputStrategy): OutputStrategy =>
     total: oS.total,
     fee: oS.fee,
     selectionStrategyIsUseAll: oS.selection_strategy_is_use_all,
+  }
+}
+
+export const mapPmmrRange = (pR: RustPmmrRange): PmmrRange => {
+  return {
+    lastRetrievedIndex: pR[0],
+    highestIndex: pR[1],
   }
 }
 

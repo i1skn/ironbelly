@@ -16,11 +16,6 @@
 default_platform(:android)
 
 platform :android do
-  desc "Runs all the tests"
-  lane :test do
-    gradle(task: "test")
-  end
-
   desc "Submit a new Alpha Build to Play Market"
   lane :alpha do
     gradle(task: "clean bundleRelease")
@@ -32,5 +27,11 @@ platform :android do
     gradle(task: "clean bundleRelease")
     upload_to_play_store(track: 'internal')
   end
+
+  desc "Build Release APK"
+  lane :apk do
+    gradle(task: "clean assembleRelease")
+  end
+
 
 end

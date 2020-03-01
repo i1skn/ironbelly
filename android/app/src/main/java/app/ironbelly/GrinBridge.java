@@ -86,9 +86,18 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void walletScan(String state, double startIndex, double limit, Promise promise) {
+  public void walletPmmrRange(String state, Promise promise) {
     try {
-      promise.resolve(walletScan(state, (long) startIndex, (long) limit));
+      promise.resolve(walletPmmrRange(state));
+    } catch (Exception e) {
+      promise.reject("", e.getMessage());
+    }
+  }
+
+  @ReactMethod
+  public void walletScanOutputs(String state, double lastRetrievedIndex, double highestIndex, Promise promise) {
+    try {
+      promise.resolve(walletScanOutputs(state, (long) lastRetrievedIndex, (long) highestIndex));
     } catch (Exception e) {
       promise.reject("", e.getMessage());
     }
@@ -191,7 +200,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
   private static native String checkPassword(String state, String password);
 
-  private static native String walletScan(String state, long startIndex, long limit);
+  private static native String walletScanOutputs(String state, long lastRetrievedIndex, long highestIndex);
+
+  private static native String walletPmmrRange(String state);
 
   private static native String txStrategies(String state, long amount);
 

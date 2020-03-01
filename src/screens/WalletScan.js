@@ -29,10 +29,9 @@ import KeepAwake from 'react-native-keep-awake'
 
 type Props = WalletScanState & {
   navigation: Navigation,
-  scanRequest: (startIndex: number) => void,
-  scanReset: () => void,
+  startScanOutputs: () => void,
+  resetScan: () => void,
 }
-type State = {}
 
 const StatusText = styled(Text)`
   font-size: 24;
@@ -45,32 +44,31 @@ const Wrapper = styled(LoaderView)`
   padding: 16px;
 `
 
-class WalletScan extends Component<Props, State> {
+class WalletScan extends Component<Props, {}> {
   static navigationOptions = {
     header: null,
   }
 
-  state = {}
+  onFinish = () => {
+    this.props.navigation.navigate('Main')
+    this.props.resetScan()
+  }
 
   componentDidMount() {
-    const { scanRequest, lastRetrievedIndex, inProgress } = this.props
+    const { startScanOutputs, inProgress } = this.props
     if (inProgress) {
-      scanRequest(lastRetrievedIndex + 1)
+      startScanOutputs()
     }
   }
 
   componentDidUpdate(prevProps) {
     if (this.props.error.message && !prevProps.error.message) {
-      this.props.navigation.goBack()
-    }
-    const { scanRequest, lastRetrievedIndex, inProgress } = this.props
-    if (inProgress && lastRetrievedIndex !== prevProps.lastRetrievedIndex) {
-      scanRequest(lastRetrievedIndex + 1)
+      this.onFinish()
     }
   }
 
   render() {
-    const { navigation, isDone, inProgress, progress, scanReset } = this.props
+    const { navigation, isDone, inProgress, progress, resetScan } = this.props
     return (
       <Wrapper>
         <KeepAwake />
@@ -82,10 +80,7 @@ class WalletScan extends Component<Props, State> {
               testID="ShowMeButton"
               title="Show me"
               disabled={false}
-              onPress={() => {
-                navigation.navigate('Main')
-                scanReset()
-              }}
+              onPress={this.onFinish}
             />
           </>
         )) || (
@@ -121,10 +116,10 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  scanRequest: startIndex => {
-    dispatch({ type: 'WALLET_SCAN_REQUEST', startIndex, limit: RECOVERY_LIMIT })
+  startScanOutputs: () => {
+    dispatch({ type: 'WALLET_SCAN_OUTPUTS_REQUEST' })
   },
-  scanReset: () => {
+  resetScan: () => {
     dispatch({ type: 'WALLET_SCAN_RESET' })
   },
 })
