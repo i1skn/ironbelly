@@ -150,7 +150,7 @@ class RealApp extends React.Component<Props, State> {
           }
         } else if (['file:'].indexOf(link.protocol) !== -1 && link.path) {
           const path = isAndroid ? decodeURIComponent(link.path) : link.path
-          nextScreen = isResponseSlate(link.path)
+          nextScreen = (await isResponseSlate(link.path))
             ? {
                 name: 'Overview',
                 params: { responseSlatePath: path },
@@ -170,7 +170,7 @@ class RealApp extends React.Component<Props, State> {
             .pop()
           const destPath = `${SLATES_DIRECTORY}/${fileName}`
           await RNFS.copyFile(url, destPath)
-          nextScreen = isResponseSlate(link.href)
+          nextScreen = (await isResponseSlate(link.href))
             ? {
                 name: 'Overview',
                 params: { responseSlatePath: destPath },

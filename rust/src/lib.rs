@@ -13,7 +13,7 @@
 // limitations under the License.
 
 use grin_wallet_libwallet::{
-    scan, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient, WalletInst,
+    scan, selection, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient, WalletInst,
     WalletLCProvider,
 };
 use grin_wallet_util::grin_core::global::ChainTypes;
@@ -38,6 +38,8 @@ use uuid::Uuid;
 extern crate log;
 
 use simplelog::{Config, LevelFilter, SimpleLogger};
+
+const USER_MESSAGE_MAX_LEN: usize = 256;
 
 fn c_str_to_rust(s: *const c_char) -> String {
     unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
@@ -489,36 +491,29 @@ struct Strategy {
 fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone(), None);
     let mut result = vec![];
-    let mut args = InitTxArgs {
-        src_acct_name: None,
-        amount,
-        minimum_confirmations: state.minimum_confirmations,
-        max_outputs: 500,
-        num_change_outputs: 1,
-        selection_strategy_is_use_all: false,
-        message: None,
-        target_slate_version: None,
-        estimate_only: Some(true),
-        send_args: None,
-        payment_proof_recipient_address: None,
-        ttl_blocks: None,
-    };
-    if let Ok(smallest) = api.init_send_tx(None, args.clone()) {
-        result.push(Strategy {
-            selection_strategy_is_use_all: false,
-            total: smallest.amount,
-            fee: smallest.fee,
-        })
+    wallet_lock!(wallet, w);
+    let parent_key_id = w.parent_key_id().clone();
+    let client = w.w2n_client().clone();
+    let tip = client.get_chain_tip()?;
+    for selection_strategy_is_use_all in vec![true, false].into_iter() {
+        if let Ok((_coins, total, _amount, fee)) = selection::select_coins_and_fee(
+            &mut **w,
+            amount,
+            tip.0,
+            state.minimum_confirmations,
+            500,
+            1,
+            selection_strategy_is_use_all,
+            &parent_key_id,
+        ) {
+            result.push(Strategy {
+                selection_strategy_is_use_all,
+                total,
+                fee,
+            })
+        }
     }
-    args.selection_strategy_is_use_all = true;
-    let all = api.init_send_tx(None, args).map_err(|e| Error::from(e))?;
-    result.push(Strategy {
-        selection_strategy_is_use_all: true,
-        total: all.amount,
-        fee: all.fee,
-    });
     Ok(serde_json::to_string(&result).unwrap())
 }
 
@@ -539,25 +534,49 @@ fn tx_create(
 ) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone(), None);
-    let args = InitTxArgs {
-        src_acct_name: None,
-        amount,
-        minimum_confirmations: state.minimum_confirmations,
-        max_outputs: 500,
-        num_change_outputs: 1,
-        selection_strategy_is_use_all,
-        message: Some(message.to_owned()),
-        target_slate_version: None,
-        estimate_only: Some(false),
-        send_args: None,
-        payment_proof_recipient_address: None,
-        ttl_blocks: None,
+    // sender should always refresh outputs
+    let message = match message.len() > 0 {
+        true => {
+            let mut truncated_message = message.to_owned();
+            truncated_message.truncate(USER_MESSAGE_MAX_LEN);
+            Some(truncated_message)
+        }
+        false => None,
     };
-    let mut slate = api.init_send_tx(None, args).unwrap();
+
+    let parent_key_id = {
+        wallet_lock!(wallet, w);
+        w.parent_key_id().clone()
+    };
+
+    wallet_lock!(wallet, w);
+    let current_height = updater::refresh_outputs(&mut **w, None, &parent_key_id, false)?;
+    let mut slate = tx::new_tx_slate(&mut **w, amount, current_height, 2, false, None)?;
+    let context = tx::add_inputs_to_slate(
+        &mut **w,
+        None,
+        &mut slate,
+        state.minimum_confirmations,
+        500,
+        1,
+        selection_strategy_is_use_all,
+        &parent_key_id,
+        0,
+        message,
+        true,
+        false,
+    )?;
+
+    {
+        let mut batch = w.batch(None)?;
+        batch.save_private_context(slate.id.as_bytes(), 0, &context)?;
+        batch.commit()?;
+    }
+
     slate.version_info.version = 2;
     slate.version_info.orig_version = 2;
-    api.tx_lock_outputs(None, &slate, 0)?;
+    selection::lock_tx_context(&mut **w, None, &slate, &context)?;
+
     Ok(
         serde_json::to_string(&slate_versions::VersionedSlate::into_version(
             slate.clone(),
@@ -588,8 +607,11 @@ pub unsafe extern "C" fn c_tx_create(
 
 fn tx_cancel(state_json: &str, id: u32) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone(), None);
-    api.cancel_tx(None, Some(id), None)?;
+    // let api = Owner::new(wallet.clone(), None);
+    // api.cancel_tx(None, Some(id), None)?;
+    wallet_lock!(wallet, w);
+    let parent_key_id = w.parent_key_id();
+    tx::cancel_tx(&mut **w, None, &parent_key_id, Some(id), None)?;
     Ok("".to_owned())
 }
 
@@ -607,7 +629,7 @@ fn tx_receive(state_json: &str, slate_path: &str, message: &str) -> Result<Strin
     let wallet = get_wallet(state.clone())?;
     let api = Foreign::new(wallet.clone(), None, None);
     let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
-    api.verify_slate_messages(&slate)?;
+    slate.verify_messages()?;
     if let Some(account) = state.account {
         slate = api.receive_tx(&slate, Some(&account), Some(message.to_owned()))?;
         Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
@@ -639,7 +661,9 @@ fn tx_finalize(state_json: &str, slate_path: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone(), None);
     let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
-    api.verify_slate_messages(None, &slate)?;
+    // api.verify_slate_messages(None, &slate)?;
+    slate.verify_messages()?;
+
     slate = api.finalize_tx(None, &slate)?;
     Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }

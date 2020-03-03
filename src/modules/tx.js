@@ -321,7 +321,7 @@ export const sideEffects = {
         store.dispatch({ type: 'SLATE_SET_REQUEST', slate, isResponse: false })
         store.dispatch({ type: 'SLATE_SHARE_REQUEST', id: slate.id, isResponse: false })
 
-        store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+        store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: false })
       })
       .catch(error => {
         const e = JSON.parse(error.message)
@@ -346,7 +346,6 @@ export const sideEffects = {
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({ type: 'TX_SEND_HTTPS_SUCCESS' })
       store.dispatch({ type: 'TX_POST_SHOW', txSlateId: slate.id })
-      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
     } catch (e) {
       store.dispatch({ type: 'TX_SEND_HTTPS_FAILURE', message: e.message })
       log(e, true)
@@ -371,7 +370,7 @@ export const sideEffects = {
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       await AsyncStorage.setItem('@postedTxs', JSON.stringify(posted))
       store.dispatch({ type: 'TX_POST_SUCCESS' })
-      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: false })
       setTimeout(() => {
         store.dispatch({ type: 'TX_POST_CLOSE' })
       }, 3000)
@@ -387,7 +386,7 @@ export const sideEffects = {
         store.dispatch({ type: 'TX_RECEIVE_SUCCESS' })
         store.dispatch({ type: 'SLATE_SHARE_REQUEST', id: slate.id, isResponse: true })
         store.dispatch({ type: 'SLATE_SET_REQUEST', slate, isResponse: true })
-        store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+        store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: false })
       })
       .catch(e => {
         store.dispatch({ type: 'TX_RECEIVE_FAILURE', message: e.message })
@@ -408,7 +407,7 @@ export const sideEffects = {
       finalized.push(slate.id)
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({ type: 'TX_POST_SHOW', txSlateId: slate.id })
-      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: true })
+      store.dispatch({ type: 'TX_LIST_REQUEST', showLoader: false, refreshFromNode: false })
     } catch (e) {
       store.dispatch({ type: 'TX_FINALIZE_FAILURE', message: e.message })
       log(e, true)

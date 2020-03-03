@@ -187,7 +187,14 @@ export const Spacer = styled.View`
   width: 100%;
 `
 
-export const isResponseSlate = (slatePath: string) => slatePath.substr(-9) === '.response'
+export const isResponseSlate = async (slatePath: string) => {
+  try {
+    const slate = await RNFS.readFile(slatePath, 'utf8').then((json: string) => JSON.parse(json))
+    return slate['participant_data'].length === slate['num_participants']
+  } catch (e) {
+    return slatePath.substr(-9) === '.response'
+  }
+}
 
 export const getSlatePath = (slateId: string, isResponse: boolean) => {
   return `${SLATES_DIRECTORY}/${slateId}.grinslate${isResponse ? '.response' : ''}`
