@@ -180,7 +180,6 @@ class Overview extends Component<Props, State> {
           minimumConfirmations={minimumConfirmations}
         />
         <SwipeListView
-          useFlatList
           data={txs}
           ListEmptyComponent={
             <NoTxsView>
@@ -331,7 +330,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Overview)
+export default connect(mapStateToProps, mapDispatchToProps)(Overview)

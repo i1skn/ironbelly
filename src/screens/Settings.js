@@ -117,7 +117,7 @@ class Settings extends Component<Props, State> {
     let title = 'Repair this wallet'
     let desc =
       "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
-    NetInfo.getConnectionInfo().then(({ type }) => {
+    NetInfo.fetch().then(({ type }) => {
       if (type === 'none') {
         Alert.alert(`Device is offline`, `Wallet recovery requires connection to the internet!`, [
           {
@@ -289,7 +289,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Settings)
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

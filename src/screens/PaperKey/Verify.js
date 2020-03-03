@@ -100,7 +100,7 @@ class Verify extends Component<Props, State> {
     return () => {
       const { isNew, password, createWallet } = this.props
       if (!isNew) {
-        NetInfo.getConnectionInfo().then(({ type }) => {
+        NetInfo.fetch().then(({ type }) => {
           if (type === 'none') {
             Alert.alert(
               `Device is offline`,
@@ -237,7 +237,4 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 })
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Verify)
+export default connect(mapStateToProps, mapDispatchToProps)(Verify)

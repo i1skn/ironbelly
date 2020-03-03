@@ -43,7 +43,7 @@ class NewPassword extends Component<Props, State> {
     title: 'Password',
   }
 
-  componentWillMount() {
+  UNSAFE_componentWillMount() {
     const { navigation, setIsNew } = this.props
     if (navigation.state.params) {
       setIsNew(navigation.state.params.isNew)
