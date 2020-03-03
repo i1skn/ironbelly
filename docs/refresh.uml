@@ -1,0 +1,24 @@
+@startuml refresh.png
+/' skinparam dpi 300 '/
+/' scale 1000 width '/
+title Refresh 
+ReactNative -> Rust: Request PMMR 
+Rust -> GrinNode: Request chain Tip 
+GrinNode -> Rust: Tip 
+Rust -> GrinNode: Request PMMR range for Last scanned block..Tip blocks 
+GrinNode -> Rust: PMMR range 
+Rust -> ReactNative: PMMR range 
+ReactNative -> ReactNative: n = PMMR range start
+loop while n < PMMR range end
+ReactNative -> ReactNative: m = n + CONST
+ReactNative -> Rust: Request n..m outputs:\nn < m <= PMMR range end
+Rust -> GrinNode: Scan n..m outputs 
+GrinNode -> Rust: n..m outputs 
+Rust -> Rust: Find ones, which belong to "us" 
+Rust -> lmdb: Store "our" outputs 
+Rust -> ReactNative: Successful scan of n..m outputs 
+ReactNative -> ReactNative: n = m + 1
+end
+@enduml
+
+

@@ -1,0 +1,9 @@
+@startuml balance.png
+title Balance 
+ReactNative -> Rust: Request balance 
+Rust -> lmdb: Request list of outputs 
+lmdb -> Rust: Return list of outputs 
+Rust -> Rust: Calculate balance 
+Rust -> ReactNative: Return balance 
+@enduml
+
