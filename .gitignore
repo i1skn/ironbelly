@@ -4,7 +4,6 @@
 
 # Xcode
 #
-ios/Pods
 build/
 *.pbxuser
 !default.pbxuser
@@ -23,7 +22,6 @@ DerivedData
 *.dSYM.zip
 *.xcuserstate
 project.xcworkspace
-rust/libwallet.a
 
 # Android/IntelliJ
 #
@@ -32,13 +30,10 @@ build/
 .gradle
 local.properties
 *.iml
-android/app/src/main/assets/index.android.bundle
-android/app/src/main/jniLibs/arm64-v8a/libwallet.so
-android/app/src/main/jniLibs/armeabi-v7a/libwallet.so
-android/app/src/main/jniLibs/x86/libwallet.so
-android/app/src/main/jniLibs/x86_64/libwallet.so
-android/key.json
 
+# Visual Studio Code
+#
+.vscode/
 
 # node.js
 #
@@ -50,6 +45,7 @@ yarn-error.log
 buck-out/
 \.buckd/
 *.keystore
+!debug.keystore
 
 # fastlane
 #
@@ -64,3 +60,18 @@ buck-out/
 
 # Bundle artifact
 *.jsbundle
+android/app/src/main/assets/index.android.bundle
+
+# CocoaPods
+/ios/Pods/
+
+# Rust Libraries
+android/app/src/main/jniLibs/arm64-v8a/libwallet.so
+android/app/src/main/jniLibs/armeabi-v7a/libwallet.so
+android/app/src/main/jniLibs/x86/libwallet.so
+android/app/src/main/jniLibs/x86_64/libwallet.so
+rust/libwallet.a
+
+# Android key
+android/key.json
+
