@@ -52,7 +52,7 @@ class Receive extends Component<Props, State> {
 
   componentDidMount() {}
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps: Props) {}
 
   render() {
     const listData = [

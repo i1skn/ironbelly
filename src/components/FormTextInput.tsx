@@ -14,6 +14,13 @@
 // limitations under the License.
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
+import {
+  KeyboardTypeOptions,
+  ReturnKeyTypeOptions,
+  TextInputIOSProps,
+  NativeSyntheticEvent,
+  TextInputFocusEventData,
+} from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
 type Props = {
   units?: string
@@ -23,17 +30,18 @@ type Props = {
   maxLength?: number
   value: string
   onChange: (value: string) => void
-  onFocus?: (value: string) => void
-  onBlur?: (value: string) => void
+  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void
+  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void
   autoFocus: boolean
   secureTextEntry?: boolean
-  textContentType?: string
-  keyboardType?: string
+  textContentType?: TextInputIOSProps['textContentType']
+  keyboardType?: KeyboardTypeOptions
   autoCorrect?: boolean
   getRef?: (a: any) => void
-  returnKeyType?: string
+  returnKeyType?: ReturnKeyTypeOptions
   onSubmitEditing?: (a: any) => void
   multiline?: boolean
+  readonly?: boolean
 }
 type State = {}
 const Layout = styled.View`
@@ -92,10 +100,10 @@ export default class FormTextInput extends Component<Props, State> {
             maxLength={maxLength}
             placeholder={placeholder}
             testID={testID}
-            keyboardType={keyboardType}
-            textContentType={textContentType}
+            keyboardType={keyboardType ?? 'default'}
+            textContentType={textContentType ?? 'none'}
             autoCorrect={autoCorrect}
-            returnKeyType={returnKeyType}
+            returnKeyType={returnKeyType ?? 'none'}
             onSubmitEditing={onSubmitEditing}
             onFocus={onFocus}
             onBlur={onBlur}

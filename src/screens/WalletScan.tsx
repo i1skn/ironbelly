@@ -20,9 +20,11 @@ import { Spacer, LoaderView } from 'src/common'
 import colors from 'src/common/colors'
 import { State as ReduxState, Navigation } from 'src/common/types'
 import { Text, Button } from 'src/components/CustomFont'
-import { RECOVERY_LIMIT, WalletScanState } from 'src/modules/wallet'
+import { WalletScanState } from 'src/modules/wallet'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import KeepAwake from 'react-native-keep-awake'
+import { Dispatch } from 'src/common/types'
+
 type Props = WalletScanState & {
   navigation: Navigation
   startScanOutputs: () => void
@@ -55,14 +57,14 @@ class WalletScan extends Component<Props, {}> {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (this.props.error.message && !prevProps.error.message) {
       this.onFinish()
     }
   }
 
   render() {
-    const { navigation, isDone, inProgress, progress, resetScan } = this.props
+    const { isDone, inProgress, progress } = this.props
     return (
       <Wrapper>
         <KeepAwake />
@@ -93,7 +95,7 @@ class WalletScan extends Component<Props, {}> {
                   rotation={0}
                   duration={100}
                   backgroundColor={colors.primary}>
-                  {fill => <ProgressText>{`${progress}%`}</ProgressText>}
+                  {() => <ProgressText>{`${progress}%`}</ProgressText>}
                 </AnimatedCircularProgress>
                 <Spacer />
                 <StatusText
@@ -113,7 +115,7 @@ class WalletScan extends Component<Props, {}> {
 
 const mapStateToProps = (state: ReduxState) => ({ ...state.wallet.walletScan })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   startScanOutputs: () => {
     dispatch({
       type: 'WALLET_SCAN_OUTPUTS_REQUEST',

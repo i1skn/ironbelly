@@ -149,14 +149,14 @@ const Send = ({
     if (isCreated || isSent) {
       navigation.goBack()
     }
-  }, [isCreated, isSent])
+  }, [isCreated, isSent, navigation])
   useMemo(() => {
     if (amount) {
       getOutputStrategies(amount)
     } else {
       resetOutputStrategies()
     }
-  }, [amount])
+  }, [amount, getOutputStrategies, resetOutputStrategies])
   return (
     <KeyboardAwareScrollView
       style={{

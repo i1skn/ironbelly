@@ -69,7 +69,7 @@ class Show extends Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps: Props) {}
 
   render() {
     const { navigation, mnemonic, phrase } = this.props

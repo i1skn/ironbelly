@@ -127,7 +127,7 @@ class Overview extends Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const { txFinalizeInProgress } = this.props
     const { responseSlatePath } = this.props.navigation.state.params
 

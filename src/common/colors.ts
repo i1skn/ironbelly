@@ -307,7 +307,7 @@ export const amber = {
 export default {
   primary: yellow['500'],
   warning: red['500'],
-  success: green['A700'],
+  success: green.A700,
   link: blue[700],
   grey,
   red,

@@ -7,7 +7,7 @@
     "start": "react-native start",
     "build": "tsc --noEmit",
     "test": "jest",
-    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+    "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx"
   },
   "hooks": {
     "pre-commit": "npm run lint"
@@ -55,7 +55,7 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "6",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^4.2.0",
+    "styled-components": "5.0.1",
     "url": "^0.11.0"
   },
   "devDependencies": {
@@ -64,9 +64,11 @@
     "@react-native-community/eslint-config": "^0.0.5",
     "@types/jest": "^24.0.24",
     "@types/react-native": "^0.60.25",
+    "@types/react-native-keep-awake": "^2.0.2",
     "@types/react-redux": "^7.1.7",
     "@types/react-test-renderer": "16.9.1",
     "@types/redux-logger": "^3.0.7",
+    "@types/styled-components": "^5.0.1",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
     "babel-jest": "^24.6.0",

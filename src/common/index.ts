@@ -109,7 +109,7 @@ export const getStateForRust = (state: State): string => {
   }
   return JSON.stringify(result)
 }
-export const SLATES_DIRECTORY = RNFS.DocumentDirectoryPath + `/slates`
+export const SLATES_DIRECTORY = RNFS.DocumentDirectoryPath + '/slates'
 export const APPLICATION_SUPPORT_DIRECTORY = isAndroid
   ? RNFS.DocumentDirectoryPath
   : RNFS.LibraryDirectoryPath + '/Application Support'
@@ -170,7 +170,7 @@ export const Spacer = styled.View`
 export const isResponseSlate = async (slatePath: string) => {
   try {
     const slate = await RNFS.readFile(slatePath, 'utf8').then((json: string) => JSON.parse(json))
-    return slate['participant_data'].length === slate['num_participants']
+    return slate.participant_data.length === slate.num_participants
   } catch (e) {
     return slatePath.substr(-9) === '.response'
   }

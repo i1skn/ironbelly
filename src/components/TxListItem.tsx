@@ -102,7 +102,7 @@ const TxListItem = (props: Props) => {
         ) : (
           <UnconfirmedGuide>
             {type === 'TxPosted'
-              ? `Awaiting confirmation`
+              ? 'Awaiting confirmation'
               : type === 'TxFinalized'
               ? 'Click to confirm'
               : isSent

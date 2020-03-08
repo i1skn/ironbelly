@@ -116,7 +116,7 @@ export type txPostFalureAction = {
 }
 export type setSettingsAction = {
   type: 'SET_SETTINGS'
-  newSettings: SettingsState
+  newSettings: { [k in keyof SettingsState]?: SettingsState[k] }
 }
 export type switchToMainnetAction = {
   type: 'SWITCH_TO_MAINNET'
@@ -436,7 +436,7 @@ export type currencyRatesRequestAction = {
 }
 export type currencyRatesSuccessAction = {
   type: 'CURRENCY_RATES_SUCCESS'
-  rates: object
+  rates: { [x: string]: object }
 }
 export type currencyRatesFalureAction = {
   type: 'CURRENCY_RATES_FAILURE'
@@ -554,13 +554,13 @@ export type Currency = {
   fractionDigits: number
 }
 export type State = {
-  settings: SettingsState
   balance: BalanceState
   tx: TxState
+  currencyRates: CurrencyRatesState
+  settings: SettingsState
   toaster: ToastedState
   wallet: WalletState
   nav: NavigationState
-  currencyRates: CurrencyRatesState
 }
 export type GetState = () => State
 export type Dispatch = (action: Action) => any
@@ -569,8 +569,8 @@ export type Store = {
   getState: () => State
 }
 export type Navigation = {
-  navigate: (screen: string, params: any) => void
-  replace: (screen: string, params: any) => void
+  navigate: (screen: string, params?: any) => void
+  replace: (screen: string, params?: any) => void
   setParams: any
   dispatch: (action: any) => void
   goBack: (key?: string | null) => void

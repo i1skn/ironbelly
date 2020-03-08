@@ -13,16 +13,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { Component } from 'react'
-import { TouchableOpacity } from 'react-native'
 import { connect } from 'react-redux'
-import { FlexGrow, KeyboardAvoidingWrapper, Spacer } from 'src/common'
-import { Button, Text } from 'src/components/CustomFont'
+import { KeyboardAvoidingWrapper, Spacer } from 'src/common'
+import { Text } from 'src/components/CustomFont'
 import styled from 'styled-components/native'
 import FormTextInput from 'src/components/FormTextInput'
-import { State as ReduxState } from 'src/common/types'
+import { State as ReduxState, Dispatch } from 'src/common/types'
 import { apiSecretFilePath } from 'src/modules/settings'
 import RNFS from 'react-native-fs'
 import { store } from 'src/common/redux'
+import { NavigationScreenProp, NavigationParams } from 'react-navigation'
 import {
   MAINNET_CHAIN,
   FLOONET_CHAIN,
@@ -33,10 +33,11 @@ type Props = {
   nodeUrl: string
   setNodeUrl: (nodeUrl: string) => void
   setApiSecret: (apiSecret: string) => void
+  navigation: NavigationScreenProp<NavigationParams>
 }
 type State = {
-  apiSecret: string
-  nodeUrl: string
+  apiSecret?: string
+  nodeUrl?: string
 }
 const ResetButton = styled.TouchableOpacity`
   padding-right: 16px;
@@ -47,13 +48,17 @@ const ResetButtonText = styled(Text)`
 `
 
 class GrinNode extends Component<Props, State> {
-  static navigationOptions = ({ navigation }) => {
+  static navigationOptions = ({
+    navigation,
+  }: {
+    navigation: NavigationScreenProp<NavigationParams>
+  }) => {
     return {
       title: 'Grin node',
       headerRight: (
         <ResetButton
           onPress={() => {
-            const state = store.getState()
+            const state = store.getState() as ReduxState
 
             switch (state.settings.chain) {
               case MAINNET_CHAIN:
@@ -80,7 +85,6 @@ class GrinNode extends Component<Props, State> {
       ),
     }
   }
-  state = {}
 
   async componentDidMount() {
     try {
@@ -91,7 +95,7 @@ class GrinNode extends Component<Props, State> {
     } catch (e) {}
   }
 
-  static getDerivedStateFromProps(props, state) {
+  static getDerivedStateFromProps(props: Props, state: State) {
     // Re-run the filter whenever the list array or filter text change.
     // Note we need to store prevPropsList and prevFilterText to detect changes.
     const apiSecretAfterReset = props.navigation.getParam('apiSecret')
@@ -135,9 +139,9 @@ class GrinNode extends Component<Props, State> {
             })
           }
           onBlur={() => {
-            setApiSecret(apiSecret)
+            apiSecret && setApiSecret(apiSecret)
           }}
-          value={apiSecret}
+          value={apiSecret ?? ''}
           placeholder="API Secret"
           autoCorrect={false}
           title="API Secret"
@@ -151,8 +155,8 @@ const mapStateToProps = (state: ReduxState) => ({
   nodeUrl: state.settings.checkNodeApiHttpAddr,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  setNodeUrl: checkNodeApiHttpAddr => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setNodeUrl: (checkNodeApiHttpAddr: string) => {
     dispatch({
       type: 'SET_SETTINGS',
       newSettings: {
@@ -160,7 +164,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       },
     })
   },
-  setApiSecret: apiSecret => {
+  setApiSecret: (apiSecret: string) => {
     dispatch({
       type: 'SET_API_SECRET',
       apiSecret,

@@ -22,6 +22,7 @@ import FormTextInput from 'src/components/FormTextInput'
 import { hrGrin } from 'src/common'
 import { Text } from 'src/components/CustomFont'
 import { State as ReduxState, Currency, Tx, Error, Navigation } from 'src/common/types'
+import { Dispatch } from 'src/common/types'
 type Props = {
   txGet: (id: number) => void
   tx: Tx
@@ -57,15 +58,11 @@ class TxDetails extends Component<Props, State> {
     valid: false,
   }
 
-  componentDidMount() {}
-
-  componentDidUpdate(prevProps) {}
-
   render() {
     const { tx } = this.props
     return (
       <React.Fragment>
-        <Wrapper behavior={isAndroid ? '' : 'padding'}>
+        <Wrapper behavior={isAndroid ? undefined : 'padding'}>
           {tx && (
             <View
               style={{
@@ -112,6 +109,4 @@ const mapStateToProps = (state: ReduxState, ownProps: Props) => () => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({})
-
-export default connect(mapStateToProps, mapDispatchToProps)(TxDetails)
+export default connect(mapStateToProps, null)(TxDetails)

@@ -12,11 +12,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { isFSA } from 'flux-standard-action'
 import { Store, Action } from 'src/common/types'
+
 type Effects = {
-  [x: string]: (a: Action, s: Store) => Action
+  [x: string]: (a: any, s: Store) => any
 }
+
+const isAction = (o: any): boolean => {
+  return !!o?.type
+}
+
 export const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => (
   action: Action,
 ) => {
@@ -26,10 +31,10 @@ export const createMiddleware = (effects: Effects) => (store: Store) => (next: a
   if (effect) {
     const result = effect(action, store)
 
-    if (isFSA(result)) {
+    if (isAction(result)) {
       store.dispatch(result)
     } else if (result instanceof Promise) {
-      result.then(res => isFSA(res) && store.dispatch(res))
+      result.then(res => isAction(res) && store.dispatch(res))
     }
   }
 

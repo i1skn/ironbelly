@@ -981,7 +981,7 @@ export const isTxFormValid = (txForm: TxForm, transferMethod: string) => {
   return false
 }
 export const reducer = combineReducers({
-  list: persistReducer(listPersistConfig, list),
+  list: persistReducer(listPersistConfig, list) as typeof list,
   txCreate,
   txSend,
   txPost,

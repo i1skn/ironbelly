@@ -43,7 +43,7 @@ import { store, persistor } from 'src/common/redux'
 import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
 import { AppContainer } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
-import { NavigationState, NavigationActions } from 'react-navigation'
+import { NavigationState, NavigationActions, NavigationRoute } from 'react-navigation'
 import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'src/modules/settings'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
@@ -254,12 +254,12 @@ class RealApp extends React.Component<Props, State> {
     }
   }
 
-  shouldCloseApp(currentRoute: NavigationState) {
+  shouldCloseApp(currentRoute: NavigationRoute) {
     return ['Overview', 'Landing', 'Password'].indexOf(currentRoute.routeName) !== -1
   }
 
   getCurrentRoute(state: NavigationState) {
-    let route = state
+    let route = state as NavigationRoute
 
     while (route.hasOwnProperty('index')) {
       route = route.routes[route.index]
@@ -270,7 +270,9 @@ class RealApp extends React.Component<Props, State> {
 
   _handleBackPress = () => {
     const { dispatch, nav } = this.props
-    if (this.shouldCloseApp(this.getCurrentRoute(nav))) return false
+    if (this.shouldCloseApp(this.getCurrentRoute(nav))) {
+      return false
+    }
     dispatch(NavigationActions.back())
     return true
   }
@@ -278,12 +280,16 @@ class RealApp extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if (prevProps.toastMessage.text !== this.props.toastMessage.text) {
       if (this.props.toastMessage.text) {
+        // @ts-ignore
         this.refs.toast.timer && clearTimeout(this.refs.toast.timer)
+        // @ts-ignore
         this.refs.toast.show(this.props.toastMessage.text, this.props.toastMessage.duration, () => {
           this.props.clearToast()
         })
       } else {
+        // @ts-ignore
         if (this.refs.toast.state.isShow) {
+          // @ts-ignore
           this.refs.toast.setState({
             isShow: false,
           })
@@ -306,6 +312,7 @@ class RealApp extends React.Component<Props, State> {
           <TxPostConfirmationModal />
         </Modal>
         <AppContainer state={this.props.nav} dispatch={dispatch} />
+        // @ts-ignore
         <Toast ref="toast" position={'top'} positionValue={isIphoneX() ? 75 : 55} />
       </React.Fragment>
     )

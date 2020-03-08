@@ -63,7 +63,7 @@ class Settings extends Component<Props, State> {
     // this.props.setChain('floonet')
   }
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps: Props) {}
 
   _onMigrateToMainnet = () => {
     return Alert.alert('Switch to Mainnet', 'This would destroy your floonet wallet!', [
@@ -113,7 +113,7 @@ class Settings extends Component<Props, State> {
       "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
     NetInfo.fetch().then(({ type }) => {
       if (type === 'none') {
-        Alert.alert(`Device is offline`, `Wallet recovery requires connection to the internet!`, [
+        Alert.alert('Device is offline', 'Wallet recovery requires connection to the internet!', [
           {
             text: 'Ok',
             onPress: () => {},

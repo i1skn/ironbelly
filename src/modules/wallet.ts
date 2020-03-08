@@ -320,7 +320,7 @@ export const reducer = combineReducers({
       whitelist: ['isNew'],
     },
     walletInit,
-  ),
+  ) as typeof walletInit,
   walletScan: persistReducer(
     {
       key: 'walletScan',
@@ -335,7 +335,7 @@ export const reducer = combineReducers({
       ],
     },
     walletScan,
-  ),
+  ) as typeof walletScan,
   walletPhrase,
 })
 export const sideEffects = {

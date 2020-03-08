@@ -81,7 +81,7 @@ class Verify extends Component<Props, State> {
     // })
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (
       (this.props.inProgress && !prevProps.inProgress) ||
       (this.props.isDone && !prevProps.isDone)
@@ -98,8 +98,8 @@ class Verify extends Component<Props, State> {
         NetInfo.fetch().then(({ type }) => {
           if (type === 'none') {
             Alert.alert(
-              `Device is offline`,
-              `Wallet recovery requires connection to the internet!`,
+              'Device is offline',
+              'Wallet recovery requires connection to the internet!',
               [
                 {
                   text: 'Ok',
@@ -109,8 +109,8 @@ class Verify extends Component<Props, State> {
             )
           } else if (type !== 'wifi') {
             Alert.alert(
-              `Warning`,
-              `Wallet recovery requires to download A LOT OF DATA. Consider, that depend on your internet provider additional costs may occur!`,
+              'Warning',
+              'Wallet recovery requires to download A LOT OF DATA. Consider, that depend on your internet provider additional costs may occur!',
               [
                 {
                   text: 'Cancel',

@@ -82,7 +82,7 @@ class ScanQRCode extends Component<Props, State> {
     this.qrCodeProcessing = false
   }
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps: Props) {}
 
   async componentDidMount() {
     try {
@@ -98,7 +98,7 @@ class ScanQRCode extends Component<Props, State> {
     }
   }
 
-  async componentWillUnmount(prevProps) {
+  async componentWillUnmount(prevProps: Props) {
     try {
       await Torch.switchState(false)
     } catch (e) {

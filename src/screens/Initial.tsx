@@ -64,7 +64,7 @@ class Initial extends Component<Props, State> {
     })
   }
 
-  componentDidUpdate(prevProps) {}
+  componentDidUpdate(prevProps: Props) {}
 
   render() {
     return (

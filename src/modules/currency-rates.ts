@@ -12,8 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Action, Store, checkBiometryRequestAction } from 'src/common/types'
-import { log } from 'src/common/logger'
+import { Action, Store, currencyRatesRequestAction } from 'src/common/types'
 import { currencyList } from 'src/common'
 export type State = {
   rates: object
@@ -32,7 +31,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
 
     case 'CURRENCY_RATES_SUCCESS':
       return {
-        rates: action.rates['grin'],
+        rates: action.rates.grin,
         inProgress: false,
         lastUpdated: Date.now(),
       }
@@ -45,7 +44,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
   }
 }
 export const sideEffects = {
-  ['CURRENCY_RATES_REQUEST']: async (action: checkBiometryRequestAction, store: Store) => {
+  ['CURRENCY_RATES_REQUEST']: async (_action: currencyRatesRequestAction, store: Store) => {
     try {
       const rates = await fetch(
         `https://api.coingecko.com/api/v3/simple/price?ids=grin&vs_currencies=${currencyList

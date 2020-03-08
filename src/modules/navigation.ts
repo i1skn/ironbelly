@@ -18,10 +18,10 @@ import {
   createNavigationReducer,
 } from 'react-navigation-redux-helpers'
 import AppNavigator from 'src/modules/navigation/routes'
-import { Dispatch } from 'src/common/types'
+import { Dispatch, State } from 'src/common/types'
 import { NavigationState } from 'react-navigation'
 const navReducer = createNavigationReducer(AppNavigator)
-const navMiddleware = createReactNavigationReduxMiddleware(state => state.nav)
+const navMiddleware = createReactNavigationReduxMiddleware<State>(state => state.nav)
 const AppContainer = createReduxContainer<
   {},
   {

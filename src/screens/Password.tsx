@@ -13,26 +13,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { Component } from 'react'
-import {
-  View,
-  TouchableWithoutFeedback,
-  ActivityIndicator,
-  Alert,
-  Button as NativeButton,
-  Keyboard,
-} from 'react-native'
+import { View, TouchableWithoutFeedback, Alert, Keyboard } from 'react-native'
 import { Text } from 'src/components/CustomFont'
 import FormTextInput from 'src/components/FormTextInput'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { BIOMETRY_STATUS } from 'src/modules/settings'
 import { isAndroid, getBiometryTitle } from 'src/common'
-import { Spacer, KeyboardAvoidingWrapper, FlexGrow, LoaderView } from 'src/common'
-import colors from 'src/common/colors'
+import { KeyboardAvoidingWrapper } from 'src/common'
 import { Button } from 'src/components/CustomFont'
 import { State as ReduxState, Navigation } from 'src/common/types'
 import * as Keychain from 'react-native-keychain'
 import TouchID from 'react-native-touch-id'
+import { Dispatch } from 'src/common/types'
 type Props = {
   navigation: Navigation
   setPassword: (password: string) => void
@@ -62,7 +55,7 @@ class Password extends Component<Props, State> {
     header: null,
   }
 
-  componentDidMount(prevProps) {
+  componentDidMount() {
     const { biometryEnabled, biometryType } = this.props
 
     if (biometryEnabled && biometryType !== Keychain.BIOMETRY_TYPE.FACE_ID) {
@@ -70,7 +63,7 @@ class Password extends Component<Props, State> {
     }
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (prevProps.isPasswordValid !== this.props.isPasswordValid && this.props.isPasswordValid) {
       const { nextScreen } = this.props.navigation.state.params
       this.props.clearToast()
@@ -99,7 +92,7 @@ class Password extends Component<Props, State> {
         authenticationPrompt,
       })
 
-      if (typeof creds.password === 'string') {
+      if (creds && creds.password) {
         checkPasswordFromBiometry(creds.password)
       }
     } catch (e) {
@@ -153,7 +146,7 @@ class Password extends Component<Props, State> {
     } = this.props
     return (
       <KeyboardAvoidingWrapper
-        behavior={isAndroid ? '' : 'padding'}
+        behavior={isAndroid ? undefined : 'padding'}
         style={{
           flex: 1,
         }}>
@@ -220,8 +213,8 @@ const mapStateToProps = (state: ReduxState) => ({
   biometryType: state.settings.biometryType,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  setPassword: password => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setPassword: (password: string) => {
     dispatch({
       type: 'SET_PASSWORD',
       password,
