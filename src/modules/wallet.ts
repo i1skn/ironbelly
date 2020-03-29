@@ -28,8 +28,6 @@ import {
   checkPasswordAction,
   checkPasswordFromBiometryAction,
   Store,
-  PmmrRange,
-  RustPmmrRange,
   walletScanPmmrRangeFalureAction,
   walletScanPmmrRangeRequestAction,
   walletScanOutputsFalureAction,
@@ -42,7 +40,7 @@ import { combineReducers } from 'redux'
 import { mapPmmrRange, getStateForRust, checkWalletDataDirectory } from 'src/common'
 import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY } from 'src/common'
-import { NavigationActions } from 'react-navigation'
+import { CommonActions } from '@react-navigation/native'
 const MAX_RETRIES = 10
 export const RECOVERY_LIMIT = 1000
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
@@ -268,7 +266,7 @@ const password = function(
       return {
         valid: false,
         value: action.password,
-        error: {},
+        error: initialState.password.error,
         inProgress: state.inProgress,
       }
 
@@ -276,7 +274,7 @@ const password = function(
       return {
         valid: false,
         value: state.value,
-        error: {},
+        error: initialState.password.error,
         inProgress: true,
       }
 
@@ -284,7 +282,7 @@ const password = function(
       return {
         value: state.value,
         valid: true,
-        error: {},
+        error: initialState.password.error,
         inProgress: false,
       }
 
@@ -301,7 +299,7 @@ const password = function(
     case 'CLEAR_PASSWORD':
       return {
         valid: false,
-        error: {},
+        error: initialState.password.error,
         value: '',
         inProgress: false,
       }
@@ -347,7 +345,7 @@ export const sideEffects = {
           mnemonic,
         })
       })
-      .catch(error => {
+      .catch((error: Error) => {
         store.dispatch({
           type: 'SEED_NEW_FAILURE',
           message: error.message,
@@ -378,7 +376,7 @@ export const sideEffects = {
           })
         }
       })
-      .catch(error => {
+      .catch((error: Error) => {
         store.dispatch({
           type: 'WALLET_INIT_FAILURE',
           message: error.message,
@@ -386,11 +384,11 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_SCAN_FAILURE']: async (action: walletScanFailureAction, store: Store) => {
+  ['WALLET_SCAN_FAILURE']: async (action: walletScanFailureAction) => {
     log(action, true)
   },
   ['WALLET_SCAN_PMMR_RANGE_REQUEST']: async (
-    action: walletScanPmmrRangeRequestAction,
+    _action: walletScanPmmrRangeRequestAction,
     store: Store,
   ) => {
     await checkWalletDataDirectory()
@@ -411,7 +409,7 @@ export const sideEffects = {
     }
   },
   ['WALLET_SCAN_PMMR_RANGE_SUCCESS']: async (
-    action: walletScanPmmrRangeSuccessAction,
+    _action: walletScanPmmrRangeSuccessAction,
     store: Store,
   ) => {
     store.dispatch({
@@ -442,7 +440,10 @@ export const sideEffects = {
       })
     }
   },
-  ['WALLET_SCAN_OUTPUTS_REQUEST']: async (action: walletScanOutputsRequestAction, store: Store) => {
+  ['WALLET_SCAN_OUTPUTS_REQUEST']: async (
+    _action: walletScanOutputsRequestAction,
+    store: Store,
+  ) => {
     const { lastRetrievedIndex, highestIndex, lowestIndex } = store.getState().wallet.walletScan
 
     if (!lowestIndex || !highestIndex) {
@@ -473,7 +474,10 @@ export const sideEffects = {
       })
     }
   },
-  ['WALLET_SCAN_OUTPUTS_SUCCESS']: async (action: walletScanOutputsSuccessAction, store: Store) => {
+  ['WALLET_SCAN_OUTPUTS_SUCCESS']: async (
+    _action: walletScanOutputsSuccessAction,
+    store: Store,
+  ) => {
     const {
       lastRetrievedIndex,
       highestIndex,
@@ -517,15 +521,15 @@ export const sideEffects = {
       })
     }
   },
-  ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
+  ['CHECK_PASSWORD']: (_action: checkPasswordAction, store: Store) => {
     const { value } = store.getState().wallet.password
     return GrinBridge.checkPassword(getStateForRust(store.getState()), value)
-      .then((mnemonic: string) => {
+      .then(() => {
         store.dispatch({
           type: 'VALID_PASSWORD',
         })
       })
-      .catch(error => {
+      .catch(() => {
         setTimeout(() => {
           store.dispatch({
             type: 'INVALID_PASSWORD',
@@ -535,7 +539,7 @@ export const sideEffects = {
   },
   ['CHECK_PASSWORD_FROM_BIOMETRY']: (action: checkPasswordFromBiometryAction, store: Store) => {
     return GrinBridge.checkPassword(getStateForRust(store.getState()), action.password)
-      .then((mnemonic: string) => {
+      .then(() => {
         store.dispatch({
           type: 'SET_PASSWORD',
           password: action.password,
@@ -544,19 +548,19 @@ export const sideEffects = {
           type: 'VALID_PASSWORD',
         })
       })
-      .catch(error => {
+      .catch(() => {
         store.dispatch({
           type: 'DISABLE_BIOMETRY_REQUEST',
         })
       })
   },
-  ['INVALID_PASSWORD']: (action: invalidPasswordAction, store: Store) => {
+  ['INVALID_PASSWORD']: (_action: invalidPasswordAction, store: Store) => {
     store.dispatch({
       type: 'TOAST_SHOW',
       text: 'Wrong password',
     })
   },
-  ['WALLET_PHRASE_REQUEST']: (action: walletPhraseRequestAction, store: Store) => {
+  ['WALLET_PHRASE_REQUEST']: (_action: walletPhraseRequestAction, store: Store) => {
     // return GrinBridge.walletPhrase(getStateForRust(store.getState()), 'her')
     return GrinBridge.walletPhrase(getStateForRust(store.getState()))
       .then((phrase: string) => {
@@ -565,7 +569,7 @@ export const sideEffects = {
           phrase,
         })
       })
-      .catch(error => {
+      .catch((error: Error) => {
         store.dispatch({
           type: 'WALLET_PHRASE_FAILURE',
           message: error.message,
@@ -573,7 +577,7 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_DESTROY_REQUEST']: async (action: walletDestroyRequestAction, store: Store) => {
+  ['WALLET_DESTROY_REQUEST']: async (_action: walletDestroyRequestAction, store: Store) => {
     try {
       await RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
         store.dispatch({
@@ -594,18 +598,18 @@ export const sideEffects = {
       log(error, true)
     }
   },
-  ['WALLET_DESTROY_SUCCESS']: (action: walletDestroySuccessAction, store: Store) => {
+  ['WALLET_DESTROY_SUCCESS']: (_action: walletDestroySuccessAction, store: Store) => {
     store.dispatch({
       type: 'WALLET_CLEAR',
     })
     store.dispatch(
-      NavigationActions.navigate({
-        routeName: 'Initial',
+      CommonActions.navigate({
+        name: 'Initial',
       }),
     )
   },
   ['WALLET_MIGRATE_TO_MAINNET_REQUEST']: (
-    action: walletMigrateToMainnetRequestAction,
+    _action: walletMigrateToMainnetRequestAction,
     store: Store,
   ) => {
     store.dispatch({

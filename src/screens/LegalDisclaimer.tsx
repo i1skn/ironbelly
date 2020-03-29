@@ -13,12 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { useState } from 'react'
-import { connect } from 'react-redux'
 import styled from 'styled-components/native'
+// @ts-ignore
 import CheckBox from 'react-native-check-box'
 import { Wrapper, Spacer } from 'src/common'
 import { Text, Link, Button } from 'src/components/CustomFont'
-import { State as ReduxState, Navigation } from 'src/common/types'
+import { Navigation } from 'src/common/types'
 export const termsUrl = 'https://ironbelly.app/terms'
 export const privacyUrl = 'https://ironbelly.app/privacy'
 export const grinUrl = 'https://grin-tech.org/'
@@ -39,8 +39,8 @@ const Main = styled.View`
   padding-top: 16px;
 `
 
-const LegalDisclaimer = ({ navigation }: Props) => {
-  const { nextScreen } = navigation.state.params
+const LegalDisclaimer = ({ navigation, route }: Props) => {
+  const { nextScreen } = route?.params
   const [checked, setChecked] = useState(false)
   return (
     <Wrapper>
@@ -48,7 +48,7 @@ const LegalDisclaimer = ({ navigation }: Props) => {
         <Text fontSize={20}>Ironbelly - mobile wallet for </Text>
         <Link fontSize={20} url={grinUrl} title={'Grin'} />
         <Text fontSize={20}>. </Text>
-        <Text fontSize={20}>
+        <Text fontSize={'20'}>
           Please, if you are not familiar with the blockchain technology, learn it first. It is
           important, that you know what you are doing!
         </Text>
@@ -86,13 +86,4 @@ const LegalDisclaimer = ({ navigation }: Props) => {
   )
 }
 
-LegalDisclaimer.navigationOptions = {
-  title: 'Welcome',
-  headerBackTitle: ' ',
-}
-
-const mapStateToProps = (state: ReduxState) => ({})
-
-const mapDispatchToProps = (dispatch, ownProps) => ({})
-
-export default connect(mapStateToProps, mapDispatchToProps)(LegalDisclaimer)
+export default LegalDisclaimer

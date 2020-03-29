@@ -13,14 +13,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { Component } from 'react'
+import sleep from 'sleep-promise'
 import {
   NativeModules,
-  BackHandler,
   Linking,
   AppState,
   StatusBar,
   PermissionsAndroid,
   AppStateStatus,
+  YellowBox,
 } from 'react-native'
 import { Provider, connect } from 'react-redux'
 import {
@@ -35,15 +36,15 @@ import {
 import urlParser from 'url'
 import Modal from 'react-native-modal'
 import { PersistGate } from 'redux-persist/integration/react'
+// @ts-ignore
 import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import RNFS from 'react-native-fs'
 import { Dispatch, State as GlobalState } from 'src/common/types'
 import { store, persistor } from 'src/common/redux'
 import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
-import { AppContainer } from 'src/modules/navigation'
+import { RootStack } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
-import { NavigationState, NavigationActions, NavigationRoute } from 'react-navigation'
 import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'src/modules/settings'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
@@ -52,9 +53,10 @@ const { GrinBridge } = NativeModules // Filesystem
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
 
+YellowBox.ignoreWarnings(['Expected style'])
+
 interface StateProps {
   toastMessage: ToasterState
-  nav: NavigationState
   showTxConfirmationModal: boolean
   chain: string
   scanInProgress: boolean
@@ -77,13 +79,23 @@ interface OwnProps {
 
 type Props = StateProps & DispatchProps & OwnProps
 
-type State = {}
+type State = {
+  walletCreated?: boolean
+}
 
 class RealApp extends React.Component<Props, State> {
   navigation: any
   backHandler: any
 
-  componentDidMount() {
+  async waitForNavigation() {
+    let retries = 0
+    while (!this.navigation && retries < 3) {
+      await sleep(200)
+      retries++
+    }
+  }
+
+  async componentDidMount() {
     StatusBar.setBarStyle('dark-content')
     GrinBridge.setLogger()
       .then(console.log)
@@ -113,13 +125,14 @@ class RealApp extends React.Component<Props, State> {
         this.props.chain === MAINNET_CHAIN ? MAINNET_API_SECRET : FLOONET_API_SECRET,
       )
     })
-    this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
+    // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
+    this.setState({ walletCreated: await isWalletInitialized() })
   }
 
   componentWillUnmount() {
     Linking.removeEventListener('url', this._handleOpenURL)
     AppState.removeEventListener('change', this._handleAppStateChange)
-    this.backHandler.remove()
+    // this.backHandler.remove()
   }
 
   _handleOpenURL = (event: { url: string }) => {
@@ -203,49 +216,35 @@ class RealApp extends React.Component<Props, State> {
               }
         }
 
+        await this.waitForNavigation()
         if (nextScreen) {
           if (!store.getState().wallet.password.value) {
             //Password is not set
-            this.props.dispatch(
-              NavigationActions.navigate({
-                routeName: 'Password',
-                params: {
-                  nextScreen,
-                },
-              }),
-            )
+            this.navigation?.navigate('Password', nextScreen.params)
           } else {
-            this.props.dispatch(
-              NavigationActions.navigate({
-                routeName: nextScreen.name,
-                params: nextScreen.params,
-              }),
-            )
+            this.navigation?.navigate(nextScreen.name, nextScreen.params)
           }
         }
       }
     })
   }
-  _handleAppStateChange = (nextAppState: AppStateStatus) => {
+
+  _handleAppStateChange(nextAppState: AppStateStatus) {
     const { scanInProgress, sharingInProgress } = this.props
 
     if (nextAppState === 'background' && !sharingInProgress) {
-      isWalletInitialized().then(exists => {
+      isWalletInitialized().then(async exists => {
         if (exists) {
-          this.props.dispatch(
-            NavigationActions.navigate({
-              routeName: 'Password',
-              params: {
-                nextScreen: scanInProgress
-                  ? {
-                      name: 'WalletScan',
-                    }
-                  : {
-                      name: 'Main',
-                    },
-              },
-            }),
-          )
+          await this.waitForNavigation()
+          this.navigation?.navigate('Password', {
+            nextScreen: scanInProgress
+              ? {
+                  name: 'WalletScan',
+                }
+              : {
+                  name: 'Main',
+                },
+          })
           this.props.dispatch({
             type: 'CLEAR_PASSWORD',
           })
@@ -254,28 +253,9 @@ class RealApp extends React.Component<Props, State> {
     }
   }
 
-  shouldCloseApp(currentRoute: NavigationRoute) {
-    return ['Overview', 'Landing', 'Password'].indexOf(currentRoute.routeName) !== -1
-  }
-
-  getCurrentRoute(state: NavigationState) {
-    let route = state as NavigationRoute
-
-    while (route.hasOwnProperty('index')) {
-      route = route.routes[route.index]
-    }
-
-    return route
-  }
-
-  _handleBackPress = () => {
-    const { dispatch, nav } = this.props
-    if (this.shouldCloseApp(this.getCurrentRoute(nav))) {
-      return false
-    }
-    dispatch(NavigationActions.back())
-    return true
-  }
+  // shouldCloseApp(currentRoute: Route<NavigationState['type']>) {
+  // return ['Overview', 'Landing', 'Password'].indexOf(currentRoute.name) !== -1
+  // }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.toastMessage.text !== this.props.toastMessage.text) {
@@ -305,15 +285,22 @@ class RealApp extends React.Component<Props, State> {
   }
 
   render() {
-    const { dispatch, closeTxPostModal } = this.props
+    const { closeTxPostModal } = this.props
+    if (this?.state?.walletCreated === undefined) {
+      return null
+    }
     return (
       <React.Fragment>
         <Modal isVisible={this.props.showTxConfirmationModal} onBackdropPress={closeTxPostModal}>
           <TxPostConfirmationModal />
         </Modal>
-        <AppContainer state={this.props.nav} dispatch={dispatch} />
-        // @ts-ignore
-        <Toast ref="toast" position={'top'} positionValue={isIphoneX() ? 75 : 55} />
+        <RootStack ref={this.navigation} walletCreated={this.state.walletCreated} />
+        <Toast
+          ref="toast"
+          //  @ts-ignore
+          position={'top'}
+          positionValue={isIphoneX() ? 75 : 55}
+        />
       </React.Fragment>
     )
   }
@@ -321,7 +308,6 @@ class RealApp extends React.Component<Props, State> {
 
 const mapStateToProps = (state: GlobalState): StateProps => {
   return {
-    nav: state.nav,
     toastMessage: state.toaster,
     showTxConfirmationModal: state.tx.txPost.showModal,
     chain: state.settings.chain,
@@ -363,6 +349,7 @@ const RealAppConnected = connect<StateProps, DispatchProps, {}, GlobalState>(
       }),
   }),
 )(RealApp)
+
 export default class App extends Component<
   {
     url: string

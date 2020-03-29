@@ -18,12 +18,12 @@ import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Alert } from 'react-native'
-import LegalDisclaimer from 'src/screens/LegalDisclaimer'
 import { State as SettingsState } from 'src/modules/settings'
 import { FlexGrow, Spacer } from 'src/common'
 import colors from 'src/common/colors'
 import { Text, Button } from 'src/components/CustomFont'
 import { State as ReduxState, Error, Navigation } from 'src/common/types'
+
 const Wrapper = styled(View)`
   padding: 16px;
   flex-grow: 1;
@@ -61,14 +61,6 @@ type Props = {
 type State = {}
 
 class Landing extends Component<Props, State> {
-  static navigationOptions = {
-    header: null,
-    headerBackTitle: ' ',
-  }
-  state = {}
-
-  componentDidMount() {}
-
   _onVersionClick = () => {
     if (!this.props.isFloonet) {
       return Alert.alert('Switch to floonet', 'Are you sure you want to switch to floonet?', [

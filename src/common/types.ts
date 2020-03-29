@@ -18,7 +18,6 @@ import { State as SettingsState } from 'src/modules/settings'
 import { State as ToastedState } from 'src/modules/toaster'
 import { State as WalletState } from 'src/modules/wallet'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import { NavigationState, NavigationAction } from 'react-navigation'
 export type txListRequestAction = {
   type: 'TX_LIST_REQUEST'
   showLoader: boolean
@@ -444,7 +443,6 @@ export type currencyRatesFalureAction = {
   message: string
 }
 export type Action =
-  | NavigationAction
   | txListClearAction
   | txListRequestAction
   | txListSuccessAction
@@ -560,7 +558,6 @@ export type State = {
   settings: SettingsState
   toaster: ToastedState
   wallet: WalletState
-  nav: NavigationState
 }
 export type GetState = () => State
 export type Dispatch = (action: Action) => any

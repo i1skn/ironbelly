@@ -16,13 +16,12 @@ import React, { Component, Fragment } from 'react'
 import { FlatList } from 'react-native'
 import SettingsListItem, { Props as SettingsItem } from 'src/components/SettingsListItem'
 import { connect } from 'react-redux'
-import { State as GlobalState, Navigation, Slate } from 'src/common/types'
+import { Dispatch, State as GlobalState, Navigation, Slate } from 'src/common/types'
 import { Text } from 'src/components/CustomFont'
-import { isAndroid, Spacer } from 'src/common'
+import { Spacer } from 'src/common'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
 import receiveFromAnotherPersonGuide from 'src/documents/receive-from-another-person'
-import { HeaderBackButton } from 'react-navigation'
 type Props = {
   navigation: Navigation
   txReceive: (slatePath: string) => void
@@ -38,21 +37,8 @@ const TextBox = styled.View`
 class Receive extends Component<Props, State> {
   static navigationOptions = {
     title: 'Receive',
-    headerLeft: ({ scene }) => {
-      return (
-        <HeaderBackButton
-          tintColor={colors.black}
-          backTitleVisible={!isAndroid}
-          onPress={() => scene.descriptor.navigation.goBack(null)}
-        />
-      )
-    },
   }
   state = {}
-
-  componentDidMount() {}
-
-  componentDidUpdate(prevProps: Props) {}
 
   render() {
     const listData = [
@@ -106,14 +92,14 @@ const mapStateToProps = (state: GlobalState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  txReceive: slatePath => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  txReceive: (slatePath: string) => {
     dispatch({
       type: 'TX_RECEIVE_REQUEST',
       slatePath,
     })
   },
-  slateRequest: slatePath => {
+  slateRequest: (slatePath: string) => {
     dispatch({
       type: 'SLATE_LOAD_REQUEST',
       slatePath,

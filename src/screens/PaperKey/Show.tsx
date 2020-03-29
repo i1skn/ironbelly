@@ -55,11 +55,10 @@ class Show extends Component<Props, State> {
     title: 'Paper key',
   }
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
-    const fromSettings = props.navigation.state.params && props.navigation.state.params.fromSettings
     this.state = {
-      fromSettings,
+      fromSettings: props?.route?.params?.fromSettings,
     }
   }
 
@@ -68,8 +67,6 @@ class Show extends Component<Props, State> {
       this.props.generateSeed(32)
     }
   }
-
-  componentDidUpdate(prevProps: Props) {}
 
   render() {
     const { navigation, mnemonic, phrase } = this.props

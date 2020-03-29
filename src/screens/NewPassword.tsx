@@ -17,6 +17,7 @@ import { Alert } from 'react-native'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { connect } from 'react-redux'
 import FormTextInput from 'src/components/FormTextInput'
+// @ts-ignore
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { State as ReduxState, Error, Navigation } from 'src/common/types'
 import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'src/common'
@@ -34,15 +35,11 @@ type Props = {
 type State = {}
 
 class NewPassword extends Component<Props, State> {
-  static navigationOptions = {
-    title: 'Password',
-  }
-
   UNSAFE_componentWillMount() {
-    const { navigation, setIsNew } = this.props
+    const { navigation, route, setIsNew } = this.props
 
-    if (navigation.state.params) {
-      setIsNew(navigation.state.params.isNew)
+    if (route?.params) {
+      setIsNew(route.params.isNew)
     }
   }
 
@@ -66,6 +63,7 @@ class NewPassword extends Component<Props, State> {
         <KeyboardAwareScrollView
           style={{
             flexGrow: 1,
+            backgroundColor: '#fff',
           }}
           keyboardVerticalOffset={isIphoneX() ? 88 : 64}
           keyboardShouldPersistTaps="handled"

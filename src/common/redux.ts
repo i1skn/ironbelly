@@ -14,7 +14,7 @@
 // limitations under the License.
 import { createMiddleware } from 'src/common/sideEffects'
 import AsyncStorage from '@react-native-community/async-storage'
-import { combineReducers, Reducer } from 'redux'
+import { combineReducers } from 'redux'
 import { reducer as balanceReducer } from 'src/modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'src/modules/tx'
 import { reducer as settingsReducer, sideEffects as settingsEffects } from 'src/modules/settings'
@@ -28,7 +28,6 @@ import { State, Action } from 'src/common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createLogger } from 'redux-logger'
 import { createMigrate, persistStore, persistReducer } from 'redux-persist'
-import { navReducer, navMiddleware } from 'src/modules/navigation'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { migrations } from 'src/common/migrations'
 const balanceConfig = {
@@ -50,7 +49,6 @@ export const rootReducer = combineReducers<State, Action>({
   settings: settingsReducer,
   toaster: toasterReducer,
   wallet: walletReducer,
-  nav: navReducer,
 }) as () => State
 
 const sideEffects = {
@@ -78,7 +76,7 @@ const persistedReducer = persistReducer<State, Action>(persistConfig, rootReduce
 export const store = createStore(
   persistedReducer,
   process.env.NODE_ENV === 'development'
-    ? applyMiddleware(navMiddleware, sideEffectsMiddleware, logger)
-    : applyMiddleware(navMiddleware, sideEffectsMiddleware),
+    ? applyMiddleware(sideEffectsMiddleware, logger)
+    : applyMiddleware(sideEffectsMiddleware),
 )
 export const persistor = persistStore(store)

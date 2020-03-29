@@ -15,10 +15,11 @@
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
 import { monoSpaceFont, TextInput, Text } from 'src/components/CustomFont'
+import { ReturnKeyTypeOptions } from 'react-native'
 type Props = {
   testID?: string
   value: string
-  returnKeyType: string
+  returnKeyType?: ReturnKeyTypeOptions
   number: number
   onChange: (value: string) => void
   getRef: (a: any) => void

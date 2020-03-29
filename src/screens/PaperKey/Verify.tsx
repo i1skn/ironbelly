@@ -45,19 +45,13 @@ const Wrapper = styled.View`
 `
 
 class Verify extends Component<Props, State> {
-  static navigationOptions = ({ navigation }) => ({
-    title: `${navigation.state.params.title}`,
-  })
-  _inputs = []
   _scrollView = null
   _underHeaderBlock = null
+  _inputs = []
 
   constructor(props) {
     super(props)
-    const wordsCount =
-      props.navigation.state.params && props.navigation.state.params.wordsCount
-        ? props.navigation.state.params.wordsCount
-        : 24
+    const wordsCount = props.route.params?.wordsCount ?? 24
     this.state = {
       wordsCount,
       inputValue: '',
@@ -71,9 +65,9 @@ class Verify extends Component<Props, State> {
     // Only for testing
     //
     // New wallet
-    // this.setState({
-    // mnemonicWords: this.props.mnemonic.split(' '),
-    // })
+    this.setState({
+      mnemonicWords: this.props.mnemonic.split(' '),
+    })
     //
     // Restore
     // this.setState({

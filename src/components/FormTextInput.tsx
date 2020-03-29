@@ -103,7 +103,7 @@ export default class FormTextInput extends Component<Props, State> {
             keyboardType={keyboardType ?? 'default'}
             textContentType={textContentType ?? 'none'}
             autoCorrect={autoCorrect}
-            returnKeyType={returnKeyType ?? 'none'}
+            returnKeyType={returnKeyType ?? 'default'}
             onSubmitEditing={onSubmitEditing}
             onFocus={onFocus}
             onBlur={onBlur}
