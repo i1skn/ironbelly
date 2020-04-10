@@ -15,77 +15,27 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { KeyboardAvoidingWrapper, Spacer } from 'src/common'
-import { Text } from 'src/components/CustomFont'
-import styled from 'styled-components/native'
 import FormTextInput from 'src/components/FormTextInput'
 import { State as ReduxState, Dispatch } from 'src/common/types'
 import { apiSecretFilePath } from 'src/modules/settings'
 import RNFS from 'react-native-fs'
 import { store } from 'src/common/redux'
-import { NavigationScreenProp, NavigationParams } from 'react-navigation'
-import {
-  MAINNET_CHAIN,
-  FLOONET_CHAIN,
-  MAINNET_API_SECRET,
-  FLOONET_API_SECRET,
-} from 'src/modules/settings'
-type Props = {
+import { NavigationProps } from 'src/common/types'
+
+interface OwnProps {
   nodeUrl: string
   setNodeUrl: (nodeUrl: string) => void
   setApiSecret: (apiSecret: string) => void
-  navigation: NavigationScreenProp<NavigationParams>
 }
+
+type Props = NavigationProps<'SettingsGrinNode'> & OwnProps
+
 type State = {
   apiSecret?: string
   nodeUrl?: string
 }
-const ResetButton = styled.TouchableOpacity`
-  padding-right: 16px;
-`
-const ResetButtonText = styled(Text)`
-  font-size: 18px;
-  font-weight: 500;
-`
 
 class GrinNode extends Component<Props, State> {
-  static navigationOptions = ({
-    navigation,
-  }: {
-    navigation: NavigationScreenProp<NavigationParams>
-  }) => {
-    return {
-      title: 'Grin node',
-      headerRight: (
-        <ResetButton
-          onPress={() => {
-            const state = store.getState() as ReduxState
-
-            switch (state.settings.chain) {
-              case MAINNET_CHAIN:
-                store.dispatch({
-                  type: 'SWITCH_TO_MAINNET',
-                })
-                navigation.setParams({
-                  apiSecret: MAINNET_API_SECRET,
-                })
-                break
-
-              case FLOONET_CHAIN:
-                store.dispatch({
-                  type: 'SWITCH_TO_FLOONET',
-                })
-                navigation.setParams({
-                  apiSecret: FLOONET_API_SECRET,
-                })
-                break
-            }
-          }}>
-          <ResetButtonText>Reset</ResetButtonText>
-        </ResetButton>
-      ),
-    }
-  }
-
   async componentDidMount() {
     try {
       const apiSecret = await RNFS.readFile(apiSecretFilePath, 'utf8')
@@ -95,10 +45,15 @@ class GrinNode extends Component<Props, State> {
     } catch (e) {}
   }
 
+  constructor(props: Props) {
+    super(props)
+    this.state = {}
+  }
+
   static getDerivedStateFromProps(props: Props, state: State) {
     // Re-run the filter whenever the list array or filter text change.
     // Note we need to store prevPropsList and prevFilterText to detect changes.
-    const apiSecretAfterReset = props.navigation.getParam('apiSecret')
+    const apiSecretAfterReset = props.route.params?.apiSecret
 
     if (apiSecretAfterReset && state.apiSecret != apiSecretAfterReset) {
       props.navigation.setParams({

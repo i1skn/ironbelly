@@ -62,6 +62,8 @@ interface StateProps {
   scanInProgress: boolean
   currencyRates: CurrencyRatesState
   sharingInProgress: boolean
+  walletCreated: boolean | null
+  isPasswordValid: boolean
 }
 
 interface DispatchProps {
@@ -70,6 +72,7 @@ interface DispatchProps {
   setApiSecret: (apiSecret: string) => void
   requestCurrencyRates: () => void
   setFromLink: (amount: number, message: string, url: string) => void
+  requestWalletExists: () => void
 }
 
 interface OwnProps {
@@ -126,7 +129,8 @@ class RealApp extends React.Component<Props, State> {
       )
     })
     // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
-    this.setState({ walletCreated: await isWalletInitialized() })
+    this.props.requestWalletExists()
+    // this.setState({ walletCreated: await isWalletInitialized() })
   }
 
   componentWillUnmount() {
@@ -229,22 +233,13 @@ class RealApp extends React.Component<Props, State> {
     })
   }
 
-  _handleAppStateChange(nextAppState: AppStateStatus) {
-    const { scanInProgress, sharingInProgress } = this.props
+  _handleAppStateChange = (nextAppState: AppStateStatus) => {
+    const { sharingInProgress } = this.props
 
     if (nextAppState === 'background' && !sharingInProgress) {
       isWalletInitialized().then(async exists => {
         if (exists) {
           await this.waitForNavigation()
-          this.navigation?.navigate('Password', {
-            nextScreen: scanInProgress
-              ? {
-                  name: 'WalletScan',
-                }
-              : {
-                  name: 'Main',
-                },
-          })
           this.props.dispatch({
             type: 'CLEAR_PASSWORD',
           })
@@ -285,8 +280,8 @@ class RealApp extends React.Component<Props, State> {
   }
 
   render() {
-    const { closeTxPostModal } = this.props
-    if (this?.state?.walletCreated === undefined) {
+    const { walletCreated, scanInProgress, closeTxPostModal, isPasswordValid } = this.props
+    if (walletCreated === null) {
       return null
     }
     return (
@@ -294,7 +289,12 @@ class RealApp extends React.Component<Props, State> {
         <Modal isVisible={this.props.showTxConfirmationModal} onBackdropPress={closeTxPostModal}>
           <TxPostConfirmationModal />
         </Modal>
-        <RootStack ref={this.navigation} walletCreated={this.state.walletCreated} />
+        <RootStack
+          ref={this.navigation}
+          isPasswordValid={isPasswordValid}
+          walletCreated={walletCreated}
+          scanInProgress={scanInProgress}
+        />
         <Toast
           ref="toast"
           //  @ts-ignore
@@ -312,14 +312,20 @@ const mapStateToProps = (state: GlobalState): StateProps => {
     showTxConfirmationModal: state.tx.txPost.showModal,
     chain: state.settings.chain,
     scanInProgress: state.wallet.walletScan.inProgress,
+    isPasswordValid: state.wallet.password.valid,
     currencyRates: state.currencyRates,
     sharingInProgress: state.tx.slateShare.inProgress,
+    walletCreated: state.wallet.isCreated,
   }
 }
 
 const RealAppConnected = connect<StateProps, DispatchProps, {}, GlobalState>(
   mapStateToProps,
   dispatch => ({
+    requestWalletExists: () =>
+      dispatch({
+        type: 'WALLET_EXISTS_REQUEST',
+      }),
     closeTxPostModal: () =>
       dispatch({
         type: 'TX_POST_CLOSE',

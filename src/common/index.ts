@@ -254,7 +254,7 @@ export const parseSendLink = (query: UrlQuery) => {
   }
 }
 export const formatDate = (date: moment) => date.format('DD MMMM YYYY')
-export const formatTime = (time: moment) => time.format('HH:mm DD MMMM YYYY')
+export const formatTime = (time: moment) => time.format('dddd, DD MMMM YYYY, HH:mm')
 export const currencyList = [
   {
     code: 'btc',

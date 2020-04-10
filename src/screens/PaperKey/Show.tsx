@@ -18,13 +18,17 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { UnderHeaderBlock, Spacer } from 'src/common'
 import { monoSpaceFont, Text, Button } from 'src/components/CustomFont'
-import { State as ReduxState, Navigation } from 'src/common/types'
-type Props = {
+import { State as ReduxState } from 'src/common/types'
+import { NavigationProps } from 'src/common/types'
+
+interface OwnProps {
   mnemonic: string
   phrase: string
-  navigation: Navigation
   generateSeed: (length: number) => void
 }
+
+type Props = NavigationProps<'ViewPaperKey'> & OwnProps
+
 type State = {
   fromSettings: boolean
 }
@@ -51,14 +55,10 @@ const WordNumber = styled.Text`
 `
 
 class Show extends Component<Props, State> {
-  static navigationOptions = {
-    title: 'Paper key',
-  }
-
   constructor(props: Props) {
     super(props)
     this.state = {
-      fromSettings: props?.route?.params?.fromSettings,
+      fromSettings: props.route?.params?.fromSettings,
     }
   }
 

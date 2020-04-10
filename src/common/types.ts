@@ -18,6 +18,11 @@ import { State as SettingsState } from 'src/modules/settings'
 import { State as ToastedState } from 'src/modules/toaster'
 import { State as WalletState } from 'src/modules/wallet'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+
+import { RootStackParamList } from 'src/modules/navigation'
+import { StackNavigationProp } from '@react-navigation/stack'
+import { RouteProp } from '@react-navigation/native'
+
 export type txListRequestAction = {
   type: 'TX_LIST_REQUEST'
   showLoader: boolean
@@ -442,6 +447,14 @@ export type currencyRatesFalureAction = {
   code?: number
   message: string
 }
+
+export type walletExistsRequestAction = { type: 'WALLET_EXISTS_REQUEST' }
+export type walletExistsSuccessAction = { type: 'WALLET_EXISTS_SUCCESS'; exists: boolean }
+export type walletExistsFalureAction = {
+  type: 'WALLET_EXISTS_FAILURE'
+  code?: number
+  message: string
+}
 export type Action =
   | txListClearAction
   | txListRequestAction
@@ -547,6 +560,10 @@ export type Action =
   | currencyRatesRequestAction
   | currencyRatesSuccessAction
   | currencyRatesFalureAction
+  | walletExistsRequestAction
+  | walletExistsSuccessAction
+  | walletExistsFalureAction
+
 export type Currency = {
   code: string
   fractionDigits: number
@@ -657,3 +674,8 @@ export type Error = {
   message: string
 }
 export type UrlQuery = object
+
+export interface NavigationProps<Screen extends keyof RootStackParamList> {
+  navigation: StackNavigationProp<RootStackParamList, Screen>
+  route: RouteProp<RootStackParamList, Screen>
+}

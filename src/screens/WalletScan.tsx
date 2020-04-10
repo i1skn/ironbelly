@@ -38,6 +38,7 @@ const ProgressText = styled(Text)`
 `
 const Wrapper = styled(LoaderView)`
   padding: 16px;
+  background-color: #fff;
 `
 
 class WalletScan extends Component<Props, {}> {
@@ -64,50 +65,37 @@ class WalletScan extends Component<Props, {}> {
   }
 
   render() {
-    const { isDone, inProgress, progress } = this.props
+    const { inProgress, progress } = this.props
     return (
       <Wrapper>
         <KeepAwake />
-        {(isDone && (
-          <>
-            <StatusText>Your wallet is ready to use!</StatusText>
-            <Spacer />
-            <Button
-              testID="ShowMeButton"
-              title="Show me"
-              disabled={false}
-              onPress={this.onFinish}
-            />
-          </>
-        )) || (
-          <Fragment>
-            {(inProgress && (
-              <Fragment>
-                <AnimatedCircularProgress
-                  style={{
-                    alignSelf: 'center',
-                  }}
-                  size={120}
-                  backgroundWidth={4}
-                  width={6}
-                  fill={progress}
-                  tintColor={colors.black}
-                  rotation={0}
-                  duration={100}
-                  backgroundColor={colors.primary}>
-                  {() => <ProgressText>{`${progress}%`}</ProgressText>}
-                </AnimatedCircularProgress>
-                <Spacer />
-                <StatusText
-                  style={{
-                    textAlign: 'center',
-                  }}>
-                  Syncing...
-                </StatusText>
-              </Fragment>
-            )) || <ActivityIndicator size="large" color={colors.primary} />}
-          </Fragment>
-        )}
+        <Fragment>
+          {(inProgress && (
+            <Fragment>
+              <AnimatedCircularProgress
+                style={{
+                  alignSelf: 'center',
+                }}
+                size={120}
+                backgroundWidth={4}
+                width={6}
+                fill={progress}
+                tintColor={colors.black}
+                rotation={0}
+                duration={100}
+                backgroundColor={colors.primary}>
+                {() => <ProgressText>{`${progress}%`}</ProgressText>}
+              </AnimatedCircularProgress>
+              <Spacer />
+              <StatusText
+                style={{
+                  textAlign: 'center',
+                }}>
+                Syncing...
+              </StatusText>
+            </Fragment>
+          )) || <ActivityIndicator size="large" color={colors.primary} />}
+        </Fragment>
       </Wrapper>
     )
   }

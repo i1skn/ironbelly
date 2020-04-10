@@ -61,8 +61,8 @@ class Receive extends Component<Props, State> {
   }
 
   render() {
-    const { navigation, txReceive, slate } = this.props
-    const { slatePath } = navigation.state.params
+    const { navigation, route, txReceive, slate } = this.props
+    const { slatePath } = route?.params ?? {}
     return (
       <React.Fragment>
         <Header

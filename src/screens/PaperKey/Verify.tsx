@@ -49,7 +49,7 @@ class Verify extends Component<Props, State> {
   _underHeaderBlock = null
   _inputs = []
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props)
     const wordsCount = props.route.params?.wordsCount ?? 24
     this.state = {
@@ -75,14 +75,17 @@ class Verify extends Component<Props, State> {
     // })
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (
-      (this.props.inProgress && !prevProps.inProgress) ||
-      (this.props.isDone && !prevProps.isDone)
-    ) {
-      this.props.navigation.navigate('WalletScan')
     }
   }
+
+  // componentDidUpdate(prevProps: Props) {
+  // if (
+  // (this.props.inProgress && !prevProps.inProgress) ||
+  // (this.props.isDone && !prevProps.isDone)
+  // ) {
+  // this.props.navigation.navigate('WalletScan')
+  // }
+  // }
 
   _onContinuePress = currentUserPhrase => {
     return () => {

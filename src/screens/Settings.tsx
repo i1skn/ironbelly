@@ -25,7 +25,6 @@ import { State as SettingsState, BIOMETRY_STATUS } from 'src/modules/settings'
 import { getBiometryTitle } from 'src/common'
 import { Text } from 'src/components/CustomFont'
 import { termsUrl, privacyUrl } from 'src/screens/LegalDisclaimer'
-import { RECOVERY_LIMIT } from 'src/modules/wallet'
 const VersionText = styled(Text)`
   text-align: center;
   padding-bottom: 16px;
@@ -46,24 +45,13 @@ type Props = {
   disableBiometry: () => void
   walletScan: () => void
 }
-type State = {
-  inputValue: string
-  amount: number
-  valid: boolean
-}
+type State = {}
 
 class Settings extends Component<Props, State> {
   static navigationOptions = {
     title: 'Settings',
   }
   state = {}
-
-  componentDidMount() {
-    // this.props.setCheckNodeApiHttpAddr('http://floonode.cycle42.com:13413')
-    // this.props.setChain('floonet')
-  }
-
-  componentDidUpdate(prevProps: Props) {}
 
   _onMigrateToMainnet = () => {
     return Alert.alert('Switch to Mainnet', 'This would destroy your floonet wallet!', [

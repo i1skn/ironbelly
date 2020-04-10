@@ -73,14 +73,6 @@ class CurrencyList extends Component<Props, State> {
     searchText: '',
     filteredList: currencyList,
   }
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: 'Currency',
-    }
-  }
-
-  componentDidMount() {}
-
   onSearch = (searchText: string) => {
     const filteredList = currencyList.filter(currency => {
       return currency.code.toLowerCase().indexOf(searchText.toLowerCase()) !== -1

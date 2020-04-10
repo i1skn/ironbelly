@@ -35,9 +35,6 @@ const TextBox = styled.View`
 `
 
 class Receive extends Component<Props, State> {
-  static navigationOptions = {
-    title: 'Receive',
-  }
   state = {}
 
   render() {

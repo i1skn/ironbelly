@@ -63,7 +63,6 @@ class NewPassword extends Component<Props, State> {
         <KeyboardAwareScrollView
           style={{
             flexGrow: 1,
-            backgroundColor: '#fff',
           }}
           keyboardVerticalOffset={isIphoneX() ? 88 : 64}
           keyboardShouldPersistTaps="handled"

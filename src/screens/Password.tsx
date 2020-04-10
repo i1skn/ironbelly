@@ -41,6 +41,7 @@ type Props = {
   biometryEnabled: boolean
   biometryType: string | undefined | null
   checkPasswordFromBiometry: (password: string) => void
+  scanInProgress: boolean
 }
 type State = {}
 const Submit = styled(Button)``
@@ -60,14 +61,6 @@ class Password extends Component<Props, State> {
 
     if (biometryEnabled && biometryType !== Keychain.BIOMETRY_TYPE.FACE_ID) {
       setTimeout(() => this._getPasswordFromBiometry(), 250)
-    }
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.isPasswordValid !== this.props.isPasswordValid && this.props.isPasswordValid) {
-      const { nextScreen } = this.props.navigation.state.params
-      this.props.clearToast()
-      this.props.navigation.navigate(nextScreen.name, nextScreen.params)
     }
   }
 
@@ -149,6 +142,7 @@ class Password extends Component<Props, State> {
         behavior={isAndroid ? undefined : 'padding'}
         style={{
           flex: 1,
+          backgroundColor: '#fff',
         }}>
         <TouchableWithoutFeedback
           onPress={() => {
@@ -211,6 +205,7 @@ const mapStateToProps = (state: ReduxState) => ({
   inProgress: state.wallet.password.inProgress,
   biometryEnabled: state.settings.biometryStatus === BIOMETRY_STATUS.enabled,
   biometryType: state.settings.biometryType,
+  scanInProgress: state.wallet.walletScan.inProgress,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

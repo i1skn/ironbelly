@@ -37,7 +37,12 @@ import {
 } from 'src/common/types'
 import { log } from 'src/common/logger'
 import { combineReducers } from 'redux'
-import { mapPmmrRange, getStateForRust, checkWalletDataDirectory } from 'src/common'
+import {
+  mapPmmrRange,
+  getStateForRust,
+  checkWalletDataDirectory,
+  isWalletInitialized,
+} from 'src/common'
 import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY } from 'src/common'
 import { CommonActions } from '@react-navigation/native'
@@ -89,7 +94,9 @@ export type State = {
   walletPhrase: WalletPhraseState
   walletScan: WalletScanState
   password: PasswordState
+  isCreated: boolean | null
 }
+
 const initialState: State = {
   walletInit: {
     password: '',
@@ -126,6 +133,7 @@ const initialState: State = {
     },
     inProgress: false,
   },
+  isCreated: null,
 }
 
 const walletInit = function(
@@ -310,6 +318,21 @@ const password = function(
 }
 
 export const reducer = combineReducers({
+  isCreated: function(
+    state: State['isCreated'] = initialState.isCreated,
+    action: Action,
+  ): boolean | null {
+    switch (action.type) {
+      case 'WALLET_DESTROY_SUCCESS':
+        return false
+      case 'WALLET_INIT_SUCCESS':
+        return true
+      case 'WALLET_EXISTS_SUCCESS':
+        return action.exists
+      default:
+        return state
+    }
+  },
   password,
   walletInit: persistReducer(
     {
@@ -359,13 +382,12 @@ export const sideEffects = {
     return GrinBridge.walletInit(getStateForRust(store.getState()), phrase, password)
       .then(() => {
         store.dispatch({
-          type: 'WALLET_INIT_SUCCESS',
-        })
-        store.dispatch({
           type: 'SET_PASSWORD',
           password,
         })
-
+        store.dispatch({
+          type: 'VALID_PASSWORD',
+        })
         if (isNew) {
           store.dispatch({
             type: 'WALLET_SCAN_DONE',
@@ -375,6 +397,11 @@ export const sideEffects = {
             type: 'WALLET_SCAN_START',
           })
         }
+        setTimeout(() => {
+          store.dispatch({
+            type: 'WALLET_INIT_SUCCESS',
+          })
+        }, 250)
       })
       .catch((error: Error) => {
         store.dispatch({
@@ -602,11 +629,6 @@ export const sideEffects = {
     store.dispatch({
       type: 'WALLET_CLEAR',
     })
-    store.dispatch(
-      CommonActions.navigate({
-        name: 'Initial',
-      }),
-    )
   },
   ['WALLET_MIGRATE_TO_MAINNET_REQUEST']: (
     _action: walletMigrateToMainnetRequestAction,
@@ -618,5 +640,20 @@ export const sideEffects = {
     store.dispatch({
       type: 'WALLET_DESTROY_REQUEST',
     })
+  },
+  ['WALLET_EXISTS_REQUEST']: async (_action: walletDestroySuccessAction, store: Store) => {
+    try {
+      const exists = await isWalletInitialized()
+      store.dispatch({
+        type: 'WALLET_EXISTS_SUCCESS',
+        exists,
+      })
+    } catch (error) {
+      store.dispatch({
+        type: 'WALLET_EXISTS_FAILURE',
+        message: error.message,
+      })
+      log(error, true)
+    }
   },
 }

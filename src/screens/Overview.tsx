@@ -87,10 +87,6 @@ class Overview extends Component<Props, State> {
     header: null,
   }
 
-  constructor(props) {
-    super(props)
-  }
-
   _onDisableBiometry = () => {
     this.props.disableBiometry()
   }
@@ -99,9 +95,10 @@ class Overview extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const { settings, txFinalizeInProgress } = this.props
+    const { settings, txFinalizeInProgress, route } = this.props
+    console.log(route)
     this.props.txsGet(false, false)
-    const { responseSlatePath } = this.props.navigation.state.params
+    const responseSlatePath = route?.params?.responseSlatePath
 
     if (responseSlatePath && !txFinalizeInProgress) {
       this.props.txFinalize(responseSlatePath)
@@ -128,10 +125,11 @@ class Overview extends Component<Props, State> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    const { txFinalizeInProgress } = this.props
-    const { responseSlatePath } = this.props.navigation.state.params
+    const { txFinalizeInProgress, route } = this.props
+    const responseSlatePath = route?.params?.responseSlatePath
+    const prevResponseSlatePath = prevProps.route?.params?.responseSlatePath
 
-    if (responseSlatePath !== prevProps.navigation.state.params.responseSlatePath) {
+    if (responseSlatePath && responseSlatePath !== prevResponseSlatePath) {
       if (responseSlatePath && !txFinalizeInProgress) {
         this.props.txFinalize(responseSlatePath)
       }

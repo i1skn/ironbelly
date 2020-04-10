@@ -12,9 +12,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import styled from 'styled-components/native'
+import { State as ReduxState } from 'src/common/types'
 import React from 'react'
-import { NavigationContainer } from '@react-navigation/native'
-import { createStackNavigator } from '@react-navigation/stack'
+import { Text, Animated } from 'react-native'
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+import { TransitionPresets, createStackNavigator } from '@react-navigation/stack'
 import OverviewScreen from 'src/screens/Overview'
 import SendScreen from 'src/screens/Send'
 import ReceiveScreen from 'src/screens/Receive'
@@ -33,6 +36,13 @@ import SettingsCurrencyScreen from 'src/screens/Settings/Currency'
 import LegalDisclaimerScreen from 'src/screens/LegalDisclaimer'
 import ScanQRCodeScreen from 'src/screens/ScanQRCode'
 import colors from 'src/common/colors'
+import { store } from 'src/common/redux'
+import {
+  MAINNET_CHAIN,
+  FLOONET_CHAIN,
+  MAINNET_API_SECRET,
+  FLOONET_API_SECRET,
+} from 'src/modules/settings'
 
 const defaultScreenOptions = {
   headerTintColor: colors.black,
@@ -40,8 +50,11 @@ const defaultScreenOptions = {
     // fontWeight: '600',
   },
   headerStyle: {
-    borderBottomWidth: 0,
     backgroundColor: colors.primary,
+    shadowRadius: 0,
+    shadowOffset: {
+      height: 0,
+    },
   },
   headerBackTitleStyle: {
     color: colors.black,
@@ -57,14 +70,13 @@ export type RootStackParamList = {
   Main: undefined
   Overview: undefined
   Settings: undefined
-  SettingsGrinNode: undefined
+  SettingsGrinNode: { apiSecret: string }
   SettingsCurrency: undefined
   ViewPaperKey: { fromSettings: boolean }
   VerifyPaperKey: { title: string }
-  TxDetails: undefined
+  TxDetails: { txId: number }
   ReceiveInfo: undefined
-  ReceiveGuide: undefined
-  ReceiveGuideSend: undefined
+  ReceiveGuide: { guide: string }
   Send: undefined
   Receive: undefined
   ScanQRCode: undefined
@@ -99,57 +111,167 @@ const NotCreated = () => (
       name="VerifyPaperKey"
       component={VerifyPaperKeyScreen}
       options={({ route }) => ({
-        title: `${route.params?.title}`,
+        title: route.params?.title,
       })}
     />
-    <Stack.Screen name="WalletScan" component={WalletScanScreen} />
   </Stack.Navigator>
 )
 
-const ReceiveInfoStack = () => (
-  <Stack.Navigator
-    initialRouteName="ReceiveInfo"
-    screenOptions={defaultScreenOptions}
-    headerMode="none">
-    <Stack.Screen name="ReceiveInfo" component={ReceiveInfoScreen} />
-    <Stack.Screen name="ReceiveGuide" component={ReceiveGuideScreen} />
-  </Stack.Navigator>
-)
+const forFade = ({ current }: { current: { progress: Animated.AnimatedInterpolation } }) => ({
+  cardStyle: {
+    opacity: current.progress,
+  },
+})
 
-const SettingsStack = () => (
-  <Stack.Navigator
-    initialRouteName="Settings"
-    headerMode="none"
-    screenOptions={{ ...defaultScreenOptions, headerBackTitle: 'Back' }}>
+const ResetButton = styled.TouchableOpacity`
+  padding-right: 16px;
+`
+const ResetButtonText = styled(Text)`
+  font-size: 18px;
+  font-weight: 500;
+`
+
+const Created = () => (
+  <Stack.Navigator initialRouteName="Overview" screenOptions={defaultScreenOptions}>
     <Stack.Screen name="Settings" component={SettingsScreen} />
-    <Stack.Screen name="SettingsGrinNode" component={SettingsGrinNodeScreen} />
-    <Stack.Screen name="SettingsCurrency" component={SettingsCurrencyScreen} />
+    <Stack.Screen
+      name="SettingsGrinNode"
+      component={SettingsGrinNodeScreen}
+      options={({ navigation }) => {
+        return {
+          title: 'Grin node',
+          headerRight: () => (
+            <ResetButton
+              onPress={() => {
+                const state = store.getState() as ReduxState
+
+                switch (state.settings.chain) {
+                  case MAINNET_CHAIN:
+                    store.dispatch({
+                      type: 'SWITCH_TO_MAINNET',
+                    })
+                    navigation.setParams({
+                      apiSecret: MAINNET_API_SECRET,
+                    })
+                    break
+
+                  case FLOONET_CHAIN:
+                    store.dispatch({
+                      type: 'SWITCH_TO_FLOONET',
+                    })
+                    navigation.setParams({
+                      apiSecret: FLOONET_API_SECRET,
+                    })
+                    break
+                }
+              }}>
+              <ResetButtonText>Reset</ResetButtonText>
+            </ResetButton>
+          ),
+        }
+      }}
+    />
+    <Stack.Screen
+      name="SettingsCurrency"
+      component={SettingsCurrencyScreen}
+      options={{
+        title: 'Currency',
+      }}
+    />
+    <Stack.Screen
+      name="ReceiveInfo"
+      component={ReceiveInfoScreen}
+      options={{
+        title: 'Receive',
+      }}
+    />
+    <Stack.Screen
+      name="ReceiveGuide"
+      component={ReceiveGuideScreen}
+      options={{
+        title: 'Receive',
+      }}
+    />
     <Stack.Screen
       name="ViewPaperKey"
       component={ShowPaperKeyScreen}
       initialParams={{ fromSettings: true }}
+      options={{
+        title: 'Paper key',
+      }}
+    />
+    <Stack.Screen
+      name="TxDetails"
+      component={TxDetailsScreen}
+      options={{
+        ...TransitionPresets.ModalPresentationIOS,
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen
+      name="Overview"
+      component={OverviewScreen}
+      options={{
+        headerShown: false,
+      }}
+    />
+    <Stack.Screen name="Send" component={SendScreen} />
+    <Stack.Screen name="Receive" component={ReceiveScreen} />
+    <Stack.Screen
+      name="ScanQRCode"
+      component={ScanQRCodeScreen}
+      options={{
+        headerShown: false,
+        gestureDirection: 'horizontal-inverted',
+      }}
     />
   </Stack.Navigator>
 )
 
-const Created = () => (
-  <Stack.Navigator initialRouteName="Overview" screenOptions={defaultScreenOptions}>
-    <Stack.Screen name="Settings" component={SettingsStack} />
-    <Stack.Screen name="TxDetails" component={TxDetailsScreen} />
-    <Stack.Screen name="Overview" component={OverviewScreen} />
-    <Stack.Screen name="ReceiveInfo" component={ReceiveInfoStack} />
-    <Stack.Screen name="Send" component={SendScreen} />
-    <Stack.Screen name="Receive" component={ReceiveScreen} />
-    <Stack.Screen name="ScanQRCode" component={ScanQRCodeScreen} />
-  </Stack.Navigator>
-)
+const appTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#fff',
+  },
+}
 
-export function RootStack({ ref, walletCreated }: { ref: any; walletCreated: boolean }) {
+export function RootStack({
+  ref,
+  walletCreated,
+  isPasswordValid,
+  scanInProgress,
+}: {
+  ref: any
+  walletCreated: boolean
+  isPasswordValid: boolean
+  scanInProgress: boolean
+}) {
   return (
-    <NavigationContainer ref={ref}>
-      <Stack.Navigator headerMode="none">
+    <NavigationContainer ref={ref} theme={appTheme}>
+      <Stack.Navigator
+        headerMode="none"
+        screenOptions={{
+          cardStyleInterpolator: forFade,
+          headerShown: false,
+          cardStyle: { backgroundColor: 'black' },
+        }}>
         {walletCreated ? (
-          <Stack.Screen name="Created" component={Created} />
+          isPasswordValid ? (
+            scanInProgress ? (
+              <Stack.Screen name="WalletScan" component={WalletScanScreen} />
+            ) : (
+              <Stack.Screen name="Created" component={Created} />
+            )
+          ) : (
+            <Stack.Screen
+              name="Password"
+              component={PasswordScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+          )
         ) : (
           <Stack.Screen name="NotCreated" component={NotCreated} />
         )}
