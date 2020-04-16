@@ -25,12 +25,14 @@ import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_STATUS } from 'src/modules/settings'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import { Balance as BalanceType, State as GlobalState, Tx, Navigation } from 'src/common/types'
+import { Balance as BalanceType, State as GlobalState, Tx } from 'src/common/types'
 import colors from 'src/common/colors'
 import { getBiometryTitle, ListItemSeparator } from 'src/common'
 import { WalletInitState } from 'src/modules/wallet'
 import { State as SettingsState } from 'src/modules/settings'
-type Props = {
+import { NavigationProps } from 'src/common/types'
+
+interface OwnProps {
   balance: BalanceType
   txs: Array<Tx>
   settings: SettingsState
@@ -40,16 +42,16 @@ type Props = {
   enableBiometry: () => void
   disableBiometry: () => void
   txConfirm: (txSlateId: string) => void
-  txFinalize: (txSlateId: string) => void
   slateShare: (id: string, isResponse: boolean) => void
-  navigation: Navigation
   txListRefreshInProgress: boolean
   isOffline: boolean
   firstLoading: boolean
   walletInit: WalletInitState
   currencyRates: CurrencyRatesState
-  txFinalizeInProgress: boolean
 }
+
+type Props = NavigationProps<'Overview'> & OwnProps
+
 type State = {}
 const Wrapper = styled.View`
   height: 100%;
@@ -95,14 +97,8 @@ class Overview extends Component<Props, State> {
   }
 
   componentDidMount() {
-    const { settings, txFinalizeInProgress, route } = this.props
-    console.log(route)
+    const { settings, route } = this.props
     this.props.txsGet(false, false)
-    const responseSlatePath = route?.params?.responseSlatePath
-
-    if (responseSlatePath && !txFinalizeInProgress) {
-      this.props.txFinalize(responseSlatePath)
-    }
 
     if (settings.biometryType && settings.biometryStatus === BIOMETRY_STATUS.unknown) {
       const biometryName = getBiometryTitle(settings.biometryType)
@@ -121,18 +117,6 @@ class Overview extends Component<Props, State> {
             },
           ],
         )
-    }
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    const { txFinalizeInProgress, route } = this.props
-    const responseSlatePath = route?.params?.responseSlatePath
-    const prevResponseSlatePath = prevProps.route?.params?.responseSlatePath
-
-    if (responseSlatePath && responseSlatePath !== prevResponseSlatePath) {
-      if (responseSlatePath && !txFinalizeInProgress) {
-        this.props.txFinalize(responseSlatePath)
-      }
     }
   }
 
@@ -328,12 +312,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   resetTxForm: () => {
     dispatch({
       type: 'TX_FORM_RESET',
-    })
-  },
-  txFinalize: responseSlatePath => {
-    dispatch({
-      type: 'TX_FINALIZE_REQUEST',
-      responseSlatePath,
     })
   },
   txConfirm: txSlateId => {

@@ -57,6 +57,7 @@ type Props = {
   navigation: Navigation
   isFloonet: boolean
   settings: SettingsState
+  legalAccepted: boolean
 }
 type State = {}
 
@@ -81,16 +82,17 @@ class Landing extends Component<Props, State> {
   }
   _onNewWallet = (isNew: boolean) => {
     return () => {
-      const actualBuildNumber = parseInt(DeviceInfo.getBuildNumber())
-      this.props.navigation.navigate('LegalDisclaimer', {
-        nextScreen: {
-          name: 'NewPassword',
-          params: {
-            isNew,
-          },
+      const nextScreen = {
+        name: 'NewPassword',
+        params: {
+          isNew,
         },
-        buildNumber: actualBuildNumber,
-      })
+      }
+      if (this.props.legalAccepted) {
+        this.props.navigation.navigate(nextScreen.name, nextScreen.params)
+      } else {
+        this.props.navigation.navigate('LegalDisclaimer', { nextScreen })
+      }
     }
   }
 
@@ -151,6 +153,7 @@ const mapStateToProps = (state: ReduxState) => ({
   isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,
   isFloonet: state.settings.chain === 'floonet',
+  legalAccepted: state.app.legalAccepted,
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

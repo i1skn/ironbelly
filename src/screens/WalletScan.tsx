@@ -46,7 +46,6 @@ class WalletScan extends Component<Props, {}> {
     header: null,
   }
   onFinish = () => {
-    this.props.navigation.navigate('Main')
     this.props.resetScan()
   }
 

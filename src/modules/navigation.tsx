@@ -13,11 +13,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import styled from 'styled-components/native'
+import sleep from 'sleep-promise'
 import { State as ReduxState } from 'src/common/types'
 import React from 'react'
 import { Text, Animated } from 'react-native'
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import { TransitionPresets, createStackNavigator } from '@react-navigation/stack'
+import { NavigationContainerRef } from '@react-navigation/core'
 import OverviewScreen from 'src/screens/Overview'
 import SendScreen from 'src/screens/Send'
 import ReceiveScreen from 'src/screens/Receive'
@@ -63,12 +64,12 @@ const defaultScreenOptions = {
 
 export type RootStackParamList = {
   Landing: undefined
-  LegalDisclaimer: undefined
+  LegalDisclaimer: { nextScreen: { name: keyof RootStackParamList; params: any } }
   NewPassword: undefined
   ShowPaperKey: undefined
   WalletScan: undefined
   Main: undefined
-  Overview: undefined
+  Overview: { slatePath: string }
   Settings: undefined
   SettingsGrinNode: { apiSecret: string }
   SettingsCurrency: undefined
@@ -78,7 +79,7 @@ export type RootStackParamList = {
   ReceiveInfo: undefined
   ReceiveGuide: { guide: string }
   Send: undefined
-  Receive: undefined
+  Receive: { slatePath: string; slate: string }
   ScanQRCode: undefined
   Password: undefined
   Created: undefined
@@ -133,7 +134,14 @@ const ResetButtonText = styled(Text)`
 
 const Created = () => (
   <Stack.Navigator initialRouteName="Overview" screenOptions={defaultScreenOptions}>
-    <Stack.Screen name="Settings" component={SettingsScreen} />
+    <Stack.Screen
+      name="Settings"
+      component={SettingsScreen}
+      options={{
+        title: 'Menu',
+        headerBackTitle: 'Back',
+      }}
+    />
     <Stack.Screen
       name="SettingsGrinNode"
       component={SettingsGrinNodeScreen}
@@ -175,7 +183,7 @@ const Created = () => (
       name="SettingsCurrency"
       component={SettingsCurrencyScreen}
       options={{
-        title: 'Currency',
+        title: 'Alternative Currency',
       }}
     />
     <Stack.Screen
@@ -215,8 +223,22 @@ const Created = () => (
         headerShown: false,
       }}
     />
-    <Stack.Screen name="Send" component={SendScreen} />
-    <Stack.Screen name="Receive" component={ReceiveScreen} />
+    <Stack.Screen
+      name="Send"
+      component={SendScreen}
+      options={{
+        headerShown: false,
+        ...TransitionPresets.ModalSlideFromBottomIOS,
+      }}
+    />
+    <Stack.Screen
+      name="Receive"
+      component={ReceiveScreen}
+      options={{
+        headerShown: false,
+        ...TransitionPresets.ModalSlideFromBottomIOS,
+      }}
+    />
     <Stack.Screen
       name="ScanQRCode"
       component={ScanQRCodeScreen}
@@ -228,54 +250,56 @@ const Created = () => (
   </Stack.Navigator>
 )
 
-const appTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: '#fff',
-  },
-}
-
 export function RootStack({
-  ref,
   walletCreated,
   isPasswordValid,
   scanInProgress,
 }: {
-  ref: any
   walletCreated: boolean
   isPasswordValid: boolean
   scanInProgress: boolean
 }) {
   return (
-    <NavigationContainer ref={ref} theme={appTheme}>
-      <Stack.Navigator
-        headerMode="none"
-        screenOptions={{
-          cardStyleInterpolator: forFade,
-          headerShown: false,
-          cardStyle: { backgroundColor: 'black' },
-        }}>
-        {walletCreated ? (
-          isPasswordValid ? (
-            scanInProgress ? (
-              <Stack.Screen name="WalletScan" component={WalletScanScreen} />
-            ) : (
-              <Stack.Screen name="Created" component={Created} />
-            )
+    <Stack.Navigator
+      headerMode="none"
+      screenOptions={{
+        cardStyleInterpolator: forFade,
+        headerShown: false,
+        cardStyle: { backgroundColor: 'black' },
+      }}>
+      {walletCreated ? (
+        isPasswordValid ? (
+          scanInProgress ? (
+            <Stack.Screen name="WalletScan" component={WalletScanScreen} />
           ) : (
-            <Stack.Screen
-              name="Password"
-              component={PasswordScreen}
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="Created" component={Created} />
           )
         ) : (
-          <Stack.Screen name="NotCreated" component={NotCreated} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+          <Stack.Screen
+            name="Password"
+            component={PasswordScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+        )
+      ) : (
+        <Stack.Screen name="NotCreated" component={NotCreated} />
+      )}
+    </Stack.Navigator>
   )
+}
+
+export const navigationRef = React.createRef<NavigationContainerRef>()
+
+export const getNavigation = async (): Promise<NavigationContainerRef> => {
+  let retries = 0
+  while (!navigationRef.current && retries < 3) {
+    await sleep(200)
+    retries++
+  }
+  if (!navigationRef.current) {
+    throw new Error('this.navigation.current is undefined')
+  }
+  return navigationRef.current
 }

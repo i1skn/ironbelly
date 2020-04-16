@@ -143,7 +143,7 @@ class Settings extends Component<Props, State> {
       },
       {
         key: 'currency',
-        title: 'Currency',
+        title: 'Alternative Currency',
         value: settings.currencyObject.code.toUpperCase(),
         onPress: this._onCurrency,
       },

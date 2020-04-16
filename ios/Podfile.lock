@@ -5,6 +5,16 @@ PODS:
     - React
   - BugsnagReactNative/Core (2.23.6):
     - React
+  - Countly (19.08):
+    - Countly/NotificationService (= 19.08)
+  - Countly/NotificationService (19.08)
+  - CountlyReactNative (19.02):
+    - Countly
+    - CountlyReactNative/NotificationService (= 19.02)
+    - React
+  - CountlyReactNative/NotificationService (19.02):
+    - Countly
+    - React
   - DoubleConversion (1.1.6)
   - FBLazyVector (0.61.5)
   - FBReactNativeSpec (0.61.5):
@@ -235,6 +245,8 @@ PODS:
     - ReactCommon/jscallinvoker (= 0.61.5)
   - RNCAsyncStorage (1.8.1):
     - React
+  - RNCClipboard (1.2.1):
+    - React
   - RNCMaskedView (0.1.7):
     - React
   - RNDeviceInfo (2.3.2):
@@ -259,6 +271,7 @@ PODS:
 
 DEPENDENCIES:
   - BugsnagReactNative (from `../node_modules/bugsnag-react-native`)
+  - CountlyReactNative (from `../node_modules/countly-sdk-react-native-bridge`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - FBReactNativeSpec (from `../node_modules/react-native/Libraries/FBReactNativeSpec`)
@@ -293,6 +306,7 @@ DEPENDENCIES:
   - ReactCommon/jscallinvoker (from `../node_modules/react-native/ReactCommon`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-community/async-storage`)"
+  - "RNCClipboard (from `../node_modules/@react-native-community/clipboard`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFS (from `../node_modules/react-native-fs`)
@@ -306,13 +320,17 @@ DEPENDENCIES:
   - Yoga (from `../node_modules/react-native/ReactCommon/yoga`)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://cdn.cocoapods.org/:
+    - Countly
+  https://github.com/CocoaPods/Specs.git:
     - boost-for-react-native
     - LaunchScreenSnapshot
 
 EXTERNAL SOURCES:
   BugsnagReactNative:
     :path: "../node_modules/bugsnag-react-native"
+  CountlyReactNative:
+    :path: "../node_modules/countly-sdk-react-native-bridge"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   FBLazyVector:
@@ -373,6 +391,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-community/async-storage"
+  RNCClipboard:
+    :path: "../node_modules/@react-native-community/clipboard"
   RNCMaskedView:
     :path: "../node_modules/@react-native-community/masked-view"
   RNDeviceInfo:
@@ -399,6 +419,8 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   boost-for-react-native: 39c7adb57c4e60d6c5479dd8623128eb5b3f0f2c
   BugsnagReactNative: 76ba231ece009a6fad369f18d89779ab75cc1c7d
+  Countly: 7c596e00a90a35b7978713a384455fe9a18f28aa
+  CountlyReactNative: c008304f22d8054b77390d8639e733f78af2677b
   DoubleConversion: 5805e889d232975c086db112ece9ed034df7a0b2
   FBLazyVector: aaeaf388755e4f29cd74acbc9e3b8da6d807c37f
   FBReactNativeSpec: 118d0d177724c2d67f08a59136eb29ef5943ec75
@@ -430,6 +452,7 @@ SPEC CHECKSUMS:
   React-RCTVibration: a49a1f42bf8f5acf1c3e297097517c6b3af377ad
   ReactCommon: 198c7c8d3591f975e5431bec1b0b3b581aa1c5dd
   RNCAsyncStorage: e0dd7c8a36543b4ef84969acd9f8aceba3a92dc2
+  RNCClipboard: b238c952b0f8d5a6fa5ff96eacb9898608946540
   RNCMaskedView: 76c40a1d41c3e2535df09246a2b5487f04de0814
   RNDeviceInfo: 17e34f6dd902f08d88cbe2c0b7a01be948d43641
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
@@ -444,4 +467,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: e57a9dcf301aa695bb05a134f7971f39a321b579
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.9.1

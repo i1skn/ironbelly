@@ -14,6 +14,7 @@
 // limitations under the License.
 import React, { useState, useMemo } from 'react'
 import { ActivityIndicator, View } from 'react-native'
+import Header from 'src/components/Header'
 import { TouchableOpacity } from 'react-native'
 import NumericInput from 'src/components/NumericInput'
 import FormTextInput from 'src/components/FormTextInput'
@@ -44,6 +45,8 @@ import styled from 'styled-components/native'
 import colors from 'src/common/colors'
 import { TxForm, isTxFormValid } from 'src/modules/tx'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+import CloseImg from 'src/assets/images/x.png'
+
 const UnderNote = styled.Text`
   font-size: 12;
   font-weight: 300;
@@ -158,182 +161,190 @@ const Send = ({
     }
   }, [amount, getOutputStrategies, resetOutputStrategies])
   return (
-    <KeyboardAwareScrollView
-      style={{
-        paddingLeft: 16,
-        paddingRight: 16,
-      }}
-      keyboardShouldPersistTaps={'handled'}
-      extraScrollHeight={8}
-      enableResetScrollToCoords={false}
-      keyboardOpeningTime={0}
-      keyboardDismissMode={'on-drag'}>
-      <View
+    <>
+      <Header
+        leftIcon={CloseImg}
+        leftText={'Cancel'}
+        leftAction={() => navigation.navigate('Overview')}
+      />
+
+      <KeyboardAwareScrollView
         style={{
-          flex: 1,
-        }}>
-        <Spacer />
+          paddingLeft: 16,
+          paddingRight: 16,
+        }}
+        keyboardShouldPersistTaps={'handled'}
+        extraScrollHeight={8}
+        enableResetScrollToCoords={false}
+        keyboardOpeningTime={0}
+        keyboardDismissMode={'on-drag'}>
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
+            flex: 1,
           }}>
-          <Amount
-            autoFocus={!amount}
-            onChange={(value: string) => {
-              const amount = parseFloat(value.replace(/,/, '.') || '0')
+          <Spacer />
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+            }}>
+            <Amount
+              autoFocus={!amount}
+              onChange={(value: string) => {
+                const amount = parseFloat(value.replace(/,/, '.') || '0')
 
-              if (!isNaN(amount) && amount) {
-                setAmount(amount * 1e9, value)
-              } else {
-                setAmount(0, value)
-              }
-            }}
-            placeholder="Amount"
-            value={textAmount}
-            maxLength={100000}
-            units={'ツ'}
-          />
-          <AlternativeAmount>
-            ≈{' '}
-            {hrFiat(
-              convertToFiat(
-                amount + (outputStrategy ? outputStrategy.fee : 0),
+                if (!isNaN(amount) && amount) {
+                  setAmount(amount * 1e9, value)
+                } else {
+                  setAmount(0, value)
+                }
+              }}
+              placeholder="Amount"
+              value={textAmount}
+              maxLength={100000}
+              units={'ツ'}
+            />
+            <AlternativeAmount>
+              ≈{' '}
+              {hrFiat(
+                convertToFiat(
+                  amount + (outputStrategy ? outputStrategy.fee : 0),
+                  currency,
+                  currencyRates.rates,
+                ),
                 currency,
-                currencyRates.rates,
-              ),
-              currency,
-            )}
-          </AlternativeAmount>
-        </View>
+              )}
+            </AlternativeAmount>
+          </View>
 
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'center',
-            paddingBottom: 8,
-          }}>
-          {false && <Available>{`Available: ${hrGrin(amount)}`}</Available>}
-          {(!!outputStrategies_error && (
-            <NetworkFeeError>{outputStrategies_error}</NetworkFeeError>
-          )) ||
-            (outputStrategies_inProgress && (
-              <ActivityIndicator
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'center',
+              paddingBottom: 8,
+            }}>
+            {false && <Available>{`Available: ${hrGrin(amount)}`}</Available>}
+            {(!!outputStrategies_error && (
+              <NetworkFeeError>{outputStrategies_error}</NetworkFeeError>
+            )) ||
+              (outputStrategies_inProgress && (
+                <ActivityIndicator
+                  style={{
+                    paddingTop: 6,
+                    paddingBottom: 6,
+                  }}
+                  size="small"
+                  color={colors.grey[700]}
+                />
+              ))}
+          </View>
+          {(outputStrategies.length && (
+            <>
+              <Title>Network fee</Title>
+              <Spacer />
+              {outputStrategies.map((os, i) => (
+                <Option
+                  key={i}
+                  onPress={() => {
+                    setOutputStrategy(os)
+                  }}>
+                  <OptioIcon active={os === outputStrategy} />
+                  <Fee active={os === outputStrategy}>{hrGrin(os.fee)}</Fee>
+                  {balance.amountCurrentlySpendable === os.total ? (
+                    <Locked>
+                      All the funds would be locked for around {minimumConfirmations} min.
+                    </Locked>
+                  ) : (
+                    <Locked>
+                      {hrGrin(os.total)} would be locked for around {minimumConfirmations} min.
+                    </Locked>
+                  )}
+                </Option>
+              ))}
+              <Title>Message</Title>
+              <View>
+                <FormTextInput
+                  autoFocus={false}
+                  onChange={setMessage}
+                  value={message}
+                  placeholder="Optional"
+                  multiline={true}
+                />
+                <UnderNote>
+                  This message would be shown to a recipient, but would NOT be stored in the
+                  blockchain.
+                </UnderNote>
+              </View>
+              <Title>Send via?</Title>
+              <Spacer />
+              <View
                 style={{
-                  paddingTop: 6,
-                  paddingBottom: 6,
-                }}
-                size="small"
-                color={colors.grey[700]}
-              />
-            ))}
-        </View>
-        {(outputStrategies.length && (
-          <>
-            <Title>Network fee</Title>
-            <Spacer />
-            {outputStrategies.map((os, i) => (
-              <Option
-                key={i}
-                onPress={() => {
-                  setOutputStrategy(os)
+                  flexDirection: 'row',
+                  paddingBottom: 16,
+                  justifyContent: 'space-around',
                 }}>
-                <OptioIcon active={os === outputStrategy} />
-                <Fee active={os === outputStrategy}>{hrGrin(os.fee)}</Fee>
-                {balance.amountCurrentlySpendable === os.total ? (
-                  <Locked>
-                    All the funds would be locked for around {minimumConfirmations} min.
-                  </Locked>
-                ) : (
-                  <Locked>
-                    {hrGrin(os.total)} would be locked for around {minimumConfirmations} min.
-                  </Locked>
-                )}
-              </Option>
-            ))}
-            <Title>Message</Title>
-            <View>
-              <FormTextInput
-                autoFocus={false}
-                onChange={setMessage}
-                value={message}
-                placeholder="Optional"
-                multiline={true}
-              />
-              <UnderNote>
-                This message would be shown to a recipient, but would NOT be stored in the
-                blockchain.
-              </UnderNote>
-            </View>
-            <Title>Send via?</Title>
-            <Spacer />
-            <View
-              style={{
-                flexDirection: 'row',
-                paddingBottom: 16,
-                justifyContent: 'space-around',
-              }}>
-              <TransportMethod
-                style={{
-                  flexDirection: 'row',
-                }}
-                onPress={() => setTransportMethod(FILE_TRANSPORT_METHOD)}>
-                <OptioIcon active={transportMethod === FILE_TRANSPORT_METHOD} />
-                <TransportMethodTitle active={transportMethod === FILE_TRANSPORT_METHOD}>
-                  File
-                </TransportMethodTitle>
-              </TransportMethod>
-              <TransportMethod
-                style={{
-                  flexDirection: 'row',
-                }}
-                onPress={() => setTransportMethod(HTTP_TRANSPORT_METHOD)}>
-                <OptioIcon active={transportMethod === HTTP_TRANSPORT_METHOD} />
-                <TransportMethodTitle active={transportMethod === HTTP_TRANSPORT_METHOD}>
-                  HTTP(S)
-                </TransportMethodTitle>
-              </TransportMethod>
-            </View>
-            <Spacer />
-            {transportMethod === HTTP_TRANSPORT_METHOD && (
-              <>
-                <View
+                <TransportMethod
                   style={{
                     flexDirection: 'row',
-                    alignItems: 'center',
-                  }}>
-                  <FormTextInput
-                    autoFocus={false}
-                    onChange={url => setUrl(url)}
-                    value={url}
-                    placeholder="http(s)://"
-                    textContentType={'URL'}
-                    keyboardType={'url'}
-                    autoCorrect={false}
-                    multiline={true}
-                  />
-                  {!isAndroid && !url && (
-                    <ScanQRCode onPress={() => navigation.navigate('ScanQRCode')}>
-                      <MaterialCommunityIcons name="qrcode-scan" size={26} />
-                    </ScanQRCode>
-                  )}
-                </View>
-                <Spacer />
-              </>
-            )}
-            <Button
-              title={'Send'}
-              onPress={() => {
-                send(amount, message, url, outputStrategy)
-              }}
-              disabled={isTxFormValid(txForm, transportMethod)}
-            />
-            <Spacer />
-          </>
-        )) ||
-          null}
-      </View>
-    </KeyboardAwareScrollView>
+                  }}
+                  onPress={() => setTransportMethod(FILE_TRANSPORT_METHOD)}>
+                  <OptioIcon active={transportMethod === FILE_TRANSPORT_METHOD} />
+                  <TransportMethodTitle active={transportMethod === FILE_TRANSPORT_METHOD}>
+                    File
+                  </TransportMethodTitle>
+                </TransportMethod>
+                <TransportMethod
+                  style={{
+                    flexDirection: 'row',
+                  }}
+                  onPress={() => setTransportMethod(HTTP_TRANSPORT_METHOD)}>
+                  <OptioIcon active={transportMethod === HTTP_TRANSPORT_METHOD} />
+                  <TransportMethodTitle active={transportMethod === HTTP_TRANSPORT_METHOD}>
+                    HTTP(S)
+                  </TransportMethodTitle>
+                </TransportMethod>
+              </View>
+              <Spacer />
+              {transportMethod === HTTP_TRANSPORT_METHOD && (
+                <>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    <FormTextInput
+                      autoFocus={false}
+                      onChange={url => setUrl(url)}
+                      value={url}
+                      placeholder="http(s)://"
+                      textContentType={'URL'}
+                      keyboardType={'url'}
+                      autoCorrect={false}
+                      multiline={true}
+                    />
+                    {!false && !url && (
+                      <ScanQRCode onPress={() => navigation.navigate('ScanQRCode')}>
+                        <MaterialCommunityIcons name="qrcode-scan" size={26} />
+                      </ScanQRCode>
+                    )}
+                  </View>
+                  <Spacer />
+                </>
+              )}
+              <Button
+                title={'Send'}
+                onPress={() => {
+                  send(amount, message, url, outputStrategy)
+                }}
+                disabled={isTxFormValid(txForm, transportMethod)}
+              />
+              <Spacer />
+            </>
+          )) ||
+            null}
+        </View>
+      </KeyboardAwareScrollView>
+    </>
   )
 }
 

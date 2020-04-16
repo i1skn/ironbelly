@@ -167,12 +167,11 @@ export const Spacer = styled.View`
   height: ${({ height }) => (height ? height : isIphoneX() ? '24px' : '16px')};
   width: 100%;
 `
-export const isResponseSlate = async (slatePath: string) => {
+export const isResponseSlate = async (slate: any) => {
   try {
-    const slate = await RNFS.readFile(slatePath, 'utf8').then((json: string) => JSON.parse(json))
     return slate.participant_data.length === slate.num_participants
   } catch (e) {
-    return slatePath.substr(-9) === '.response'
+    throw new Error('Cannot parse slate file')
   }
 }
 export const getSlatePath = (slateId: string, isResponse: boolean) => {

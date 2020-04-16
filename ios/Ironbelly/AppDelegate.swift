@@ -17,27 +17,27 @@ import UIKit
 import LaunchScreenSnapshot
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
+    func sourceURL(for bridge: RCTBridge!) -> URL! {
+    #if DEBUG
+        return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+    #else
+        return RCTBundleURLProvider.sharedSettings().jsBundleURL(
+            forFallbackResource: "main", fallbackExtension: "jsbundle"
+        )
+    #endif
+    }
+    
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        #if DEBUG
-        let jsCodeLocation = URL(string: "http://localhost:8081/index.bundle?platform=ios")!
-        #else
-        let jsCodeLocation: URL! =
-            RCTBundleURLProvider.sharedSettings().jsBundleURL(
-                forFallbackResource: "main", fallbackExtension: "jsbundle"
-        )
-        #endif
         
-
-
-
-        let rootView = RCTRootView(bundleURL: jsCodeLocation, moduleName: "Ironbelly", initialProperties: nil, launchOptions: launchOptions)
+        let bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
+        let rootView = RCTRootView(bridge: bridge!, moduleName: "Ironbelly", initialProperties: nil)
         let rootViewController = UIViewController()
         rootViewController.view = rootView
-
+        
         self.window = UIWindow(frame: UIScreen.main.bounds)
         self.window?.rootViewController = rootViewController
         self.window?.makeKeyAndVisible()

@@ -37,8 +37,6 @@
 		CE5F56BE44E94BA78933ADA8 /* Close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C342A60D16E24E1882B784C1 /* Close@2x.png */; };
 		DCADF58ADB344767BB4E3D41 /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */; };
 		EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AEB4E1B47E9D4CB1B965F729 /* x@3x.png */; };
-		F617A2EC22105D1D00FDF0C0 /* AppConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */; };
-		F617A2F022105D9300FDF0C0 /* AppConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = F617A2EF22105D9300FDF0C0 /* AppConfig.m */; };
 		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
 		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
 		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
@@ -116,8 +114,6 @@
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
-		F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
-		F617A2EF22105D9300FDF0C0 /* AppConfig.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppConfig.m; sourceTree = "<group>"; };
 		F64186D9218895DC00A99CA0 /* Ironbelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ironbelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186DC218895DC00A99CA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -249,8 +245,6 @@
 				F64186E3218895DE00A99CA0 /* Assets.xcassets */,
 				F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */,
 				F64186E8218895DE00A99CA0 /* Info.plist */,
-				F617A2EF22105D9300FDF0C0 /* AppConfig.m */,
-				F617A2EB22105D1D00FDF0C0 /* AppConfig.swift */,
 				F6E9509121C50DE90066C203 /* GrinBridge.m */,
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
 			);
@@ -518,11 +512,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F617A2EC22105D1D00FDF0C0 /* AppConfig.swift in Sources */,
 				F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */,
 				F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */,
 				F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */,
-				F617A2F022105D9300FDF0C0 /* AppConfig.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

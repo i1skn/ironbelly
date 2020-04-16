@@ -19,7 +19,7 @@ import { isAndroid, hrGrin, hrFiat, convertToFiat } from 'src/common'
 import colors from 'src/common/colors'
 import { Balance, Navigation, Currency } from 'src/common/types'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome'
+import FeatherIcon from 'react-native-vector-icons/Feather'
 const BalanceTitle = styled(Text)`
   font-weight: 600;
   font-size: 21;
@@ -32,26 +32,28 @@ const Amount = styled.View`
   justify-content: space-between;
 `
 const AmountTotal = styled.View`
-  align-items: flex-end;
-  justify-content: flex-end;
+  align-items: flex-start;
+  justify-content: center;
 `
 const AmountGrin = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 300)};
+  color: ${colors.grey[800]};
   font-size: 20;
   line-height: 24;
 `
 const AmountGrinTotal = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 300)};
-  font-size: 24;
+  font-size: 32;
 `
 const AmountFiatTotal = styled(Text)`
   font-weight: 400;
-  font-size: 16;
-  color: ${() => colors.grey[900]};
+  font-size: 12;
+  color: ${() => colors.grey[800]};
 `
 const AmountTitle = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 400)};
   font-size: 16;
+  color: ${colors.grey[800]};
 `
 const AmountTitleTotal = styled(Text)`
   font-weight: ${({ bold }) => (bold ? 600 : 400)};
@@ -79,16 +81,16 @@ const Floonet = styled(Text)`
   text-align: center;
 `
 const TopIcon = styled.TouchableOpacity`
-  width: 30;
-  height: 28;
+  width: 32;
+  height: 30;
 `
 const TopLine = styled.View`
   flex-direction: row;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 `
 const BalanceEq = styled.View`
-  margin: 16px 0 8px 0;
+  margin: 8px 0 8px 0;
 `
 type Props = {
   balance: Balance
@@ -113,7 +115,7 @@ const BalanceComponent = ({
     <React.Fragment>
       <Wrapper>
         <TopLine>
-          {!isAndroid && (
+          {false && (
             <TopIcon onPress={() => navigation.navigate('ScanQRCode')}>
               <MaterialCommunityIcons
                 name="qrcode-scan"
@@ -124,12 +126,22 @@ const BalanceComponent = ({
               />
             </TopIcon>
           )}
-          <BalanceTitle>Balance</BalanceTitle>
+          <AmountTotal>
+            <AmountGrinTotal bold={true}>
+              {hrGrin(balance.total + balance.amountLocked)}
+            </AmountGrinTotal>
+            <AmountFiatTotal>
+              {hrFiat(
+                convertToFiat(balance.total + balance.amountLocked, currency, rates),
+                currency,
+              )}
+            </AmountFiatTotal>
+          </AmountTotal>
 
           <TopIcon onPress={() => navigation.navigate('Settings')}>
-            <FontAwesomeIcon
-              name="cogs"
-              size={28}
+            <FeatherIcon
+              name="menu"
+              size={32}
               style={{
                 color: colors.black,
               }}
@@ -148,20 +160,6 @@ const BalanceComponent = ({
           <Amount>
             <AmountTitle>Locked</AmountTitle>
             <AmountGrin>{hrGrin(balance.amountLocked)}</AmountGrin>
-          </Amount>
-          <Amount>
-            <AmountTitleTotal bold={true}>Total</AmountTitleTotal>
-            <AmountTotal>
-              <AmountGrinTotal bold={true}>
-                {hrGrin(balance.total + balance.amountLocked)}
-              </AmountGrinTotal>
-              <AmountFiatTotal>
-                {hrFiat(
-                  convertToFiat(balance.total + balance.amountLocked, currency, rates),
-                  currency,
-                )}
-              </AmountFiatTotal>
-            </AmountTotal>
           </Amount>
         </BalanceEq>
       </Wrapper>

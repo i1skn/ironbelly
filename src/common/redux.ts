@@ -14,7 +14,10 @@
 // limitations under the License.
 import { createMiddleware } from 'src/common/sideEffects'
 import AsyncStorage from '@react-native-community/async-storage'
-import { combineReducers } from 'redux'
+import { combineReducers, compose } from 'redux'
+import { Epic, combineEpics, createEpicMiddleware } from 'redux-observable'
+import { appEpic, appReducer } from 'src/modules/app'
+import { catchError } from 'rxjs/operators'
 import { reducer as balanceReducer } from 'src/modules/balance'
 import { reducer as txReducer, sideEffects as txSideEffects } from 'src/modules/tx'
 import { reducer as settingsReducer, sideEffects as settingsEffects } from 'src/modules/settings'
@@ -26,30 +29,48 @@ import { reducer as toasterReducer, sideEffects as toasterEffects } from 'src/mo
 import { reducer as walletReducer, sideEffects as walletEffects } from 'src/modules/wallet'
 import { State, Action } from 'src/common/types'
 import { createStore, applyMiddleware } from 'redux'
-import { createLogger } from 'redux-logger'
 import { createMigrate, persistStore, persistReducer } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
 import { migrations } from 'src/common/migrations'
+
+const appConfig = {
+  key: 'app',
+  stateReconciler: autoMergeLevel2,
+  storage: AsyncStorage,
+  whitelist: ['legalAccepted'],
+}
+
 const balanceConfig = {
   key: 'balance',
   stateReconciler: autoMergeLevel2,
   storage: AsyncStorage,
   whitelist: ['data'],
 }
+
 const currencyRatesConfig = {
   key: 'currencyRates',
   stateReconciler: autoMergeLevel2,
   storage: AsyncStorage,
   whitelist: ['rates', 'lastUpdated'],
 }
+
 export const rootReducer = combineReducers<State, Action>({
   balance: persistReducer(balanceConfig, balanceReducer) as typeof balanceReducer,
+  app: persistReducer(appConfig, appReducer) as typeof appReducer,
   tx: txReducer,
   currencyRates: persistReducer(currencyRatesConfig, currencyRates) as typeof currencyRates,
   settings: settingsReducer,
   toaster: toasterReducer,
   wallet: walletReducer,
 }) as () => State
+
+export const rootEpic: Epic<Action, Action, State> = (action$, store$, dependencies) =>
+  combineEpics(appEpic)(action$, store$, dependencies).pipe(
+    catchError((error, source) => {
+      console.error(error)
+      return source
+    }),
+  )
 
 const sideEffects = {
   ...txSideEffects,
@@ -58,8 +79,8 @@ const sideEffects = {
   ...settingsEffects,
   ...currencyRatesEffects,
 }
-const logger = createLogger({})
 const sideEffectsMiddleware = createMiddleware(sideEffects)
+const epicMiddleware = createEpicMiddleware<Action, Action, State>()
 
 const persistConfig = {
   key: 'root',
@@ -72,11 +93,13 @@ const persistConfig = {
     debug: true,
   }),
 }
+
+const enhancers = [applyMiddleware(sideEffectsMiddleware, epicMiddleware)]
+
+const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
 const persistedReducer = persistReducer<State, Action>(persistConfig, rootReducer)
-export const store = createStore(
-  persistedReducer,
-  process.env.NODE_ENV === 'development'
-    ? applyMiddleware(sideEffectsMiddleware, logger)
-    : applyMiddleware(sideEffectsMiddleware),
-)
+export const store = createStore(persistedReducer, composeEnhancers(...enhancers))
 export const persistor = persistStore(store)
+
+epicMiddleware.run(rootEpic)

@@ -21,15 +21,18 @@ import { Text, Button } from 'src/components/CustomFont'
 import { isAndroid, LoaderView, TextareaTitle, Textarea, hrGrin, Spacer } from 'src/common'
 import colors from 'src/common/colors'
 import { State as GlobalState, Navigation, Slate } from 'src/common/types' //Images
-
+import { NavigationProps } from 'src/common/types'
 import CloseImg from 'src/assets/images/x.png'
-type Props = {
-  navigation: Navigation
+
+interface OwnProps {
   txReceive: (slatePath: string) => void
   slateRequest: (slatePath: string) => void
   isReceived: boolean
   slate: Slate | undefined | null
 }
+
+type Props = NavigationProps<'Receive'> & OwnProps
+
 type State = {}
 const Wrapper = styled(KeyboardAvoidingView)`
   padding: 16px;
@@ -42,17 +45,7 @@ const Title = styled(Text)`
 `
 
 class Receive extends Component<Props, State> {
-  static navigationOptions = {
-    header: null,
-  }
-
-  componentDidMount() {
-    const { navigation, slateRequest } = this.props
-    const { slatePath } = navigation.state.params
-    slateRequest(slatePath)
-  }
-
-  componentDidUpdate(prevProps) {
+  componentDidUpdate() {
     const { navigation, isReceived } = this.props
 
     if (isReceived) {
@@ -117,13 +110,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch({
       type: 'TX_RECEIVE_REQUEST',
       slatePath,
-    })
-  },
-  slateRequest: slatePath => {
-    dispatch({
-      type: 'SLATE_LOAD_REQUEST',
-      slatePath,
-      isResponse: false,
     })
   },
 })

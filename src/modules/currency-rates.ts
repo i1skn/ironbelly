@@ -18,11 +18,13 @@ export type State = {
   rates: object
   inProgress: boolean
   lastUpdated: number
+  disabled: boolean
 }
 export const initialState: State = {
   rates: {},
   inProgress: false,
   lastUpdated: 0,
+  disabled: false,
 }
 export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
@@ -31,9 +33,15 @@ export const reducer = (state: State = initialState, action: Action): State => {
 
     case 'CURRENCY_RATES_SUCCESS':
       return {
+        ...state,
         rates: action.rates.grin,
         inProgress: false,
         lastUpdated: Date.now(),
+      }
+    case 'CURRENCY_RATES_TOGGLE':
+      return {
+        ...state,
+        disabled: !state.disabled,
       }
 
     case 'CURRENCY_RATES_FAILURE':

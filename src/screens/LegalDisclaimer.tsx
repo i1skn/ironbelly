@@ -18,14 +18,19 @@ import styled from 'styled-components/native'
 import CheckBox from 'react-native-check-box'
 import { Wrapper, Spacer } from 'src/common'
 import { Text, Link, Button } from 'src/components/CustomFont'
-import { Navigation } from 'src/common/types'
+import { Dispatch, State as GlobalState, NavigationProps } from 'src/common/types'
+import { connect } from 'react-redux'
+
+interface OwnProps {
+  acceptLegal: (value: boolean) => void
+}
+
+type Props = NavigationProps<'LegalDisclaimer'> & OwnProps
+
 export const termsUrl = 'https://ironbelly.app/terms'
 export const privacyUrl = 'https://ironbelly.app/privacy'
 export const grinUrl = 'https://grin-tech.org/'
-type Props = {
-  accept: (buildNumber: number) => void
-  navigation: Navigation
-}
+
 const RightText = styled.View`
   flex-wrap: wrap;
   flex-direction: row;
@@ -39,7 +44,7 @@ const Main = styled.View`
   padding-top: 16px;
 `
 
-const LegalDisclaimer = ({ navigation, route }: Props) => {
+const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
   const { nextScreen } = route?.params
   const [checked, setChecked] = useState(false)
   return (
@@ -78,6 +83,7 @@ const LegalDisclaimer = ({ navigation, route }: Props) => {
         title={'Next'}
         disabled={!checked}
         onPress={() => {
+          acceptLegal(true)
           navigation.navigate(nextScreen.name, nextScreen.params)
         }}
       />
@@ -85,5 +91,17 @@ const LegalDisclaimer = ({ navigation, route }: Props) => {
     </Wrapper>
   )
 }
+const mapStateToProps = (state: GlobalState) => {
+  return {}
+}
 
-export default LegalDisclaimer
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  acceptLegal: (value: boolean) => {
+    dispatch({
+      type: 'ACCEPT_LEGAL',
+      value,
+    })
+  },
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(LegalDisclaimer)

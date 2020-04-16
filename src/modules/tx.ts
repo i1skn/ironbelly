@@ -494,24 +494,6 @@ export const sideEffects = {
       log(e, true)
     }
   },
-  ['SLATE_LOAD_REQUEST']: (action: slateLoadRequestAction, store: Store) => {
-    return RNFS.readFile(action.slatePath, 'utf8')
-      .then((json: string) => JSON.parse(json))
-      .then(slate => {
-        store.dispatch({
-          type: 'SLATE_LOAD_SUCCESS',
-          slate,
-        })
-      })
-      .catch(error => {
-        store.dispatch({
-          type: 'SLATE_LOAD_FAILURE',
-          code: 1,
-          message: error.message,
-        })
-        log(error, true)
-      })
-  },
   ['SLATE_SET_REQUEST']: (action: slateSetRequestAction, store: Store) => {
     const path = getSlatePath(action.slate.id, action.isResponse)
     return RNFS.writeFile(path, JSON.stringify(action.slate), 'utf8')

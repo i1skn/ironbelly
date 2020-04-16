@@ -12,6 +12,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+import { State as AppState } from 'src/modules/app'
 import { State as BalanceState } from 'src/modules/balance'
 import { State as TxState } from 'src/modules/tx'
 import { State as SettingsState } from 'src/modules/settings'
@@ -204,6 +205,7 @@ export type slateLoadRequestAction = {
 export type slateLoadSuccessAction = {
   type: 'SLATE_LOAD_SUCCESS'
   slate: Slate
+  slatePath: string
 }
 export type slateLoadFalureAction = {
   type: 'SLATE_LOAD_FAILURE'
@@ -442,6 +444,11 @@ export type currencyRatesSuccessAction = {
   type: 'CURRENCY_RATES_SUCCESS'
   rates: { [x: string]: object }
 }
+
+export type currencyRatesToggleAction = {
+  type: 'CURRENCY_RATES_TOGGLE'
+}
+
 export type currencyRatesFalureAction = {
   type: 'CURRENCY_RATES_FAILURE'
   code?: number
@@ -455,7 +462,11 @@ export type walletExistsFalureAction = {
   code?: number
   message: string
 }
+
+export type acceptLegal = { type: 'ACCEPT_LEGAL'; value: boolean }
+
 export type Action =
+  | acceptLegal
   | txListClearAction
   | txListRequestAction
   | txListSuccessAction
@@ -559,6 +570,7 @@ export type Action =
   | walletMigrateToMainnetFalureAction
   | currencyRatesRequestAction
   | currencyRatesSuccessAction
+  | currencyRatesToggleAction
   | currencyRatesFalureAction
   | walletExistsRequestAction
   | walletExistsSuccessAction
@@ -569,6 +581,7 @@ export type Currency = {
   fractionDigits: number
 }
 export type State = {
+  app: AppState
   balance: BalanceState
   tx: TxState
   currencyRates: CurrencyRatesState

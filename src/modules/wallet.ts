@@ -45,7 +45,6 @@ import {
 } from 'src/common'
 import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY } from 'src/common'
-import { CommonActions } from '@react-navigation/native'
 const MAX_RETRIES = 10
 export const RECOVERY_LIMIT = 1000
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
@@ -628,6 +627,10 @@ export const sideEffects = {
   ['WALLET_DESTROY_SUCCESS']: (_action: walletDestroySuccessAction, store: Store) => {
     store.dispatch({
       type: 'WALLET_CLEAR',
+    })
+    store.dispatch({
+      type: 'ACCEPT_LEGAL',
+      value: false,
     })
   },
   ['WALLET_MIGRATE_TO_MAINNET_REQUEST']: (

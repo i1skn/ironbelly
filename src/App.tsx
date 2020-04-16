@@ -13,7 +13,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { Component } from 'react'
-import sleep from 'sleep-promise'
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+// @ts-ignore
 import {
   NativeModules,
   Linking,
@@ -25,13 +26,11 @@ import {
 } from 'react-native'
 import { Provider, connect } from 'react-redux'
 import {
-  isResponseSlate,
   SLATES_DIRECTORY,
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
   checkApiSecret,
   isWalletInitialized,
-  parseSendLink,
 } from 'src/common'
 import urlParser from 'url'
 import Modal from 'react-native-modal'
@@ -43,7 +42,7 @@ import RNFS from 'react-native-fs'
 import { Dispatch, State as GlobalState } from 'src/common/types'
 import { store, persistor } from 'src/common/redux'
 import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
-import { RootStack } from 'src/modules/navigation'
+import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
 import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'src/modules/settings'
 import { State as ToasterState } from 'src/modules/toaster'
@@ -55,6 +54,14 @@ checkApplicationSupportDirectory()
 
 YellowBox.ignoreWarnings(['Expected style'])
 
+const appTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#fff',
+  },
+}
+
 interface StateProps {
   toastMessage: ToasterState
   showTxConfirmationModal: boolean
@@ -64,6 +71,7 @@ interface StateProps {
   sharingInProgress: boolean
   walletCreated: boolean | null
   isPasswordValid: boolean
+  legalAccepted: boolean
 }
 
 interface DispatchProps {
@@ -88,14 +96,10 @@ type State = {
 
 class RealApp extends React.Component<Props, State> {
   navigation: any
-  backHandler: any
 
-  async waitForNavigation() {
-    let retries = 0
-    while (!this.navigation && retries < 3) {
-      await sleep(200)
-      retries++
-    }
+  constructor(props: Props) {
+    super(props)
+    this.navigation = React.createRef()
   }
 
   async componentDidMount() {
@@ -103,7 +107,7 @@ class RealApp extends React.Component<Props, State> {
     GrinBridge.setLogger()
       .then(console.log)
       .catch(console.log)
-    const { slateUrl } = this.props
+    const { slateUrl, legalAccepted } = this.props
 
     if (slateUrl) {
       this._handleOpenURL({
@@ -131,6 +135,16 @@ class RealApp extends React.Component<Props, State> {
     // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
     this.props.requestWalletExists()
     // this.setState({ walletCreated: await isWalletInitialized() })
+
+    // TODO: remove, when nobody is using v3.0.5
+    // Set legalAccepted = TRUE for already created wallets
+    const exists = await isWalletInitialized()
+    if (exists && !legalAccepted) {
+      store.dispatch({
+        type: 'ACCEPT_LEGAL',
+        value: true,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -140,7 +154,7 @@ class RealApp extends React.Component<Props, State> {
   }
 
   _handleOpenURL = (event: { url: string }) => {
-    const { setFromLink } = this.props
+    // const { setFromLink } = this.props
     isWalletInitialized().then(async exists => {
       if (exists) {
         if (isAndroid) {
@@ -165,35 +179,20 @@ class RealApp extends React.Component<Props, State> {
         }
 
         const link = urlParser.parse(event.url, true)
-        let nextScreen
 
         if (link.protocol === 'grin:') {
-          if (link.host === 'send') {
-            const { amount, destination, message } = parseSendLink(link.query)
-
-            if (!isNaN(amount) && destination) {
-              setFromLink(amount, message, destination)
-              nextScreen = {
-                name: 'Send',
-                params: {},
-              }
-            }
-          }
+          // if (link.host === 'send') {
+          // const { amount, destination, message } = parseSendLink(link.query)
+          // if (!isNaN(amount) && destination) {
+          // setFromLink(amount, message, destination)
+          // }
+          // }
         } else if (link.protocol && ['file:'].indexOf(link.protocol) !== -1 && link.path) {
           const path = isAndroid ? decodeURIComponent(link.path) : link.path
-          nextScreen = (await isResponseSlate(link.path))
-            ? {
-                name: 'Overview',
-                params: {
-                  responseSlatePath: path,
-                },
-              }
-            : {
-                name: 'Receive',
-                params: {
-                  slatePath: path,
-                },
-              }
+          store.dispatch({
+            type: 'SLATE_LOAD_REQUEST',
+            slatePath: path,
+          })
         } else if (link.protocol && ['content:'].indexOf(link.protocol) !== -1) {
           // Copy the file, because we can not operate on content://
           // from inside rust code
@@ -205,29 +204,10 @@ class RealApp extends React.Component<Props, State> {
             .pop()
           const destPath = `${SLATES_DIRECTORY}/${fileName}`
           await RNFS.copyFile(url, destPath)
-          nextScreen = (await isResponseSlate(link.href))
-            ? {
-                name: 'Overview',
-                params: {
-                  responseSlatePath: destPath,
-                },
-              }
-            : {
-                name: 'Receive',
-                params: {
-                  slatePath: destPath,
-                },
-              }
-        }
-
-        await this.waitForNavigation()
-        if (nextScreen) {
-          if (!store.getState().wallet.password.value) {
-            //Password is not set
-            this.navigation?.navigate('Password', nextScreen.params)
-          } else {
-            this.navigation?.navigate(nextScreen.name, nextScreen.params)
-          }
+          store.dispatch({
+            type: 'SLATE_LOAD_REQUEST',
+            slatePath: destPath,
+          })
         }
       }
     })
@@ -239,8 +219,7 @@ class RealApp extends React.Component<Props, State> {
     if (nextAppState === 'background' && !sharingInProgress) {
       isWalletInitialized().then(async exists => {
         if (exists) {
-          await this.waitForNavigation()
-          this.props.dispatch({
+          store.dispatch({
             type: 'CLEAR_PASSWORD',
           })
         }
@@ -274,7 +253,11 @@ class RealApp extends React.Component<Props, State> {
 
     const sinceLastCurrencyRatesUpdate = Date.now() - this.props.currencyRates.lastUpdated
 
-    if (sinceLastCurrencyRatesUpdate > 5 * 60 * 1000 && !this.props.currencyRates.inProgress) {
+    if (
+      sinceLastCurrencyRatesUpdate > 5 * 60 * 1000 &&
+      !this.props.currencyRates.inProgress &&
+      !this.props.currencyRates.disabled
+    ) {
       this.props.requestCurrencyRates()
     }
   }
@@ -289,12 +272,13 @@ class RealApp extends React.Component<Props, State> {
         <Modal isVisible={this.props.showTxConfirmationModal} onBackdropPress={closeTxPostModal}>
           <TxPostConfirmationModal />
         </Modal>
-        <RootStack
-          ref={this.navigation}
-          isPasswordValid={isPasswordValid}
-          walletCreated={walletCreated}
-          scanInProgress={scanInProgress}
-        />
+        <NavigationContainer ref={navigationRef} theme={appTheme}>
+          <RootStack
+            isPasswordValid={isPasswordValid}
+            walletCreated={walletCreated}
+            scanInProgress={scanInProgress}
+          />
+        </NavigationContainer>
         <Toast
           ref="toast"
           //  @ts-ignore
@@ -316,6 +300,7 @@ const mapStateToProps = (state: GlobalState): StateProps => {
     currencyRates: state.currencyRates,
     sharingInProgress: state.tx.slateShare.inProgress,
     walletCreated: state.wallet.isCreated,
+    legalAccepted: state.app.legalAccepted,
   }
 }
 

@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import colors from 'src/common/colors'
-import { StyleSheet, View } from 'react-native'
-import { connect } from 'react-redux'
+import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { connect, useDispatch } from 'react-redux'
 import { formatTime } from 'src/common'
 import moment from 'moment'
 import { hrGrin } from 'src/common'
@@ -9,6 +9,7 @@ import { Text } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
 import { State as ReduxState, Tx } from 'src/common/types'
 import { NavigationProps } from 'src/common/types'
+import Clipboard from '@react-native-community/clipboard'
 
 interface OwnProps {
   tx: Tx
@@ -17,6 +18,19 @@ interface OwnProps {
 type Props = NavigationProps<'TxDetails'> & OwnProps
 
 const TxDetails = ({ tx, navigation }: Props) => {
+  const dispatch = useDispatch()
+  const copyToClipboard = useCallback(
+    (s: string) => {
+      return () => {
+        Clipboard.setString(s)
+        dispatch({
+          type: 'TOAST_SHOW',
+          text: 'Copied to Clipboard',
+        })
+      }
+    },
+    [dispatch],
+  )
   return (
     <>
       <CardTitle title="Transaction Details" navigation={navigation} />
@@ -31,12 +45,16 @@ const TxDetails = ({ tx, navigation }: Props) => {
               <Text>{hrGrin(tx.fee)}</Text>
             </>
           )}
-          {!!tx.slateId && (
-            <>
-              <Text style={styles.fieldTitle}>ID</Text>
-              <Text style={styles.id}>{tx.slateId}</Text>
-            </>
-          )}
+          <>
+            <Text style={styles.fieldTitle}>Transaction ID</Text>
+            {tx.slateId ? (
+              <TouchableOpacity onPress={copyToClipboard(tx.slateId)}>
+                <Text style={styles.id}>{tx.slateId}</Text>
+              </TouchableOpacity>
+            ) : (
+              <Text>Not Available</Text>
+            )}
+          </>
 
           <Text style={styles.fieldTitle}>When</Text>
           <Text style={styles.date}>{formatTime(moment(tx.creationTime))}</Text>
