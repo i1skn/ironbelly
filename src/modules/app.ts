@@ -115,7 +115,6 @@ const thirdPartyEpic: Epic<Action, Action, RootState> = (action$, state$) => {
         Countly.enableLogging()
       }
       Countly.init(serverURL, appKey)
-      Countly.disableLocation()
       Countly.enableParameterTamperingProtection('salt')
       Countly.start()
 
@@ -130,7 +129,14 @@ const thirdPartyEpic: Epic<Action, Action, RootState> = (action$, state$) => {
   )
 }
 
+const checkBiometryEpic: Epic<Action, Action, RootState> = () => {
+  return of({
+    type: 'CHECK_BIOMETRY_REQUEST',
+  })
+}
+
 export const appEpic: Epic<Action, Action, RootState> = combineEpics(
+  checkBiometryEpic,
   handleOpenSlateEpic,
   handleOpenedSlateEpic,
   thirdPartyEpic,

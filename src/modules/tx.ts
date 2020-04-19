@@ -14,6 +14,7 @@
 // limitations under the License.
 import { NativeModules } from 'react-native'
 import Share from 'react-native-share'
+import Countly from 'countly-sdk-react-native-bridge'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
@@ -47,7 +48,6 @@ import {
   slateShareRequestAction,
   txGetRequestAction,
   txFormOutputStrategiesRequestAction,
-  Error,
   OutputStrategy,
 } from 'src/common/types'
 const { GrinBridge } = NativeModules
@@ -208,19 +208,23 @@ export const sideEffects = {
   ['TX_LIST_REQUEST']: async (action: txListRequestAction, store: Store) => {
     try {
       let finalized = await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse)
-
       if (!finalized) {
         finalized = []
       }
-
       const newFinalized = []
-      let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
 
+      let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
       if (!posted) {
         posted = []
       }
-
       const newPosted = []
+
+      let received = await AsyncStorage.getItem('@receivedTxs').then(JSON.parse)
+      if (!received) {
+        received = []
+      }
+      const newReceived = []
+
       const data = await GrinBridge.txsGet(
         getStateForRust(store.getState()),
         action.refreshFromNode,
@@ -243,6 +247,8 @@ export const sideEffects = {
 
           if (pos !== -1) {
             if (tx.confirmed) {
+              Countly.sendEvent({ eventName: 'tx_sent_confirmed', eventCount: 1 })
+
               return tx
             } else {
               newPosted.push(tx.tx_slate_id)
@@ -250,10 +256,21 @@ export const sideEffects = {
             }
           }
 
+          pos = received.indexOf(tx.tx_slate_id)
+
+          if (pos !== -1) {
+            if (!tx.confirmed) {
+              newReceived.push(tx.tx_slate_id)
+            } else {
+              Countly.sendEvent({ eventName: 'tx_received_confirmed', eventCount: 1 })
+            }
+          }
+
           return tx
         })
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(newFinalized))
       await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
+      await AsyncStorage.setItem('@receivedTxs', JSON.stringify(newReceived))
       store.dispatch({
         type: 'TX_LIST_SUCCESS',
         data: mappedData,
@@ -274,6 +291,7 @@ export const sideEffects = {
         store.dispatch({
           type: 'TX_CANCEL_SUCCESS',
         })
+        Countly.sendEvent({ eventName: 'tx_cancel', eventCount: 1 })
         store.dispatch({
           type: 'SLATE_REMOVE_REQUEST',
           id: action.slateId,
@@ -327,6 +345,7 @@ export const sideEffects = {
         store.dispatch({
           type: 'TX_CREATE_SUCCESS',
         })
+        Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
         store.dispatch({
           type: 'SLATE_SET_REQUEST',
           slate,
@@ -367,6 +386,8 @@ export const sideEffects = {
         action.message,
         action.url,
       ).then(JSON.parse)
+      Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
+      Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
       finalized.push(slate.id)
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({
@@ -399,6 +420,7 @@ export const sideEffects = {
       }
 
       await GrinBridge.txPost(getStateForRust(store.getState()), action.txSlateId)
+      Countly.sendEvent({ eventName: 'tx_sent_unconfirmed', eventCount: 1 })
       posted.push(action.txSlateId)
       let pos = finalized.indexOf(action.txSlateId)
 
@@ -430,35 +452,46 @@ export const sideEffects = {
     }
   },
   ['TX_RECEIVE_REQUEST']: async (action: txReceiveRequestAction, store: Store) => {
-    return GrinBridge.txReceive(getStateForRust(store.getState()), action.slatePath, 'Received')
-      .then((json: string) => JSON.parse(json))
-      .then((slate: Slate) => {
-        store.dispatch({
-          type: 'TX_RECEIVE_SUCCESS',
-        })
-        store.dispatch({
-          type: 'SLATE_SHARE_REQUEST',
-          id: slate.id,
-          isResponse: true,
-        })
-        store.dispatch({
-          type: 'SLATE_SET_REQUEST',
-          slate,
-          isResponse: true,
-        })
-        store.dispatch({
-          type: 'TX_LIST_REQUEST',
-          showLoader: false,
-          refreshFromNode: false,
-        })
+    try {
+      let received = await AsyncStorage.getItem('@receivedTxs').then(JSON.parse)
+      if (!received) {
+        received = []
+      }
+
+      const slate: Slate = await GrinBridge.txReceive(
+        getStateForRust(store.getState()),
+        action.slatePath,
+        'Received',
+      ).then((json: string) => JSON.parse(json))
+      received.push(slate.id)
+      await AsyncStorage.setItem('@receivedTxs', JSON.stringify(received))
+
+      store.dispatch({
+        type: 'TX_RECEIVE_SUCCESS',
       })
-      .catch(e => {
-        store.dispatch({
-          type: 'TX_RECEIVE_FAILURE',
-          message: e.message,
-        })
-        log(e, true)
+      Countly.sendEvent({ eventName: 'tx_received_unconfirmed', eventCount: 1 })
+      store.dispatch({
+        type: 'SLATE_SHARE_REQUEST',
+        id: slate.id,
+        isResponse: true,
       })
+      store.dispatch({
+        type: 'SLATE_SET_REQUEST',
+        slate,
+        isResponse: true,
+      })
+      store.dispatch({
+        type: 'TX_LIST_REQUEST',
+        showLoader: false,
+        refreshFromNode: false,
+      })
+    } catch (e) {
+      store.dispatch({
+        type: 'TX_RECEIVE_FAILURE',
+        message: e.message,
+      })
+      log(e, true)
+    }
   },
   ['TX_FINALIZE_REQUEST']: async (action: txFinalizeRequestAction, store: Store) => {
     try {
@@ -475,6 +508,8 @@ export const sideEffects = {
       store.dispatch({
         type: 'TX_FINALIZE_SUCCESS',
       })
+      Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
+
       finalized.push(slate.id)
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({
@@ -562,29 +597,20 @@ export const sideEffects = {
     return GrinBridge.txStrategies(getStateForRust(store.getState()), action.amount)
       .then((json: string) => JSON.parse(json))
       .then(outputStrategies => {
+        if (!outputStrategies.length) {
+          throw new Error('Not enough funds')
+        }
         store.dispatch({
           type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS',
           outputStrategies,
         })
       })
-      .catch(error => {
-        const notEnoughFundsError = error.message.match(
-          /Required:\s([\d\.]+), Available:\s([\d\.]+)/,
-        )
-        const message = notEnoughFundsError
-          ? `Not enough funds! Available: ${hrGrin(
-              parseFloat(notEnoughFundsError[2]) * 1000000000,
-            )}`
-          : error.message
+      .catch((error: Error) => {
         store.dispatch({
           type: 'TX_FORM_OUTPUT_STRATEGIES_FAILURE',
           code: 1,
-          message,
+          message: error.message,
         })
-
-        if (!notEnoughFundsError) {
-          log(error, true)
-        }
       })
   },
 }

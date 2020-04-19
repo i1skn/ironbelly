@@ -3,7 +3,7 @@ set -x
 version=$(/usr/libexec/PlistBuddy -c "Print CFBundleVersion" "${PRODUCT_SETTINGS_PATH}")
 api_key=$(/usr/libexec/PlistBuddy -c "Print BugsnagAPIKey" "${PRODUCT_SETTINGS_PATH}")
 DEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH
-/Users/i1skn/.n/bin/node ../node_modules/.bin/bugsnag-sourcemaps upload \
+../node_modules/.bin/bugsnag-sourcemaps upload \
 	--api-key "$api_key" \
 	--app-version "$version" \
 	--minified-file "$DEST/main.jsbundle" \

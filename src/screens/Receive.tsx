@@ -71,10 +71,6 @@ class Receive extends Component<Props, State> {
                 style={{
                   flex: 1,
                 }}>
-                <TextareaTitle>Sender message</TextareaTitle>
-                <Textarea>
-                  {slate.participant_data[0] && slate.participant_data[0].message}
-                </Textarea>
                 <TextareaTitle>Fee</TextareaTitle>
                 <Textarea>{hrGrin(slate.fee)}</Textarea>
               </View>

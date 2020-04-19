@@ -120,7 +120,6 @@ const Locked = styled.Text`
 
 const Send = ({
   setOutputStrategy,
-  setMessage,
   setUrl,
   balance,
   setAmount,
@@ -261,20 +260,6 @@ const Send = ({
                   )}
                 </Option>
               ))}
-              <Title>Message</Title>
-              <View>
-                <FormTextInput
-                  autoFocus={false}
-                  onChange={setMessage}
-                  value={message}
-                  placeholder="Optional"
-                  multiline={true}
-                />
-                <UnderNote>
-                  This message would be shown to a recipient, but would NOT be stored in the
-                  blockchain.
-                </UnderNote>
-              </View>
               <Title>Send via?</Title>
               <Spacer />
               <View
@@ -322,7 +307,7 @@ const Send = ({
                       autoCorrect={false}
                       multiline={true}
                     />
-                    {!false && !url && (
+                    {false && !url && (
                       <ScanQRCode onPress={() => navigation.navigate('ScanQRCode')}>
                         <MaterialCommunityIcons name="qrcode-scan" size={26} />
                       </ScanQRCode>
@@ -390,12 +375,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       outputStrategy,
     })
   },
-  setMessage: (message: string) => {
-    dispatch({
-      type: 'TX_FORM_SET_MESSAGE',
-      message,
-    })
-  },
   setUrl: (url: string) => {
     dispatch({
       type: 'TX_FORM_SET_URL',
@@ -439,7 +418,6 @@ type Props = {
   setOutputStrategy: (outputStrategy: OutputStrategy) => void
   getOutputStrategies: (amount: number) => void
   resetOutputStrategies: () => void
-  setMessage: (message: string) => void
   balance: Balance
   minimumConfirmations: number
   setUrl: (url: string) => void

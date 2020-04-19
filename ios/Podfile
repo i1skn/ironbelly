@@ -1,11 +1,15 @@
 platform :ios, '9.0'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-# post_install do |installer|
-    # installer.pods_project.build_configuration_list.build_configurations.each do |configuration|
-        # configuration.build_settings['ARCHS'] = 'arm64'
-    # end
-# end
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    if target.name == "Countly"
+      target.build_configurations.each do |config|
+          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'COUNTLY_EXCLUDE_IDFA=1']
+      end
+    end
+  end
+end
 
 use_frameworks!
 

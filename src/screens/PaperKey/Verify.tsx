@@ -61,29 +61,16 @@ class Verify extends Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    // Only for testing
-    //
-    // New wallet
-    this.setState({
-      mnemonicWords: this.props.mnemonic.split(' '),
-    })
-    //
-    // Restore
-    // this.setState({
-    // mnemonicWords: ''.split(' '),
-    // })
-  }
-
-    }
-  }
-
-  // componentDidUpdate(prevProps: Props) {
-  // if (
-  // (this.props.inProgress && !prevProps.inProgress) ||
-  // (this.props.isDone && !prevProps.isDone)
-  // ) {
-  // this.props.navigation.navigate('WalletScan')
+  // componentDidMount() {
+  // const { isNew } = this.props
+  // if (isNew) {
+  // this.setState({
+  // mnemonicWords: this.props.mnemonic.split(' '),
+  // })
+  // } else {
+  // this.setState({
+  // mnemonicWords: ''.split(' '),
+  // })
   // }
   // }
 

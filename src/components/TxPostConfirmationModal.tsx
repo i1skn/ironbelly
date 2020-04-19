@@ -96,7 +96,7 @@ class TxPostConfirmationModal extends Component<Props, State> {
             </Header>
             {(posted && (
               <Success>
-                <SuccessText>Transaction have been posted successfully!</SuccessText>
+                <SuccessText>Transaction has been posted successfully!</SuccessText>
               </Success>
             )) || (
               <Body>
