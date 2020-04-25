@@ -1,0 +1,13 @@
+diff --git a/node_modules/react-native-share/index.js b/node_modules/react-native-share/index.js
+index dae4361..19d8a02 100644
+--- a/node_modules/react-native-share/index.js
++++ b/node_modules/react-native-share/index.js
+@@ -223,7 +223,7 @@ class RNShare {
+     return new Promise((resolve, reject) => {
+       requireAndAskPermissions(options)
+         .then(() => {
+-          if (options.url && !options.urls) {
++          if (Platform.OS === 'ios' && options.url && !options.urls) {
+             // Backward compatibility with { Share } from react-native
+             const url = options.url;
+             delete options.url;

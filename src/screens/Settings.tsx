@@ -163,7 +163,7 @@ class Settings extends Component<Props, State> {
       },
       {
         key: 'feedback',
-        title: 'Got feeback?',
+        title: 'Got feedback?',
         hideChevron: true,
         onPress: () => {
           Linking.openURL('mailto:support@ironbelly.app')

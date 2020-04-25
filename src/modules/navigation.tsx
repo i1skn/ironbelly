@@ -14,6 +14,7 @@
 // limitations under the License.
 import styled from 'styled-components/native'
 import sleep from 'sleep-promise'
+import { isAndroid } from 'src/common'
 import { State as ReduxState } from 'src/common/types'
 import React from 'react'
 import { Text, Animated } from 'react-native'
@@ -211,10 +212,11 @@ const Created = () => (
     <Stack.Screen
       name="TxDetails"
       component={TxDetailsScreen}
-      options={{
-        ...TransitionPresets.ModalPresentationIOS,
-        headerShown: false,
-      }}
+      options={
+        isAndroid
+          ? { ...TransitionPresets.DefaultTransition, title: 'Transaction Details' }
+          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+      }
     />
     <Stack.Screen
       name="Overview"
@@ -228,7 +230,9 @@ const Created = () => (
       component={SendScreen}
       options={{
         headerShown: false,
-        ...TransitionPresets.ModalSlideFromBottomIOS,
+        ...(isAndroid
+          ? TransitionPresets.DefaultTransition
+          : TransitionPresets.ModalSlideFromBottomIOS),
       }}
     />
     <Stack.Screen

@@ -83,6 +83,7 @@ const Floonet = styled(Text)`
 const TopIcon = styled.TouchableOpacity`
   width: 32;
   height: 30;
+  margin-top: ${isAndroid ? '4px' : '0'};
 `
 const TopLine = styled.View`
   flex-direction: row;

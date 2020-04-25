@@ -18,7 +18,7 @@ import { processColor, StatusBar } from 'react-native'
 import { isAndroid, parseSendLink } from 'src/common'
 import colors from 'src/common/colors'
 import { State as GlobalState, Navigation } from 'src/common/types'
-import { CameraKitCamera } from 'react-native-camera-kit'
+// import { CameraKitCamera } from 'react-native-camera-kit'
 import urlParser from 'url'
 import styled from 'styled-components/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
@@ -86,13 +86,12 @@ class ScanQRCode extends Component<Props, State> {
 
   async componentDidMount() {
     try {
-      const checkResult = await CameraKitCamera.checkDeviceCameraAuthorizationStatus()
-
-      if (checkResult === -1 && isAndroid) {
-        CameraKitCamera.requestDeviceCameraAuthorization()
-          .then(console.log)
-          .catch(console.log)
-      }
+      // const checkResult = await CameraKitCamera.checkDeviceCameraAuthorizationStatus()
+      // if (checkResult === -1 && isAndroid) {
+      // CameraKitCamera.requestDeviceCameraAuthorization()
+      // .then(console.log)
+      // .catch(console.log)
+      // }
     } catch (e) {
       console.log(e)
     }
@@ -106,36 +105,37 @@ class ScanQRCode extends Component<Props, State> {
     }
   }
 
+  // <CameraKitCamera
+  // style={{
+  // flex: 1,
+  // justifyContent: 'flex-end',
+  // }}
+  // cameraOptions={{
+  // focusMode: 'on',
+  // zoomMode: 'on',
+  // }}
+  // showFrame={true}
+  // scanBarcode={true}
+  // onReadCode={event => {
+  // const { codeStringValue } = event.nativeEvent
+
+  // if (!this.qrCodeProcessing) {
+  // this._onScanQRCode(codeStringValue)
+  // }
+  // }}
+  // scannerOptions={{
+  // offsetFrame: 30,
+  // frameHeight: 300,
+  // colorForFrame: processColor(colors.red[600]),
+  // }}
+  // />
+
   render() {
     const { navigation } = this.props
     const { torch } = this.state
     return (
       <Overlay>
         <StatusBar hidden />
-        <CameraKitCamera
-          style={{
-            flex: 1,
-            justifyContent: 'flex-end',
-          }}
-          cameraOptions={{
-            focusMode: 'on',
-            zoomMode: 'on',
-          }}
-          showFrame={true}
-          scanBarcode={true}
-          onReadCode={event => {
-            const { codeStringValue } = event.nativeEvent
-
-            if (!this.qrCodeProcessing) {
-              this._onScanQRCode(codeStringValue)
-            }
-          }}
-          scannerOptions={{
-            offsetFrame: 30,
-            frameHeight: 300,
-            colorForFrame: processColor(colors.red[600]),
-          }}
-        />
         <Flashlight
           onPress={async () => {
             this.setState({

@@ -1,6 +1,7 @@
 import React from 'react'
 import { TouchableOpacity, StatusBar, StyleSheet, Text, View } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
+import { isAndroid } from 'src/common'
 
 type Props = {
   title: string
@@ -26,6 +27,9 @@ const styles = StyleSheet.create({
 })
 
 export default ({ title, navigation }: Props) => {
+  if (isAndroid) {
+    return null
+  }
   return (
     <>
       <StatusBar barStyle={'light-content'} />

@@ -75,3 +75,6 @@ rust/libwallet.a
 # Android key
 android/key.json
 
+# Local tools
+slates/*
+

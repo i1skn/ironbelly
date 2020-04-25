@@ -5,6 +5,7 @@ import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import android.util.Log;
+import android.os.AsyncTask;
 
 public class GrinBridge extends ReactContextBaseJavaModule {
 
@@ -23,102 +24,156 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void checkPassword(String state, String password, Promise promise) {
-    try {
-      promise.resolve(checkPassword(state, password));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(checkPassword(state, password));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void balance(String state, Boolean refreshFromNode, Promise promise) {
-    try {
-      promise.resolve(balance(state, refreshFromNode));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(balance(state, refreshFromNode));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void setLogger(Promise promise) {
-    try {
-      promise.resolve(setLogger());
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(setLogger());
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void seedNew(double seedLength, Promise promise) {
-    try {
-      promise.resolve(seedNew((long) seedLength));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(seedNew((long) seedLength));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void walletInit(String state, String phrase, String password, Promise promise) {
-    try {
-      promise.resolve(walletInit(state, phrase, password));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(walletInit(state, phrase, password));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txGet(String state, Boolean refreshFromNode, String txSlateId, Promise promise) {
-    try {
-      promise.resolve(txGet(state, refreshFromNode, txSlateId));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txGet(state, refreshFromNode, txSlateId));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txsGet(String state, Boolean refreshFromNode, Promise promise) {
-    try {
-      Log.v("Ironbelly", "refreshFromNode=" + refreshFromNode); 
-      promise.resolve(txsGet(state, refreshFromNode));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txsGet(state, refreshFromNode));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void walletPmmrRange(String state, Promise promise) {
-    try {
-      promise.resolve(walletPmmrRange(state));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(walletPmmrRange(state));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void walletScanOutputs(String state, double lastRetrievedIndex, double highestIndex, Promise promise) {
-    try {
-      promise.resolve(walletScanOutputs(state, (long) lastRetrievedIndex, (long) highestIndex));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(walletScanOutputs(state, (long) lastRetrievedIndex, (long) highestIndex));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void walletPhrase(String state, Promise promise) {
-    try {
-      promise.resolve(walletPhrase(state));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(walletPhrase(state));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txStrategies(String state, double amount, Promise promise) {
-    try {
-      promise.resolve(txStrategies(state, (long) amount));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txStrategies(state, (long) amount));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
@@ -128,38 +183,58 @@ public class GrinBridge extends ReactContextBaseJavaModule {
       Boolean selectionStrategyIsUseAll,
       String message,
       Promise promise) {
-    try {
-      promise.resolve(txCreate(state, message, (long) amount, selectionStrategyIsUseAll));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txCreate(state, message, (long) amount, selectionStrategyIsUseAll));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txCancel(String state, double id, Promise promise) {
-    try {
-      promise.resolve(txCancel(state, (long) id));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txCancel(state, (long) id));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txReceive(String state, String slatePath, String message, Promise promise) {
-    try {
-      promise.resolve(txReceive(state, slatePath, message));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txReceive(state, slatePath, message));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txFinalize(String state, String slatePath, Promise promise) {
-    try {
-      promise.resolve(txFinalize(state, slatePath));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txFinalize(state, slatePath));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
@@ -170,20 +245,30 @@ public class GrinBridge extends ReactContextBaseJavaModule {
       String message,
       String url,
       Promise promise) {
-    try {
-      promise.resolve(txSendHttps(state, (long) amount, selectionStrategyIsUseAll, message, url));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txSendHttps(state, (long) amount, selectionStrategyIsUseAll, message, url));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   @ReactMethod
   public void txPost(String state, String txSlateId, Promise promise) {
-    try {
-      promise.resolve(txPost(state, txSlateId));
-    } catch (Exception e) {
-      promise.reject("", e.getMessage());
-    }
+    AsyncTask.execute(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          promise.resolve(txPost(state, txSlateId));
+        } catch (Exception e) {
+          promise.reject("", e.getMessage());
+        }
+      }
+    });
   }
 
   private static native String setLogger();

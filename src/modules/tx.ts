@@ -22,7 +22,6 @@ import RNFS from 'react-native-fs'
 import { persistReducer } from 'redux-persist'
 import {
   HTTP_TRANSPORT_METHOD,
-  hrGrin,
   getStateForRust,
   mapRustTx,
   mapRustOutputStrategy,
@@ -44,7 +43,7 @@ import {
   txFinalizeRequestAction,
   slateSetRequestAction,
   slateRemoveRequestAction,
-  slateLoadRequestAction,
+  txPostCloseAction,
   slateShareRequestAction,
   txGetRequestAction,
   txFormOutputStrategiesRequestAction,
@@ -204,6 +203,11 @@ const initialState: State = {
     inProgress: false,
   },
 }
+
+function twoStringArrayEqual<T>(a: T[], b: T[]) {
+  return a.join('') === b.join('')
+}
+
 export const sideEffects = {
   ['TX_LIST_REQUEST']: async (action: txListRequestAction, store: Store) => {
     try {
@@ -211,19 +215,19 @@ export const sideEffects = {
       if (!finalized) {
         finalized = []
       }
-      const newFinalized = []
+      const newFinalized: String[] = []
 
       let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
       if (!posted) {
         posted = []
       }
-      const newPosted = []
+      const newPosted: String[] = []
 
       let received = await AsyncStorage.getItem('@receivedTxs').then(JSON.parse)
       if (!received) {
         received = []
       }
-      const newReceived = []
+      const newReceived: String[] = []
 
       const data = await GrinBridge.txsGet(
         getStateForRust(store.getState()),
@@ -268,9 +272,20 @@ export const sideEffects = {
 
           return tx
         })
-      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(newFinalized))
-      await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
-      await AsyncStorage.setItem('@receivedTxs', JSON.stringify(newReceived))
+      // TODO: This horrible parody of atomic changes should be rewritten in a proper way
+      if (
+        twoStringArrayEqual(received, await AsyncStorage.getItem('@receivedTxs').then(JSON.parse))
+      ) {
+        await AsyncStorage.setItem('@receivedTxs', JSON.stringify(newReceived))
+      }
+      if (
+        twoStringArrayEqual(finalized, await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse))
+      ) {
+        await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(newFinalized))
+      }
+      if (twoStringArrayEqual(posted, await AsyncStorage.getItem('@postedTxs').then(JSON.parse))) {
+        await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
+      }
       store.dispatch({
         type: 'TX_LIST_SUCCESS',
         data: mappedData,
@@ -313,7 +328,7 @@ export const sideEffects = {
         log(e, true)
       })
   },
-  ['TX_GET_REQUEST']: (action: txGetRequestAction, store: Store) => {
+  ['TX_GET_REQUEST']: async (action: txGetRequestAction, store: Store) => {
     return GrinBridge.txGet(getStateForRust(store.getState()), true, action.txSlateId)
       .then((json: string) => JSON.parse(json))
       .then(result => {
@@ -433,11 +448,6 @@ export const sideEffects = {
       store.dispatch({
         type: 'TX_POST_SUCCESS',
       })
-      store.dispatch({
-        type: 'TX_LIST_REQUEST',
-        showLoader: false,
-        refreshFromNode: false,
-      })
       setTimeout(() => {
         store.dispatch({
           type: 'TX_POST_CLOSE',
@@ -450,6 +460,13 @@ export const sideEffects = {
       })
       log(e, true)
     }
+  },
+  ['TX_POST_CLOSE']: async (_action: txPostCloseAction, store: Store) => {
+    store.dispatch({
+      type: 'TX_LIST_REQUEST',
+      showLoader: false,
+      refreshFromNode: false,
+    })
   },
   ['TX_RECEIVE_REQUEST']: async (action: txReceiveRequestAction, store: Store) => {
     try {
@@ -501,26 +518,37 @@ export const sideEffects = {
         finalized = []
       }
 
-      const slate = await GrinBridge.txFinalize(
-        getStateForRust(store.getState()),
-        action.responseSlatePath,
-      ).then(JSON.parse)
-      store.dispatch({
-        type: 'TX_FINALIZE_SUCCESS',
-      })
-      Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
+      try {
+        const slate = await GrinBridge.txFinalize(
+          getStateForRust(store.getState()),
+          action.responseSlatePath,
+        ).then(JSON.parse)
+        store.dispatch({
+          type: 'TX_FINALIZE_SUCCESS',
+        })
+        Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
 
-      finalized.push(slate.id)
-      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
-      store.dispatch({
-        type: 'TX_POST_SHOW',
-        txSlateId: slate.id,
-      })
-      store.dispatch({
-        type: 'TX_LIST_REQUEST',
-        showLoader: false,
-        refreshFromNode: false,
-      })
+        finalized.push(slate.id)
+        await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
+        store.dispatch({
+          type: 'TX_POST_SHOW',
+          txSlateId: slate.id,
+        })
+      } catch (e) {
+        console.log(e.message)
+        if (
+          e.message.indexOf(
+            'LibWallet Error: Wallet store error: DB Not Found Error: Slate id: ',
+          ) !== -1
+        ) {
+          log(
+            { message: 'Slate has been already finalized. You only need to confirm it now' },
+            true,
+          )
+        } else {
+          throw e
+        }
+      }
     } catch (e) {
       store.dispatch({
         type: 'TX_FINALIZE_FAILURE',
@@ -576,6 +604,7 @@ export const sideEffects = {
     return Share.open({
       url: `file://${path}`,
       type: 'application/json',
+      showAppsToView: true,
     })
       .then(success => {
         store.dispatch({
@@ -750,7 +779,7 @@ const txPost = function(state: TxPostState = initialState.txPost, action): TxPos
 const txGet = function(state: TxGetState = initialState.txGet, action): TxGetState {
   switch (action.type) {
     case 'TX_GET_REQUEST':
-      return { ...state, inProgress: true, isRefreshed: false, error: null }
+      return { data: initialState.txGet.data, inProgress: true, isRefreshed: false, error: null }
 
     case 'TX_GET_SUCCESS':
       return {

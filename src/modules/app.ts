@@ -5,7 +5,8 @@ import RNFS from 'react-native-fs'
 import { Action, Slate, State as RootState } from 'src/common/types'
 import { getNavigation } from 'src/modules/navigation'
 import { isResponseSlate } from 'src/common'
-import { iif, empty, of, partition, merge } from 'rxjs'
+import { of, partition, merge } from 'rxjs'
+import { MAINNET_CHAIN, FLOONET_CHAIN } from 'src/modules/settings'
 import { log } from 'src/common/logger'
 // @ts-ignore
 import Countly from 'countly-sdk-react-native-bridge'
@@ -110,18 +111,18 @@ const thirdPartyEpic: Epic<Action, Action, RootState> = (action$, state$) => {
       // Countly
       const serverURL = 'https://analytics.i1skn.dev'
       const appKey = '94809c388e9eced2c2c297a3acb368ab26161ae0'
-
-      if (__DEV__) {
-        Countly.enableLogging()
-      }
       Countly.init(serverURL, appKey)
       Countly.enableParameterTamperingProtection('salt')
-      Countly.start()
+      // Run only on mainnet in release build
+      if (!__DEV__ && state$.value.settings.chain === MAINNET_CHAIN) {
+        Countly.start()
+      }
 
       // BugSnag
       const configuration = new Configuration()
-      configuration.notifyReleaseStages = ['production']
-      configuration.releaseStage = __DEV__ ? 'development' : 'production' //stage
+      // Run only in release builds
+      configuration.notifyReleaseStages = [MAINNET_CHAIN, FLOONET_CHAIN]
+      configuration.releaseStage = __DEV__ ? 'development' : state$.value.settings.chain //stage
       new Client(configuration)
     }),
     take(1),

@@ -316,4 +316,5 @@ export default {
   black,
   white,
   orange,
+  androidStatusBar: '#EECE00',
 }

@@ -78,14 +78,17 @@ type State = {}
 class TxPostConfirmationModal extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
-    props.txGet(props.txSlateId)
+  }
+
+  componentDidMount() {
+    this.props.txGet(this.props.txSlateId)
   }
 
   render() {
     const { tx, close, txSlateId, txPost, inProgress, posted } = this.props
     return (
       <Wrapper>
-        {(inProgress && (
+        {((inProgress || !tx.id) && (
           <LoaderView>
             <ActivityIndicator size="large" color={colors.primary} />
           </LoaderView>
