@@ -74,8 +74,10 @@ class CurrencyList extends Component<Props, State> {
     filteredList: currencyList,
   }
   onSearch = (searchText: string) => {
-    const filteredList = currencyList.filter(currency => {
-      return currency.code.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+    const filteredList = currencyList.filter((currency) => {
+      return (
+        currency.code.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
+      )
     })
     this.setState({
       searchText,
@@ -112,7 +114,7 @@ class CurrencyList extends Component<Props, State> {
           contentContainerStyle={{}}
           ItemSeparatorComponent={ListItemSeparator}
           data={this.state.filteredList}
-          keyExtractor={item => item.code}
+          keyExtractor={(item) => item.code}
           keyboardShouldPersistTaps={'handled'}
           onRefresh={() => this.props.requestCurrencyRates()}
           renderItem={({ item }: { item: Currency }) => (
@@ -136,7 +138,7 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  setCurrency: currencyObject => {
+  setCurrency: (currencyObject) => {
     dispatch({
       type: 'SET_SETTINGS',
       newSettings: {

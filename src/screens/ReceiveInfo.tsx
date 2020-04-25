@@ -14,9 +14,16 @@
 // limitations under the License.
 import React, { Component, Fragment } from 'react'
 import { FlatList } from 'react-native'
-import SettingsListItem, { Props as SettingsItem } from 'src/components/SettingsListItem'
+import SettingsListItem, {
+  Props as SettingsItem,
+} from 'src/components/SettingsListItem'
 import { connect } from 'react-redux'
-import { Dispatch, State as GlobalState, Navigation, Slate } from 'src/common/types'
+import {
+  Dispatch,
+  State as GlobalState,
+  Navigation,
+  Slate,
+} from 'src/common/types'
 import { Text } from 'src/components/CustomFont'
 import { Spacer } from 'src/common'
 import styled from 'styled-components/native'
@@ -62,20 +69,27 @@ class Receive extends Component<Props, State> {
       <Fragment>
         <TextBox>
           <Text>
-            Grin is different from the other blockchains: to transfer funds both a sender and a
-            receiver need to interact.
+            Grin is different from the other blockchains: to transfer funds both
+            a sender and a receiver need to interact.
           </Text>
           <Spacer />
-          <Text>Ironbelly at the moment supports only receiving Grin via file.</Text>
+          <Text>
+            Ironbelly at the moment supports only receiving Grin via file.
+          </Text>
           <Spacer />
-          <Text>Below you can find some guides on how to receive Grin from different sources</Text>
+          <Text>
+            Below you can find some guides on how to receive Grin from different
+            sources
+          </Text>
         </TextBox>
         <FlatList
           style={{
             paddingLeft: 16,
           }}
           data={listData}
-          renderItem={({ item }: { item: SettingsItem }) => <SettingsListItem {...item} />}
+          renderItem={({ item }: { item: SettingsItem }) => (
+            <SettingsListItem {...item} />
+          )}
         />
       </Fragment>
     )

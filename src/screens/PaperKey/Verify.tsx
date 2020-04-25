@@ -74,7 +74,7 @@ class Verify extends Component<Props, State> {
   // }
   // }
 
-  _onContinuePress = currentUserPhrase => {
+  _onContinuePress = (currentUserPhrase) => {
     return () => {
       const { isNew, password, createWallet } = this.props
 
@@ -122,10 +122,13 @@ class Verify extends Component<Props, State> {
   render() {
     const { mnemonic, isNew } = this.props
     const { mnemonicWords, wordsCount } = this.state
-    const currentUserPhrase = mnemonicWords.map(w => w.toLowerCase()).join(' ')
+    const currentUserPhrase = mnemonicWords
+      .map((w) => w.toLowerCase())
+      .join(' ')
     const verified = isNew
       ? mnemonic === currentUserPhrase
-      : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) === wordsCount
+      : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) ===
+        wordsCount
     return (
       <Wrapper>
         {(wordsCount && (
@@ -138,7 +141,7 @@ class Verify extends Component<Props, State> {
               </Text>
             </UnderHeaderBlock>
             <KeyboardAwareScrollView
-              innerRef={sv => (this._scrollView = sv)}
+              innerRef={(sv) => (this._scrollView = sv)}
               style={{
                 paddingLeft: 16,
                 paddingRight: 16,
@@ -152,7 +155,7 @@ class Verify extends Component<Props, State> {
                   return (
                     <MnemonicWordTextInput
                       key={i}
-                      getRef={input => {
+                      getRef={(input) => {
                         this._inputs[i] = input
                       }}
                       testID={`VerifyWord${i + 1}`}
@@ -170,7 +173,7 @@ class Verify extends Component<Props, State> {
                           }, 100)
                         }
                       }}
-                      onChange={value => {
+                      onChange={(value) => {
                         this.setState({
                           mnemonicWords: mnemonicWords.map((w, j) => {
                             if (j === i) {

@@ -64,20 +64,24 @@ type State = {}
 class Landing extends Component<Props, State> {
   _onVersionClick = () => {
     if (!this.props.isFloonet) {
-      return Alert.alert('Switch to floonet', 'Are you sure you want to switch to floonet?', [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Switch',
-          style: 'destructive',
-          onPress: () => {
-            this.props.switchToFloonet()
+      return Alert.alert(
+        'Switch to floonet',
+        'Are you sure you want to switch to floonet?',
+        [
+          {
+            text: 'Cancel',
+            onPress: () => console.log('Cancel Pressed'),
+            style: 'cancel',
           },
-        },
-      ])
+          {
+            text: 'Switch',
+            style: 'destructive',
+            onPress: () => {
+              this.props.switchToFloonet()
+            },
+          },
+        ],
+      )
     }
   }
   _onNewWallet = (isNew: boolean) => {
@@ -127,7 +131,10 @@ class Landing extends Component<Props, State> {
               }}>
               This app is configured to use testnet
             </Text>
-            <NativeButton title="Switch to mainnet" onPress={() => switchToMainnet()} />
+            <NativeButton
+              title="Switch to mainnet"
+              onPress={() => switchToMainnet()}
+            />
           </FloonetDisclaimer>
         )}
         <FlexGrow />
@@ -140,7 +147,8 @@ class Landing extends Component<Props, State> {
           }}
           onPress={this._onVersionClick}>
           <Text style={{}}>
-            Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
+            Version: {DeviceInfo.getVersion()} build{' '}
+            {DeviceInfo.getBuildNumber()}
           </Text>
         </TouchableOpacity>
       </Wrapper>

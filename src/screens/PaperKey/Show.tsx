@@ -76,8 +76,8 @@ class Show extends Component<Props, State> {
       <Wrapper>
         <UnderHeaderBlock>
           <Text>
-            Your paper key is the only way to restore your Grin wallet if your phone is lost,
-            stolen, broken, or upgraded.
+            Your paper key is the only way to restore your Grin wallet if your
+            phone is lost, stolen, broken, or upgraded.
             {!fromSettings &&
               ' It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
           </Text>
@@ -124,7 +124,7 @@ const mapStateToProps = (state: ReduxState) => ({
 }) //
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  generateSeed: length => {
+  generateSeed: (length) => {
     dispatch({
       type: 'SEED_NEW_REQUEST',
       length,

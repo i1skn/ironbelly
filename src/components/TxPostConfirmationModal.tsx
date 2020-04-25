@@ -99,7 +99,9 @@ class TxPostConfirmationModal extends Component<Props, State> {
             </Header>
             {(posted && (
               <Success>
-                <SuccessText>Transaction has been posted successfully!</SuccessText>
+                <SuccessText>
+                  Transaction has been posted successfully!
+                </SuccessText>
               </Success>
             )) || (
               <Body>
@@ -131,13 +133,13 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  txGet: txSlateId => {
+  txGet: (txSlateId) => {
     dispatch({
       type: 'TX_GET_REQUEST',
       txSlateId,
     })
   },
-  txPost: txSlateId => {
+  txPost: (txSlateId) => {
     dispatch({
       type: 'TX_POST_REQUEST',
       txSlateId,
@@ -150,4 +152,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(TxPostConfirmationModal)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(TxPostConfirmationModal)

@@ -14,7 +14,9 @@
 // limitations under the License.
 import React, { Component } from 'react'
 import { ScrollView, StyleSheet } from 'react-native'
-import Markdown, { styles as markdownDefaultStyles } from 'react-native-markdown-renderer'
+import Markdown, {
+  styles as markdownDefaultStyles,
+} from 'react-native-markdown-renderer'
 import { NavigationProps } from 'src/common/types'
 
 interface OwnProps {}
@@ -50,7 +52,9 @@ class ReceiveGuide extends Component<Props, State> {
         }}
         testID="ReceiveFromAnotherPersonGuide"
         showsVerticalScrollIndicator={true}>
-        <Markdown style={markdownStyles}>{this.props.route.params?.guide}</Markdown>
+        <Markdown style={markdownStyles}>
+          {this.props.route.params?.guide}
+        </Markdown>
       </ScrollView>
     )
   }

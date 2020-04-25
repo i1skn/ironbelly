@@ -17,7 +17,13 @@ import { View } from 'react-native'
 import moment from 'moment'
 import { Text } from 'src/components/CustomFont'
 import styled from 'styled-components/native'
-import { isAndroid, hrGrin, hrFiat, convertToFiat, formatDate } from 'src/common'
+import {
+  isAndroid,
+  hrGrin,
+  hrFiat,
+  convertToFiat,
+  formatDate,
+} from 'src/common'
 import { Tx, Currency } from 'src/common/types'
 import ShareImg from 'src/assets/images/Share.png'
 import ChevronRightImg from 'src/assets/images/ChevronRight.png'
@@ -33,7 +39,7 @@ const UnconfirmedGuide = styled(Text)`
 const AmountGrin = styled(Text)`
   font-weight: 600;
   font-size: 18;
-  color: ${props => (props.isSent && colors.black) || colors.success};
+  color: ${(props) => (props.isSent && colors.black) || colors.success};
 `
 const AmountFiat = styled(Text)`
   font-size: 14;
@@ -80,7 +86,8 @@ const TxListItem = (props: Props) => {
   const { currency, rates } = props
   const { type, confirmed, creationTime, amount } = props.tx
   const momentCreationTime = moment(creationTime)
-  const isSent = type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
+  const isSent =
+    type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
   const dateField =
     moment().diff(momentCreationTime, 'hours', true) > 2
       ? formatDate(momentCreationTime)
@@ -116,7 +123,9 @@ const TxListItem = (props: Props) => {
           alignItems: 'flex-end',
         }}>
         <AmountGrin isSent={isSent}>{hrGrin(amount)}</AmountGrin>
-        <AmountFiat>{hrFiat(convertToFiat(amount, currency, rates), currency)}</AmountFiat>
+        <AmountFiat>
+          {hrFiat(convertToFiat(amount, currency, rates), currency)}
+        </AmountFiat>
       </View>
 
       {(!confirmed && type !== 'TxPosted' && <ShareIcon source={ShareImg} />) ||

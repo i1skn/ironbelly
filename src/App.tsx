@@ -45,7 +45,11 @@ import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
 import colors from 'src/common/colors'
 import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
-import { MAINNET_CHAIN, MAINNET_API_SECRET, FLOONET_API_SECRET } from 'src/modules/settings'
+import {
+  MAINNET_CHAIN,
+  MAINNET_API_SECRET,
+  FLOONET_API_SECRET,
+} from 'src/modules/settings'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 const { GrinBridge } = NativeModules // Filesystem
@@ -115,21 +119,23 @@ class RealApp extends React.Component<Props, State> {
       })
     } else {
       Linking.getInitialURL()
-        .then(url => {
+        .then((url) => {
           if (url) {
             this._handleOpenURL({
               url,
             })
           }
         })
-        .catch(err => console.error('An error occurred', err))
+        .catch((err) => console.error('An error occurred', err))
     }
 
     Linking.addEventListener('url', this._handleOpenURL)
     AppState.addEventListener('change', this._handleAppStateChange)
     checkApiSecret(() => {
       this.props.setApiSecret(
-        this.props.chain === MAINNET_CHAIN ? MAINNET_API_SECRET : FLOONET_API_SECRET,
+        this.props.chain === MAINNET_CHAIN
+          ? MAINNET_API_SECRET
+          : FLOONET_API_SECRET,
       )
     })
     // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
@@ -155,7 +161,7 @@ class RealApp extends React.Component<Props, State> {
 
   _handleOpenURL = (event: { url: string }) => {
     // const { setFromLink } = this.props
-    isWalletInitialized().then(async exists => {
+    isWalletInitialized().then(async (exists) => {
       if (exists) {
         if (isAndroid) {
           try {
@@ -187,13 +193,20 @@ class RealApp extends React.Component<Props, State> {
           // setFromLink(amount, message, destination)
           // }
           // }
-        } else if (link.protocol && ['file:'].indexOf(link.protocol) !== -1 && link.path) {
+        } else if (
+          link.protocol &&
+          ['file:'].indexOf(link.protocol) !== -1 &&
+          link.path
+        ) {
           const path = isAndroid ? decodeURIComponent(link.path) : link.path
           store.dispatch({
             type: 'SLATE_LOAD_REQUEST',
             slatePath: path,
           })
-        } else if (link.protocol && ['content:'].indexOf(link.protocol) !== -1) {
+        } else if (
+          link.protocol &&
+          ['content:'].indexOf(link.protocol) !== -1
+        ) {
           // Copy the file, because we can not operate on content://
           // from inside rust code
           const url = event.url
@@ -213,7 +226,7 @@ class RealApp extends React.Component<Props, State> {
     const { sharingInProgress } = this.props
 
     if (nextAppState === 'background' && !sharingInProgress) {
-      isWalletInitialized().then(async exists => {
+      isWalletInitialized().then(async (exists) => {
         if (exists) {
           store.dispatch({
             type: 'CLEAR_PASSWORD',
@@ -233,9 +246,13 @@ class RealApp extends React.Component<Props, State> {
         // @ts-ignore
         this.refs.toast.timer && clearTimeout(this.refs.toast.timer)
         // @ts-ignore
-        this.refs.toast.show(this.props.toastMessage.text, this.props.toastMessage.duration, () => {
-          this.props.clearToast()
-        })
+        this.refs.toast.show(
+          this.props.toastMessage.text,
+          this.props.toastMessage.duration,
+          () => {
+            this.props.clearToast()
+          },
+        )
       } else {
         // @ts-ignore
         if (this.refs.toast.state.isShow) {
@@ -247,7 +264,8 @@ class RealApp extends React.Component<Props, State> {
       }
     }
 
-    const sinceLastCurrencyRatesUpdate = Date.now() - this.props.currencyRates.lastUpdated
+    const sinceLastCurrencyRatesUpdate =
+      Date.now() - this.props.currencyRates.lastUpdated
 
     if (
       sinceLastCurrencyRatesUpdate > 5 * 60 * 1000 &&
@@ -259,13 +277,20 @@ class RealApp extends React.Component<Props, State> {
   }
 
   render() {
-    const { walletCreated, scanInProgress, closeTxPostModal, isPasswordValid } = this.props
+    const {
+      walletCreated,
+      scanInProgress,
+      closeTxPostModal,
+      isPasswordValid,
+    } = this.props
     if (walletCreated === null) {
       return null
     }
     return (
       <React.Fragment>
-        <Modal isVisible={this.props.showTxConfirmationModal} onBackdropPress={closeTxPostModal}>
+        <Modal
+          isVisible={this.props.showTxConfirmationModal}
+          onBackdropPress={closeTxPostModal}>
           <TxPostConfirmationModal />
         </Modal>
         <NavigationContainer ref={navigationRef} theme={appTheme}>
@@ -302,7 +327,7 @@ const mapStateToProps = (state: GlobalState): StateProps => {
 
 const RealAppConnected = connect<StateProps, DispatchProps, {}, GlobalState>(
   mapStateToProps,
-  dispatch => ({
+  (dispatch) => ({
     requestWalletExists: () =>
       dispatch({
         type: 'WALLET_EXISTS_REQUEST',
@@ -347,7 +372,10 @@ export default class App extends Component<
     return (
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
-          <RealAppConnected slateUrl={this.props.url} dispatch={store.dispatch} />
+          <RealAppConnected
+            slateUrl={this.props.url}
+            dispatch={store.dispatch}
+          />
         </PersistGate>
       </Provider>
     )

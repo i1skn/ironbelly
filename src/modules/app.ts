@@ -1,6 +1,14 @@
 import { Epic, combineEpics, ofType } from 'redux-observable'
 import { Client, Configuration } from 'bugsnag-react-native'
-import { filter, ignoreElements, catchError, take, mergeMap, map, tap } from 'rxjs/operators'
+import {
+  filter,
+  ignoreElements,
+  catchError,
+  take,
+  mergeMap,
+  map,
+  tap,
+} from 'rxjs/operators'
 import RNFS from 'react-native-fs'
 import { Action, Slate, State as RootState } from 'src/common/types'
 import { getNavigation } from 'src/modules/navigation'
@@ -20,7 +28,10 @@ export const initialState: State = {
   legalAccepted: false,
 }
 
-export const appReducer = (state: State = initialState, action: Action): State => {
+export const appReducer = (
+  state: State = initialState,
+  action: Action,
+): State => {
   switch (action.type) {
     case 'SLATE_LOAD_REQUEST':
       return {
@@ -42,10 +53,17 @@ export const appReducer = (state: State = initialState, action: Action): State =
   }
 }
 
-export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (action$, state$) =>
+export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
+  action$,
+  state$,
+) =>
   action$.pipe(
     ofType('VALID_PASSWORD', 'SLATE_LOAD_REQUEST'),
-    filter(() => !!state$.value.app.unopenedSlatePath && state$.value.wallet.password.valid),
+    filter(
+      () =>
+        !!state$.value.app.unopenedSlatePath &&
+        state$.value.wallet.password.valid,
+    ),
     mergeMap(async () => {
       const slate: Slate = await RNFS.readFile(
         state$.value.app.unopenedSlatePath,
@@ -57,7 +75,7 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (action$, st
         slatePath: state$.value.app.unopenedSlatePath,
       } as Action
     }),
-    catchError(error => {
+    catchError((error) => {
       log(error, true)
       return of({
         type: 'SLATE_SET_FAILURE',
@@ -67,12 +85,15 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (action$, st
     }),
   )
 
-export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (action$, _state$) => {
+export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
+  action$,
+  _state$,
+) => {
   // const navigation = await getNavigation()
   const [response$, request$] = partition(
     action$.pipe(
       filter(({ type }) => type === 'SLATE_LOAD_SUCCESS'),
-      mergeMap(async action => {
+      mergeMap(async (action) => {
         // @ts-ignore
         const { slate } = action
         const isResponse = await isResponseSlate(slate)
@@ -122,7 +143,9 @@ const thirdPartyEpic: Epic<Action, Action, RootState> = (action$, state$) => {
       const configuration = new Configuration()
       // Run only in release builds
       configuration.notifyReleaseStages = [MAINNET_CHAIN, FLOONET_CHAIN]
-      configuration.releaseStage = __DEV__ ? 'development' : state$.value.settings.chain //stage
+      configuration.releaseStage = __DEV__
+        ? 'development'
+        : state$.value.settings.chain //stage
       new Client(configuration)
     }),
     take(1),

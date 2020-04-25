@@ -63,7 +63,7 @@ const TransportMethod = styled.TouchableOpacity`
 `
 const TransportMethodTitle = styled.Text`
   font-size: 24;
-  color: ${props => (props.active ? colors.black : colors.grey[700])};
+  color: ${(props) => (props.active ? colors.black : colors.grey[700])};
 `
 const AlternativeAmount = styled.Text`
   color: ${colors.grey[700]};
@@ -98,17 +98,17 @@ const Option = styled.TouchableOpacity`
   flex-direction: row;
   padding: 0 0 16px 0;
 `
-const OptioIcon = styled(FeatherIcon).attrs(props => ({
+const OptioIcon = styled(FeatherIcon).attrs((props) => ({
   name: props.active ? 'check-circle' : 'circle',
   size: 16,
 }))`
   margin-right: 8px;
-  color: ${props => (props.active ? colors.black : colors.grey[700])};
+  color: ${(props) => (props.active ? colors.black : colors.grey[700])};
 `
 const Fee = styled.Text`
   font-weight: 600;
   font-size: 24;
-  color: ${props => (props.active ? colors.black : colors.grey[700])};
+  color: ${(props) => (props.active ? colors.black : colors.grey[700])};
 `
 const Locked = styled.Text`
   font-size: 13;
@@ -251,11 +251,13 @@ const Send = ({
                   <Fee active={os === outputStrategy}>{hrGrin(os.fee)}</Fee>
                   {balance.amountCurrentlySpendable === os.total ? (
                     <Locked>
-                      All the funds would be locked for around {minimumConfirmations} min.
+                      All the funds would be locked for around{' '}
+                      {minimumConfirmations} min.
                     </Locked>
                   ) : (
                     <Locked>
-                      {hrGrin(os.total)} would be locked for around {minimumConfirmations} min.
+                      {hrGrin(os.total)} would be locked for around{' '}
+                      {minimumConfirmations} min.
                     </Locked>
                   )}
                 </Option>
@@ -273,8 +275,11 @@ const Send = ({
                     flexDirection: 'row',
                   }}
                   onPress={() => setTransportMethod(FILE_TRANSPORT_METHOD)}>
-                  <OptioIcon active={transportMethod === FILE_TRANSPORT_METHOD} />
-                  <TransportMethodTitle active={transportMethod === FILE_TRANSPORT_METHOD}>
+                  <OptioIcon
+                    active={transportMethod === FILE_TRANSPORT_METHOD}
+                  />
+                  <TransportMethodTitle
+                    active={transportMethod === FILE_TRANSPORT_METHOD}>
                     File
                   </TransportMethodTitle>
                 </TransportMethod>
@@ -283,8 +288,11 @@ const Send = ({
                     flexDirection: 'row',
                   }}
                   onPress={() => setTransportMethod(HTTP_TRANSPORT_METHOD)}>
-                  <OptioIcon active={transportMethod === HTTP_TRANSPORT_METHOD} />
-                  <TransportMethodTitle active={transportMethod === HTTP_TRANSPORT_METHOD}>
+                  <OptioIcon
+                    active={transportMethod === HTTP_TRANSPORT_METHOD}
+                  />
+                  <TransportMethodTitle
+                    active={transportMethod === HTTP_TRANSPORT_METHOD}>
                     HTTP(S)
                   </TransportMethodTitle>
                 </TransportMethod>
@@ -299,7 +307,7 @@ const Send = ({
                     }}>
                     <FormTextInput
                       autoFocus={false}
-                      onChange={url => setUrl(url)}
+                      onChange={(url) => setUrl(url)}
                       value={url}
                       placeholder="http(s)://"
                       textContentType={'URL'}
@@ -308,7 +316,8 @@ const Send = ({
                       multiline={true}
                     />
                     {false && !url && (
-                      <ScanQRCode onPress={() => navigation.navigate('ScanQRCode')}>
+                      <ScanQRCode
+                        onPress={() => navigation.navigate('ScanQRCode')}>
                         <MaterialCommunityIcons name="qrcode-scan" size={26} />
                       </ScanQRCode>
                     )}
@@ -357,19 +366,19 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       textAmount,
     })
   },
-  getOutputStrategies: debounce(amount => {
+  getOutputStrategies: debounce((amount) => {
     dispatch({
       type: 'TX_FORM_OUTPUT_STRATEGIES_REQUEST',
       amount,
     })
   }, 500),
-  resetOutputStrategies: debounce(amount => {
+  resetOutputStrategies: debounce((amount) => {
     dispatch({
       type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS',
       outputStrategies: [],
     })
   }, 100),
-  setOutputStrategy: outputStrategy => {
+  setOutputStrategy: (outputStrategy) => {
     dispatch({
       type: 'TX_FORM_SET_OUTPUT_STRATEGY',
       outputStrategy,

@@ -136,7 +136,7 @@ const initialState: State = {
   isCreated: null,
 }
 
-const walletInit = function(
+const walletInit = function (
   state: WalletInitState = initialState.walletInit,
   action: Action,
 ): WalletInitState {
@@ -181,7 +181,7 @@ const walletInit = function(
   }
 }
 
-const walletScan = function(
+const walletScan = function (
   state: WalletScanState = initialState.walletScan,
   action: Action,
 ): WalletScanState {
@@ -198,7 +198,9 @@ const walletScan = function(
     case 'WALLET_SCAN_PMMR_RANGE_SUCCESS':
       return {
         ...state,
-        lowestIndex: state.lowestIndex ? state.lowestIndex : action.range.lastRetrievedIndex,
+        lowestIndex: state.lowestIndex
+          ? state.lowestIndex
+          : action.range.lastRetrievedIndex,
         lastRetrievedIndex: state.lastRetrievedIndex
           ? state.lastRetrievedIndex
           : action.range.lastRetrievedIndex,
@@ -220,7 +222,10 @@ const walletScan = function(
 
       const range = state.highestIndex - state.lowestIndex
       const progress = action.lastRetrievedIndex - state.lowestIndex
-      const percentageComplete = Math.min(Math.round((progress / range) * 100), 99)
+      const percentageComplete = Math.min(
+        Math.round((progress / range) * 100),
+        99,
+      )
       return {
         ...state,
         retryCount: 0,
@@ -246,7 +251,7 @@ const walletScan = function(
   }
 }
 
-const walletPhrase = function(
+const walletPhrase = function (
   state: WalletPhraseState = initialState.walletPhrase,
   action: Action,
 ): WalletPhraseState {
@@ -265,7 +270,7 @@ const walletPhrase = function(
   }
 }
 
-const password = function(
+const password = function (
   state: PasswordState = initialState.password,
   action: Action,
 ): PasswordState {
@@ -318,7 +323,7 @@ const password = function(
 }
 
 export const reducer = combineReducers({
-  isCreated: function(
+  isCreated: function (
     state: State['isCreated'] = initialState.isCreated,
     action: Action,
   ): boolean | null {
@@ -376,10 +381,17 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_INIT_REQUEST']: async (action: walletInitRequestAction, store: Store) => {
+  ['WALLET_INIT_REQUEST']: async (
+    action: walletInitRequestAction,
+    store: Store,
+  ) => {
     const { password, phrase, isNew } = action
     await checkWalletDataDirectory()
-    return GrinBridge.walletInit(getStateForRust(store.getState()), phrase, password)
+    return GrinBridge.walletInit(
+      getStateForRust(store.getState()),
+      phrase,
+      password,
+    )
       .then(() => {
         store.dispatch({
           type: 'SET_PASSWORD',
@@ -423,7 +435,9 @@ export const sideEffects = {
 
     try {
       const range = mapPmmrRange(
-        JSON.parse(await GrinBridge.walletPmmrRange(getStateForRust(store.getState()))),
+        JSON.parse(
+          await GrinBridge.walletPmmrRange(getStateForRust(store.getState())),
+        ),
       )
       store.dispatch({
         type: 'WALLET_SCAN_PMMR_RANGE_SUCCESS',
@@ -472,7 +486,11 @@ export const sideEffects = {
     _action: walletScanOutputsRequestAction,
     store: Store,
   ) => {
-    const { lastRetrievedIndex, highestIndex, lowestIndex } = store.getState().wallet.walletScan
+    const {
+      lastRetrievedIndex,
+      highestIndex,
+      lowestIndex,
+    } = store.getState().wallet.walletScan
 
     if (!lowestIndex || !highestIndex) {
       store.dispatch({
@@ -512,7 +530,10 @@ export const sideEffects = {
       pmmrRangeLastUpdated,
     } = store.getState().wallet.walletScan
 
-    if (!pmmrRangeLastUpdated || Date.now() - pmmrRangeLastUpdated > PMMR_RANGE_UPDATE_INTERVAL) {
+    if (
+      !pmmrRangeLastUpdated ||
+      Date.now() - pmmrRangeLastUpdated > PMMR_RANGE_UPDATE_INTERVAL
+    ) {
       store.dispatch({
         type: 'WALLET_SCAN_PMMR_RANGE_REQUEST',
       })
@@ -528,7 +549,10 @@ export const sideEffects = {
       }
     }
   },
-  ['WALLET_SCAN_OUTPUTS_FAILURE']: async (action: walletScanOutputsFalureAction, store: Store) => {
+  ['WALLET_SCAN_OUTPUTS_FAILURE']: async (
+    action: walletScanOutputsFalureAction,
+    store: Store,
+  ) => {
     const isPasswordSet = !!store.getState().wallet.password.value
 
     if (!isPasswordSet) {
@@ -565,8 +589,14 @@ export const sideEffects = {
         }, 1000) // Time-out to prevent a bruteforce attack)
       })
   },
-  ['CHECK_PASSWORD_FROM_BIOMETRY']: (action: checkPasswordFromBiometryAction, store: Store) => {
-    return GrinBridge.checkPassword(getStateForRust(store.getState()), action.password)
+  ['CHECK_PASSWORD_FROM_BIOMETRY']: (
+    action: checkPasswordFromBiometryAction,
+    store: Store,
+  ) => {
+    return GrinBridge.checkPassword(
+      getStateForRust(store.getState()),
+      action.password,
+    )
       .then(() => {
         store.dispatch({
           type: 'SET_PASSWORD',
@@ -588,7 +618,10 @@ export const sideEffects = {
       text: 'Wrong password',
     })
   },
-  ['WALLET_PHRASE_REQUEST']: (_action: walletPhraseRequestAction, store: Store) => {
+  ['WALLET_PHRASE_REQUEST']: (
+    _action: walletPhraseRequestAction,
+    store: Store,
+  ) => {
     // return GrinBridge.walletPhrase(getStateForRust(store.getState()), 'her')
     return GrinBridge.walletPhrase(getStateForRust(store.getState()))
       .then((phrase: string) => {
@@ -605,7 +638,10 @@ export const sideEffects = {
         log(error, true)
       })
   },
-  ['WALLET_DESTROY_REQUEST']: async (_action: walletDestroyRequestAction, store: Store) => {
+  ['WALLET_DESTROY_REQUEST']: async (
+    _action: walletDestroyRequestAction,
+    store: Store,
+  ) => {
     try {
       await RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
         store.dispatch({
@@ -626,7 +662,10 @@ export const sideEffects = {
       log(error, true)
     }
   },
-  ['WALLET_DESTROY_SUCCESS']: (_action: walletDestroySuccessAction, store: Store) => {
+  ['WALLET_DESTROY_SUCCESS']: (
+    _action: walletDestroySuccessAction,
+    store: Store,
+  ) => {
     store.dispatch({
       type: 'WALLET_CLEAR',
     })
@@ -646,7 +685,10 @@ export const sideEffects = {
       type: 'WALLET_DESTROY_REQUEST',
     })
   },
-  ['WALLET_EXISTS_REQUEST']: async (_action: walletDestroySuccessAction, store: Store) => {
+  ['WALLET_EXISTS_REQUEST']: async (
+    _action: walletDestroySuccessAction,
+    store: Store,
+  ) => {
     try {
       const exists = await isWalletInitialized()
       store.dispatch({

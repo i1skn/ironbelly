@@ -13,7 +13,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { Component } from 'react'
-import { Alert, TouchableHighlight, TouchableOpacity, RefreshControl, View } from 'react-native'
+import {
+  Alert,
+  TouchableHighlight,
+  TouchableOpacity,
+  RefreshControl,
+  View,
+} from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
@@ -25,7 +31,11 @@ import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_STATUS } from 'src/modules/settings'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import { Balance as BalanceType, State as GlobalState, Tx } from 'src/common/types'
+import {
+  Balance as BalanceType,
+  State as GlobalState,
+  Tx,
+} from 'src/common/types'
 import colors from 'src/common/colors'
 import { getBiometryTitle, ListItemSeparator } from 'src/common'
 import { WalletInitState } from 'src/modules/wallet'
@@ -66,7 +76,7 @@ const ActionButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
   flex-direction: row;
-  opacity: ${props => (props.disabled ? '0.3' : '1')};
+  opacity: ${(props) => (props.disabled ? '0.3' : '1')};
   flex: 1;
 `
 const ActionButtonText = styled(Text)`
@@ -100,7 +110,10 @@ class Overview extends Component<Props, State> {
     const { settings, route } = this.props
     this.props.txsGet(false, false)
 
-    if (settings.biometryType && settings.biometryStatus === BIOMETRY_STATUS.unknown) {
+    if (
+      settings.biometryType &&
+      settings.biometryStatus === BIOMETRY_STATUS.unknown
+    ) {
       const biometryName = getBiometryTitle(settings.biometryType)
       biometryName &&
         Alert.alert(
@@ -154,8 +167,12 @@ class Overview extends Component<Props, State> {
           data={txs}
           ListEmptyComponent={
             <NoTxsView>
-              {(firstLoading && <EmptyTxListMessage>Loading...</EmptyTxListMessage>) || (
-                <Text>Here you will see your transactions, when you've made them!</Text>
+              {(firstLoading && (
+                <EmptyTxListMessage>Loading...</EmptyTxListMessage>
+              )) || (
+                <Text>
+                  Here you will see your transactions, when you've made them!
+                </Text>
               )}
             </NoTxsView>
           }
@@ -169,7 +186,9 @@ class Overview extends Component<Props, State> {
             <SwipeRow
               disableRightSwipe
               rightOpenValue={-100}
-              disableLeftSwipe={data.item.confirmed || data.item.type === 'TxPosted'}>
+              disableLeftSwipe={
+                data.item.confirmed || data.item.type === 'TxPosted'
+              }>
               <View
                 style={{
                   alignItems: 'center',
@@ -183,7 +202,13 @@ class Overview extends Component<Props, State> {
                     height: '100%',
                     justifyContent: 'center',
                   }}
-                  onPress={_ => txCancel(data.item.id, data.item.slateId, !data.item.storedTx)}>
+                  onPress={(_) =>
+                    txCancel(
+                      data.item.id,
+                      data.item.slateId,
+                      !data.item.storedTx,
+                    )
+                  }>
                   <Text
                     style={{
                       width: 100,
@@ -195,7 +220,7 @@ class Overview extends Component<Props, State> {
                 </TouchableOpacity>
               </View>
               <TouchableHighlight
-                onPress={_ => {
+                onPress={(_) => {
                   if (data.item.confirmed || data.item.type === 'TxPosted') {
                     navigation.navigate('TxDetails', {
                       txId: data.item.id,
@@ -226,7 +251,7 @@ class Overview extends Component<Props, State> {
           contentContainerStyle={{
             backgroundColor: '#fff',
           }}
-          keyExtractor={item => `${item.id}`}
+          keyExtractor={(item) => `${item.id}`}
           refreshControl={
             <RefreshControl
               refreshing={txListRefreshInProgress}
@@ -314,7 +339,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       type: 'TX_FORM_RESET',
     })
   },
-  txConfirm: txSlateId => {
+  txConfirm: (txSlateId) => {
     dispatch({
       type: 'TX_POST_SHOW',
       txSlateId,

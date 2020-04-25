@@ -67,7 +67,7 @@ const TxDetails = ({ tx, navigation }: Props) => {
 const mapStateToProps = (state: ReduxState, ownProps: Props) => () => {
   return {
     settings: state.settings,
-    tx: state.tx.list.data.find(tx => tx.id === ownProps.route.params.txId),
+    tx: state.tx.list.data.find((tx) => tx.id === ownProps.route.params.txId),
   }
 }
 

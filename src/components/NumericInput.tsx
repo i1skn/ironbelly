@@ -39,8 +39,8 @@ const Spacer = styled(Text)`
   line-height: 58;
 `
 const StyledInput = styled(TextInput)`
-  font-size: ${props => (props.value ? 36 : 36)};
-  font-weight: ${props => (props.value ? 600 : 300)};
+  font-size: ${(props) => (props.value ? 36 : 36)};
+  font-weight: ${(props) => (props.value ? 600 : 300)};
   flex-grow: 1;
   color: ${colors.black} 
   height: 58;
@@ -48,7 +48,15 @@ const StyledInput = styled(TextInput)`
 `
 export default class NumericInput extends Component<Props, State> {
   render() {
-    const { units, maxLength, style, onChange, value, autoFocus, placeholder } = this.props
+    const {
+      units,
+      maxLength,
+      style,
+      onChange,
+      value,
+      autoFocus,
+      placeholder,
+    } = this.props
     return (
       <Layout style={style}>
         <StyledInput

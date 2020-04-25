@@ -79,7 +79,7 @@ class GrinNode extends Component<Props, State> {
         <Spacer />
         <FormTextInput
           autoFocus={false}
-          onChange={nodeUrl => setNodeUrl(nodeUrl)}
+          onChange={(nodeUrl) => setNodeUrl(nodeUrl)}
           value={nodeUrl}
           placeholder="URL"
           autoCorrect={false}
@@ -88,7 +88,7 @@ class GrinNode extends Component<Props, State> {
         <Spacer />
         <FormTextInput
           autoFocus={false}
-          onChange={apiSecret =>
+          onChange={(apiSecret) =>
             this.setState({
               apiSecret,
             })

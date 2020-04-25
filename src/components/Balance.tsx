@@ -133,7 +133,11 @@ const BalanceComponent = ({
             </AmountGrinTotal>
             <AmountFiatTotal>
               {hrFiat(
-                convertToFiat(balance.total + balance.amountLocked, currency, rates),
+                convertToFiat(
+                  balance.total + balance.amountLocked,
+                  currency,
+                  rates,
+                ),
                 currency,
               )}
             </AmountFiatTotal>
@@ -151,8 +155,12 @@ const BalanceComponent = ({
         </TopLine>
         <BalanceEq>
           <Amount>
-            <AmountTitle>Awaiting {minimumConfirmations} confirmations</AmountTitle>
-            <AmountGrin>{hrGrin(balance.amountAwaitingConfirmation)}</AmountGrin>
+            <AmountTitle>
+              Awaiting {minimumConfirmations} confirmations
+            </AmountTitle>
+            <AmountGrin>
+              {hrGrin(balance.amountAwaitingConfirmation)}
+            </AmountGrin>
           </Amount>
           <Amount>
             <AmountTitle>Currently spendable</AmountTitle>

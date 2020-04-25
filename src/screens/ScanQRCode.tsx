@@ -23,7 +23,7 @@ import urlParser from 'url'
 import styled from 'styled-components/native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import Torch from 'react-native-torch'
+// import Torch from 'react-native-torch'
 type Props = {
   navigation: Navigation
   setFromLink: (amount: number, message: string, url: string) => void
@@ -58,7 +58,7 @@ class ScanQRCode extends Component<Props, State> {
     torch: false,
   }
   qrCodeProcessing = false
-  _onScanQRCode = url => {
+  _onScanQRCode = (url) => {
     this.qrCodeProcessing = true
     const { setFromLink, setHttpAddress } = this.props
     const link = urlParser.parse(url, true)
@@ -99,7 +99,7 @@ class ScanQRCode extends Component<Props, State> {
 
   async componentWillUnmount(prevProps: Props) {
     try {
-      await Torch.switchState(false)
+      // await Torch.switchState(false)
     } catch (e) {
       console.log(e)
     }
@@ -143,7 +143,7 @@ class ScanQRCode extends Component<Props, State> {
             })
 
             try {
-              await Torch.switchState(!torch)
+              // await Torch.switchState(!torch)
             } catch (e) {
               console.log(e)
             }
@@ -173,7 +173,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       message,
       url,
     }),
-  setHttpAddress: url =>
+  setHttpAddress: (url) =>
     dispatch({
       type: 'TX_FORM_SET_URL',
       url,

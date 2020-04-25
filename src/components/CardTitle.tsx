@@ -1,5 +1,11 @@
 import React from 'react'
-import { TouchableOpacity, StatusBar, StyleSheet, Text, View } from 'react-native'
+import {
+  TouchableOpacity,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { isAndroid } from 'src/common'
 

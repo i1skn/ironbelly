@@ -6,7 +6,8 @@ export const migrations = {
       settings: {
         ...state.settings,
         checkNodeApiHttpAddr:
-          state.settings.checkNodeApiHttpAddr === 'http://grinnode.cycle42.com:23413'
+          state.settings.checkNodeApiHttpAddr ===
+          'http://grinnode.cycle42.com:23413'
             ? MAINNET_DEFAULT_NODE
             : state.settings.checkNodeApiHttpAddr,
       },

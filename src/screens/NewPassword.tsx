@@ -68,7 +68,7 @@ class NewPassword extends Component<Props, State> {
           keyboardShouldPersistTaps="handled"
           keyboardOpeningTime={0}
           getTextInputRefs={() => [this._confirmPassword]}
-          innerRef={view => {
+          innerRef={(view) => {
             this._scrollView = view
           }}>
           <Wrapper>
@@ -93,11 +93,11 @@ class NewPassword extends Component<Props, State> {
               returnKeyType={'done'}
               autoFocus={false}
               secureTextEntry={true}
-              getRef={input => {
+              getRef={(input) => {
                 this._confirmPassword = input
               }}
               onChange={setConfirmPassword}
-              onFocus={e => {
+              onFocus={(e) => {
                 if (this._scrollView) {
                   setTimeout(() => {
                     if (this._scrollView) {
@@ -118,26 +118,30 @@ class NewPassword extends Component<Props, State> {
                 if (newWallet) {
                   navigation.navigate('ShowPaperKey')
                 } else {
-                  Alert.alert('Paper key', 'How many words in your paper key?', [
-                    {
-                      text: '12',
-                      onPress: () => {
-                        navigation.navigate('VerifyPaperKey', {
-                          title: 'Paper key',
-                          wordsCount: 12,
-                        })
+                  Alert.alert(
+                    'Paper key',
+                    'How many words in your paper key?',
+                    [
+                      {
+                        text: '12',
+                        onPress: () => {
+                          navigation.navigate('VerifyPaperKey', {
+                            title: 'Paper key',
+                            wordsCount: 12,
+                          })
+                        },
                       },
-                    },
-                    {
-                      text: '24',
-                      onPress: () => {
-                        navigation.navigate('VerifyPaperKey', {
-                          title: 'Paper key',
-                          wordsCount: 24,
-                        })
+                      {
+                        text: '24',
+                        onPress: () => {
+                          navigation.navigate('VerifyPaperKey', {
+                            title: 'Paper key',
+                            wordsCount: 24,
+                          })
+                        },
                       },
-                    },
-                  ])
+                    ],
+                  )
                 }
               }}
               disabled={!(password && password === confirmPassword)}
@@ -159,19 +163,19 @@ const mapStateToProps = (state: ReduxState) => ({
 })
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  setPassword: password => {
+  setPassword: (password) => {
     dispatch({
       type: 'WALLET_INIT_SET_PASSWORD',
       password,
     })
   },
-  setConfirmPassword: confirmPassword => {
+  setConfirmPassword: (confirmPassword) => {
     dispatch({
       type: 'WALLET_INIT_SET_CONFIRM_PASSWORD',
       confirmPassword,
     })
   },
-  setIsNew: value => {
+  setIsNew: (value) => {
     dispatch({
       type: 'WALLET_INIT_SET_IS_NEW',
       value,

@@ -18,7 +18,14 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import Header from 'src/components/Header'
 import { Text, Button } from 'src/components/CustomFont'
-import { isAndroid, LoaderView, TextareaTitle, Textarea, hrGrin, Spacer } from 'src/common'
+import {
+  isAndroid,
+  LoaderView,
+  TextareaTitle,
+  Textarea,
+  hrGrin,
+  Spacer,
+} from 'src/common'
 import colors from 'src/common/colors'
 import { State as GlobalState, Navigation, Slate } from 'src/common/types' //Images
 import { NavigationProps } from 'src/common/types'
@@ -102,7 +109,7 @@ const mapStateToProps = (state: GlobalState) => {
 }
 
 const mapDispatchToProps = (dispatch, ownProps) => ({
-  txReceive: slatePath => {
+  txReceive: (slatePath) => {
     dispatch({
       type: 'TX_RECEIVE_REQUEST',
       slatePath,

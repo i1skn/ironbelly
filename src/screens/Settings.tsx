@@ -18,7 +18,9 @@ import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
-import SettingsListItem, { Props as SettingsItem } from 'src/components/SettingsListItem'
+import SettingsListItem, {
+  Props as SettingsItem,
+} from 'src/components/SettingsListItem'
 import { State as ReduxState, Error, Navigation } from 'src/common/types'
 import colors from 'src/common/colors'
 import { State as SettingsState, BIOMETRY_STATUS } from 'src/modules/settings'
@@ -54,20 +56,24 @@ class Settings extends Component<Props, State> {
   state = {}
 
   _onMigrateToMainnet = () => {
-    return Alert.alert('Switch to Mainnet', 'This would destroy your floonet wallet!', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {
-        text: 'Switch',
-        style: 'destructive',
-        onPress: () => {
-          this.props.migrateToMainnet()
+    return Alert.alert(
+      'Switch to Mainnet',
+      'This would destroy your floonet wallet!',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
         },
-      },
-    ])
+        {
+          text: 'Switch',
+          style: 'destructive',
+          onPress: () => {
+            this.props.migrateToMainnet()
+          },
+        },
+      ],
+    )
   }
   _onDestroyWallet = () => {
     return Alert.alert(
@@ -101,12 +107,16 @@ class Settings extends Component<Props, State> {
       "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
     NetInfo.fetch().then(({ type }) => {
       if (type === 'none') {
-        Alert.alert('Device is offline', 'Wallet recovery requires connection to the internet!', [
-          {
-            text: 'Ok',
-            onPress: () => {},
-          },
-        ])
+        Alert.alert(
+          'Device is offline',
+          'Wallet recovery requires connection to the internet!',
+          [
+            {
+              text: 'Ok',
+              onPress: () => {},
+            },
+          ],
+        )
         return
       }
 
@@ -232,7 +242,9 @@ class Settings extends Component<Props, State> {
             paddingLeft: 16,
           }}
           data={listData}
-          renderItem={({ item }: { item: SettingsItem }) => <SettingsListItem {...item} />}
+          renderItem={({ item }: { item: SettingsItem }) => (
+            <SettingsListItem {...item} />
+          )}
         />
         <VersionText style={{}}>
           Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}

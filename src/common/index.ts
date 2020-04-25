@@ -55,7 +55,11 @@ export const hrFiat = (amount: number, currency: Currency): string => {
     minimumFractionDigits: currency.fractionDigits,
   }).format(amount)
 }
-export const convertToFiat = (amount: number, currency: Currency, rates: object): number => {
+export const convertToFiat = (
+  amount: number,
+  currency: Currency,
+  rates: object,
+): number => {
   const multiplier = rates[currency.code.toLowerCase()]
   return (amount / 1000000000) * (multiplier || 0)
 }
@@ -85,7 +89,9 @@ export const mapRustBalance = (rB: RustBalance): Balance => {
     total: parseInt(rB.total, 10),
   }
 }
-export const mapRustOutputStrategy = (oS: RustOutputStrategy): OutputStrategy => {
+export const mapRustOutputStrategy = (
+  oS: RustOutputStrategy,
+): OutputStrategy => {
   return {
     total: oS.total,
     fee: oS.fee,
@@ -113,9 +119,10 @@ export const SLATES_DIRECTORY = RNFS.DocumentDirectoryPath + '/slates'
 export const APPLICATION_SUPPORT_DIRECTORY = isAndroid
   ? RNFS.DocumentDirectoryPath
   : RNFS.LibraryDirectoryPath + '/Application Support'
-export const WALLET_DATA_DIRECTORY = APPLICATION_SUPPORT_DIRECTORY + '/wallet_data'
+export const WALLET_DATA_DIRECTORY =
+  APPLICATION_SUPPORT_DIRECTORY + '/wallet_data'
 export const checkSlatesDirectory = () => {
-  RNFS.exists(SLATES_DIRECTORY).then(exists => {
+  RNFS.exists(SLATES_DIRECTORY).then((exists) => {
     if (!exists) {
       RNFS.mkdir(SLATES_DIRECTORY, {
         NSURLIsExcludedFromBackupKey: true,
@@ -128,7 +135,7 @@ export const checkSlatesDirectory = () => {
 export const FILE_TRANSPORT_METHOD = 'file'
 export const HTTP_TRANSPORT_METHOD = 'http'
 export const checkApplicationSupportDirectory = () => {
-  RNFS.exists(APPLICATION_SUPPORT_DIRECTORY).then(exists => {
+  RNFS.exists(APPLICATION_SUPPORT_DIRECTORY).then((exists) => {
     if (!exists) {
       RNFS.mkdir(APPLICATION_SUPPORT_DIRECTORY, {
         NSURLIsExcludedFromBackupKey: true,
@@ -139,7 +146,7 @@ export const checkApplicationSupportDirectory = () => {
   })
 }
 export const checkWalletDataDirectory = () => {
-  return RNFS.exists(WALLET_DATA_DIRECTORY).then(exists => {
+  return RNFS.exists(WALLET_DATA_DIRECTORY).then((exists) => {
     if (!exists) {
       return RNFS.mkdir(WALLET_DATA_DIRECTORY, {
         NSURLIsExcludedFromBackupKey: true,
@@ -153,7 +160,7 @@ export const checkWalletDataDirectory = () => {
 }
 export const checkApiSecret = (cb: () => void) => {
   const apiSecretFilePath = APPLICATION_SUPPORT_DIRECTORY + '/.api_secret'
-  RNFS.exists(apiSecretFilePath).then(exists => {
+  RNFS.exists(apiSecretFilePath).then((exists) => {
     if (!exists) {
       cb()
     }
@@ -175,7 +182,9 @@ export const isResponseSlate = async (slate: any) => {
   }
 }
 export const getSlatePath = (slateId: string, isResponse: boolean) => {
-  return `${SLATES_DIRECTORY}/${slateId}.grinslate${isResponse ? '.response' : ''}`
+  return `${SLATES_DIRECTORY}/${slateId}.grinslate${
+    isResponse ? '.response' : ''
+  }`
 }
 export const TextareaTitle = styled.Text`
   font-size: 20;
@@ -253,7 +262,8 @@ export const parseSendLink = (query: UrlQuery) => {
   }
 }
 export const formatDate = (date: moment) => date.format('DD MMMM YYYY')
-export const formatTime = (time: moment) => time.format('dddd, DD MMMM YYYY, HH:mm')
+export const formatTime = (time: moment) =>
+  time.format('dddd, DD MMMM YYYY, HH:mm')
 export const currencyList = [
   {
     code: 'btc',

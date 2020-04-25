@@ -112,20 +112,24 @@ class Password extends Component<Props, State> {
     )
   }
   _onDestroy = () => {
-    Alert.alert('Destroy the wallet', 'This action would remove all of your data!', [
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {
-        text: 'Destroy',
-        style: 'destructive',
-        onPress: () => {
-          this.props.destroyWallet()
+    Alert.alert(
+      'Destroy the wallet',
+      'This action would remove all of your data!',
+      [
+        {
+          text: 'Cancel',
+          onPress: () => console.log('Cancel Pressed'),
+          style: 'cancel',
         },
-      },
-    ])
+        {
+          text: 'Destroy',
+          style: 'destructive',
+          onPress: () => {
+            this.props.destroyWallet()
+          },
+        },
+      ],
+    )
   }
 
   render() {
@@ -162,7 +166,7 @@ class Password extends Component<Props, State> {
             <FormTextInput
               autoFocus={false}
               secureTextEntry={true}
-              onChange={password => {
+              onChange={(password) => {
                 setPassword(password)
               }}
               value={password}
@@ -173,7 +177,9 @@ class Password extends Component<Props, State> {
             </ForgotButton>
             <Submit
               title={`Unlock${
-                biometryEnabled && !password ? ' with ' + getBiometryTitle(biometryType) : ''
+                biometryEnabled && !password
+                  ? ' with ' + getBiometryTitle(biometryType)
+                  : ''
               }`}
               disabled={inProgress}
               onPress={() => {

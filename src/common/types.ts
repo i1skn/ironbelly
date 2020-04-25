@@ -456,7 +456,10 @@ export type currencyRatesFalureAction = {
 }
 
 export type walletExistsRequestAction = { type: 'WALLET_EXISTS_REQUEST' }
-export type walletExistsSuccessAction = { type: 'WALLET_EXISTS_SUCCESS'; exists: boolean }
+export type walletExistsSuccessAction = {
+  type: 'WALLET_EXISTS_SUCCESS'
+  exists: boolean
+}
 export type walletExistsFalureAction = {
   type: 'WALLET_EXISTS_FAILURE'
   code?: number

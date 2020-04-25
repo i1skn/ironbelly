@@ -19,14 +19,26 @@ import { Epic, combineEpics, createEpicMiddleware } from 'redux-observable'
 import { appEpic, appReducer } from 'src/modules/app'
 import { catchError } from 'rxjs/operators'
 import { reducer as balanceReducer } from 'src/modules/balance'
-import { reducer as txReducer, sideEffects as txSideEffects } from 'src/modules/tx'
-import { reducer as settingsReducer, sideEffects as settingsEffects } from 'src/modules/settings'
+import {
+  reducer as txReducer,
+  sideEffects as txSideEffects,
+} from 'src/modules/tx'
+import {
+  reducer as settingsReducer,
+  sideEffects as settingsEffects,
+} from 'src/modules/settings'
 import {
   reducer as currencyRates,
   sideEffects as currencyRatesEffects,
 } from 'src/modules/currency-rates'
-import { reducer as toasterReducer, sideEffects as toasterEffects } from 'src/modules/toaster'
-import { reducer as walletReducer, sideEffects as walletEffects } from 'src/modules/wallet'
+import {
+  reducer as toasterReducer,
+  sideEffects as toasterEffects,
+} from 'src/modules/toaster'
+import {
+  reducer as walletReducer,
+  sideEffects as walletEffects,
+} from 'src/modules/wallet'
 import { State, Action } from 'src/common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createMigrate, persistStore, persistReducer } from 'redux-persist'
@@ -55,16 +67,26 @@ const currencyRatesConfig = {
 }
 
 export const rootReducer = combineReducers<State, Action>({
-  balance: persistReducer(balanceConfig, balanceReducer) as typeof balanceReducer,
+  balance: persistReducer(
+    balanceConfig,
+    balanceReducer,
+  ) as typeof balanceReducer,
   app: persistReducer(appConfig, appReducer) as typeof appReducer,
   tx: txReducer,
-  currencyRates: persistReducer(currencyRatesConfig, currencyRates) as typeof currencyRates,
+  currencyRates: persistReducer(
+    currencyRatesConfig,
+    currencyRates,
+  ) as typeof currencyRates,
   settings: settingsReducer,
   toaster: toasterReducer,
   wallet: walletReducer,
 }) as () => State
 
-export const rootEpic: Epic<Action, Action, State> = (action$, store$, dependencies) =>
+export const rootEpic: Epic<Action, Action, State> = (
+  action$,
+  store$,
+  dependencies,
+) =>
   combineEpics(appEpic)(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       console.error(error)
@@ -96,10 +118,17 @@ const persistConfig = {
 
 const enhancers = [applyMiddleware(sideEffectsMiddleware, epicMiddleware)]
 
-const composeEnhancers = (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const persistedReducer = persistReducer<State, Action>(persistConfig, rootReducer)
-export const store = createStore(persistedReducer, composeEnhancers(...enhancers))
+const persistedReducer = persistReducer<State, Action>(
+  persistConfig,
+  rootReducer,
+)
+export const store = createStore(
+  persistedReducer,
+  composeEnhancers(...enhancers),
+)
 export const persistor = persistStore(store)
 
 epicMiddleware.run(rootEpic)

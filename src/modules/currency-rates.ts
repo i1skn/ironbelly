@@ -52,13 +52,16 @@ export const reducer = (state: State = initialState, action: Action): State => {
   }
 }
 export const sideEffects = {
-  ['CURRENCY_RATES_REQUEST']: async (_action: currencyRatesRequestAction, store: Store) => {
+  ['CURRENCY_RATES_REQUEST']: async (
+    _action: currencyRatesRequestAction,
+    store: Store,
+  ) => {
     try {
       const rates = await fetch(
         `https://api.coingecko.com/api/v3/simple/price?ids=grin&vs_currencies=${currencyList
-          .map(c => c.code)
+          .map((c) => c.code)
           .join(',')}`,
-      ).then(data => data.json())
+      ).then((data) => data.json())
       store.dispatch({
         type: 'CURRENCY_RATES_SUCCESS',
         rates,

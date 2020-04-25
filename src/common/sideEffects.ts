@@ -22,9 +22,9 @@ const isAction = (o: any): boolean => {
   return !!o?.type
 }
 
-export const createMiddleware = (effects: Effects) => (store: Store) => (next: any) => (
-  action: Action,
-) => {
+export const createMiddleware = (effects: Effects) => (store: Store) => (
+  next: any,
+) => (action: Action) => {
   const initAction = next(action)
   const effect = effects[action.type]
 
@@ -34,7 +34,7 @@ export const createMiddleware = (effects: Effects) => (store: Store) => (next: a
     if (isAction(result)) {
       store.dispatch(result)
     } else if (result instanceof Promise) {
-      result.then(res => isAction(res) && store.dispatch(res))
+      result.then((res) => isAction(res) && store.dispatch(res))
     }
   }
 

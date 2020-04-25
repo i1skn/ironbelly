@@ -15,8 +15,8 @@
 import { Platform, Dimensions } from 'react-native'
 import styled from 'styled-components/native'
 export default styled.View`
-  background-color: ${props => (props.bgColor ? props.bgColor : '#fff')};
-  height: ${props =>
+  background-color: ${(props) => (props.bgColor ? props.bgColor : '#fff')};
+  height: ${(props) =>
     Platform.OS === 'ios' &&
     Dimensions.get('window').height === 812 &&
     Dimensions.get('window').width === 375

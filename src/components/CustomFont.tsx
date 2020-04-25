@@ -18,7 +18,7 @@ import colors from 'src/common/colors'
 import { Linking } from 'react-native'
 export const monoSpaceFont = 'Menlo'
 export const Text = styled.Text`
-  font-size: ${props => (props.fontSize ? props.fontSize : '16px')};
+  font-size: ${(props) => (props.fontSize ? props.fontSize : '16px')};
   font-weight: normal;
   color: ${() => colors.black};
 `
@@ -40,22 +40,26 @@ export const TextInput = styled.TextInput`
 `
 
 function getBackgroundColor(props: any) {
-  return props.inverted ? 'white' : props.danger ? colors.warning : colors.primary
+  return props.inverted
+    ? 'white'
+    : props.danger
+    ? colors.warning
+    : colors.primary
 }
 
 const StyledButton = styled.TouchableOpacity`
   padding: 10px 15px;
-  background-color: ${props => getBackgroundColor(props)};
+  background-color: ${(props) => getBackgroundColor(props)};
   border-radius: 8;
-  border-width: ${props => (props.inverted ? '1' : '0')};
-  opacity: ${props => (props.disabled ? '0.3' : '1')};
+  border-width: ${(props) => (props.inverted ? '1' : '0')};
+  opacity: ${(props) => (props.disabled ? '0.3' : '1')};
 `
 const ButtonTitle = styled(Text)`
   font-size: 21;
   font-weight: 500;
   width: auto;
   text-align: center;
-  color: ${props => (props.danger ? '#FFF' : '#000')};
+  color: ${(props) => (props.danger ? '#FFF' : '#000')};
 `
 export const Button = (props: any) => {
   return (

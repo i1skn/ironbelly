@@ -98,16 +98,25 @@ export const reducer = (state: State = initialState, action: Action): State => {
 }
 export const apiSecretFilePath = APPLICATION_SUPPORT_DIRECTORY + '/.api_secret'
 export const sideEffects = {
-  ['SWITCH_TO_FLOONET']: async (action: switchToFloonetAction, store: Store) => {
+  ['SWITCH_TO_FLOONET']: async (
+    action: switchToFloonetAction,
+    store: Store,
+  ) => {
     await RNFS.writeFile(apiSecretFilePath, FLOONET_API_SECRET)
   },
-  ['SWITCH_TO_MAINNET']: async (action: switchToMainnetAction, store: Store) => {
+  ['SWITCH_TO_MAINNET']: async (
+    action: switchToMainnetAction,
+    store: Store,
+  ) => {
     await RNFS.writeFile(apiSecretFilePath, MAINNET_API_SECRET)
   },
   ['SET_API_SECRET']: async (action: setApiSecretAction, store: Store) => {
     await RNFS.writeFile(apiSecretFilePath, action.apiSecret)
   },
-  ['CHECK_BIOMETRY_REQUEST']: async (action: checkBiometryRequestAction, store: Store) => {
+  ['CHECK_BIOMETRY_REQUEST']: async (
+    action: checkBiometryRequestAction,
+    store: Store,
+  ) => {
     try {
       const biometryType = await Keychain.getSupportedBiometryType()
       store.dispatch({
@@ -122,7 +131,10 @@ export const sideEffects = {
       log(error, true)
     }
   },
-  ['ENABLE_BIOMETRY_REQUEST']: async (action: enableBiometryRequestAction, store: Store) => {
+  ['ENABLE_BIOMETRY_REQUEST']: async (
+    action: enableBiometryRequestAction,
+    store: Store,
+  ) => {
     const { value: password } = store.getState().wallet.password
 
     try {
@@ -157,7 +169,10 @@ export const sideEffects = {
       log(error, false)
     }
   },
-  ['DISABLE_BIOMETRY_REQUEST']: async (action: disableBiometryRequestAction, store: Store) => {
+  ['DISABLE_BIOMETRY_REQUEST']: async (
+    action: disableBiometryRequestAction,
+    store: Store,
+  ) => {
     try {
       await Keychain.resetGenericPassword()
       store.dispatch({
@@ -171,7 +186,10 @@ export const sideEffects = {
       log(error, true)
     }
   },
-  ['RESET_BIOMETRY_REQUEST']: async (action: resetBiometryRequestAction, store: Store) => {
+  ['RESET_BIOMETRY_REQUEST']: async (
+    action: resetBiometryRequestAction,
+    store: Store,
+  ) => {
     try {
       await Keychain.resetGenericPassword()
       store.dispatch({

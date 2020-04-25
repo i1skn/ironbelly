@@ -18,7 +18,10 @@ import { isAndroid } from 'src/common'
 import { State as ReduxState } from 'src/common/types'
 import React from 'react'
 import { Text, Animated } from 'react-native'
-import { TransitionPresets, createStackNavigator } from '@react-navigation/stack'
+import {
+  TransitionPresets,
+  createStackNavigator,
+} from '@react-navigation/stack'
 import { NavigationContainerRef } from '@react-navigation/core'
 import OverviewScreen from 'src/screens/Overview'
 import SendScreen from 'src/screens/Send'
@@ -65,7 +68,9 @@ const defaultScreenOptions = {
 
 export type RootStackParamList = {
   Landing: undefined
-  LegalDisclaimer: { nextScreen: { name: keyof RootStackParamList; params: any } }
+  LegalDisclaimer: {
+    nextScreen: { name: keyof RootStackParamList; params: any }
+  }
   NewPassword: undefined
   ShowPaperKey: undefined
   WalletScan: undefined
@@ -90,8 +95,14 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>()
 
 const NotCreated = () => (
-  <Stack.Navigator initialRouteName="Landing" screenOptions={defaultScreenOptions}>
-    <Stack.Screen name="Landing" component={LandingScreen} options={{ headerShown: false }} />
+  <Stack.Navigator
+    initialRouteName="Landing"
+    screenOptions={defaultScreenOptions}>
+    <Stack.Screen
+      name="Landing"
+      component={LandingScreen}
+      options={{ headerShown: false }}
+    />
     <Stack.Screen
       name="LegalDisclaimer"
       component={LegalDisclaimerScreen}
@@ -119,7 +130,11 @@ const NotCreated = () => (
   </Stack.Navigator>
 )
 
-const forFade = ({ current }: { current: { progress: Animated.AnimatedInterpolation } }) => ({
+const forFade = ({
+  current,
+}: {
+  current: { progress: Animated.AnimatedInterpolation }
+}) => ({
   cardStyle: {
     opacity: current.progress,
   },
@@ -134,7 +149,9 @@ const ResetButtonText = styled(Text)`
 `
 
 const Created = () => (
-  <Stack.Navigator initialRouteName="Overview" screenOptions={defaultScreenOptions}>
+  <Stack.Navigator
+    initialRouteName="Overview"
+    screenOptions={defaultScreenOptions}>
     <Stack.Screen
       name="Settings"
       component={SettingsScreen}
@@ -214,7 +231,10 @@ const Created = () => (
       component={TxDetailsScreen}
       options={
         isAndroid
-          ? { ...TransitionPresets.DefaultTransition, title: 'Transaction Details' }
+          ? {
+              ...TransitionPresets.DefaultTransition,
+              title: 'Transaction Details',
+            }
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
     />
