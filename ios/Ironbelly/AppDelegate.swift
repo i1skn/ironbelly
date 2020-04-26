@@ -14,24 +14,29 @@
 
 
 import UIKit
+#if DEBUG
+#if FB_SONARKIT_ENABLED
+import FlipperKit
+#endif
+#endif
 import LaunchScreenSnapshot
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
     func sourceURL(for bridge: RCTBridge!) -> URL! {
     #if DEBUG
-        return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
     #else
-        return RCTBundleURLProvider.sharedSettings().jsBundleURL(
-            forFallbackResource: "main", fallbackExtension: "jsbundle"
-        )
+    return RCTBundleURLProvider.sharedSettings().jsBundleURL(
+        forFallbackResource: "main", fallbackExtension: "jsbundle"
+    )
     #endif
     }
-    
 
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        initializeFlipper(with: application)
         
         let bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
         let rootView = RCTRootView(bridge: bridge!, moduleName: "Ironbelly", initialProperties: nil)
@@ -77,6 +82,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
 
-
+    private func initializeFlipper(with application: UIApplication) {
+        #if DEBUG
+        #if FB_SONARKIT_ENABLED
+        let client = FlipperClient.shared()
+        let layoutDescriptorMapper = SKDescriptorMapper(defaults: ())
+        FlipperKitLayoutComponentKitSupport.setUpWith(layoutDescriptorMapper)
+        client?.add(FlipperKitLayoutPlugin(rootNode: application, with: layoutDescriptorMapper!))
+        client?.add(FKUserDefaultsPlugin(suiteName: nil))
+        client?.add(FlipperKitReactPlugin())
+        client?.add(FlipperKitNetworkPlugin(networkAdapter: SKIOSNetworkAdapter()))
+        client?.add(FlipperReactPerformancePlugin.sharedInstance())
+        client?.start()
+        #endif
+        #endif
+    }
 
 }

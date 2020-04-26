@@ -27,7 +27,6 @@
 		7ED43DD375854138B2208C5C /* ChevronRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AC12860C4E7462AB6A9A439 /* ChevronRight.png */; };
 		8A05B33A622348C1A7EBBBED /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C52591DBA24BD485CB0E6E /* x.png */; };
 		A01CD803F51F4CE0BFE222D4 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F669249426C949548172D721 /* Poppins-Italic.ttf */; };
-		A7F228E2898EC60ACB1279BC /* Pods_IronbellyTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 970D4311F4A72A85E4BB759E /* Pods_IronbellyTests.framework */; };
 		AE9C71C754744856A2C998BE /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */; };
 		B061F339986847BE91EFD112 /* Close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21484D9BE7F14E6280C4EBFB /* Close@3x.png */; };
 		B7AAF7350C2F4DC4A7A7C6D8 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */; };
@@ -51,16 +50,6 @@
 		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		F64186EE218895DE00A99CA0 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = F64186D1218895DC00A99CA0 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = F64186D8218895DC00A99CA0;
-			remoteInfo = Grin;
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
 		F67B83C8219345180004D4A1 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -83,6 +72,7 @@
 		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
 		18CED6B847864E8C82A0779A /* Settings@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@2x.png"; path = "../src/assets/images/Settings@2x.png"; sourceTree = "<group>"; };
 		1AC12860C4E7462AB6A9A439 /* ChevronRight.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronRight.png; path = ../src/assets/images/ChevronRight.png; sourceTree = "<group>"; };
+		1FFAE607F397D23D87F91070 /* Pods-Ironbelly-IronbellyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly-IronbellyTests.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly-IronbellyTests/Pods-Ironbelly-IronbellyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		21484D9BE7F14E6280C4EBFB /* Close@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@3x.png"; path = "../src/assets/images/Close@3x.png"; sourceTree = "<group>"; };
 		32A59E6CBD68439EB5B0B486 /* Settings@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@3x.png"; path = "../src/assets/images/Settings@3x.png"; sourceTree = "<group>"; };
 		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
@@ -93,10 +83,10 @@
 		7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
 		84EB5C67E41C492EB06C5DB2 /* x@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@2x.png"; path = "../src/assets/images/x@2x.png"; sourceTree = "<group>"; };
 		87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
+		88B572AD0F6526E5A34BF0AB /* Pods_Ironbelly_IronbellyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly_IronbellyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		95058308B02745B683962F6B /* SendTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SendTX.png; path = ../src/assets/images/SendTX.png; sourceTree = "<group>"; };
 		958B76E81DC04571A528434C /* Poppins-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Light.ttf"; path = "../src/assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
-		970D4311F4A72A85E4BB759E /* Pods_IronbellyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IronbellyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		998300B9168649DEA2FD5C5E /* Share.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Share.png; path = ../src/assets/images/Share.png; sourceTree = "<group>"; };
 		9D959331D4664C90ACA1A3A8 /* Share@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@3x.png"; path = "../src/assets/images/Share@3x.png"; sourceTree = "<group>"; };
 		A4A91FCA5494D0FB53A75218 /* Pods-IronbellyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.release.xcconfig"; path = "Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -109,6 +99,7 @@
 		C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@3x.png"; path = "../src/assets/images/ReceiveTX@3x.png"; sourceTree = "<group>"; };
 		CE9B62D915C8420F847659BB /* SendTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@3x.png"; path = "../src/assets/images/SendTX@3x.png"; sourceTree = "<group>"; };
 		DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@3x.png"; path = "../src/assets/images/ChevronRight@3x.png"; sourceTree = "<group>"; };
+		DD22E61E5590C1FC3A181A19 /* Pods-Ironbelly-IronbellyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly-IronbellyTests.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly-IronbellyTests/Pods-Ironbelly-IronbellyTests.release.xcconfig"; sourceTree = "<group>"; };
 		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
 		EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@2x.png"; path = "../src/assets/images/ReceiveTX@2x.png"; sourceTree = "<group>"; };
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
@@ -119,7 +110,6 @@
 		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F64186E6218895DE00A99CA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F64186E8218895DE00A99CA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = IronbellyTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186FF2188968D00A99CA0 /* libresolv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libresolv.tbd; path = usr/lib/libresolv.tbd; sourceTree = SDKROOT; };
 		F65FE35D2410B98400E3C118 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Ionicons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Ionicons.ttf"; sourceTree = "<group>"; };
 		F65FE35E2410B98400E3C118 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome.ttf"; sourceTree = "<group>"; };
@@ -148,14 +138,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F64186EA218895DE00A99CA0 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				A7F228E2898EC60ACB1279BC /* Pods_IronbellyTests.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -166,6 +148,8 @@
 				16A85D5B5CFFBC12835C528B /* Pods-Ironbelly.release.xcconfig */,
 				16C4D798CCBCC06E39927A4E /* Pods-IronbellyTests.debug.xcconfig */,
 				A4A91FCA5494D0FB53A75218 /* Pods-IronbellyTests.release.xcconfig */,
+				1FFAE607F397D23D87F91070 /* Pods-Ironbelly-IronbellyTests.debug.xcconfig */,
+				DD22E61E5590C1FC3A181A19 /* Pods-Ironbelly-IronbellyTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -230,7 +214,6 @@
 			isa = PBXGroup;
 			children = (
 				F64186D9218895DC00A99CA0 /* Ironbelly.app */,
-				F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -257,7 +240,7 @@
 				F67AD98B23C15A5100FC4CEA /* libwallet.a */,
 				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
 				4DF6CD511DC5E16E01615D96 /* Pods_Ironbelly.framework */,
-				970D4311F4A72A85E4BB759E /* Pods_IronbellyTests.framework */,
+				88B572AD0F6526E5A34BF0AB /* Pods_Ironbelly_IronbellyTests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -298,25 +281,6 @@
 			productReference = F64186D9218895DC00A99CA0 /* Ironbelly.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F64186EC218895DE00A99CA0 /* IronbellyTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = F64186F9218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "IronbellyTests" */;
-			buildPhases = (
-				7DD815AD144F7AE87CC8DB37 /* [CP] Check Pods Manifest.lock */,
-				F64186E9218895DE00A99CA0 /* Sources */,
-				F64186EA218895DE00A99CA0 /* Frameworks */,
-				F64186EB218895DE00A99CA0 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				F64186EF218895DE00A99CA0 /* PBXTargetDependency */,
-			);
-			name = IronbellyTests;
-			productName = GrinTests;
-			productReference = F64186ED218895DE00A99CA0 /* IronbellyTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -329,10 +293,6 @@
 				TargetAttributes = {
 					F64186D8218895DC00A99CA0 = {
 						CreatedOnToolsVersion = 10.0;
-					};
-					F64186EC218895DE00A99CA0 = {
-						CreatedOnToolsVersion = 10.0;
-						TestTargetID = F64186D8218895DC00A99CA0;
 					};
 				};
 			};
@@ -350,7 +310,6 @@
 			projectRoot = "";
 			targets = (
 				F64186D8218895DC00A99CA0 /* Ironbelly */,
-				F64186EC218895DE00A99CA0 /* IronbellyTests */,
 			);
 		};
 /* End PBXProject section */
@@ -398,13 +357,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F64186EB218895DE00A99CA0 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
@@ -424,28 +376,6 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Ironbelly-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		7DD815AD144F7AE87CC8DB37 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-IronbellyTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -518,22 +448,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		F64186E9218895DE00A99CA0 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		F64186EF218895DE00A99CA0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = F64186D8218895DC00A99CA0 /* Ironbelly */;
-			targetProxy = F64186EE218895DE00A99CA0 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */ = {
@@ -602,6 +517,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -656,6 +572,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
+				OTHER_LDFLAGS = "";
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -678,7 +595,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../rust",
+					"$(inherited)",
+				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
@@ -704,7 +628,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../rust";
+				LIBRARY_SEARCH_PATHS = (
+					"$(PROJECT_DIR)/../rust",
+					"$(inherited)",
+				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
@@ -712,48 +643,6 @@
 				TARGETED_DEVICE_FAMILY = 1;
 				VALID_ARCHS = arm64;
 				VERSIONING_SYSTEM = "apple-generic";
-			};
-			name = Release;
-		};
-		F64186FA218895DE00A99CA0 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 16C4D798CCBCC06E39927A4E /* Pods-IronbellyTests.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = IronbellyTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ivan.GrinTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ironbelly.app/Ironbelly";
-			};
-			name = Debug;
-		};
-		F64186FB218895DE00A99CA0 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4A91FCA5494D0FB53A75218 /* Pods-IronbellyTests.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				INFOPLIST_FILE = IronbellyTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.ivan.GrinTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Ironbelly.app/Ironbelly";
 			};
 			name = Release;
 		};
@@ -774,15 +663,6 @@
 			buildConfigurations = (
 				F64186F7218895DE00A99CA0 /* Debug */,
 				F64186F8218895DE00A99CA0 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F64186F9218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "IronbellyTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				F64186FA218895DE00A99CA0 /* Debug */,
-				F64186FB218895DE00A99CA0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
