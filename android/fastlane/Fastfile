@@ -24,11 +24,7 @@ platform :android do
 
   desc "Submit a new Internal Build to Play Market"
   lane :internal do
-    gradle(task: "clean assembleRelease")
-    # Move back to bundleRelease once updated to RN 0.62+
-    # https://github.com/facebook/react-native/issues/26400
-    #
-    # gradle(task: "clean bundleRelease")
+    gradle(task: "clean bundleRelease")
     upload_to_play_store(track: 'internal')
   end
 

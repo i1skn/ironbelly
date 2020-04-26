@@ -112,7 +112,7 @@ def enableSeparateBuildPerCPUArchitecture = false
  */
 def enableProguardInReleaseBuilds = false
 
-def jscFlavor = 'org.webkit:android-jsc:+'
+def useIntlJsc = false
 
 def enableHermes = project.ext.react.get("enableHermes", false);
 
@@ -130,7 +130,7 @@ android {
         applicationId "app.ironbelly"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 25 
+        versionCode 26 
         versionName "3.1.0"
 	multiDexEnabled true
     }
@@ -212,7 +212,11 @@ dependencies {
         debugImplementation files(hermesPath + "hermes-debug.aar")
         releaseImplementation files(hermesPath + "hermes-release.aar")
     } else {
-        implementation jscFlavor
+	if (useIntlJsc) {
+	     implementation 'org.webkit:android-jsc-intl:+'
+	} else {
+	     implementation 'org.webkit:android-jsc:+'
+	}
     }
 }
 
