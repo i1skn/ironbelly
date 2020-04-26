@@ -205,7 +205,7 @@ const initialState: State = {
 }
 
 function twoStringArrayEqual<T>(a: T[], b: T[]) {
-  return a.join('') === b.join('')
+  return (a || []).join('') === (b || []).join('')
 }
 
 export const sideEffects = {

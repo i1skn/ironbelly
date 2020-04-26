@@ -44,10 +44,10 @@ export type State = {
 }
 export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = 'H2vnwhAjhhTAVEYgNRen'
-export const MAINNET_DEFAULT_NODE = 'http://192.168.1.106:3413'
+export const MAINNET_DEFAULT_NODE = 'http://grinnode.cycle42.com:3413'
 export const FLOONET_CHAIN = 'floonet'
 export const FLOONET_API_SECRET = 'ac9rOHFKASTRzZ4SNJun'
-export const FLOONET_DEFAULT_NODE = 'http://192.168.1.106:13413'
+export const FLOONET_DEFAULT_NODE = 'http://floonode.cycle42.com:13413'
 export const initialState: State = {
   currencyObject: currencyList[8], // USD
   checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
