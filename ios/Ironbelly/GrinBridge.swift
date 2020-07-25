@@ -63,15 +63,15 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func txCreate(_ state: String, amount: UInt64, selectionStrategyIsUseAll: Bool, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func txCreate(_ state: String, amount: UInt64, selectionStrategyIsUseAll: Bool, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_tx_create(state, amount, selectionStrategyIsUseAll, message, &error)
+        let cResult = c_tx_create(state, amount, selectionStrategyIsUseAll, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func txSendHttps(_ state: String, amount: UInt64, selectionStrategyIsUseAll: Bool, message: String, url: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func txSendHttps(_ state: String, amount: UInt64, selectionStrategyIsUseAll: Bool, url: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_tx_send_https(state, amount, selectionStrategyIsUseAll, message, url, &error)
+        let cResult = c_tx_send_https(state, amount, selectionStrategyIsUseAll, url, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
@@ -87,9 +87,9 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func txReceive(_ state: String, slatePath: String, message: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func txReceive(_ state: String, slatePath: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_tx_receive(state, slatePath, message, &error)
+        let cResult = c_tx_receive(state, slatePath, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 

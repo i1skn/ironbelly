@@ -29,15 +29,15 @@ RCT_EXTERN_METHOD(txGet:(NSString*)state refreshFromNode:(BOOL)refreshFromNode t
 
 RCT_EXTERN_METHOD(txPost:(NSString*)state txSlateId:(NSString*)txSlateId resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txCreate:(NSString*)state amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll message:(NSString*)message  resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txCreate:(NSString*)state amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll  resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txSendHttps:(NSString*)state amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll message:(NSString*)message url:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txSendHttps:(NSString*)state amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll url:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txStrategies:(NSString*)state amount:(int64_t)amount resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txCancel:(NSString*)state id:(NSUInteger)id resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txReceive:(NSString*)state slatePath:(NSString*)slatePath message:(NSString*)message resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txReceive:(NSString*)state slatePath:(NSString*)slatePath resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txFinalize:(NSString*)state slatePath:(NSString*)slatePath resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
