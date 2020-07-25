@@ -330,7 +330,7 @@ PODS:
     - React
   - RNScreens (2.5.0):
     - React
-  - RNShare (3.2.0):
+  - RNShare (3.3.1):
     - React
   - RNSVG (12.1.0):
     - React
@@ -563,7 +563,7 @@ SPEC CHECKSUMS:
   RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
   RNKeychain: a5623de13ec5378bfb8035422e3dee4fa538660d
   RNScreens: ac02d0e4529f08ced69f5580d416f968a6ec3a1d
-  RNShare: 13f1b72aab353c3092b30dce99d212871bb2a8a1
+  RNShare: d4c9789a93ffa286389ff7b73f44118c8aab412f
   RNSVG: ce9d996113475209013317e48b05c21ee988d42e
   RNVectorIcons: 0bb4def82230be1333ddaeee9fcba45f0b288ed4
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
@@ -572,4 +572,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ea7991b4d7ee1d4efdb69dbd4de9b087b708badc
 
-COCOAPODS: 1.9.1
+COCOAPODS: 1.9.3

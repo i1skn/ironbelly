@@ -15,32 +15,33 @@ failure = "0.1"
 failure_derive = "0.1"
 prettytable-rs = "0.7"
 log = "0.4"
-uuid = "0.7.4"
+uuid = { version = "0.8", features = ["serde", "v4"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1"
 serde_derive = "1"
 simplelog = "^0.7.4"
+openssl = { version = "0.10", features = ["vendored"] }
 
 # For Release
 # ^
 # Does not exist yet
 
 # For bleeding edge
-grin_wallet_api = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly" }
-grin_wallet_impls = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly" }
-grin_wallet_libwallet = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly" }
-grin_wallet_config = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly" }
-grin_wallet_util = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly" }
-grin_wallet_controller = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly" }
+# grin_wallet_api = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
+# grin_wallet_impls = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
+# grin_wallet_libwallet = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
+# grin_wallet_config = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
+# grin_wallet_util = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
+# grin_wallet_controller = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
 
 
 # For local testing
-# grin_wallet_api = { path = "../../../i1skn/grin-wallet/api", version = "3.1.0-beta.1" }
-# grin_wallet_impls = { path = "../../../i1skn/grin-wallet/impls", version = "3.1.0-beta.1" }
-# grin_wallet_libwallet = { path = "../../../i1skn/grin-wallet/libwallet", version = "3.1.0-beta.1" }
-# grin_wallet_config = { path = "../../../i1skn/grin-wallet/config", version = "3.1.0-beta.1" }
-# grin_wallet_util = { path = "../../../i1skn/grin-wallet/util", version = "3.1.0-beta.1" }
-# grin_wallet_controller = { path = "../../../i1skn/grin-wallet/controller", version = "3.1.0-beta.1" }
+grin_wallet_api = { path = "../../../i1skn/grin-wallet/api", version = "4.1.0-alpha.1" }
+grin_wallet_impls = { path = "../../../i1skn/grin-wallet/impls", version = "4.1.0-alpha.1" }
+grin_wallet_libwallet = { path = "../../../i1skn/grin-wallet/libwallet", version = "4.1.0-alpha.1" }
+grin_wallet_config = { path = "../../../i1skn/grin-wallet/config", version = "4.1.0-alpha.1" }
+grin_wallet_util = { path = "../../../i1skn/grin-wallet/util", version = "4.1.0-alpha.1" }
+grin_wallet_controller = { path = "../../../i1skn/grin-wallet/controller", version = "4.1.0-alpha.1" }
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.8"
@@ -54,7 +55,7 @@ name = "wallet"
 crate-type = ["staticlib", "cdylib"]
 
 [patch.crates-io]
-croaring = { path = "./croaring-rs", version = "0.3.9" }
+croaring-mw = { git = "https://github.com/i1skn/croaring-rs" }
 liblmdb-sys = { git = "https://github.com/i1skn/lmdb-rs" }
 
 

@@ -14,10 +14,9 @@ const char *c_tx_cancel(const char *state_json, uint32_t id, uint8_t *error);
 const char *c_tx_create(const char *state_json,
                         uint64_t amount,
                         bool selection_strategy_is_use_all,
-                        const char *message,
                         uint8_t *error);
 
-const char *c_tx_finalize(const char *state_json, const char *slate_path, uint8_t *error);
+const char *c_tx_finalize(const char *state_json, const char *slate_armored, uint8_t *error);
 
 const char *c_tx_get(const char *state_json,
                      bool refresh_from_node,
@@ -26,15 +25,11 @@ const char *c_tx_get(const char *state_json,
 
 const char *c_tx_post(const char *state_json, const char *tx_slate_id, uint8_t *error);
 
-const char *c_tx_receive(const char *state_json,
-                         const char *slate_path,
-                         const char *message,
-                         uint8_t *error);
+const char *c_tx_receive(const char *state_json, const char *slate_armored, uint8_t *error);
 
 const char *c_tx_send_https(const char *state_json,
                             uint64_t amount,
                             bool selection_strategy_is_use_all,
-                            const char *message,
                             const char *url,
                             uint8_t *error);
 

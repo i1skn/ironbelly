@@ -1,0 +1,22 @@
+@startuml
+
+start
+
+if (seed file exists?) then (yes)
+	#lightgreen:show Locked screen;
+	repeat :wait for user to enter password;
+	backward :wait 1 second;
+	repeat while (is entered password correct?) is (no)
+	->yes;
+	if (restore in progress?) then (yes)
+		#lightgreen:show Restore screen;
+	else (no)
+		#lightgreen:show Overview screen;
+	endif
+else (no)
+	#lightgreen:show Landing screen;
+endif
+
+
+@enduml
+

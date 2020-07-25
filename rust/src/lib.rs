@@ -13,7 +13,8 @@
 // limitations under the License.
 
 use grin_wallet_libwallet::{
-    scan, selection, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient, WalletInst,
+    scan, selection, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient,
+    NodeVersionInfo, Slate, SlatepackArmor, Slatepacker, SlatepackerArgs, WalletInst,
     WalletLCProvider,
 };
 use grin_wallet_util::grin_core::global::ChainTypes;
@@ -25,10 +26,10 @@ use grin_wallet_util::grin_util::ZeroingString;
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_impls::{
     DefaultLCProvider, DefaultWalletImpl, Error, ErrorKind, HTTPNodeClient, HttpSlateSender,
-    PathToSlate, SlateGetter, SlateSender, WalletSeed,
+    SlateSender, WalletSeed,
 };
 
-use grin_wallet_api::{Foreign, Owner};
+use grin_wallet_api::{Foreign, ForeignCheckMiddlewareFn, Owner};
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
@@ -38,8 +39,6 @@ use uuid::Uuid;
 extern crate log;
 
 use simplelog::{Config, LevelFilter, SimpleLogger};
-
-const USER_MESSAGE_MAX_LEN: usize = 256;
 
 fn c_str_to_rust(s: *const c_char) -> String {
     unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
@@ -229,7 +228,7 @@ pub unsafe extern "C" fn c_check_password(
 }
 
 fn seed_new(seed_length: usize) -> Result<String, Error> {
-    WalletSeed::init_new(seed_length).to_mnemonic()
+    WalletSeed::init_new(seed_length, false, None).to_mnemonic()
 }
 
 fn e2e_seed_new() -> Result<String, Error> {
@@ -438,7 +437,8 @@ where
                 Ok(k) => k,
                 Err(_) => return Ok(false),
             };
-            if let Some(_k) = kernel {
+            if let Some(k) = kernel {
+                debug!("Kernel Retrieved: {:?}", k);
                 wallet_lock!(wallet_inst, w);
                 let mut batch = w.batch(None)?;
                 tx.confirmed = true;
@@ -528,62 +528,63 @@ pub unsafe extern "C" fn c_tx_strategies(
 
 fn tx_create(
     state_json: &str,
-    message: &str,
     amount: u64,
     selection_strategy_is_use_all: bool,
 ) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    // sender should always refresh outputs
-    let message = match message.len() > 0 {
-        true => {
-            let mut truncated_message = message.to_owned();
-            truncated_message.truncate(USER_MESSAGE_MAX_LEN);
-            Some(truncated_message)
-        }
-        false => None,
-    };
-
     let parent_key_id = {
         wallet_lock!(wallet, w);
         w.parent_key_id().clone()
     };
 
     wallet_lock!(wallet, w);
-    let current_height = updater::refresh_outputs(&mut **w, None, &parent_key_id, false)?;
-    let mut slate = tx::new_tx_slate(&mut **w, amount, current_height, 2, false, None)?;
+    let mut slate = tx::new_tx_slate(&mut **w, amount, false, 2, false, None)?;
+    let height = w.w2n_client().get_chain_tip()?.0;
+
     let context = tx::add_inputs_to_slate(
         &mut **w,
         None,
         &mut slate,
+        height,
         state.minimum_confirmations,
         500,
         1,
         selection_strategy_is_use_all,
         &parent_key_id,
-        0,
-        message,
         true,
         false,
     )?;
 
     {
         let mut batch = w.batch(None)?;
-        batch.save_private_context(slate.id.as_bytes(), 0, &context)?;
+        batch.save_private_context(slate.id.as_bytes(), &context)?;
         batch.commit()?;
     }
 
-    slate.version_info.version = 2;
-    slate.version_info.orig_version = 2;
-    selection::lock_tx_context(&mut **w, None, &slate, &context)?;
+    // slate.version_info.version = 2;
+    // slate.version_info.orig_version = 2;
+    selection::lock_tx_context(&mut **w, None, &slate, height, &context, None)?;
 
-    Ok(
-        serde_json::to_string(&slate_versions::VersionedSlate::into_version(
-            slate.clone(),
-            slate_versions::SlateVersion::V2,
-        ))
-        .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
-    )
+    slate.compact()?;
+
+    let packer = Slatepacker::new(SlatepackerArgs {
+        sender: None, // sender
+        recipients: vec![],
+        dec_key: None,
+    });
+
+    let slatepack = packer.create_slatepack(&slate)?;
+    Ok(SlatepackArmor::encode(&slatepack).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
+
+    // Ok(SlatepackArmor::encode(&slatepack)?);
+    // Ok(
+    // serde_json::to_string(&slate_versions::VersionedSlate::into_version(
+    // slate.clone(),
+    // slate_versions::SlateVersion::V4,
+    // ))
+    // .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
+    // )
 }
 
 #[no_mangle]
@@ -591,13 +592,11 @@ pub unsafe extern "C" fn c_tx_create(
     state_json: *const c_char,
     amount: u64,
     selection_strategy_is_use_all: bool,
-    message: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
         tx_create(
             &c_str_to_rust(state_json),
-            &c_str_to_rust(message),
             amount,
             selection_strategy_is_use_all,
         ),
@@ -624,14 +623,50 @@ pub unsafe extern "C" fn c_tx_cancel(
     unwrap_to_c!(tx_cancel(&c_str_to_rust(state_json), id,), error)
 }
 
-fn tx_receive(state_json: &str, slate_path: &str, message: &str) -> Result<String, Error> {
+fn check_middleware(
+    name: ForeignCheckMiddlewareFn,
+    node_version_info: Option<NodeVersionInfo>,
+    slate: Option<&Slate>,
+) -> Result<(), grin_wallet_libwallet::Error> {
+    match name {
+        // allow coinbases to be built regardless
+        ForeignCheckMiddlewareFn::BuildCoinbase => Ok(()),
+        _ => {
+            let mut bhv = 3;
+            if let Some(n) = node_version_info {
+                bhv = n.block_header_version;
+            }
+            if let Some(s) = slate {
+                if bhv > 4
+                    && s.version_info.block_header_version
+                        < slate_versions::GRIN_BLOCK_HEADER_VERSION
+                {
+                    Err(grin_wallet_libwallet::ErrorKind::Compatibility(
+                        "Incoming Slate is not compatible with this wallet. \
+						 Please upgrade the node or use a different one."
+                            .into(),
+                    ))?;
+                }
+            }
+            Ok(())
+        }
+    }
+}
+
+fn tx_receive(state_json: &str, slate_armored: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Foreign::new(wallet.clone(), None, None);
-    let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
-    slate.verify_messages()?;
+    let foreign_api = Foreign::new(wallet.clone(), None, Some(check_middleware), false);
+    let owner_api = Owner::new(wallet.clone(), None);
+
+    let mut slate =
+        owner_api.slate_from_slatepack_message(None, slate_armored.to_owned(), vec![0])?;
+    let slatepack = owner_api.decode_slatepack_message(None, slate_armored.to_owned(), vec![0])?;
+
+    let _ret_address = slatepack.sender;
+
     if let Some(account) = state.account {
-        slate = api.receive_tx(&slate, Some(&account), Some(message.to_owned()))?;
+        slate = foreign_api.receive_tx(&slate, Some(&account), None)?;
         Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
     } else {
         Err(Error::from(ErrorKind::GenericError(
@@ -643,46 +678,46 @@ fn tx_receive(state_json: &str, slate_path: &str, message: &str) -> Result<Strin
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_receive(
     state_json: *const c_char,
-    slate_path: *const c_char,
-    message: *const c_char,
+    slate_armored: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        tx_receive(
-            &c_str_to_rust(state_json),
-            &c_str_to_rust(slate_path),
-            &c_str_to_rust(message),
-        ),
+        tx_receive(&c_str_to_rust(state_json), &c_str_to_rust(slate_armored),),
         error
     )
 }
 
-fn tx_finalize(state_json: &str, slate_path: &str) -> Result<String, Error> {
+fn tx_finalize(state_json: &str, slate_armored: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
-    let api = Owner::new(wallet.clone(), None);
-    let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
-    // api.verify_slate_messages(None, &slate)?;
-    slate.verify_messages()?;
+    let owner_api = Owner::new(wallet.clone(), None);
+    // let mut slate = PathToSlate((&slate_path).into()).get_tx()?;
+    let mut slate =
+        owner_api.slate_from_slatepack_message(None, slate_armored.to_owned(), vec![0])?;
+    let slatepack = owner_api.decode_slatepack_message(None, slate_armored.to_owned(), vec![0])?;
 
-    slate = api.finalize_tx(None, &slate)?;
+    let _ret_address = slatepack.sender;
+
+    // api.verify_slate_messages(None, &slate)?;
+    // slate.verify_messages()?;
+
+    slate = owner_api.finalize_tx(None, &slate)?;
     Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn c_tx_finalize(
     state_json: *const c_char,
-    slate_path: *const c_char,
+    slate_armored: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        tx_finalize(&c_str_to_rust(state_json), &c_str_to_rust(slate_path),),
+        tx_finalize(&c_str_to_rust(state_json), &c_str_to_rust(slate_armored),),
         error
     )
 }
 
 fn tx_send_https(
     state_json: &str,
-    message: &str,
     url: &str,
     amount: u64,
     selection_strategy_is_use_all: bool,
@@ -697,32 +732,34 @@ fn tx_send_https(
         max_outputs: 500,
         num_change_outputs: 1,
         selection_strategy_is_use_all,
-        message: Some(message.to_owned()),
         target_slate_version: None,
         estimate_only: Some(false),
         send_args: None,
         payment_proof_recipient_address: None,
         ttl_blocks: None,
     };
-    let mut slate = api.init_send_tx(None, args)?;
-    slate.version_info.version = 2;
-    slate.version_info.orig_version = 2;
-    let sender = Box::new(
+    let slate = api.init_send_tx(None, args)?;
+    // slate.version_info.version = 2;
+    // slate.version_info.orig_version = 2;
+    let mut sender = Box::new(
         HttpSlateSender::new(url)
             .map_err(|_| ErrorKind::GenericError(format!("Invalid destination URL: {}", url)))?,
     );
-    api.tx_lock_outputs(None, &slate, 0)?;
-    match sender.send_tx(&slate) {
+    api.tx_lock_outputs(None, &slate)?;
+    let packer = Slatepacker::new(SlatepackerArgs {
+        sender: None, // sender
+        recipients: vec![],
+        dec_key: None,
+    });
+
+    let slatepack = packer.create_slatepack(&slate)?;
+
+    match sender.send_tx(&slate, true) {
         Ok(mut slate) => {
-            api.verify_slate_messages(None, &slate)?;
+            // api.verify_slate_messages(None, &slate)?;
             api.finalize_tx(None, &mut slate)?;
-            Ok(
-                serde_json::to_string(&slate_versions::VersionedSlate::into_version(
-                    slate.clone(),
-                    slate_versions::SlateVersion::V2,
-                ))
-                .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
-            )
+            Ok(SlatepackArmor::encode(&slatepack)
+                .map_err(|e| ErrorKind::GenericError(e.to_string()))?)
         }
         Err(e) => {
             api.cancel_tx(None, None, Some(slate.id))?;
@@ -736,14 +773,12 @@ pub unsafe extern "C" fn c_tx_send_https(
     state_json: *const c_char,
     amount: u64,
     selection_strategy_is_use_all: bool,
-    message: *const c_char,
     url: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
         tx_send_https(
             &c_str_to_rust(state_json),
-            &c_str_to_rust(message),
             &c_str_to_rust(url),
             amount,
             selection_strategy_is_use_all,
@@ -755,15 +790,16 @@ pub unsafe extern "C" fn c_tx_send_https(
 fn tx_post(state_json: &str, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone(), None);
-    let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    let (_, txs) = api.retrieve_txs(None, true, None, Some(uuid))?;
+    let tx_uuid =
+        Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
+    let (_, txs) = api.retrieve_txs(None, true, None, Some(tx_uuid.clone()))?;
     if txs[0].confirmed {
         return Err(Error::from(ErrorKind::GenericError(format!(
             "Transaction with id {} is already confirmed. Not posting.",
             tx_slate_id
         ))));
     }
-    let stored_tx = api.get_stored_tx(None, &txs[0])?;
+    let stored_tx = api.get_stored_tx(None, None, Some(&tx_uuid))?;
     match stored_tx {
         Some(stored_tx) => {
             api.post_tx(None, &stored_tx, true)?;
@@ -842,7 +878,7 @@ pub mod android {
     ) -> jstring {
         unwrap_to_jni!(
             env,
-            WalletSeed::init_new(seed_length as usize).to_mnemonic()
+            WalletSeed::init_new(seed_length as usize, false, None).to_mnemonic()
         )
     }
 
@@ -957,20 +993,13 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        message: JString,
         amount: jlong,
         selection_strategy_is_use_all: bool,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let message: String = env.get_string(message).expect("Invalid message").into();
         unwrap_to_jni!(
             env,
-            tx_create(
-                &state_json,
-                &message,
-                amount as u64,
-                selection_strategy_is_use_all
-            )
+            tx_create(&state_json, amount as u64, selection_strategy_is_use_all)
         )
     }
 
@@ -990,16 +1019,14 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        slate_path: JString,
-        message: JString,
+        slate_armored: JString,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let slate_path: String = env
-            .get_string(slate_path)
-            .expect("Invalid slate_path")
+        let slate_armored: String = env
+            .get_string(slate_armored)
+            .expect("Invalid slate_armored")
             .into();
-        let message: String = env.get_string(message).expect("Invalid message").into();
-        unwrap_to_jni!(env, tx_receive(&state_json, &slate_path, &message,))
+        unwrap_to_jni!(env, tx_receive(&state_json, &slate_armored))
     }
 
     #[no_mangle]
@@ -1007,14 +1034,14 @@ pub mod android {
         env: JNIEnv,
         _: JClass,
         state_json: JString,
-        slate_path: JString,
+        slate_armored: JString,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let slate_path: String = env
-            .get_string(slate_path)
-            .expect("Invalid slate_path")
+        let slate_armored: String = env
+            .get_string(slate_armored)
+            .expect("Invalid slate_armored")
             .into();
-        unwrap_to_jni!(env, tx_finalize(&state_json, &slate_path))
+        unwrap_to_jni!(env, tx_finalize(&state_json, &slate_armored))
     }
 
     #[no_mangle]
@@ -1024,17 +1051,14 @@ pub mod android {
         state_json: JString,
         amount: jlong,
         selection_strategy_is_use_all: bool,
-        message: JString,
         url: JString,
     ) -> jstring {
         let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let message: String = env.get_string(message).expect("Invalid message").into();
         let url: String = env.get_string(url).expect("Invalid url").into();
         unwrap_to_jni!(
             env,
             tx_send_https(
                 &state_json,
-                &message,
                 &url,
                 amount as u64,
                 selection_strategy_is_use_all

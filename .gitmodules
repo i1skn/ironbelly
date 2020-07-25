@@ -1,4 +1,0 @@
-[submodule "rust/croaring-rs"]
-	path = rust/croaring-rs
-	url = https://github.com/cyclefortytwo/croaring-rs
-	branch = ironbelly

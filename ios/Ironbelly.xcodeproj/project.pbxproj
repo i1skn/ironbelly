@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0D30D8BF853A0944D2D3A41E /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E9A19393C5C8574880620905 /* Pods_Ironbelly.framework */; };
 		1F81488E3DED4690B5AF60A5 /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 998300B9168649DEA2FD5C5E /* Share.png */; };
 		2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */; };
 		2EE92245D405410BB107EF0F /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 958B76E81DC04571A528434C /* Poppins-Light.ttf */; };
@@ -19,7 +20,6 @@
 		629491642B564C9E864EAF40 /* Poppins-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */; };
 		67FBEC75BB54482CA15B1D32 /* ChevronRight@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */; };
 		6B39A1EE702541C792AABFCD /* Poppins-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */; };
-		6BEF6BEF41CDF7A8B5464F07 /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4DF6CD511DC5E16E01615D96 /* Pods_Ironbelly.framework */; };
 		6E4A767318F143E4A1B520A8 /* ChevronLeft@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 65889B7F669E44F197877486 /* ChevronLeft@3x.png */; };
 		6EB4D33273124215B9435D56 /* Poppins-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */; };
 		711C1EA9968047B287305679 /* ChevronLeft.png in Resources */ = {isa = PBXBuildFile; fileRef = DE278FF83B76486C92F05BB4 /* ChevronLeft.png */; };
@@ -67,29 +67,23 @@
 		04188CD456354D4F8C264964 /* SendTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@2x.png"; path = "../src/assets/images/SendTX@2x.png"; sourceTree = "<group>"; };
 		0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../src/assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		11C52591DBA24BD485CB0E6E /* x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = x.png; path = ../src/assets/images/x.png; sourceTree = "<group>"; };
-		16A85D5B5CFFBC12835C528B /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
-		16C4D798CCBCC06E39927A4E /* Pods-IronbellyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.debug.xcconfig"; path = "Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
 		18CED6B847864E8C82A0779A /* Settings@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@2x.png"; path = "../src/assets/images/Settings@2x.png"; sourceTree = "<group>"; };
 		1AC12860C4E7462AB6A9A439 /* ChevronRight.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronRight.png; path = ../src/assets/images/ChevronRight.png; sourceTree = "<group>"; };
-		1FFAE607F397D23D87F91070 /* Pods-Ironbelly-IronbellyTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly-IronbellyTests.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly-IronbellyTests/Pods-Ironbelly-IronbellyTests.debug.xcconfig"; sourceTree = "<group>"; };
 		21484D9BE7F14E6280C4EBFB /* Close@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@3x.png"; path = "../src/assets/images/Close@3x.png"; sourceTree = "<group>"; };
 		32A59E6CBD68439EB5B0B486 /* Settings@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@3x.png"; path = "../src/assets/images/Settings@3x.png"; sourceTree = "<group>"; };
 		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
-		4DF6CD511DC5E16E01615D96 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		55BE2A9C431741909FC0589D /* Settings.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Settings.png; path = ../src/assets/images/Settings.png; sourceTree = "<group>"; };
-		5F25813B5AEDFF76637330F5 /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
 		65889B7F669E44F197877486 /* ChevronLeft@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@3x.png"; path = "../src/assets/images/ChevronLeft@3x.png"; sourceTree = "<group>"; };
 		7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
 		84EB5C67E41C492EB06C5DB2 /* x@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@2x.png"; path = "../src/assets/images/x@2x.png"; sourceTree = "<group>"; };
 		87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
-		88B572AD0F6526E5A34BF0AB /* Pods_Ironbelly_IronbellyTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly_IronbellyTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
 		95058308B02745B683962F6B /* SendTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SendTX.png; path = ../src/assets/images/SendTX.png; sourceTree = "<group>"; };
 		958B76E81DC04571A528434C /* Poppins-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Light.ttf"; path = "../src/assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
 		998300B9168649DEA2FD5C5E /* Share.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Share.png; path = ../src/assets/images/Share.png; sourceTree = "<group>"; };
+		9BFD0890890CA8B9A5CA5455 /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
 		9D959331D4664C90ACA1A3A8 /* Share@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@3x.png"; path = "../src/assets/images/Share@3x.png"; sourceTree = "<group>"; };
-		A4A91FCA5494D0FB53A75218 /* Pods-IronbellyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IronbellyTests.release.xcconfig"; path = "Target Support Files/Pods-IronbellyTests/Pods-IronbellyTests.release.xcconfig"; sourceTree = "<group>"; };
 		A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-LightItalic.ttf"; path = "../src/assets/fonts/Poppins-LightItalic.ttf"; sourceTree = "<group>"; };
 		AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		AEB4E1B47E9D4CB1B965F729 /* x@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@3x.png"; path = "../src/assets/images/x@3x.png"; sourceTree = "<group>"; };
@@ -97,10 +91,11 @@
 		C00881AC291D4599B0F948D2 /* ReceiveTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ReceiveTX.png; path = ../src/assets/images/ReceiveTX.png; sourceTree = "<group>"; };
 		C342A60D16E24E1882B784C1 /* Close@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@2x.png"; path = "../src/assets/images/Close@2x.png"; sourceTree = "<group>"; };
 		C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@3x.png"; path = "../src/assets/images/ReceiveTX@3x.png"; sourceTree = "<group>"; };
+		CDE3813CDAEB5E1EE1B5DFE8 /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
 		CE9B62D915C8420F847659BB /* SendTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@3x.png"; path = "../src/assets/images/SendTX@3x.png"; sourceTree = "<group>"; };
 		DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@3x.png"; path = "../src/assets/images/ChevronRight@3x.png"; sourceTree = "<group>"; };
-		DD22E61E5590C1FC3A181A19 /* Pods-Ironbelly-IronbellyTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly-IronbellyTests.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly-IronbellyTests/Pods-Ironbelly-IronbellyTests.release.xcconfig"; sourceTree = "<group>"; };
 		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
+		E9A19393C5C8574880620905 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@2x.png"; path = "../src/assets/images/ReceiveTX@2x.png"; sourceTree = "<group>"; };
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
@@ -134,7 +129,7 @@
 			files = (
 				F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */,
 				F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */,
-				6BEF6BEF41CDF7A8B5464F07 /* Pods_Ironbelly.framework in Frameworks */,
+				0D30D8BF853A0944D2D3A41E /* Pods_Ironbelly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -144,12 +139,8 @@
 		2662B2B8162371B8F21281EC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5F25813B5AEDFF76637330F5 /* Pods-Ironbelly.debug.xcconfig */,
-				16A85D5B5CFFBC12835C528B /* Pods-Ironbelly.release.xcconfig */,
-				16C4D798CCBCC06E39927A4E /* Pods-IronbellyTests.debug.xcconfig */,
-				A4A91FCA5494D0FB53A75218 /* Pods-IronbellyTests.release.xcconfig */,
-				1FFAE607F397D23D87F91070 /* Pods-Ironbelly-IronbellyTests.debug.xcconfig */,
-				DD22E61E5590C1FC3A181A19 /* Pods-Ironbelly-IronbellyTests.release.xcconfig */,
+				9BFD0890890CA8B9A5CA5455 /* Pods-Ironbelly.debug.xcconfig */,
+				CDE3813CDAEB5E1EE1B5DFE8 /* Pods-Ironbelly.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -239,8 +230,7 @@
 			children = (
 				F67AD98B23C15A5100FC4CEA /* libwallet.a */,
 				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
-				4DF6CD511DC5E16E01615D96 /* Pods_Ironbelly.framework */,
-				88B572AD0F6526E5A34BF0AB /* Pods_Ironbelly_IronbellyTests.framework */,
+				E9A19393C5C8574880620905 /* Pods_Ironbelly.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -263,14 +253,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F64186F6218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "Ironbelly" */;
 			buildPhases = (
-				1F01EB64E596E3688B2803FF /* [CP] Check Pods Manifest.lock */,
+				3BD691FCC00C182A52C63132 /* [CP] Check Pods Manifest.lock */,
 				F64186D5218895DC00A99CA0 /* Sources */,
 				F64186D6218895DC00A99CA0 /* Frameworks */,
 				F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */,
 				F617A2F12210771000FDF0C0 /* Upload Sourcemaps to bugsnap */,
 				F64186D7218895DC00A99CA0 /* Resources */,
 				F67B83C8219345180004D4A1 /* Embed App Extensions */,
-				F04F579A5034C21419079903 /* [CP] Embed Pods Frameworks */,
+				6813828878130C5CDDE20AA9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -360,7 +350,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1F01EB64E596E3688B2803FF /* [CP] Check Pods Manifest.lock */ = {
+		3BD691FCC00C182A52C63132 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -382,7 +372,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		F04F579A5034C21419079903 /* [CP] Embed Pods Frameworks */ = {
+		6813828878130C5CDDE20AA9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -582,7 +572,7 @@
 		};
 		F64186F7218895DE00A99CA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5F25813B5AEDFF76637330F5 /* Pods-Ironbelly.debug.xcconfig */;
+			baseConfigurationReference = 9BFD0890890CA8B9A5CA5455 /* Pods-Ironbelly.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -615,7 +605,7 @@
 		};
 		F64186F8218895DE00A99CA0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 16A85D5B5CFFBC12835C528B /* Pods-Ironbelly.release.xcconfig */;
+			baseConfigurationReference = CDE3813CDAEB5E1EE1B5DFE8 /* Pods-Ironbelly.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
