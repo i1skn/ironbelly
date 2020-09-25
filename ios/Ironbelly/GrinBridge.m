@@ -37,9 +37,9 @@ RCT_EXTERN_METHOD(txStrategies:(NSString*)state amount:(int64_t)amount resolve:(
 
 RCT_EXTERN_METHOD(txCancel:(NSString*)state id:(NSUInteger)id resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txReceive:(NSString*)state slatePath:(NSString*)slatePath resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txReceive:(NSString*)state slateArmored:(NSString*)slateArmored resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txFinalize:(NSString*)state slatePath:(NSString*)slatePath resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(txFinalize:(NSString*)state slateArmored:(NSString*)slateArmored resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(seedNew:(NSUInteger)seedLength resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 

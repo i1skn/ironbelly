@@ -586,12 +586,17 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../rust",
+					"$(PROJECT_DIR)/../ios",
 					"$(inherited)",
 				);
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					IOKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -619,12 +624,17 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = (
-					"$(PROJECT_DIR)/../rust",
+					"$(PROJECT_DIR)/../ios",
 					"$(inherited)",
 				);
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					IOKit,
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly;
 				PRODUCT_NAME = "$(TARGET_NAME)";
