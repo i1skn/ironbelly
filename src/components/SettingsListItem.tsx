@@ -65,7 +65,7 @@ const SettingsListItem = ({
       <Title style={titleStyle}>{title}</Title>
       <FlexGrow />
       {!isSwitch && <Value>{value}</Value>}
-      {!hideChevron && <ChevronIcon name="ios-arrow-forward" size={20} />}
+      {!hideChevron && <ChevronIcon name="ios-chevron-forward" size={20} />}
       {isSwitch && <StyledSwitch value={value} onValueChange={onValueChange} />}
     </Wrapper>
   )

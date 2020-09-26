@@ -54,7 +54,7 @@ const CheckedIcon = styled(Icon)`
 const ListItem = ({ checked, value, onPress }) => {
   return (
     <Wrapper onPress={onPress}>
-      {checked && <CheckedIcon name="ios-checkmark" size={24} />}
+      {checked && <CheckedIcon name="ios-checkmark" size={20} />}
       <Value>{value}</Value>
     </Wrapper>
   )
@@ -64,8 +64,7 @@ const CoinGecko = styled(Text)`
   font-size: 16px;
   color: ${colors.grey[500]};
   text-align: center;
-  padding-bottom: 16px;
-  padding-top: 16px;
+  padding-bottom: 32px;
 `
 
 class CurrencyList extends Component<Props, State> {
@@ -111,6 +110,7 @@ class CurrencyList extends Component<Props, State> {
       <>
         <FlatList
           ListHeaderComponent={this.renderHeader}
+          ListFooterComponent={<CoinGecko>Data from CoinGecko</CoinGecko>}
           contentContainerStyle={{}}
           ItemSeparatorComponent={ListItemSeparator}
           data={this.state.filteredList}
@@ -126,7 +126,6 @@ class CurrencyList extends Component<Props, State> {
           )}
           refreshing={currencyRates.inProgress}
         />
-        <CoinGecko>Data from CoinGecko</CoinGecko>
       </>
     )
   }

@@ -75,7 +75,6 @@ export type txCreateRequestAction = {
   type: 'TX_CREATE_REQUEST'
   amount: number
   selectionStrategyIsUseAll: boolean
-  message: string
 }
 export type txCreateSuccessAction = {
   type: 'TX_CREATE_SUCCESS'

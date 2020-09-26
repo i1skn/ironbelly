@@ -17,17 +17,10 @@ import { View } from 'react-native'
 import moment from 'moment'
 import { Text } from 'src/components/CustomFont'
 import styled from 'styled-components/native'
-import {
-  isAndroid,
-  hrGrin,
-  hrFiat,
-  convertToFiat,
-  formatDate,
-} from 'src/common'
+import { hrGrin, hrFiat, convertToFiat, formatDate } from 'src/common'
 import { Tx, Currency } from 'src/common/types'
-import ShareImg from 'src/assets/images/Share.png'
-import ChevronRightImg from 'src/assets/images/ChevronRight.png'
 import colors from 'src/common/colors'
+import { FlexGrow } from 'src/common'
 const Time = styled(Text)`
   font-size: 14;
   color: ${() => colors.grey[700]};
@@ -36,7 +29,7 @@ const UnconfirmedGuide = styled(Text)`
   font-size: 14;
   color: ${() => colors.warning};
 `
-const AmountGrin = styled(Text)`
+const AmountGrin = styled(Text)<{ isSent: boolean }>`
   font-weight: 600;
   font-size: 18;
   color: ${(props) => (props.isSent && colors.black) || colors.success};
@@ -44,11 +37,6 @@ const AmountGrin = styled(Text)`
 const AmountFiat = styled(Text)`
   font-size: 14;
   color: ${() => colors.grey[700]};
-`
-const Fee = styled(Text)`
-  font-weight: 500;
-  font-size: 12;
-  color: #000;
 `
 const Title = styled(Text)`
   font-weight: 500;
@@ -64,16 +52,6 @@ const Wrapper = styled.View`
   padding-right: 16;
   margin-top: 12;
   padding-bottom: 12;
-`
-const ShareIcon = styled.Image`
-  width: 19;
-  height: 22;
-  margin-left: 16;
-`
-const DetailsChevron = styled.Image`
-  width: 20;
-  height: 20;
-  margin-left: 16;
 `
 type Props = {
   tx: Tx
@@ -94,30 +72,27 @@ const TxListItem = (props: Props) => {
       : momentCreationTime.fromNow()
   return (
     <Wrapper>
-      <View
-        style={{
-          flexGrow: 1,
-        }}>
+      <FlexGrow>
         <View
           style={{
             flexDirection: 'row',
           }}>
-          <Title>{isSent ? 'Outgoing' : 'Incoming'}</Title>
+          <Title>
+            {confirmed ? (isSent ? 'Outgoing' : 'Incoming') : 'Incomplete'}
+          </Title>
         </View>
         {confirmed ? (
           <Time>{dateField}</Time>
         ) : (
           <UnconfirmedGuide>
             {type === 'TxPosted'
-              ? 'Awaiting confirmation'
+              ? 'Awaiting confirmation...'
               : type === 'TxFinalized'
               ? 'Click to confirm'
-              : isSent
-              ? 'Share with a recipient'
-              : 'Share with the sender'}
+              : 'Step 1 of 3'}
           </UnconfirmedGuide>
         )}
-      </View>
+      </FlexGrow>
       <View
         style={{
           alignItems: 'flex-end',
@@ -127,9 +102,6 @@ const TxListItem = (props: Props) => {
           {hrFiat(convertToFiat(amount, currency, rates), currency)}
         </AmountFiat>
       </View>
-
-      {(!confirmed && type !== 'TxPosted' && <ShareIcon source={ShareImg} />) ||
-        (!isAndroid && <DetailsChevron source={ChevronRightImg} />)}
     </Wrapper>
   )
 }

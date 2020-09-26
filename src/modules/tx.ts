@@ -375,42 +375,44 @@ export const sideEffects = {
       })
   },
   ['TX_CREATE_REQUEST']: (action: txCreateRequestAction, store: Store) => {
-    return GrinBridge.txCreate(
-      getStateForRust(store.getState()),
-      action.amount,
-      action.selectionStrategyIsUseAll,
-      action.message,
+    return (
+      GrinBridge.txCreate(
+        getStateForRust(store.getState()),
+        action.amount,
+        action.selectionStrategyIsUseAll,
+      )
+        // .then((json: string) => JSON.parse(json))
+        .then((slatepack: string) => {
+          store.dispatch({
+            type: 'TX_CREATE_SUCCESS',
+          })
+          console.log(slatepack)
+          Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
+          // store.dispatch({
+          // type: 'SLATE_SET_REQUEST',
+          // slate,
+          // isResponse: false,
+          // })
+          // store.dispatch({
+          // type: 'SLATE_SHARE_REQUEST',
+          // id: slate.id,
+          // isResponse: false,
+          // })
+          store.dispatch({
+            type: 'TX_LIST_REQUEST',
+            showLoader: false,
+            refreshFromNode: false,
+          })
+        })
+        .catch((error) => {
+          const e = JSON.parse(error.message)
+          store.dispatch({
+            type: 'TX_CREATE_FAILURE',
+            ...e,
+          })
+          log(e, true)
+        })
     )
-      .then((json: string) => JSON.parse(json))
-      .then((slate: Slate) => {
-        store.dispatch({
-          type: 'TX_CREATE_SUCCESS',
-        })
-        Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
-        store.dispatch({
-          type: 'SLATE_SET_REQUEST',
-          slate,
-          isResponse: false,
-        })
-        store.dispatch({
-          type: 'SLATE_SHARE_REQUEST',
-          id: slate.id,
-          isResponse: false,
-        })
-        store.dispatch({
-          type: 'TX_LIST_REQUEST',
-          showLoader: false,
-          refreshFromNode: false,
-        })
-      })
-      .catch((error) => {
-        const e = JSON.parse(error.message)
-        store.dispatch({
-          type: 'TX_CREATE_FAILURE',
-          ...e,
-        })
-        log(e, true)
-      })
   },
   ['TX_SEND_HTTPS_REQUEST']: async (
     action: txSendHttpsRequestAction,

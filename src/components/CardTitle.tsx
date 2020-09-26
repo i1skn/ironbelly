@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import {
   TouchableOpacity,
   StatusBar,
@@ -8,9 +8,12 @@ import {
 } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { isAndroid } from 'src/common'
+import { useFocusEffect } from '@react-navigation/native'
+import colors from 'src/common/colors'
 
 type Props = {
   title: string
+  subTitle?: string
   navigation: any
 }
 
@@ -20,34 +23,55 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
   },
+  container: {
+    flexDirection: 'column',
+  },
   chevron: {
     position: 'absolute',
-    padding: 16,
+    paddingLeft: 16,
     top: 0,
     left: 0,
-    // backgroundColor: 'red',
   },
   title: {
     fontSize: 18,
+    textAlign: 'center',
+    fontWeight: '500',
+  },
+  subTitle: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: colors.grey[700],
   },
 })
 
-export default ({ title, navigation }: Props) => {
+export default ({ title, subTitle, navigation }: Props) => {
   if (isAndroid) {
     return null
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setBarStyle('light-content')
+      return () => {
+        StatusBar.setBarStyle('dark-content')
+      }
+    }, []),
+  )
+
   return (
     <>
-      <StatusBar barStyle={'light-content'} />
       <View style={styles.cardTitle}>
         <TouchableOpacity
-          style={styles.chevron}
+          style={[styles.chevron, { paddingTop: (subTitle && 24) || 16 }]}
           onPress={() => {
             navigation.goBack()
           }}>
           <FeatherIcon name="chevron-down" size={24} />
         </TouchableOpacity>
-        <Text style={styles.title}>{title}</Text>
+        <View style={styles.container}>
+          <Text style={styles.title}>{title}</Text>
+          {subTitle && <Text style={styles.subTitle}>{subTitle}</Text>}
+        </View>
       </View>
     </>
   )

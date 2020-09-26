@@ -226,9 +226,11 @@ class Overview extends Component<Props, State> {
                       txId: data.item.id,
                     })
                   } else if (data.item.type === 'TxFinalized') {
-                    txConfirm(data.item.slateId)
+                    // txConfirm(data.item.slateId)
                   } else {
-                    slateShare(data.item.slateId, !data.item.storedTx)
+                    navigation.navigate('TxIncomplete', {
+                      txId: data.item.id,
+                    })
                   }
                 }}
                 style={{
