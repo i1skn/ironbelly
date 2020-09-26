@@ -30,6 +30,7 @@ import ReceiveInfoScreen from 'src/screens/ReceiveInfo'
 import ReceiveGuideScreen from 'src/screens/ReceiveGuide'
 import SettingsScreen from 'src/screens/Settings'
 import TxDetailsScreen from 'src/screens/TxDetails'
+import TxIncompleteScreen from 'src/screens/TxIncomplete'
 import LandingScreen from 'src/screens/Landing'
 import ShowPaperKeyScreen from 'src/screens/PaperKey/Show'
 import VerifyPaperKeyScreen from 'src/screens/PaperKey/Verify'
@@ -82,6 +83,7 @@ export type RootStackParamList = {
   ViewPaperKey: { fromSettings: boolean }
   VerifyPaperKey: { title: string }
   TxDetails: { txId: number }
+  TxIncomplete: { txId: number }
   ReceiveInfo: undefined
   ReceiveGuide: { guide: string }
   Send: undefined
@@ -229,6 +231,18 @@ const Created = () => (
     <Stack.Screen
       name="TxDetails"
       component={TxDetailsScreen}
+      options={
+        isAndroid
+          ? {
+              ...TransitionPresets.DefaultTransition,
+              title: 'Transaction Details',
+            }
+          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+      }
+    />
+    <Stack.Screen
+      name="TxIncomplete"
+      component={TxIncompleteScreen}
       options={
         isAndroid
           ? {
