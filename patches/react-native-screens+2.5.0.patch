@@ -1,0 +1,12 @@
+diff --git a/node_modules/react-native-screens/RNScreens.podspec b/node_modules/react-native-screens/RNScreens.podspec
+index 5113c93..22b2089 100644
+--- a/node_modules/react-native-screens/RNScreens.podspec
++++ b/node_modules/react-native-screens/RNScreens.podspec
+@@ -19,6 +19,6 @@ Pod::Spec.new do |s|
+   s.source_files = "ios/**/*.{h,m}"
+   s.requires_arc = true
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+ end
+ 

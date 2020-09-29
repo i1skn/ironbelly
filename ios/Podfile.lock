@@ -315,27 +315,27 @@ PODS:
     - React-jsi (= 0.62.2)
     - ReactCommon/callinvoker (= 0.62.2)
   - RNCAsyncStorage (1.9.0):
-    - React
+    - React-Core
   - RNCClipboard (1.2.2):
-    - React
+    - React-Core
   - RNCMaskedView (0.1.10):
-    - React
+    - React-Core
   - RNDeviceInfo (5.5.5):
-    - React
+    - React-Core
   - RNFS (2.16.6):
     - React
   - RNGestureHandler (1.6.1):
-    - React
+    - React-Core
   - RNKeychain (5.0.1):
-    - React
+    - React-Core
   - RNScreens (2.5.0):
-    - React
+    - React-Core
   - RNShare (3.3.1):
     - React
   - RNSVG (12.1.0):
-    - React
+    - React-Core
   - RNVectorIcons (7.1.0):
-    - React
+    - React-Core
   - TouchID (4.4.1):
     - React
   - Yoga (1.14.0)
@@ -555,21 +555,21 @@ SPEC CHECKSUMS:
   React-RCTText: fae545b10cfdb3d247c36c56f61a94cfd6dba41d
   React-RCTVibration: 4356114dbcba4ce66991096e51a66e61eda51256
   ReactCommon: ed4e11d27609d571e7eee8b65548efc191116eb3
-  RNCAsyncStorage: 453cd7c335ec9ba3b877e27d02238956b76f3268
-  RNCClipboard: 8148e21ac347c51fd6cd4b683389094c216bb543
-  RNCMaskedView: 5a8ec07677aa885546a0d98da336457e2bea557f
-  RNDeviceInfo: d2ca97023bb1c2a49cd7adb3f956e14c048ea028
+  RNCAsyncStorage: 668bec86aeceb21a604a4ab33b7ea858b35db6a2
+  RNCClipboard: 381b02821c63a0e389e9f263e4f4fa2077362152
+  RNCMaskedView: bed2a1eb783ec4b149167f0fd72d05593686d745
+  RNDeviceInfo: 76b41ce7081d5bca98360e05a601eaa0c835462f
   RNFS: 2bd9eb49dc82fa9676382f0585b992c424cd59df
-  RNGestureHandler: 8f09cd560f8d533eb36da5a6c5a843af9f056b38
-  RNKeychain: a5623de13ec5378bfb8035422e3dee4fa538660d
-  RNScreens: ac02d0e4529f08ced69f5580d416f968a6ec3a1d
+  RNGestureHandler: 90e274c7f94b32e116b1e4d6be2f28477291ce37
+  RNKeychain: 3ad1a901ec55cf1287d67730997cc2df6d494f09
+  RNScreens: 69ed08460b00c35d2ebc8828290918d1d4f96629
   RNShare: d4c9789a93ffa286389ff7b73f44118c8aab412f
-  RNSVG: ce9d996113475209013317e48b05c21ee988d42e
-  RNVectorIcons: bc69e6a278b14842063605de32bec61f0b251a59
+  RNSVG: 59dfa0b461f9e94136e1b1f3878da58a743d4795
+  RNVectorIcons: ec4602418567919017a2756d2113e0c9c6366ad3
   TouchID: ba4c656d849cceabc2e4eef722dea5e55959ecf4
   Yoga: 3ebccbdd559724312790e7742142d062476b698e
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 30743fb1763378cb1598d06a67ee2204e8a4b47d
+PODFILE CHECKSUM: a05def73ec89a4f7c228c27e7fc38b1d09d36ed0
 
 COCOAPODS: 1.9.3

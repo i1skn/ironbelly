@@ -17,6 +17,7 @@ use grin_wallet_libwallet::{
     NodeVersionInfo, Slate, SlatepackArmor, Slatepacker, SlatepackerArgs, WalletInst,
     WalletLCProvider,
 };
+use grin_wallet_util::grin_core::global;
 use grin_wallet_util::grin_core::global::ChainTypes;
 use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
 use grin_wallet_util::grin_util::file::get_first_line;
@@ -114,6 +115,8 @@ fn get_wallet(
     Error,
 > {
     let wallet_config = create_wallet_config(state.clone())?;
+    global::set_local_chain_type(wallet_config.chain_type.as_ref().unwrap().clone());
+
     let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
 
     let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
@@ -576,12 +579,10 @@ fn tx_create(
 
     let slatepack = packer.create_slatepack(&slate)?;
     Ok(SlatepackArmor::encode(&slatepack).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
-
-    // Ok(SlatepackArmor::encode(&slatepack)?);
     // Ok(
     // serde_json::to_string(&slate_versions::VersionedSlate::into_version(
     // slate.clone(),
-    // slate_versions::SlateVersion::V4,
+    // slate_versions::SlateVersion::V2,
     // ))
     // .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
     // )

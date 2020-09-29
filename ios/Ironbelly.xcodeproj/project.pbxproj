@@ -64,22 +64,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		04188CD456354D4F8C264964 /* SendTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@2x.png"; path = "../src/assets/images/SendTX@2x.png"; sourceTree = "<group>"; };
 		0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../src/assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		11C52591DBA24BD485CB0E6E /* x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = x.png; path = ../src/assets/images/x.png; sourceTree = "<group>"; };
 		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
-		18CED6B847864E8C82A0779A /* Settings@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@2x.png"; path = "../src/assets/images/Settings@2x.png"; sourceTree = "<group>"; };
 		1AC12860C4E7462AB6A9A439 /* ChevronRight.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronRight.png; path = ../src/assets/images/ChevronRight.png; sourceTree = "<group>"; };
 		21484D9BE7F14E6280C4EBFB /* Close@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@3x.png"; path = "../src/assets/images/Close@3x.png"; sourceTree = "<group>"; };
-		32A59E6CBD68439EB5B0B486 /* Settings@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Settings@3x.png"; path = "../src/assets/images/Settings@3x.png"; sourceTree = "<group>"; };
 		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
-		55BE2A9C431741909FC0589D /* Settings.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Settings.png; path = ../src/assets/images/Settings.png; sourceTree = "<group>"; };
 		65889B7F669E44F197877486 /* ChevronLeft@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@3x.png"; path = "../src/assets/images/ChevronLeft@3x.png"; sourceTree = "<group>"; };
 		7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
 		84EB5C67E41C492EB06C5DB2 /* x@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@2x.png"; path = "../src/assets/images/x@2x.png"; sourceTree = "<group>"; };
 		87E982946F974A098197A3C9 /* Poppins-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		8CDCAEC7B061496ABE76260C /* Poppins-SemiBoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBoldItalic.ttf"; path = "../src/assets/fonts/Poppins-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
-		95058308B02745B683962F6B /* SendTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = SendTX.png; path = ../src/assets/images/SendTX.png; sourceTree = "<group>"; };
 		958B76E81DC04571A528434C /* Poppins-Light.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Light.ttf"; path = "../src/assets/fonts/Poppins-Light.ttf"; sourceTree = "<group>"; };
 		998300B9168649DEA2FD5C5E /* Share.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Share.png; path = ../src/assets/images/Share.png; sourceTree = "<group>"; };
 		9BFD0890890CA8B9A5CA5455 /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
@@ -88,15 +83,11 @@
 		AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		AEB4E1B47E9D4CB1B965F729 /* x@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@3x.png"; path = "../src/assets/images/x@3x.png"; sourceTree = "<group>"; };
 		B97B4FF20BD3443A8E5A9B82 /* Close.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Close.png; path = ../src/assets/images/Close.png; sourceTree = "<group>"; };
-		C00881AC291D4599B0F948D2 /* ReceiveTX.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ReceiveTX.png; path = ../src/assets/images/ReceiveTX.png; sourceTree = "<group>"; };
 		C342A60D16E24E1882B784C1 /* Close@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@2x.png"; path = "../src/assets/images/Close@2x.png"; sourceTree = "<group>"; };
-		C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@3x.png"; path = "../src/assets/images/ReceiveTX@3x.png"; sourceTree = "<group>"; };
 		CDE3813CDAEB5E1EE1B5DFE8 /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
-		CE9B62D915C8420F847659BB /* SendTX@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "SendTX@3x.png"; path = "../src/assets/images/SendTX@3x.png"; sourceTree = "<group>"; };
 		DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@3x.png"; path = "../src/assets/images/ChevronRight@3x.png"; sourceTree = "<group>"; };
 		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
 		E9A19393C5C8574880620905 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ReceiveTX@2x.png"; path = "../src/assets/images/ReceiveTX@2x.png"; sourceTree = "<group>"; };
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
@@ -165,15 +156,6 @@
 				DE278FF83B76486C92F05BB4 /* ChevronLeft.png */,
 				16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */,
 				65889B7F669E44F197877486 /* ChevronLeft@3x.png */,
-				C00881AC291D4599B0F948D2 /* ReceiveTX.png */,
-				EA187AD3AD6D403DAF1197C2 /* ReceiveTX@2x.png */,
-				C590FB32C86D4A47AB151B52 /* ReceiveTX@3x.png */,
-				95058308B02745B683962F6B /* SendTX.png */,
-				04188CD456354D4F8C264964 /* SendTX@2x.png */,
-				CE9B62D915C8420F847659BB /* SendTX@3x.png */,
-				55BE2A9C431741909FC0589D /* Settings.png */,
-				18CED6B847864E8C82A0779A /* Settings@2x.png */,
-				32A59E6CBD68439EB5B0B486 /* Settings@3x.png */,
 				998300B9168649DEA2FD5C5E /* Share.png */,
 				F9E3B3C7257947359B7DDDE9 /* Share@2x.png */,
 				9D959331D4664C90ACA1A3A8 /* Share@3x.png */,
@@ -603,7 +585,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
-				VALID_ARCHS = arm64;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -641,7 +622,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/Ironbelly/Wallet-Bridging-Header.h";
 				SWIFT_VERSION = 4.2;
 				TARGETED_DEVICE_FAMILY = 1;
-				VALID_ARCHS = arm64;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
