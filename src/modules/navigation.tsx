@@ -119,7 +119,14 @@ const NotCreated = () => (
         headerBackTitle: '',
       }}
     />
-    <Stack.Screen name="ShowPaperKey" component={ShowPaperKeyScreen} />
+    <Stack.Screen
+      name="ShowPaperKey"
+      component={ShowPaperKeyScreen}
+      options={{
+        title: 'Paper Key',
+        headerBackTitle: '',
+      }}
+    />
     <Stack.Screen
       name="VerifyPaperKey"
       component={VerifyPaperKeyScreen}
