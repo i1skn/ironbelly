@@ -5,6 +5,7 @@ import {
   StyleSheet,
   Text,
   View,
+  ViewProps,
 } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { isAndroid } from 'src/common'
@@ -15,6 +16,7 @@ type Props = {
   title: string
   subTitle?: string
   navigation: any
+  style?: ViewProps['style']
 }
 
 const styles = StyleSheet.create({
@@ -44,7 +46,7 @@ const styles = StyleSheet.create({
   },
 })
 
-export default ({ title, subTitle, navigation }: Props) => {
+export default ({ title, subTitle, navigation, style }: Props) => {
   if (isAndroid) {
     return null
   }
@@ -59,7 +61,7 @@ export default ({ title, subTitle, navigation }: Props) => {
   )
 
   return (
-    <>
+    <View style={style}>
       <View style={styles.cardTitle}>
         <TouchableOpacity
           style={[styles.chevron, { paddingTop: (subTitle && 24) || 16 }]}
@@ -73,6 +75,6 @@ export default ({ title, subTitle, navigation }: Props) => {
           {subTitle && <Text style={styles.subTitle}>{subTitle}</Text>}
         </View>
       </View>
-    </>
+    </View>
   )
 }

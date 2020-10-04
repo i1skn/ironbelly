@@ -29,6 +29,7 @@ import { log } from 'src/common/logger'
 import TouchID from 'react-native-touch-id'
 import { getBiometryTitle } from 'src/common'
 import { isAndroid, currencyList } from 'src/common'
+import { State as RootState } from 'src/common/types'
 export const BIOMETRY_STATUS = {
   unknown: 'unknown',
   disabled: 'disabled',
@@ -204,3 +205,7 @@ export const sideEffects = {
     }
   },
 }
+
+export const currencySelector = (state: RootState) =>
+  state.settings.currencyObject
+export const currencyRatesSelector = (state: RootState) => state.currencyRates

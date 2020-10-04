@@ -87,15 +87,15 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func txReceive(_ state: String, slatePath: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func txReceive(_ state: String, slatepack: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_tx_receive(state, slatePath, &error)
+        let cResult = c_tx_receive(state, slatepack, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func txFinalize(_ state: String, slatePath: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func txFinalize(_ state: String, slatepack: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_tx_finalize(state, slatePath, &error)
+        let cResult = c_tx_finalize(state, slatepack, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
 
     }

@@ -71,7 +71,7 @@
     "@babel/runtime": "^7.6.2",
     "@react-native-community/eslint-config": "^1.1.0",
     "@types/jest": "^25.2.1",
-    "@types/react-native": "0.62.2",
+    "@types/react-native": "^0.63.23",
     "@types/react-native-keep-awake": "^2.0.2",
     "@types/react-redux": "^7.1.7",
     "@types/redux-logger": "^3.0.7",
@@ -92,10 +92,10 @@
     "husky": "^4.2.5",
     "jest": "^25.4.0",
     "jest-serializer": "^25.2.6",
-    "metro-react-native-babel-preset": "^0.59.0",
+    "metro-react-native-babel-preset": "^0.63.0",
     "prettier": "^2.0.5",
     "react-test-renderer": "16.11.0",
-    "typescript": "^3.7.3"
+    "typescript": "^4.0.3"
   },
   "jest": {
     "preset": "react-native",

@@ -15,7 +15,7 @@
 import styled from 'styled-components/native'
 import sleep from 'sleep-promise'
 import { isAndroid } from 'src/common'
-import { State as ReduxState } from 'src/common/types'
+import { State as ReduxState, Tx } from 'src/common/types'
 import React from 'react'
 import { Text, Animated } from 'react-native'
 import {
@@ -24,13 +24,11 @@ import {
 } from '@react-navigation/stack'
 import { NavigationContainerRef } from '@react-navigation/core'
 import OverviewScreen from 'src/screens/Overview'
-import SendScreen from 'src/screens/Send'
 import ReceiveScreen from 'src/screens/Receive'
-import ReceiveInfoScreen from 'src/screens/ReceiveInfo'
-import ReceiveGuideScreen from 'src/screens/ReceiveGuide'
 import SettingsScreen from 'src/screens/Settings'
 import TxDetailsScreen from 'src/screens/TxDetails'
-import TxIncompleteScreen from 'src/screens/TxIncomplete'
+import TxIncompleteSendScreen from 'src/screens/TxIncompleteSend'
+import TxIncompleteReceiveScreen from 'src/screens/TxIncompleteReceive'
 import LandingScreen from 'src/screens/Landing'
 import ShowPaperKeyScreen from 'src/screens/PaperKey/Show'
 import VerifyPaperKeyScreen from 'src/screens/PaperKey/Verify'
@@ -83,10 +81,8 @@ export type RootStackParamList = {
   ViewPaperKey: { fromSettings: boolean }
   VerifyPaperKey: { title: string }
   TxDetails: { txId: number }
-  TxIncomplete: { txId: number }
-  ReceiveInfo: undefined
-  ReceiveGuide: { guide: string }
-  Send: undefined
+  TxIncompleteSend: undefined | { tx: Tx }
+  TxIncompleteReceive: undefined | { tx: Tx }
   Receive: { slatePath: string; slate: string }
   ScanQRCode: undefined
   Password: undefined
@@ -214,20 +210,6 @@ const Created = () => (
       }}
     />
     <Stack.Screen
-      name="ReceiveInfo"
-      component={ReceiveInfoScreen}
-      options={{
-        title: 'Receive',
-      }}
-    />
-    <Stack.Screen
-      name="ReceiveGuide"
-      component={ReceiveGuideScreen}
-      options={{
-        title: 'Receive',
-      }}
-    />
-    <Stack.Screen
       name="ViewPaperKey"
       component={ShowPaperKeyScreen}
       initialParams={{ fromSettings: true }}
@@ -248,8 +230,20 @@ const Created = () => (
       }
     />
     <Stack.Screen
-      name="TxIncomplete"
-      component={TxIncompleteScreen}
+      name="TxIncompleteSend"
+      component={TxIncompleteSendScreen}
+      options={
+        isAndroid
+          ? {
+              ...TransitionPresets.DefaultTransition,
+              title: 'Transaction Details',
+            }
+          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+      }
+    />
+    <Stack.Screen
+      name="TxIncompleteReceive"
+      component={TxIncompleteReceiveScreen}
       options={
         isAndroid
           ? {
@@ -264,16 +258,6 @@ const Created = () => (
       component={OverviewScreen}
       options={{
         headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="Send"
-      component={SendScreen}
-      options={{
-        headerShown: false,
-        ...(isAndroid
-          ? TransitionPresets.DefaultTransition
-          : TransitionPresets.ModalSlideFromBottomIOS),
       }}
     />
     <Stack.Screen

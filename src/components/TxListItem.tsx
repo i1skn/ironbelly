@@ -64,8 +64,9 @@ const TxListItem = (props: Props) => {
   const { currency, rates } = props
   const { type, confirmed, creationTime, amount } = props.tx
   const momentCreationTime = moment(creationTime)
-  const isSent =
-    type.indexOf('Sent') !== -1 || type === 'TxFinalized' || type === 'TxPosted'
+  const isFinalized = type === 'TxFinalized'
+  const isPosted = type === 'TxPosted'
+  const isSent = type.indexOf('Sent') !== -1 || isFinalized || isPosted
   const dateField =
     moment().diff(momentCreationTime, 'hours', true) > 2
       ? formatDate(momentCreationTime)
@@ -78,18 +79,26 @@ const TxListItem = (props: Props) => {
             flexDirection: 'row',
           }}>
           <Title>
-            {confirmed ? (isSent ? 'Outgoing' : 'Incoming') : 'Incomplete'}
+            {confirmed
+              ? isSent
+                ? 'Sent'
+                : 'Received'
+              : isSent
+              ? 'Sending...'
+              : 'Receiving...'}
           </Title>
         </View>
         {confirmed ? (
           <Time>{dateField}</Time>
         ) : (
           <UnconfirmedGuide>
-            {type === 'TxPosted'
+            {isPosted
               ? 'Awaiting confirmation...'
-              : type === 'TxFinalized'
-              ? 'Click to confirm'
-              : 'Step 1 of 3'}
+              : isFinalized
+              ? 'Not sent. Click to retry'
+              : isSent
+              ? 'Action required'
+              : 'Sender needs to finish transaction'}
           </UnconfirmedGuide>
         )}
       </FlexGrow>

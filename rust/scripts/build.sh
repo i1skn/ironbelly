@@ -28,7 +28,7 @@ if [ -z "$platform" ] || [ "$platform" == "android" ] || [ "$platform" == "all" 
   CXX_aarch64_linux_android="${ANDROID_PREBUILD_BIN}/aarch64-linux-android${API_LEVEL}-clang++" \
   CARGO_TARGET_AARCH64_LINUX_ANDROID_LINKER="${ANDROID_PREBUILD_BIN}/aarch64-linux-android${API_LEVEL}-clang" \
   AR_aarch64_linux_android="${ANDROID_PREBUILD_BIN}/aarch64-linux-android-ar" \
-    cargo build --target aarch64-linux-android $rust_mode
+    cargo build --target aarch64-linux-android $rust_mode --lib
 
   printf "Building ARMv7 Android target...\n";
   # needed for rust-bindgen
@@ -37,7 +37,7 @@ if [ -z "$platform" ] || [ "$platform" == "android" ] || [ "$platform" == "all" 
   CXX_armv7_linux_androideabi="${ANDROID_PREBUILD_BIN}/armv7a-linux-androideabi${API_LEVEL}-clang++" \
   CARGO_TARGET_ARMV7_LINUX_ANDROIDEABI_LINKER="${ANDROID_PREBUILD_BIN}/armv7a-linux-androideabi${API_LEVEL}-clang" \
   AR_armv7_linux_androideabi="${ANDROID_PREBUILD_BIN}/arm-linux-androideabi-ar" \
-    cargo build --target armv7-linux-androideabi $rust_mode
+    cargo build --target armv7-linux-androideabi $rust_mode --lib
 
   printf "Building 32-bit x86 Android target...\n";
   # needed for rust-bindgen
@@ -46,7 +46,7 @@ if [ -z "$platform" ] || [ "$platform" == "android" ] || [ "$platform" == "all" 
   CXX_i686_linux_android="${ANDROID_PREBUILD_BIN}/i686-linux-android${API_LEVEL}-clang++" \
   CARGO_TARGET_I686_LINUX_ANDROID_LINKER="${ANDROID_PREBUILD_BIN}/i686-linux-android${API_LEVEL}-clang" \
   AR_i686_linux_android="${ANDROID_PREBUILD_BIN}/i686-linux-android-ar" \
-    cargo build --target i686-linux-android $rust_mode
+    cargo build --target i686-linux-android $rust_mode --lib
 
   printf "Building 64-bit x86 Android target...\n";
   # needed for rust-bindgen
@@ -55,7 +55,7 @@ if [ -z "$platform" ] || [ "$platform" == "android" ] || [ "$platform" == "all" 
   CXX_x86_64_linux_android="${ANDROID_PREBUILD_BIN}/x86_64-linux-android${API_LEVEL}-clang++" \
   CARGO_TARGET_X86_64_LINUX_ANDROID_LINKER="${ANDROID_PREBUILD_BIN}/x86_64-linux-android${API_LEVEL}-clang" \
   AR_x86_64_linux_android="${ANDROID_PREBUILD_BIN}/x86_64-linux-android-ar" \
-    cargo  build --target x86_64-linux-android $rust_mode
+    cargo  build --target x86_64-linux-android $rust_mode --lib
 
   for i in "${!ANDROID_ARCHS[@]}";
     do

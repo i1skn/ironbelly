@@ -70,13 +70,11 @@ class ScanQRCode extends Component<Props, State> {
         if (!isNaN(amount) && destination) {
           setFromLink(amount, message, destination)
           this.props.navigation.goBack()
-          this.props.navigation.navigate('Send')
         }
       }
     } else if (['http:', 'https:'].indexOf(link.protocol) !== -1) {
       setHttpAddress(url)
       this.props.navigation.goBack()
-      this.props.navigation.navigate('Send')
     }
 
     this.qrCodeProcessing = false

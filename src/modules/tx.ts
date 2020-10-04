@@ -49,6 +49,7 @@ import {
   txFormOutputStrategiesRequestAction,
   OutputStrategy,
 } from 'src/common/types'
+import { getNavigation } from './navigation'
 const { GrinBridge } = NativeModules
 export type ListState = {
   data: Array<Tx>
@@ -374,45 +375,44 @@ export const sideEffects = {
         log(e, true)
       })
   },
-  ['TX_CREATE_REQUEST']: (action: txCreateRequestAction, store: Store) => {
-    return (
-      GrinBridge.txCreate(
+  ['TX_CREATE_REQUEST']: async (
+    action: txCreateRequestAction,
+    store: Store,
+  ) => {
+    try {
+      const [[rustTx], slatepack] = await GrinBridge.txCreate(
         getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
-      )
-        // .then((json: string) => JSON.parse(json))
-        .then((slatepack: string) => {
-          store.dispatch({
-            type: 'TX_CREATE_SUCCESS',
-          })
-          console.log(slatepack)
-          Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
-          // store.dispatch({
-          // type: 'SLATE_SET_REQUEST',
-          // slate,
-          // isResponse: false,
-          // })
-          // store.dispatch({
-          // type: 'SLATE_SHARE_REQUEST',
-          // id: slate.id,
-          // isResponse: false,
-          // })
-          store.dispatch({
-            type: 'TX_LIST_REQUEST',
-            showLoader: false,
-            refreshFromNode: false,
-          })
-        })
-        .catch((error) => {
-          const e = JSON.parse(error.message)
-          store.dispatch({
-            type: 'TX_CREATE_FAILURE',
-            ...e,
-          })
-          log(e, true)
-        })
-    )
+      ).then((json: string) => JSON.parse(json))
+      const tx = mapRustTx(rustTx)
+      store.dispatch({
+        type: 'TX_CREATE_SUCCESS',
+      })
+      Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
+      store.dispatch({
+        type: 'SLATE_SET_REQUEST',
+        id: tx.slateId,
+        slatepack,
+        isResponse: false,
+      })
+
+      const navigation = await getNavigation()
+      navigation?.navigate('TxIncompleteSend', { tx })
+
+      store.dispatch({
+        type: 'TX_LIST_REQUEST',
+        showLoader: false,
+        refreshFromNode: false,
+      })
+    } catch (error) {
+      const e = JSON.parse(error.message)
+      store.dispatch({
+        type: 'TX_CREATE_FAILURE',
+        ...e,
+      })
+      log(e, true)
+    }
   },
   ['TX_SEND_HTTPS_REQUEST']: async (
     action: txSendHttpsRequestAction,
@@ -516,12 +516,12 @@ export const sideEffects = {
         received = []
       }
 
-      const slate: Slate = await GrinBridge.txReceive(
+      const [[rustTx], slatepack] = await GrinBridge.txReceive(
         getStateForRust(store.getState()),
-        action.slatePath,
-        'Received',
+        action.slatepack,
       ).then((json: string) => JSON.parse(json))
-      received.push(slate.id)
+      const tx = mapRustTx(rustTx)
+      received.push(tx.slateId)
       await AsyncStorage.setItem('@receivedTxs', JSON.stringify(received))
 
       store.dispatch({
@@ -529,15 +529,15 @@ export const sideEffects = {
       })
       Countly.sendEvent({ eventName: 'tx_received_unconfirmed', eventCount: 1 })
       store.dispatch({
-        type: 'SLATE_SHARE_REQUEST',
-        id: slate.id,
-        isResponse: true,
-      })
-      store.dispatch({
         type: 'SLATE_SET_REQUEST',
-        slate,
+        id: tx.slateId,
+        slatepack,
         isResponse: true,
       })
+
+      const navigation = await getNavigation()
+      navigation?.navigate('TxIncompleteReceive', { tx })
+
       store.dispatch({
         type: 'TX_LIST_REQUEST',
         showLoader: false,
@@ -565,20 +565,26 @@ export const sideEffects = {
       }
 
       try {
-        const slate = await GrinBridge.txFinalize(
+        const [rustTx] = await GrinBridge.txFinalize(
           getStateForRust(store.getState()),
-          action.responseSlatePath,
+          action.slatepack,
         ).then(JSON.parse)
+        // this hack is needed until TxFinalized is not natively supported
+        const tx = mapRustTx({ ...rustTx, tx_type: 'TxFinalized' })
         store.dispatch({
           type: 'TX_FINALIZE_SUCCESS',
         })
         Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
 
-        finalized.push(slate.id)
+        finalized.push(tx.slateId)
         await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
+
+        const navigation = await getNavigation()
+        navigation?.navigate('Overview')
+
         store.dispatch({
           type: 'TX_POST_SHOW',
-          txSlateId: slate.id,
+          txSlateId: tx.slateId,
         })
       } catch (e) {
         console.log(e.message)
@@ -607,12 +613,11 @@ export const sideEffects = {
     }
   },
   ['SLATE_SET_REQUEST']: (action: slateSetRequestAction, store: Store) => {
-    const path = getSlatePath(action.slate.id, action.isResponse)
-    return RNFS.writeFile(path, JSON.stringify(action.slate), 'utf8')
+    const path = getSlatePath(action.id, action.isResponse)
+    return RNFS.writeFile(path, action.slatepack, 'utf8')
       .then((success) => {
         store.dispatch({
           type: 'SLATE_SET_SUCCESS',
-          slate,
         })
       })
       .catch((error) => {

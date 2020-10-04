@@ -221,15 +221,20 @@ class Overview extends Component<Props, State> {
               </View>
               <TouchableHighlight
                 onPress={(_) => {
+                  console.log(data.item.type)
                   if (data.item.confirmed || data.item.type === 'TxPosted') {
                     navigation.navigate('TxDetails', {
                       txId: data.item.id,
                     })
                   } else if (data.item.type === 'TxFinalized') {
-                    // txConfirm(data.item.slateId)
-                  } else {
-                    navigation.navigate('TxIncomplete', {
-                      txId: data.item.id,
+                    txConfirm(data.item.slateId)
+                  } else if (data.item.type === 'TxReceived') {
+                    navigation.navigate('TxIncompleteReceive', {
+                      tx: data.item,
+                    })
+                  } else if (data.item.type === 'TxSent') {
+                    navigation.navigate('TxIncompleteSend', {
+                      tx: data.item,
                     })
                   }
                 }}
@@ -266,7 +271,7 @@ class Overview extends Component<Props, State> {
         <Footer>
           <ActionButton
             onPress={() => {
-              navigation.navigate('ReceiveInfo')
+              navigation.navigate('TxIncompleteReceive')
             }}
             disabled={false}>
             <FeatherIcon
@@ -281,7 +286,7 @@ class Overview extends Component<Props, State> {
           <ActionButton
             onPress={() => {
               resetTxForm()
-              navigation.navigate('Send')
+              navigation.navigate('TxIncompleteSend')
             }}
             disabled={!balance.amountCurrentlySpendable}>
             <FeatherIcon

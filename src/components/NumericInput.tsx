@@ -23,7 +23,7 @@ type Props = {
   value: string
   onChange: (value: string) => void
   autoFocus: boolean
-  style: any
+  style?: any
 }
 type State = {}
 const Layout = styled.View`

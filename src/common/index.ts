@@ -182,9 +182,7 @@ export const isResponseSlate = async (slate: any) => {
   }
 }
 export const getSlatePath = (slateId: string, isResponse: boolean) => {
-  return `${SLATES_DIRECTORY}/${slateId}.grinslate${
-    isResponse ? '.response' : ''
-  }`
+  return `${SLATES_DIRECTORY}/${slateId}.tx${isResponse ? '.response' : ''}`
 }
 export const TextareaTitle = styled.Text`
   font-size: 20;

@@ -181,13 +181,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
       String state,
       double amount,
       Boolean selectionStrategyIsUseAll,
-      String message,
       Promise promise) {
     AsyncTask.execute(new Runnable() {
       @Override
       public void run() {
         try {
-          promise.resolve(txCreate(state, message, (long) amount, selectionStrategyIsUseAll));
+          promise.resolve(txCreate(state, (long) amount, selectionStrategyIsUseAll));
         } catch (Exception e) {
           promise.reject("", e.getMessage());
         }
@@ -210,12 +209,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void txReceive(String state, String slatePath, String message, Promise promise) {
+  public void txReceive(String state, String slatepack, Promise promise) {
     AsyncTask.execute(new Runnable() {
       @Override
       public void run() {
         try {
-          promise.resolve(txReceive(state, slatePath, message));
+          promise.resolve(txReceive(state, slatepack ));
         } catch (Exception e) {
           promise.reject("", e.getMessage());
         }
@@ -224,12 +223,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void txFinalize(String state, String slatePath, Promise promise) {
+  public void txFinalize(String state, String slatepack, Promise promise) {
     AsyncTask.execute(new Runnable() {
       @Override
       public void run() {
         try {
-          promise.resolve(txFinalize(state, slatePath));
+          promise.resolve(txFinalize(state, slatepack));
         } catch (Exception e) {
           promise.reject("", e.getMessage());
         }
@@ -242,14 +241,13 @@ public class GrinBridge extends ReactContextBaseJavaModule {
       String state,
       double amount,
       Boolean selectionStrategyIsUseAll,
-      String message,
       String url,
       Promise promise) {
     AsyncTask.execute(new Runnable() {
       @Override
       public void run() {
         try {
-          promise.resolve(txSendHttps(state, (long) amount, selectionStrategyIsUseAll, message, url));
+          promise.resolve(txSendHttps(state, (long) amount, selectionStrategyIsUseAll, url));
         } catch (Exception e) {
           promise.reject("", e.getMessage());
         }
@@ -294,16 +292,16 @@ public class GrinBridge extends ReactContextBaseJavaModule {
   private static native String walletPhrase(String state);
 
   private static native String txCreate(
-      String state, String message, long amount, boolean selectionStrategyIsUseAll);
+      String state, long amount, boolean selectionStrategyIsUseAll);
 
   private static native String txCancel(String state, long id);
 
-  private static native String txReceive(String state, String slatePath, String message);
+  private static native String txReceive(String state, String slatepack);
 
-  private static native String txFinalize(String state, String slatePath);
+  private static native String txFinalize(String state, String slatepack);
 
   private static native String txSendHttps(
-      String state, long amount, boolean selectionStrategyIsUseAll, String message, String url);
+      String state, long amount, boolean selectionStrategyIsUseAll, String url);
 
   private static native String txPost(String state, String txSlateId);
 }

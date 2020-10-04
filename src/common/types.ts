@@ -88,7 +88,6 @@ export type txSendHttpsRequestAction = {
   type: 'TX_SEND_HTTPS_REQUEST'
   amount: number
   selectionStrategyIsUseAll: boolean
-  message: string
   url: string
 }
 export type txSendHttpsSuccessAction = {
@@ -213,7 +212,8 @@ export type slateLoadFalureAction = {
 }
 export type slateSetRequestAction = {
   type: 'SLATE_SET_REQUEST'
-  slate: Slate
+  id: string
+  slatepack: string
   isResponse: boolean
 }
 export type slateSetSuccessAction = {
@@ -239,7 +239,7 @@ export type slateRemoveFalureAction = {
 }
 export type txReceiveRequestAction = {
   type: 'TX_RECEIVE_REQUEST'
-  slatePath: string
+  slatepack: string
 }
 export type txReceiveSuccessAction = {
   type: 'TX_RECEIVE_SUCCESS'
@@ -251,7 +251,7 @@ export type txReceiveFalureAction = {
 }
 export type txFinalizeRequestAction = {
   type: 'TX_FINALIZE_REQUEST'
-  responseSlatePath: string
+  slatepack: string
 }
 export type txFinalizeSuccessAction = {
   type: 'TX_FINALIZE_SUCCESS'

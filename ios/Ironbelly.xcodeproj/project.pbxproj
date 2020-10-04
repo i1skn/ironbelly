@@ -45,6 +45,8 @@
 		F65FE3632410B98400E3C118 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F65FE35F2410B98400E3C118 /* MaterialCommunityIcons.ttf */; };
 		F65FE3642410B98400E3C118 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F65FE3602410B98400E3C118 /* Feather.ttf */; };
 		F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F67AD98B23C15A5100FC4CEA /* libwallet.a */; };
+		F6B88C4D252A4C92007FF36C /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6B88C4B252A4C92007FF36C /* FontAwesome5_Regular.ttf */; };
+		F6B88C50252A4CFA007FF36C /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6B88C4F252A4CFA007FF36C /* FontAwesome5_Solid.ttf */; };
 		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
 		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
 		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
@@ -104,6 +106,8 @@
 		F669249426C949548172D721 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
 		F67AD98B23C15A5100FC4CEA /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/libwallet.a; sourceTree = "<group>"; };
 		F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
+		F6B88C4B252A4C92007FF36C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
+		F6B88C4F252A4CFA007FF36C /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Wallet-Bridging-Header.h"; path = "Ironbelly/Wallet-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
 		F6DDC63F2197893300B51AAE /* bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bindings.h; path = ../../rust/bindings.h; sourceTree = "<group>"; };
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
@@ -220,6 +224,8 @@
 		F65FE35C2410B8E000E3C118 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				F6B88C4B252A4C92007FF36C /* FontAwesome5_Regular.ttf */,
+				F6B88C4F252A4CFA007FF36C /* FontAwesome5_Solid.ttf */,
 				F65FE3602410B98400E3C118 /* Feather.ttf */,
 				F65FE35E2410B98400E3C118 /* FontAwesome.ttf */,
 				F65FE35D2410B98400E3C118 /* Ionicons.ttf */,
@@ -317,6 +323,7 @@
 				C6DC0496AC154B7CB9441330 /* Share@3x.png in Resources */,
 				F65FE3622410B98400E3C118 /* FontAwesome.ttf in Resources */,
 				8A05B33A622348C1A7EBBBED /* x.png in Resources */,
+				F6B88C50252A4CFA007FF36C /* FontAwesome5_Solid.ttf in Resources */,
 				7CE949452A7644308ACF5C89 /* x@2x.png in Resources */,
 				EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */,
 				7ED43DD375854138B2208C5C /* ChevronRight.png in Resources */,
@@ -326,6 +333,7 @@
 				53EE4A959E2F42678CF8078E /* Close.png in Resources */,
 				CE5F56BE44E94BA78933ADA8 /* Close@2x.png in Resources */,
 				B061F339986847BE91EFD112 /* Close@3x.png in Resources */,
+				F6B88C4D252A4C92007FF36C /* FontAwesome5_Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

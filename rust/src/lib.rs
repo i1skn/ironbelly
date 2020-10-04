@@ -541,51 +541,52 @@ fn tx_create(
         w.parent_key_id().clone()
     };
 
-    wallet_lock!(wallet, w);
-    let mut slate = tx::new_tx_slate(&mut **w, amount, false, 2, false, None)?;
-    let height = w.w2n_client().get_chain_tip()?.0;
+    let slate = {
+        wallet_lock!(wallet, w);
+        let mut slate = tx::new_tx_slate(&mut **w, amount, false, 2, false, None)?;
+        let height = w.w2n_client().get_chain_tip()?.0;
 
-    let context = tx::add_inputs_to_slate(
-        &mut **w,
-        None,
-        &mut slate,
-        height,
-        state.minimum_confirmations,
-        500,
-        1,
-        selection_strategy_is_use_all,
-        &parent_key_id,
-        true,
-        false,
-    )?;
+        let context = tx::add_inputs_to_slate(
+            &mut **w,
+            None,
+            &mut slate,
+            height,
+            state.minimum_confirmations,
+            500,
+            1,
+            selection_strategy_is_use_all,
+            &parent_key_id,
+            true,
+            false,
+        )?;
 
-    {
-        let mut batch = w.batch(None)?;
-        batch.save_private_context(slate.id.as_bytes(), &context)?;
-        batch.commit()?;
-    }
+        {
+            let mut batch = w.batch(None)?;
+            batch.save_private_context(slate.id.as_bytes(), &context)?;
+            batch.commit()?;
+        }
 
-    // slate.version_info.version = 2;
-    // slate.version_info.orig_version = 2;
-    selection::lock_tx_context(&mut **w, None, &slate, height, &context, None)?;
-
-    slate.compact()?;
+        // slate.version_info.version = 2;
+        // slate.version_info.orig_version = 2;
+        selection::lock_tx_context(&mut **w, None, &slate, height, &context, None)?;
+        slate.compact()?;
+        slate
+    };
 
     let packer = Slatepacker::new(SlatepackerArgs {
         sender: None, // sender
         recipients: vec![],
         dec_key: None,
     });
-
     let slatepack = packer.create_slatepack(&slate)?;
-    Ok(SlatepackArmor::encode(&slatepack).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
-    // Ok(
-    // serde_json::to_string(&slate_versions::VersionedSlate::into_version(
-    // slate.clone(),
-    // slate_versions::SlateVersion::V2,
-    // ))
-    // .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
-    // )
+    let api = Owner::new(wallet.clone(), None);
+    let txs = api.retrieve_txs(None, false, None, Some(slate.id))?;
+    let result = (
+        txs.1,
+        SlatepackArmor::encode(&slatepack).map_err(|e| ErrorKind::GenericError(e.to_string()))?,
+    );
+
+    Ok(serde_json::to_string(&result).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
 #[no_mangle]
@@ -668,7 +669,20 @@ fn tx_receive(state_json: &str, slate_armored: &str) -> Result<String, Error> {
 
     if let Some(account) = state.account {
         slate = foreign_api.receive_tx(&slate, Some(&account), None)?;
-        Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
+        let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id))?;
+        let packer = Slatepacker::new(SlatepackerArgs {
+            sender: None, // sender
+            recipients: vec![],
+            dec_key: None,
+        });
+        let slatepack = packer.create_slatepack(&slate)?;
+        let result = (
+            txs.1,
+            SlatepackArmor::encode(&slatepack)
+                .map_err(|e| ErrorKind::GenericError(e.to_string()))?,
+        );
+
+        Ok(serde_json::to_string(&result).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
     } else {
         Err(Error::from(ErrorKind::GenericError(
             "Account is not specified".to_owned(),
@@ -698,11 +712,10 @@ fn tx_finalize(state_json: &str, slate_armored: &str) -> Result<String, Error> {
 
     let _ret_address = slatepack.sender;
 
-    // api.verify_slate_messages(None, &slate)?;
-    // slate.verify_messages()?;
-
     slate = owner_api.finalize_tx(None, &slate)?;
-    Ok(serde_json::to_string(&slate).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
+    let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id))?;
+
+    Ok(serde_json::to_string(&txs.1).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
 #[no_mangle]

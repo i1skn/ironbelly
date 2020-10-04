@@ -105,6 +105,8 @@
 	<string>To read QR codes</string>
 	<key>UIAppFonts</key>
 	<array>
+		<string>FontAwesome5_Regular.ttf</string>
+		<string>FontAwesome5_Solid.ttf</string>
 		<string>MaterialCommunityIcons.ttf</string>
 		<string>FontAwesome.ttf</string>
 		<string>Ionicons.ttf</string>

@@ -52,12 +52,17 @@ import {
 } from 'src/modules/settings'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+
 const { GrinBridge } = NativeModules // Filesystem
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
 
-YellowBox.ignoreWarnings(['Expected style'])
+YellowBox.ignoreWarnings([
+  'Expected style',
+  'useNativeDriver',
+  'currentlyFocusedField',
+])
 
 const appTheme = {
   ...DefaultTheme,
