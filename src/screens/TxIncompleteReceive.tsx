@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
-
+import DocumentPicker from 'react-native-document-picker'
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import colors from 'src/common/colors'
 import {
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   View,
+  Platform,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
@@ -28,6 +29,7 @@ type Props = NavigationProps<'TxIncompleteReceive'> & OwnProps
 
 const TxIncompleteReceive = ({ navigation, route }: Props) => {
   const tx = route?.params?.tx
+  const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
 
   const slatepackShare = (tx: Tx) => {
@@ -39,8 +41,18 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
       })
   }
 
-  let [slatepack, setSlatepack] = useState<null | string>(null)
-  let [senderSlatepack, setSenderSlatepack] = useState('')
+  let [slatepack, setSlatepack] = useState(loadedSlatepack)
+  let [receiveSlatepack, setReceiveSlatepack] = useState('')
+  const title = tx ? `Receiving ${hrGrin(Math.abs(tx.amount))}` : `Receive`
+
+  useEffect(() => {
+    if (loadedSlatepack) {
+      setReceiveSlatepack(loadedSlatepack)
+      navigation.setParams({
+        slatepack: undefined,
+      })
+    }
+  }, [loadedSlatepack])
 
   useEffect(() => {
     if (tx) {
@@ -49,25 +61,36 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
         setSlatepack(slatepack)
       })
     }
-  }, [tx])
+    navigation.setParams({ title })
+  }, [tx, title])
 
   const generateResponse = () => {
     dispatch({
       type: 'TX_RECEIVE_REQUEST',
-      slatepack: senderSlatepack,
+      slatepack: receiveSlatepack,
+    })
+  }
+
+  const openFile = async () => {
+    const { uri } = await DocumentPicker.pick({
+      type: [DocumentPicker.types.allFiles],
+    })
+    dispatch({
+      type: 'SLATE_LOAD_REQUEST',
+      slatePath: uri,
     })
   }
 
   return (
     <>
-      <CardTitle
-        title={tx ? `Receiving ${hrGrin(Math.abs(tx.amount))}` : `Receive`}
-        navigation={navigation}
-      />
+      <CardTitle title={title} navigation={navigation} />
       <View style={styles.container}>
         <KeyboardAwareScrollView
           contentContainerStyle={{ paddingBottom: 64 }}
-          extraScrollHeight={176}
+          extraScrollHeight={Platform.select({
+            android: 0,
+            ios: 176,
+          })}
           keyboardDismissMode={'on-drag'}>
           <SafeAreaView edges={['bottom']}>
             <Text style={styles.info}>
@@ -127,17 +150,18 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                   <Text style={styles.copyPasteContentTitle}>
                     Sender's part of the transaction
                   </Text>
-                  <PasteButton setFunction={setSenderSlatepack} />
+                  <PasteButton setFunction={setReceiveSlatepack} />
                 </View>
                 <Textarea
                   containerStyle={styles.slatepack}
+                  onChangeText={setReceiveSlatepack}
                   style={styles.textarea}
                   placeholder="BEGINSLATEPACK. ... ENDSLATEPACK."
                   returnKeyType={'done'}>
-                  {senderSlatepack}
+                  {receiveSlatepack}
                 </Textarea>
                 <View style={styles.shareAsFile}>
-                  <TouchableOpacity onPress={() => {}}>
+                  <TouchableOpacity onPress={openFile}>
                     <Text style={styles.shareButton}>Open file</Text>
                   </TouchableOpacity>
                 </View>

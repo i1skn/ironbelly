@@ -130,4 +130,10 @@ class GrinBridge: NSObject {
         let cResult = c_wallet_scan_outputs(state, lastRetrievedIndex, highestIndex, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
+    
+    @objc func slatepackDecode(_ state:String, slatepack:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_slatepack_decode(state, slatepack, &error)
+        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+    }
 }

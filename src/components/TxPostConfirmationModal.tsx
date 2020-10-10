@@ -95,7 +95,9 @@ class TxPostConfirmationModal extends Component<Props, State> {
         )) || (
           <React.Fragment>
             <Header>
-              <HeaderText>Confirm transaction</HeaderText>
+              <HeaderText>
+                {tx.type === 'TxPosted' ? 'Re-send' : 'Confirm'} transaction
+              </HeaderText>
             </Header>
             {(posted && (
               <Success>

@@ -50,4 +50,6 @@ RCT_EXTERN_METHOD(walletInit:(NSString*)state phrase:(NSString*)phrase password:
 RCT_EXTERN_METHOD(walletScanOutputs:(NSString*)state lastRetrievedIndex:(int64_t)lastRetrievedIndex highestIndex:(int64_t)highestIndex resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(checkPassword:(NSString*)state password:(NSString*)password resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(slatepackDecode:(NSString*)state slatepack:(NSString*)slatepack resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 @end

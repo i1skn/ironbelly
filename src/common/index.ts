@@ -176,7 +176,7 @@ export const Spacer = styled.View`
 `
 export const isResponseSlate = async (slate: any) => {
   try {
-    return slate.participant_data.length === slate.num_participants
+    return slate.sta === 'S2'
   } catch (e) {
     throw new Error('Cannot parse slate file')
   }

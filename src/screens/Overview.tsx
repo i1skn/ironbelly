@@ -222,11 +222,14 @@ class Overview extends Component<Props, State> {
               <TouchableHighlight
                 onPress={(_) => {
                   console.log(data.item.type)
-                  if (data.item.confirmed || data.item.type === 'TxPosted') {
+                  if (data.item.confirmed) {
                     navigation.navigate('TxDetails', {
                       txId: data.item.id,
                     })
-                  } else if (data.item.type === 'TxFinalized') {
+                  } else if (
+                    data.item.type === 'TxFinalized' ||
+                    data.item.type === 'TxPosted'
+                  ) {
                     txConfirm(data.item.slateId)
                   } else if (data.item.type === 'TxReceived') {
                     navigation.navigate('TxIncompleteReceive', {

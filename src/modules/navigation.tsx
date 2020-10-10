@@ -24,7 +24,6 @@ import {
 } from '@react-navigation/stack'
 import { NavigationContainerRef } from '@react-navigation/core'
 import OverviewScreen from 'src/screens/Overview'
-import ReceiveScreen from 'src/screens/Receive'
 import SettingsScreen from 'src/screens/Settings'
 import TxDetailsScreen from 'src/screens/TxDetails'
 import TxIncompleteSendScreen from 'src/screens/TxIncompleteSend'
@@ -81,8 +80,10 @@ export type RootStackParamList = {
   ViewPaperKey: { fromSettings: boolean }
   VerifyPaperKey: { title: string }
   TxDetails: { txId: number }
-  TxIncompleteSend: undefined | { tx: Tx }
-  TxIncompleteReceive: undefined | { tx: Tx }
+  TxIncompleteSend: undefined | { tx: Tx; title?: string }
+  TxIncompleteReceive:
+    | undefined
+    | { slatepack?: string; tx?: Tx; title?: string }
   Receive: { slatePath: string; slate: string }
   ScanQRCode: undefined
   Password: undefined
@@ -246,10 +247,10 @@ const Created = () => (
       component={TxIncompleteReceiveScreen}
       options={
         isAndroid
-          ? {
+          ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
-              title: 'Transaction Details',
-            }
+              title: route?.params?.title,
+            })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
     />
@@ -258,14 +259,6 @@ const Created = () => (
       component={OverviewScreen}
       options={{
         headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="Receive"
-      component={ReceiveScreen}
-      options={{
-        headerShown: false,
-        ...TransitionPresets.ModalSlideFromBottomIOS,
       }}
     />
     <Stack.Screen

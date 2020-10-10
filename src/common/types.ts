@@ -202,6 +202,7 @@ export type slateLoadRequestAction = {
 }
 export type slateLoadSuccessAction = {
   type: 'SLATE_LOAD_SUCCESS'
+  slatepack: string
   slate: Slate
   slatePath: string
 }

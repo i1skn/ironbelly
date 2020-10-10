@@ -14,8 +14,8 @@
 
 use grin_wallet_libwallet::{
     scan, selection, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient,
-    NodeVersionInfo, Slate, SlatepackArmor, Slatepacker, SlatepackerArgs, WalletInst,
-    WalletLCProvider,
+    NodeVersionInfo, Slate, SlateVersion, SlatepackArmor, Slatepacker, SlatepackerArgs,
+    VersionedSlate, WalletInst, WalletLCProvider,
 };
 use grin_wallet_util::grin_core::global;
 use grin_wallet_util::grin_core::global::ChainTypes;
@@ -838,6 +838,34 @@ pub unsafe extern "C" fn c_tx_post(
     )
 }
 
+fn slatepack_decode(state_json: &str, slatepack: &str) -> Result<String, Error> {
+    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let packer = Slatepacker::new(SlatepackerArgs {
+        sender: None,
+        recipients: vec![],
+        dec_key: None,
+    });
+    let slatepack = packer.deser_slatepack(slatepack.as_bytes(), true)?;
+    let slate = packer.get_slate(&slatepack)?;
+    Ok(serde_json::to_string(&VersionedSlate::into_version(
+        slate.clone(),
+        SlateVersion::V4,
+    )?)
+    .map_err(|e| ErrorKind::GenericError(e.to_string()))?)
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_slatepack_decode(
+    state_json: *const c_char,
+    slatepack: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(
+        slatepack_decode(&c_str_to_rust(state_json), &c_str_to_rust(slatepack)),
+        error
+    )
+}
+
 /// Expose the JNI interface for android below
 #[cfg(target_os = "android")]
 #[allow(non_snake_case)]
@@ -1093,5 +1121,17 @@ pub mod android {
             .expect("Invalid tx_slate_id")
             .into();
         unwrap_to_jni!(env, tx_post(&state_json, &tx_slate_id))
+    }
+
+    #[no_mangle]
+    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_slatepackDecode(
+        env: JNIEnv,
+        _: JClass,
+        state_json: JString,
+        slatepack: JString,
+    ) -> jstring {
+        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
+        let slatepack: String = env.get_string(slatepack).expect("Invalid slatepack").into();
+        unwrap_to_jni!(env, slatepack_decode(&state_json, &slatepack))
     }
 }

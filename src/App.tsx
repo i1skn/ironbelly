@@ -60,6 +60,7 @@ checkApplicationSupportDirectory()
 
 YellowBox.ignoreWarnings([
   'Expected style',
+  'YellowBox',
   'useNativeDriver',
   'currentlyFocusedField',
 ])

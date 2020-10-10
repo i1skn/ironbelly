@@ -12,12 +12,15 @@ import {
 import RNFS from 'react-native-fs'
 import { Action, Slate, State as RootState } from 'src/common/types'
 import { getNavigation } from 'src/modules/navigation'
-import { isResponseSlate } from 'src/common'
+import { getStateForRust, isResponseSlate } from 'src/common'
 import { of, partition, merge } from 'rxjs'
 import { MAINNET_CHAIN, FLOONET_CHAIN } from 'src/modules/settings'
 import { log } from 'src/common/logger'
 // @ts-ignore
 import Countly from 'countly-sdk-react-native-bridge'
+import { NativeModules } from 'react-native'
+
+const { GrinBridge } = NativeModules
 
 export type State = {
   unopenedSlatePath: string
@@ -65,12 +68,17 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
         state$.value.wallet.password.valid,
     ),
     mergeMap(async () => {
-      const slate: Slate = await RNFS.readFile(
+      const slatepack: string = await RNFS.readFile(
         state$.value.app.unopenedSlatePath,
         'utf8',
+      )
+      const slate: Slate = await GrinBridge.slatepackDecode(
+        getStateForRust(state$.value),
+        slatepack,
       ).then((json: string) => JSON.parse(json))
       return {
         type: 'SLATE_LOAD_SUCCESS',
+        slatepack,
         slate,
         slatePath: state$.value.app.unopenedSlatePath,
       } as Action
@@ -89,7 +97,6 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
   action$,
   _state$,
 ) => {
-  // const navigation = await getNavigation()
   const [response$, request$] = partition(
     action$.pipe(
       filter(({ type }) => type === 'SLATE_LOAD_SUCCESS'),
@@ -105,19 +112,19 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
   const combined$ = merge(
     request$.pipe(
       // @ts-ignore
-      tap(async ({ slate, slatePath }) => {
+      tap(async ({ slate, slatepack }) => {
         const navigation = await getNavigation()
-        navigation?.navigate('Receive', { slate, slatePath })
+        navigation?.navigate('TxIncompleteReceive', { slate, slatepack })
       }),
       ignoreElements(),
     ),
     response$.pipe(
       // @ts-ignore
-      map(({ slatePath }) => {
-        return {
-          type: 'TX_FINALIZE_REQUEST',
-          responseSlatePath: slatePath,
-        } as Action
+      map(({ slatepack }) => {
+        // return {
+        // type: 'TX_FINALIZE_REQUEST',
+        // slatepack,
+        // } as Action
       }),
     ),
   )

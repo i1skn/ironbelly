@@ -48,19 +48,6 @@
 		<data android:scheme="content" />
 		<data android:scheme="file" />
 		<data android:mimeType="*/*" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.grinslate" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\.grinslate" />
-		<data android:pathPattern=".*\\..*\\..*\\.grinslate" />
-		<data android:pathPattern=".*\\..*\\.grinslate" />
-		<data android:pathPattern=".*\\.grinslate" />
-	</intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:host="*"/>
-		<data android:scheme="content" />
-		<data android:scheme="file" />
-		<data android:mimeType="*/*" />
 		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.json" />
 		<data android:pathPattern=".*\\..*\\..*\\..*\\.json" />
 		<data android:pathPattern=".*\\..*\\..*\\.json" />
@@ -79,6 +66,32 @@
 		<data android:pathPattern=".*\\..*\\..*\\.slate" />
 		<data android:pathPattern=".*\\..*\\.slate" />
 		<data android:pathPattern=".*\\.slate" />
+	</intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:host="*"/>
+		<data android:scheme="content" />
+		<data android:scheme="file" />
+		<data android:mimeType="*/*" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.tx" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\.tx" />
+		<data android:pathPattern=".*\\..*\\..*\\.tx" />
+		<data android:pathPattern=".*\\..*\\.tx" />
+		<data android:pathPattern=".*\\.tx" />
+	</intent-filter>
+	<intent-filter>
+		<action android:name="android.intent.action.VIEW"/>
+		<category android:name="android.intent.category.DEFAULT"/>
+		<data android:host="*"/>
+		<data android:scheme="content" />
+		<data android:scheme="file" />
+		<data android:mimeType="*/*" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.slatepack" />
+		<data android:pathPattern=".*\\..*\\..*\\..*\\.slatepack" />
+		<data android:pathPattern=".*\\..*\\..*\\.slatepack" />
+		<data android:pathPattern=".*\\..*\\.slatepack" />
+		<data android:pathPattern=".*\\.slatepack" />
 	</intent-filter>
 	<intent-filter>
 		<action android:name="android.intent.action.SEND"/>
