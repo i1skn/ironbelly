@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react'
 import colors from 'src/common/colors'
-import { TouchableOpacity, StyleSheet, View } from 'react-native'
+import { TouchableOpacity, StyleSheet, View, Platform } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
 import { formatTime } from 'src/common'
 import moment from 'moment'
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   },
   fieldTitle: {
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: Platform.select({ android: '700', ios: '500' }),
     marginTop: 20,
     marginBottom: 10,
   },

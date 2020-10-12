@@ -380,11 +380,12 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      const [[rustTx], slatepack] = await GrinBridge.txCreate(
+      const jsonResponse = await GrinBridge.txCreate(
         getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
-      ).then((json: string) => JSON.parse(json))
+      )
+      const [[rustTx], slatepack] = JSON.parse(jsonResponse)
       const tx = mapRustTx(rustTx)
       store.dispatch({
         type: 'TX_CREATE_SUCCESS',
@@ -406,12 +407,16 @@ export const sideEffects = {
         refreshFromNode: false,
       })
     } catch (error) {
-      const e = JSON.parse(error.message)
-      store.dispatch({
-        type: 'TX_CREATE_FAILURE',
-        ...e,
-      })
-      log(e, true)
+      try {
+        const e = JSON.parse(error.message)
+        store.dispatch({
+          type: 'TX_CREATE_FAILURE',
+          ...e,
+        })
+        log(e, true)
+      } catch (e) {
+        console.log(error)
+      }
     }
   },
   ['TX_SEND_HTTPS_REQUEST']: async (

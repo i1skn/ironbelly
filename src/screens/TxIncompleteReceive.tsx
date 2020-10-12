@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DocumentPicker from 'react-native-document-picker'
@@ -18,7 +18,7 @@ import { Tx } from 'src/common/types'
 import { NavigationProps } from 'src/common/types'
 import Clipboard from '@react-native-community/clipboard'
 import Textarea from 'src/components/Textarea'
-import { hrGrin, getSlatePath } from 'src/common'
+import { hrGrin, getSlatePath, isValidSlatepack } from 'src/common'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 interface OwnProps {
@@ -43,7 +43,19 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
 
   let [slatepack, setSlatepack] = useState(loadedSlatepack)
   let [receiveSlatepack, setReceiveSlatepack] = useState('')
+  let refScrollView = useRef<KeyboardAwareScrollView>()
   const title = tx ? `Receiving ${hrGrin(Math.abs(tx.amount))}` : `Receive`
+
+  const pasteFromClipboard = (s: string) => {
+    if (!isValidSlatepack(s)) {
+      dispatch({
+        type: 'TOAST_SHOW',
+        text: 'Wrong slatepack format',
+      })
+      return
+    }
+    setReceiveSlatepack(s)
+  }
 
   useEffect(() => {
     if (loadedSlatepack) {
@@ -62,6 +74,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
       })
     }
     navigation.setParams({ title })
+    refScrollView.current?.scrollToEnd()
   }, [tx, title])
 
   const generateResponse = () => {
@@ -86,7 +99,19 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
       <CardTitle title={title} navigation={navigation} />
       <View style={styles.container}>
         <KeyboardAwareScrollView
-          contentContainerStyle={{ paddingBottom: 64 }}
+          innerRef={(ref) => {
+            refScrollView.current = (ref as unknown) as KeyboardAwareScrollView
+            setTimeout(() => {
+              refScrollView.current?.scrollToEnd()
+            }, 300)
+          }}
+          contentContainerStyle={{
+            ...Platform.select({
+              android: { paddingVertical: 16 },
+              ios: { paddingBottom: 64 },
+            }),
+            paddingHorizontal: 16,
+          }}
           extraScrollHeight={Platform.select({
             android: 0,
             ios: 176,
@@ -121,6 +146,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                       />
                     </View>
                     <Textarea
+                      textAlignVertical={'top'}
                       containerStyle={styles.slatepack}
                       style={styles.textarea}
                       editable={false}
@@ -129,7 +155,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                     </Textarea>
                     <View style={styles.shareAsFile}>
                       <TouchableOpacity onPress={slatepackShare(tx)}>
-                        <Text style={styles.shareButton}>Share as file</Text>
+                        <Text style={styles.textButton}>Share as file</Text>
                       </TouchableOpacity>
                     </View>
                   </>
@@ -150,23 +176,25 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                   <Text style={styles.copyPasteContentTitle}>
                     Sender's part of the transaction
                   </Text>
-                  <PasteButton setFunction={setReceiveSlatepack} />
+                  <PasteButton setFunction={pasteFromClipboard} />
                 </View>
                 <Textarea
                   containerStyle={styles.slatepack}
                   onChangeText={setReceiveSlatepack}
                   style={styles.textarea}
-                  placeholder="BEGINSLATEPACK. ... ENDSLATEPACK."
+                  placeholder={'BEGINSLATEPACK.\n...\n...\n...\nENDSLATEPACK.'}
+                  textAlignVertical={'top'}
                   returnKeyType={'done'}>
                   {receiveSlatepack}
                 </Textarea>
                 <View style={styles.shareAsFile}>
                   <TouchableOpacity onPress={openFile}>
-                    <Text style={styles.shareButton}>Open file</Text>
+                    <Text style={styles.textButton}>Open file</Text>
                   </TouchableOpacity>
                 </View>
                 <Button
                   title="Generate response"
+                  disabled={!isValidSlatepack(receiveSlatepack)}
                   style={styles.button}
                   onPress={generateResponse}
                 />
@@ -236,7 +264,6 @@ const PasteButton = ({ setFunction }: { setFunction: (s: string) => void }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 16,
     flexGrow: 1,
   },
   txId: {
@@ -264,10 +291,11 @@ const styles = StyleSheet.create({
   },
   button: {},
   textarea: {
+    maxHeight: 360,
     fontSize: 16,
     fontFamily: monoSpaceFont,
   },
-  shareButton: {
+  textButton: {
     color: colors.link,
     fontSize: 18,
   },
@@ -283,11 +311,11 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   copyPasteContentTitle: {
-    fontWeight: '500',
+    fontWeight: Platform.select({ android: '700', ios: '500' }),
     fontSize: 16,
   },
   slatepackHeaderCopy: {
-    fontWeight: '600',
+    fontWeight: Platform.select({ android: '700', ios: '500' }),
     color: colors.link,
     fontSize: 16,
   },

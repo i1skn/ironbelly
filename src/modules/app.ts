@@ -95,7 +95,7 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
 
 export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
   action$,
-  _state$,
+  state$,
 ) => {
   const [response$, request$] = partition(
     action$.pipe(
@@ -112,20 +112,22 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
   const combined$ = merge(
     request$.pipe(
       // @ts-ignore
-      tap(async ({ slate, slatepack }) => {
+      tap(async ({ slatepack }) => {
         const navigation = await getNavigation()
-        navigation?.navigate('TxIncompleteReceive', { slate, slatepack })
+        navigation?.navigate('TxIncompleteReceive', { slatepack })
       }),
       ignoreElements(),
     ),
     response$.pipe(
       // @ts-ignore
-      map(({ slatepack }) => {
-        // return {
-        // type: 'TX_FINALIZE_REQUEST',
-        // slatepack,
-        // } as Action
+      tap(async ({ slate, slatepack }) => {
+        const navigation = await getNavigation()
+        const tx = state$.value.tx.list.data.find(
+          (tx) => tx.slateId === slate.id,
+        )
+        navigation?.navigate('TxIncompleteSend', { tx, slatepack })
       }),
+      ignoreElements(),
     ),
   )
 

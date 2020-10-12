@@ -182,7 +182,7 @@ export const isResponseSlate = async (slate: any) => {
   }
 }
 export const getSlatePath = (slateId: string, isResponse: boolean) => {
-  return `${SLATES_DIRECTORY}/${slateId}.tx${isResponse ? '.response' : ''}`
+  return `${SLATES_DIRECTORY}/${slateId}.${isResponse ? 'S2' : 'S1'}.slatepack`
 }
 export const TextareaTitle = styled.Text`
   font-size: 20;
@@ -259,8 +259,13 @@ export const parseSendLink = (query: UrlQuery) => {
     message,
   }
 }
-export const formatDate = (date: moment) => date.format('DD MMMM YYYY')
-export const formatTime = (time: moment) =>
+
+export const isValidSlatepack = (s: string) => {
+  return /^BEGINSLATEPACK\..*ENDSLATEPACK\.$/gm.test(s)
+}
+
+export const formatDate = (date: moment.Moment) => date.format('DD MMMM YYYY')
+export const formatTime = (time: moment.Moment) =>
   time.format('dddd, DD MMMM YYYY, HH:mm')
 export const currencyList = [
   {

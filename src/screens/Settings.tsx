@@ -230,7 +230,6 @@ class Settings extends Component<Props, State> {
         onPress: () => this._onMigrateToMainnet(),
         titleStyle: {
           color: colors.success,
-          fontWeight: '600',
         },
       })
     }

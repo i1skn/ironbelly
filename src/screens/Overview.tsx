@@ -221,7 +221,6 @@ class Overview extends Component<Props, State> {
               </View>
               <TouchableHighlight
                 onPress={(_) => {
-                  console.log(data.item.type)
                   if (data.item.confirmed) {
                     navigation.navigate('TxDetails', {
                       txId: data.item.id,

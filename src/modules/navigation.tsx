@@ -17,7 +17,7 @@ import sleep from 'sleep-promise'
 import { isAndroid } from 'src/common'
 import { State as ReduxState, Tx } from 'src/common/types'
 import React from 'react'
-import { Text, Animated } from 'react-native'
+import { Text, Animated, View } from 'react-native'
 import {
   TransitionPresets,
   createStackNavigator,
@@ -26,7 +26,9 @@ import { NavigationContainerRef } from '@react-navigation/core'
 import OverviewScreen from 'src/screens/Overview'
 import SettingsScreen from 'src/screens/Settings'
 import TxDetailsScreen from 'src/screens/TxDetails'
-import TxIncompleteSendScreen from 'src/screens/TxIncompleteSend'
+import TxIncompleteSendScreen, {
+  androidHeaderTitle as TxIncompleteSendAndroidHeaderTitle,
+} from 'src/screens/TxIncompleteSend'
 import TxIncompleteReceiveScreen from 'src/screens/TxIncompleteReceive'
 import LandingScreen from 'src/screens/Landing'
 import ShowPaperKeyScreen from 'src/screens/PaperKey/Show'
@@ -49,9 +51,7 @@ import {
 
 const defaultScreenOptions = {
   headerTintColor: colors.black,
-  headerTitleStyle: {
-    // fontWeight: '600',
-  },
+  headerTitleStyle: {},
   headerStyle: {
     backgroundColor: colors.primary,
     shadowRadius: 0,
@@ -80,7 +80,9 @@ export type RootStackParamList = {
   ViewPaperKey: { fromSettings: boolean }
   VerifyPaperKey: { title: string }
   TxDetails: { txId: number }
-  TxIncompleteSend: undefined | { tx: Tx; title?: string }
+  TxIncompleteSend:
+    | undefined
+    | { tx?: Tx; title?: string; subTitle?: string; slatepack?: string }
   TxIncompleteReceive:
     | undefined
     | { slatepack?: string; tx?: Tx; title?: string }
@@ -235,10 +237,10 @@ const Created = () => (
       component={TxIncompleteSendScreen}
       options={
         isAndroid
-          ? {
+          ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
-              title: 'Transaction Details',
-            }
+              headerTitle: TxIncompleteSendAndroidHeaderTitle(route?.params),
+            })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
     />

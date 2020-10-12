@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
+import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -11,10 +12,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   View,
+  Platform,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'src/common/redux'
-import Swiper from 'react-native-swiper'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
 import { OutputStrategy, Tx } from 'src/common/types'
@@ -30,6 +31,7 @@ import {
   convertToFiat,
   Spacer,
   getSlatePath,
+  isValidSlatepack,
 } from 'src/common'
 import { isTxFormValid } from 'src/modules/tx'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -43,7 +45,7 @@ interface OwnProps {
 type Props = NavigationProps<'TxIncompleteSend'> & OwnProps
 type SlateCreateProps = {
   slateId: string
-}
+} & NavigationProps<'TxIncompleteSend'>
 
 type SlateNotCreateProps = {}
 
@@ -174,7 +176,15 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
   }, [amount])
 
   return (
-    <KeyboardAwareScrollView keyboardDismissMode={'on-drag'}>
+    <KeyboardAwareScrollView
+      keyboardDismissMode={'on-drag'}
+      contentContainerStyle={{
+        ...Platform.select({
+          android: { paddingVertical: 16 },
+          ios: { paddingBottom: 64 },
+        }),
+        paddingHorizontal: 16,
+      }}>
       <View style={styles.amountRow}>
         <NumericInput
           autoFocus={!amount}
@@ -312,7 +322,8 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
   )
 }
 
-const SlateCreated = ({ slateId }: SlateCreateProps) => {
+const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
+  const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
 
   const slatepackShare = () => {
@@ -323,8 +334,17 @@ const SlateCreated = ({ slateId }: SlateCreateProps) => {
     })
   }
 
+  const openFile = async () => {
+    const { uri } = await DocumentPicker.pick({
+      type: [DocumentPicker.types.allFiles],
+    })
+    dispatch({
+      type: 'SLATE_LOAD_REQUEST',
+      slatePath: uri,
+    })
+  }
+
   const txFinalize = () => {
-    console.log('her')
     dispatch({
       type: 'TX_FINALIZE_REQUEST',
       slatepack: recipientSlatepack,
@@ -333,14 +353,41 @@ const SlateCreated = ({ slateId }: SlateCreateProps) => {
 
   let [slatepack, setSlatepack] = useState<null | string>(null)
   let [recipientSlatepack, setRecipientSlatepack] = useState('')
+  let refScrollView = useRef<KeyboardAwareScrollView>()
 
-  // Loading Slatepack
+  const pasteFromClipboard = (s: string) => {
+    if (!isValidSlatepack(s)) {
+      dispatch({
+        type: 'TOAST_SHOW',
+        text: 'Wrong slatepack format',
+      })
+
+      return
+    }
+    setRecipientSlatepack(s)
+    setTimeout(() => {
+      refScrollView.current?.scrollToEnd()
+    }, 100)
+  }
+  // Loading my Slatepack
   useEffect(() => {
     const path = getSlatePath(slateId, false /** not a response **/)
     RNFS.readFile(path, 'utf8').then((slatepack: string) => {
       setSlatepack(slatepack)
     })
   }, [])
+
+  // Loading Recipient's Slatepack
+  useEffect(() => {
+    if (loadedSlatepack) {
+      setRecipientSlatepack(loadedSlatepack)
+      navigation.setParams({
+        ...route.params,
+        slatepack: undefined,
+      })
+      refScrollView.current?.scrollToEnd()
+    }
+  }, [loadedSlatepack])
 
   const finalizeInProgress = useSelector(
     (state) => state.tx.txFinalize.inProgress,
@@ -356,8 +403,23 @@ const SlateCreated = ({ slateId }: SlateCreateProps) => {
 
   return (
     <KeyboardAwareScrollView
-      contentContainerStyle={{ paddingBottom: 64 }}
-      extraScrollHeight={176}
+      innerRef={(ref) => {
+        refScrollView.current = (ref as unknown) as KeyboardAwareScrollView
+        setTimeout(() => {
+          refScrollView.current?.scrollToEnd()
+        }, 300)
+      }}
+      contentContainerStyle={{
+        ...Platform.select({
+          android: { paddingVertical: 16 },
+          ios: { paddingBottom: 88 },
+        }),
+        paddingHorizontal: 16,
+      }}
+      extraScrollHeight={Platform.select({
+        android: 0,
+        ios: 176,
+      })}
       keyboardDismissMode={'on-drag'}>
       <SafeAreaView edges={['bottom']}>
         <Text style={styles.info}>
@@ -392,12 +454,13 @@ const SlateCreated = ({ slateId }: SlateCreateProps) => {
                 containerStyle={styles.slatepack}
                 style={styles.textarea}
                 editable={false}
+                textAlignVertical={'top'}
                 returnKeyType={'done'}>
                 {slatepack}
               </Textarea>
               <View style={styles.shareAsFile}>
                 <TouchableOpacity onPress={slatepackShare}>
-                  <Text style={styles.shareButton}>Share as file</Text>
+                  <Text style={styles.textButton}>Share as file</Text>
                 </TouchableOpacity>
               </View>
               <Text style={styles.info}>
@@ -408,18 +471,20 @@ const SlateCreated = ({ slateId }: SlateCreateProps) => {
                 <Text style={styles.copyPasteContentTitle}>
                   Recipient's part of the transaction
                 </Text>
-                <PasteButton setFunction={setRecipientSlatepack} />
+                <PasteButton setFunction={pasteFromClipboard} />
               </View>
               <Textarea
                 containerStyle={styles.slatepack}
+                onChangeText={setRecipientSlatepack}
                 style={styles.textarea}
-                placeholder="BEGINSLATEPACK. ... ENDSLATEPACK."
+                placeholder={'BEGINSLATEPACK.\n...\n...\n...\nENDSLATEPACK.'}
+                textAlignVertical={'top'}
                 returnKeyType={'done'}>
                 {recipientSlatepack}
               </Textarea>
               <View style={styles.shareAsFile}>
-                <TouchableOpacity onPress={slatepackShare}>
-                  <Text style={styles.shareButton}>Open file</Text>
+                <TouchableOpacity onPress={openFile}>
+                  <Text style={styles.textButton}>Open file</Text>
                 </TouchableOpacity>
               </View>
               <Button
@@ -441,18 +506,27 @@ const SlateCreated = ({ slateId }: SlateCreateProps) => {
 
 const TxIncompleteSend = ({ navigation, route }: Props) => {
   const tx = route?.params?.tx
-  console.log(tx?.type)
+  const title = tx ? `Sending ${hrGrin(Math.abs(tx.amount))}` : `Send`
+  const subTitle = tx && `fee: ${hrGrin(tx.fee)}`
+  useEffect(() => {
+    navigation.setParams({ title, subTitle })
+  }, [title, subTitle])
+
   return (
     <>
       <CardTitle
         style={{}}
-        title={tx ? `Sending ${hrGrin(Math.abs(tx.amount))}` : `Send`}
-        subTitle={tx && `fee: ${hrGrin(tx.fee)}`}
+        title={title}
+        subTitle={subTitle}
         navigation={navigation}
       />
       <View style={styles.container}>
         {tx?.slateId ? (
-          <SlateCreated slateId={tx.slateId} />
+          <SlateCreated
+            slateId={tx.slateId}
+            route={route}
+            navigation={navigation}
+          />
         ) : (
           <SlateNotCreated />
         )}
@@ -516,9 +590,29 @@ const PasteButton = ({ setFunction }: { setFunction: (s: string) => void }) => {
   )
 }
 
+export function androidHeaderTitle(
+  params: NavigationProps<'TxIncompleteSend'>['route']['params'],
+) {
+  if (!params?.subTitle) {
+    return params?.title
+  }
+  return (
+    <View>
+      <Text style={styles.androidHeaderTitle}>{params?.title}</Text>
+      <Text style={styles.androidHeaderSubTitle}>{params?.subTitle}</Text>
+    </View>
+  )
+}
+
 const styles = StyleSheet.create({
+  androidHeaderTitle: {
+    fontSize: 21,
+  },
+  androidHeaderSubTitle: {
+    color: colors.grey[700],
+    fontSize: 12,
+  },
   container: {
-    paddingHorizontal: 16,
     flexGrow: 1,
   },
   txId: {
@@ -546,10 +640,11 @@ const styles = StyleSheet.create({
   },
   button: {},
   textarea: {
+    maxHeight: 360,
     fontSize: 16,
     fontFamily: monoSpaceFont,
   },
-  shareButton: {
+  textButton: {
     color: colors.link,
     fontSize: 18,
   },
@@ -565,11 +660,11 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   copyPasteContentTitle: {
-    fontWeight: '500',
+    fontWeight: Platform.select({ android: '700', ios: '500' }),
     fontSize: 16,
   },
   slatepackHeaderCopy: {
-    fontWeight: '600',
+    fontWeight: Platform.select({ android: '700', ios: '500' }),
     color: colors.link,
     fontSize: 16,
   },

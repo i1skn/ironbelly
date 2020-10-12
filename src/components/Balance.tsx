@@ -75,9 +75,9 @@ const Wrapper = styled.View`
 const Floonet = styled(Text)`
   font-weight: 600;
   font-size: 16;
-  background: ${() => colors.orange[800]};
+  background: ${() => colors.primary};
   padding: 6px 8px;
-  color: #fff;
+  color: #000;
   text-align: center;
 `
 const TopIcon = styled.TouchableOpacity`
@@ -172,7 +172,7 @@ const BalanceComponent = ({
           </Amount>
         </BalanceEq>
       </Wrapper>
-      {isFloonet && <Floonet>You are using Testnet</Floonet>}
+      {isFloonet && <Floonet>Testnet, not real money!</Floonet>}
 
       {isOffline && <OfflineText>Grin node is not reachable</OfflineText>}
     </React.Fragment>
