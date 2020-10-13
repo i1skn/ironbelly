@@ -13,19 +13,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import React, { Component } from 'react'
+import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   Alert,
   TouchableHighlight,
   TouchableOpacity,
   RefreshControl,
   View,
+  StyleSheet,
 } from 'react-native'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text } from 'src/components/CustomFont'
 import Balance from 'src/components/Balance'
-import HeaderSpan from 'src/components/HeaderSpan'
 import TxListItem from 'src/components/TxListItem'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_STATUS } from 'src/modules/settings'
@@ -52,7 +53,6 @@ interface OwnProps {
   enableBiometry: () => void
   disableBiometry: () => void
   txConfirm: (txSlateId: string) => void
-  slateShare: (id: string, isResponse: boolean) => void
   txListRefreshInProgress: boolean
   isOffline: boolean
   firstLoading: boolean
@@ -63,15 +63,13 @@ interface OwnProps {
 type Props = NavigationProps<'Overview'> & OwnProps
 
 type State = {}
-const Wrapper = styled.View`
-  height: 100%;
-`
 const Footer = styled.View`
   flex-direction: row;
-  height: 64;
-  padding-bottom: ${isIphoneX() ? 12 : 0};
-  background-color: ${() => colors.primary};
+  height: ${() => (isIphoneX() ? '80px' : '56px')};
+  padding-bottom: ${() => (isIphoneX() ? '24px' : '0')};
+  padding-top: 16px;
 `
+// background-color: ${() => colors.grey[300]};
 const ActionButton = styled.TouchableOpacity`
   justify-content: center;
   align-items: center;
@@ -79,10 +77,12 @@ const ActionButton = styled.TouchableOpacity`
   opacity: ${(props) => (props.disabled ? '0.3' : '1')};
   flex: 1;
 `
+// background-color: red;
 const ActionButtonText = styled(Text)`
   font-size: 20;
   padding-left: 8px;
   line-height: 28px;
+  color: ${() => colors.blueGrey[800]};
 `
 const NoTxsView = styled.View`
   padding: 16px;
@@ -90,7 +90,7 @@ const NoTxsView = styled.View`
 const EmptyTxListMessage = styled(Text)`
   font-size: 18;
   text-align: center;
-  color: ${() => colors.grey[900]};
+  color: ${() => colors.blueGrey[800]};
   margin-bottom: 20;
 `
 
@@ -141,7 +141,6 @@ class Overview extends Component<Props, State> {
       navigation,
       txCancel,
       txsGet,
-      slateShare,
       settings,
       resetTxForm,
       isOffline,
@@ -151,17 +150,13 @@ class Overview extends Component<Props, State> {
     } = this.props
     const { currencyObject, chain, minimumConfirmations } = settings
     return (
-      <Wrapper>
-        <HeaderSpan bgColor={colors.primary} />
-
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
         <Balance
-          isFloonet={chain === 'floonet'}
           balance={balance}
           rates={currencyRates.rates}
           currency={currencyObject}
           isOffline={isOffline}
           navigation={navigation}
-          minimumConfirmations={minimumConfirmations}
         />
         <SwipeListView
           data={txs}
@@ -176,32 +171,16 @@ class Overview extends Component<Props, State> {
               )}
             </NoTxsView>
           }
-          ItemSeparatorComponent={ListItemSeparator}
-          renderItem={(
-            data: {
-              item: Tx
-            },
-            rowMap,
-          ) => (
+          renderItem={(data: { item: Tx }) => (
             <SwipeRow
               disableRightSwipe
               rightOpenValue={-100}
               disableLeftSwipe={
                 data.item.confirmed || data.item.type === 'TxPosted'
               }>
-              <View
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: 'red',
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'flex-end',
-                }}>
+              <View style={styles.cancel}>
                 <TouchableOpacity
-                  style={{
-                    height: '100%',
-                    justifyContent: 'center',
-                  }}
+                  style={styles.cancelButton}
                   onPress={(_) =>
                     txCancel(
                       data.item.id,
@@ -209,14 +188,7 @@ class Overview extends Component<Props, State> {
                       !data.item.storedTx,
                     )
                   }>
-                  <Text
-                    style={{
-                      width: 100,
-                      color: 'white',
-                      textAlign: 'center',
-                    }}>
-                    {'Cancel'}
-                  </Text>
+                  <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
                 </TouchableOpacity>
               </View>
               <TouchableHighlight
@@ -240,13 +212,7 @@ class Overview extends Component<Props, State> {
                     })
                   }
                 }}
-                style={{
-                  alignItems: 'center',
-                  backgroundColor: '#fff',
-                  flex: 1,
-                  flexDirection: 'row',
-                  justifyContent: 'space-between',
-                }}
+                style={styles.listItem}
                 underlayColor={'#FBFBFB'}>
                 <TxListItem
                   currency={currencyObject}
@@ -257,9 +223,7 @@ class Overview extends Component<Props, State> {
               </TouchableHighlight>
             </SwipeRow>
           )}
-          contentContainerStyle={{
-            backgroundColor: '#fff',
-          }}
+          style={{ backgroundColor: colors.grey[100] }}
           keyExtractor={(item) => `${item.id}`}
           refreshControl={
             <RefreshControl
@@ -280,7 +244,7 @@ class Overview extends Component<Props, State> {
               name="arrow-down-circle"
               size={28}
               style={{
-                color: colors.black,
+                color: colors.blueGrey[800],
               }}
             />
             <ActionButtonText>Receive</ActionButtonText>
@@ -295,13 +259,13 @@ class Overview extends Component<Props, State> {
               name="arrow-up-circle"
               size={28}
               style={{
-                color: colors.black,
+                color: colors.blueGrey[800],
               }}
             />
             <ActionButtonText>Send</ActionButtonText>
           </ActionButton>
         </Footer>
-      </Wrapper>
+      </SafeAreaView>
     )
   }
 }
@@ -336,13 +300,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       refreshFromNode,
     })
   },
-  slateShare: (id: string, isResponse: boolean) => {
-    dispatch({
-      type: 'SLATE_SHARE_REQUEST',
-      id,
-      isResponse,
-    })
-  },
   resetTxForm: () => {
     dispatch({
       type: 'TX_FORM_RESET',
@@ -363,6 +320,42 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
     dispatch({
       type: 'DISABLE_BIOMETRY_REQUEST',
     })
+  },
+})
+
+const styles = StyleSheet.create({
+  safeArea: {
+    backgroundColor: colors.background,
+    height: '100%',
+  },
+  cancel: {
+    alignItems: 'center',
+    backgroundColor: colors.warning,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginVertical: 4,
+    marginHorizontal: 16,
+    borderRadius: 4,
+  },
+  cancelButton: {
+    height: '100%',
+    justifyContent: 'center',
+  },
+  cancelButtonText: {
+    width: 100,
+    color: 'white',
+    textAlign: 'center',
+  },
+  listItem: {
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    marginVertical: 4,
+    marginHorizontal: 16,
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderRadius: 4,
   },
 })
 

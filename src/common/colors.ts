@@ -305,7 +305,7 @@ export const amber = {
   A700: '#ffab00',
 }
 export default {
-  primary: yellow['500'],
+  primary: yellow['400'],
   warning: red['500'],
   success: green.A700,
   link: blue[700],
@@ -316,5 +316,7 @@ export default {
   black,
   white,
   orange,
+  blueGrey,
   androidStatusBar: '#EECE00',
+  background: grey[100],
 }

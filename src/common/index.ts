@@ -40,13 +40,15 @@ import { decode as atob } from 'base-64'
 export const isAndroid = Platform.OS === 'android'
 console.log(isAndroid ? RNFS.DocumentDirectoryPath : RNFS.LibraryDirectoryPath)
 export const hrGrin = (amount: number): string => {
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 3,
-  })
-    .format(amount / 1000000000)
-    .replace(/\$/, 'ツ')
+  return (
+    new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 3,
+    })
+      .format(amount / 1000000000)
+      .replace(/\$/, '') + 'ツ'
+  )
 }
 export const hrFiat = (amount: number, currency: Currency): string => {
   return new Intl.NumberFormat('en-US', {
