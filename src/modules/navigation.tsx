@@ -1,23 +1,11 @@
-//
-// Copyright 2019 Ivan Sorokin.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 import styled from 'styled-components/native'
+import FeatherIcon from 'react-native-vector-icons/Feather'
 import sleep from 'sleep-promise'
 import { isAndroid } from 'src/common'
 import { State as ReduxState, Tx } from 'src/common/types'
 import React from 'react'
-import { Text, Animated, View } from 'react-native'
+import { Text, Animated, TouchableOpacity } from 'react-native'
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import {
   TransitionPresets,
   createStackNavigator,
@@ -39,7 +27,6 @@ import WalletScanScreen from 'src/screens/WalletScan'
 import SettingsGrinNodeScreen from 'src/screens/Settings/GrinNode'
 import SettingsCurrencyScreen from 'src/screens/Settings/Currency'
 import LegalDisclaimerScreen from 'src/screens/LegalDisclaimer'
-import ScanQRCodeScreen from 'src/screens/ScanQRCode'
 import colors from 'src/common/colors'
 import { store } from 'src/common/redux'
 import {
@@ -50,18 +37,15 @@ import {
 } from 'src/modules/settings'
 
 const defaultScreenOptions = {
-  headerTintColor: colors.black,
-  headerTitleStyle: {},
-  headerStyle: {
-    backgroundColor: colors.primary,
-    shadowRadius: 0,
-    shadowOffset: {
-      height: 0,
-    },
+  headerTintColor: colors.onBackground,
+  headerTitleStyle: {
+    color: colors.onBackground,
   },
+  headerStyle: {},
   headerBackTitleStyle: {
-    color: colors.black,
+    color: colors.onBackground,
   },
+  cardOverlayEnabled: true,
 }
 
 export type RootStackParamList = {
@@ -75,9 +59,9 @@ export type RootStackParamList = {
   Main: undefined
   Overview: { slatePath: string }
   Settings: undefined
-  SettingsGrinNode: { apiSecret: string }
+  SettingsGrinNode: undefined | { apiSecret: string }
   SettingsCurrency: undefined
-  ViewPaperKey: { fromSettings: boolean }
+  ViewPaperKey: undefined | { fromSettings: boolean }
   VerifyPaperKey: { title: string }
   TxDetails: { txId: number }
   TxIncompleteSend:
@@ -91,6 +75,7 @@ export type RootStackParamList = {
   Password: undefined
   Created: undefined
   NotCreated: undefined
+  HomeTabs: undefined
 }
 
 const Stack = createStackNavigator<RootStackParamList>()
@@ -156,70 +141,156 @@ const ResetButtonText = styled(Text)`
   font-weight: 500;
 `
 
+const SettingsStack = () => {
+  return (
+    <Stack.Navigator
+      initialRouteName="Settings"
+      screenOptions={{ ...defaultScreenOptions, headerBackTitle: '' }}>
+      <Stack.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={{
+          title: 'Settings',
+        }}
+      />
+      <Stack.Screen
+        name="SettingsGrinNode"
+        component={SettingsGrinNodeScreen}
+        options={({ navigation }) => {
+          return {
+            title: 'Grin node',
+            headerRight: () => (
+              <ResetButton
+                onPress={() => {
+                  const state = store.getState() as ReduxState
+
+                  switch (state.settings.chain) {
+                    case MAINNET_CHAIN:
+                      store.dispatch({
+                        type: 'SWITCH_TO_MAINNET',
+                      })
+                      navigation.setParams({
+                        apiSecret: MAINNET_API_SECRET,
+                      })
+                      break
+
+                    case FLOONET_CHAIN:
+                      store.dispatch({
+                        type: 'SWITCH_TO_FLOONET',
+                      })
+                      navigation.setParams({
+                        apiSecret: FLOONET_API_SECRET,
+                      })
+                      break
+                  }
+                }}>
+                <ResetButtonText>Reset</ResetButtonText>
+              </ResetButton>
+            ),
+          }
+        }}
+      />
+      <Stack.Screen
+        name="SettingsCurrency"
+        component={SettingsCurrencyScreen}
+        options={{
+          title: 'Base Currency',
+        }}
+      />
+      <Stack.Screen
+        name="ViewPaperKey"
+        component={ShowPaperKeyScreen}
+        initialParams={{ fromSettings: true }}
+        options={{
+          title: 'Paper key',
+        }}
+      />
+    </Stack.Navigator>
+  )
+}
+
+const Tab = createBottomTabNavigator()
+
+const HomeTabs = () => (
+  <Tab.Navigator
+    initialRouteName="Overview"
+    tabBarOptions={{
+      activeTintColor: colors.secondary,
+      inactiveTintColor: colors.onSurfaceLight,
+    }}>
+    <Tab.Screen
+      name="Overview"
+      component={OverviewScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => {
+          return <FeatherIcon name="list" size={size + 4} color={color} />
+        },
+      }}
+    />
+    <Tab.Screen
+      name="Send"
+      component={TxIncompleteSendScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => {
+          return (
+            <FeatherIcon name="arrow-up-circle" size={size} color={color} />
+          )
+        },
+        tabBarButton: ({ children }) => {
+          return (
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                getNavigation().then((navigation) => {
+                  navigation.navigate('TxIncompleteSend')
+                })
+              }}>
+              {children}
+            </TouchableOpacity>
+          )
+        },
+      }}
+    />
+    <Tab.Screen
+      name="Receive"
+      component={TxIncompleteReceiveScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => {
+          return (
+            <FeatherIcon name="arrow-down-circle" size={size} color={color} />
+          )
+        },
+        tabBarButton: ({ children }) => {
+          return (
+            <TouchableOpacity
+              style={{ flex: 1 }}
+              onPress={() => {
+                getNavigation().then((navigation) => {
+                  navigation.navigate('TxIncompleteReceive')
+                })
+              }}>
+              {children}
+            </TouchableOpacity>
+          )
+        },
+      }}
+    />
+    <Tab.Screen
+      name="Settings"
+      component={SettingsStack}
+      options={{
+        tabBarIcon: ({ color, size }) => {
+          return <FeatherIcon name="settings" size={size} color={color} />
+        },
+      }}
+    />
+  </Tab.Navigator>
+)
+
 const Created = () => (
   <Stack.Navigator
-    initialRouteName="Overview"
+    initialRouteName="HomeTabs"
     screenOptions={defaultScreenOptions}>
-    <Stack.Screen
-      name="Settings"
-      component={SettingsScreen}
-      options={{
-        title: 'Menu',
-        headerBackTitle: 'Back',
-      }}
-    />
-    <Stack.Screen
-      name="SettingsGrinNode"
-      component={SettingsGrinNodeScreen}
-      options={({ navigation }) => {
-        return {
-          title: 'Grin node',
-          headerRight: () => (
-            <ResetButton
-              onPress={() => {
-                const state = store.getState() as ReduxState
-
-                switch (state.settings.chain) {
-                  case MAINNET_CHAIN:
-                    store.dispatch({
-                      type: 'SWITCH_TO_MAINNET',
-                    })
-                    navigation.setParams({
-                      apiSecret: MAINNET_API_SECRET,
-                    })
-                    break
-
-                  case FLOONET_CHAIN:
-                    store.dispatch({
-                      type: 'SWITCH_TO_FLOONET',
-                    })
-                    navigation.setParams({
-                      apiSecret: FLOONET_API_SECRET,
-                    })
-                    break
-                }
-              }}>
-              <ResetButtonText>Reset</ResetButtonText>
-            </ResetButton>
-          ),
-        }
-      }}
-    />
-    <Stack.Screen
-      name="SettingsCurrency"
-      component={SettingsCurrencyScreen}
-      options={{
-        title: 'Alternative Currency',
-      }}
-    />
-    <Stack.Screen
-      name="ViewPaperKey"
-      component={ShowPaperKeyScreen}
-      initialParams={{ fromSettings: true }}
-      options={{
-        title: 'Paper key',
-      }}
-    />
     <Stack.Screen
       name="TxDetails"
       component={TxDetailsScreen}
@@ -257,19 +328,9 @@ const Created = () => (
       }
     />
     <Stack.Screen
-      name="Overview"
-      component={OverviewScreen}
-      options={{
-        headerShown: false,
-      }}
-    />
-    <Stack.Screen
-      name="ScanQRCode"
-      component={ScanQRCodeScreen}
-      options={{
-        headerShown: false,
-        gestureDirection: 'horizontal-inverted',
-      }}
+      name="HomeTabs"
+      component={HomeTabs}
+      options={{ headerShown: false }}
     />
   </Stack.Navigator>
 )

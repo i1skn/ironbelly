@@ -1,19 +1,11 @@
-//
-// Copyright 2019 Ivan Sorokin.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 import React, { Component } from 'react'
-import { View, TouchableWithoutFeedback, Alert, Keyboard } from 'react-native'
+import {
+  View,
+  TouchableWithoutFeedback,
+  Alert,
+  Keyboard,
+  StyleSheet,
+} from 'react-native'
 import { Text } from 'src/components/CustomFont'
 import FormTextInput from 'src/components/FormTextInput'
 import { connect } from 'react-redux'
@@ -26,6 +18,7 @@ import { State as ReduxState, Navigation } from 'src/common/types'
 import * as Keychain from 'react-native-keychain'
 import TouchID from 'react-native-touch-id'
 import { Dispatch } from 'src/common/types'
+import colors from 'src/common/colors'
 type Props = {
   navigation: Navigation
   setPassword: (password: string) => void
@@ -144,25 +137,13 @@ class Password extends Component<Props, State> {
     return (
       <KeyboardAvoidingWrapper
         behavior={isAndroid ? undefined : 'padding'}
-        style={{
-          flex: 1,
-          backgroundColor: '#fff',
-        }}>
+        style={styles.container}>
         <TouchableWithoutFeedback
           onPress={() => {
             Keyboard.dismiss()
           }}>
-          <View
-            style={{
-              flex: 1,
-            }}>
-            <View
-              style={{
-                flexGrow: 1,
-                flexShrink: 1,
-                flexBasis: '40%',
-              }}
-            />
+          <View style={styles.wrapper}>
+            <View style={styles.spanTop} />
             <FormTextInput
               autoFocus={false}
               secureTextEntry={true}
@@ -173,7 +154,7 @@ class Password extends Component<Props, State> {
               placeholder="Enter password"
             />
             <ForgotButton disabled={false} onPress={this._onForgot}>
-              <Text>Forgot?</Text>
+              <Text style={styles.forgot}>Forgot?</Text>
             </ForgotButton>
             <Submit
               title={`Unlock${
@@ -190,19 +171,37 @@ class Password extends Component<Props, State> {
                 }
               }}
             />
-            <View
-              style={{
-                flexGrow: 10,
-                flexShrink: 0,
-                flexBasis: 16,
-              }}
-            />
+            <View style={styles.spanBottom} />
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingWrapper>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  wrapper: {
+    flex: 1,
+  },
+  spanTop: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: '40%',
+  },
+  spanBottom: {
+    flexGrow: 10,
+    flexShrink: 0,
+    flexBasis: 16,
+  },
+  forgot: {
+    lineHeight: 27,
+    color: colors.onSurface,
+  },
+})
 
 const mapStateToProps = (state: ReduxState) => ({
   isPasswordValid: state.wallet.password.valid,

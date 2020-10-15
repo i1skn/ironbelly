@@ -133,13 +133,6 @@ class Verify extends Component<Props, State> {
       <Wrapper>
         {(wordsCount && (
           <Fragment>
-            <UnderHeaderBlock>
-              <Text>
-                {isNew
-                  ? 'Enter the paper key you have just written to verify its correctness.'
-                  : 'Enter the paper key to continue.'}
-              </Text>
-            </UnderHeaderBlock>
             <KeyboardAwareScrollView
               innerRef={(sv) => (this._scrollView = sv)}
               style={{
@@ -150,6 +143,13 @@ class Verify extends Component<Props, State> {
               extraScrollHeight={8}
               enableResetScrollToCoords={false}
               keyboardOpeningTime={0}>
+              <UnderHeaderBlock>
+                <Text>
+                  {isNew
+                    ? 'Enter the paper key you have just written to verify its correctness.'
+                    : 'Enter the paper key to continue.'}
+                </Text>
+              </UnderHeaderBlock>
               <Words>
                 {mnemonicWords.map((word: string, i: number) => {
                   return (

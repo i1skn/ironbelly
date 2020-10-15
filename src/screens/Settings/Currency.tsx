@@ -1,27 +1,12 @@
-//
-// Copyright 2019 Ivan Sorokin.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 import React, { Component } from 'react'
-import { FlatList } from 'react-native'
+import FeatherIcon from 'react-native-vector-icons/Feather'
+import { FlatList, StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Text } from 'src/components/CustomFont'
 import styled from 'styled-components/native'
 import { State as ReduxState, Currency } from 'src/common/types'
 import { currencyList } from 'src/common'
 import colors from 'src/common/colors'
-import Icon from 'react-native-vector-icons/Ionicons'
-import { ListItemSeparator } from 'src/common'
 import { SearchBar } from 'react-native-elements'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 type Props = {
@@ -34,29 +19,31 @@ type State = {
   searchText: string
   filteredList: Array<Currency>
 }
-const Wrapper = styled.TouchableOpacity`
+const ListItemTouchable = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
-  padding: 10px 48px 10px;
 `
+
 const Value = styled(Text)`
   padding-right: 16px;
   line-height: 26px;
   color: ${colors.grey[900]};
 `
-const CheckedIcon = styled(Icon)`
-  color: ${colors.success};
-  padding-right: 16px;
-  margin-left: -26px;
-  width: 26px;
-`
 
 const ListItem = ({ checked, value, onPress }) => {
   return (
-    <Wrapper onPress={onPress}>
-      {checked && <CheckedIcon name="ios-checkmark" size={20} />}
-      <Value>{value}</Value>
-    </Wrapper>
+    <View style={styles.listItem}>
+      <ListItemTouchable onPress={onPress}>
+        {checked && (
+          <FeatherIcon
+            style={styles.checkIcon}
+            name="chevron-right"
+            size={20}
+          />
+        )}
+        <Value>{value}</Value>
+      </ListItemTouchable>
+    </View>
   )
 }
 
@@ -64,7 +51,8 @@ const CoinGecko = styled(Text)`
   font-size: 16px;
   color: ${colors.grey[500]};
   text-align: center;
-  padding-bottom: 32px;
+  padding-vertical: 16px;
+  background: ${colors.background};
 `
 
 class CurrencyList extends Component<Props, State> {
@@ -89,11 +77,15 @@ class CurrencyList extends Component<Props, State> {
         placeholder="Search"
         platform="ios"
         containerStyle={{
-          backgroundColor: colors.white,
+          paddingHorizontal: 8,
+        }}
+        inputContainerStyle={{
+          backgroundColor: colors.surface,
         }}
         cancelButtonProps={{
           buttonTextStyle: {
-            color: colors.grey[900],
+            color: colors.onBackground,
+            marginRight: 8,
           },
         }}
         round
@@ -107,12 +99,11 @@ class CurrencyList extends Component<Props, State> {
   render() {
     const { currency, setCurrency, currencyRates } = this.props
     return (
-      <>
+      <View style={styles.container}>
         <FlatList
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={<CoinGecko>Data from CoinGecko</CoinGecko>}
           contentContainerStyle={{}}
-          ItemSeparatorComponent={ListItemSeparator}
           data={this.state.filteredList}
           keyExtractor={(item) => item.code}
           keyboardShouldPersistTaps={'handled'}
@@ -126,10 +117,29 @@ class CurrencyList extends Component<Props, State> {
           )}
           refreshing={currencyRates.inProgress}
         />
-      </>
+      </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    backgroundColor: colors.background,
+  },
+  listItem: {
+    backgroundColor: colors.surface,
+    paddingVertical: 10,
+    paddingLeft: 44,
+    paddingRight: 16,
+  },
+  checkIcon: {
+    color: colors.secondary,
+    paddingRight: 16,
+    marginLeft: -30,
+    width: 30,
+  },
+})
 
 const mapStateToProps = (state: ReduxState) => ({
   currency: state.settings.currencyObject,

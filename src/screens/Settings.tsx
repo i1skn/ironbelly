@@ -1,27 +1,24 @@
-//
-// Copyright 2019 Ivan Sorokin.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-import React, { Component, Fragment } from 'react'
-import { FlatList, Alert, Linking } from 'react-native'
+import React, { Component } from 'react'
+import {
+  Dispatch,
+  State as GlobalState,
+  NavigationProps,
+} from 'src/common/types'
+import {
+  FlatList,
+  Alert,
+  Linking,
+  StyleSheet,
+  ScrollView,
+  SectionList,
+} from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import SettingsListItem, {
-  Props as SettingsItem,
+  Props as SettingsListItemProps,
 } from 'src/components/SettingsListItem'
-import { State as ReduxState, Error, Navigation } from 'src/common/types'
 import colors from 'src/common/colors'
 import { State as SettingsState, BIOMETRY_STATUS } from 'src/modules/settings'
 import { getBiometryTitle } from 'src/common'
@@ -29,30 +26,29 @@ import { Text } from 'src/components/CustomFont'
 import { termsUrl, privacyUrl } from 'src/screens/LegalDisclaimer'
 const VersionText = styled(Text)`
   text-align: center;
-  padding-bottom: 16px;
+  padding-vertical: 16px;
+  color: ${colors.onBackgroundLight};
 `
-type Props = {
-  setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void
-  setChain: (chain: string) => void
-  getPhrase: () => void
-  destroyWallet: () => void
-  repairWallet: () => void
-  migrateToMainnet: () => void
+interface StateProps {
   settings: SettingsState
-  error: Error
   isCreated: boolean
-  navigation: Navigation
   isFloonet: boolean
+}
+interface DispatchProps {
   enableBiometry: () => void
   disableBiometry: () => void
   walletScan: () => void
+  setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void
+  setChain: (chain: GlobalState['settings']['chain']) => void
+  getPhrase: () => void
+  destroyWallet: () => void
+  migrateToMainnet: () => void
 }
+type Props = NavigationProps<'Settings'> & StateProps & DispatchProps
+
 type State = {}
 
 class Settings extends Component<Props, State> {
-  static navigationOptions = {
-    title: 'Settings',
-  }
   state = {}
 
   _onMigrateToMainnet = () => {
@@ -144,71 +140,68 @@ class Settings extends Component<Props, State> {
 
   render() {
     const { settings, navigation, getPhrase, isFloonet } = this.props
-    const listData = [
-      // { key: 'currency', title: 'Currency', value: 'EUR', onPress: () => {} },
+    const mainListData: Array<SettingsListItemProps> = [
       {
-        key: 'grin_node',
         title: 'Grin node',
         onPress: this._onGrinNode,
       },
       {
-        key: 'currency',
-        title: 'Alternative Currency',
+        title: 'Base Currency',
         value: settings.currencyObject.code.toUpperCase(),
         onPress: this._onCurrency,
       },
+    ]
+
+    const securityListData: Array<SettingsListItemProps> = [
       {
-        key: 'paperkey',
         title: 'Paper key',
         onPress: () => {
           getPhrase()
           navigation.navigate('ViewPaperKey')
         },
       },
+    ]
+
+    const resourcesListData: Array<SettingsListItemProps> = [
       {
-        key: 'repair',
-        title: 'Repair this wallet',
-        onPress: this._onRepairWallet,
+        title: 'Terms of Use',
         hideChevron: true,
+        isLink: true,
+        onPress: () => {
+          Linking.openURL(termsUrl)
+        },
       },
       {
-        key: 'feedback',
+        title: 'Privacy Policy',
+        hideChevron: true,
+        isLink: true,
+        onPress: () => {
+          Linking.openURL(privacyUrl)
+        },
+      },
+      {
         title: 'Got feedback?',
         hideChevron: true,
         onPress: () => {
           Linking.openURL('mailto:support@ironbelly.app')
         },
       },
+    ]
+    const dangerousListData: Array<SettingsListItemProps> = [
       {
-        key: 'terms',
-        title: 'Terms of Use',
+        title: 'Repair this wallet',
+        onPress: this._onRepairWallet,
         hideChevron: true,
-        onPress: () => {
-          Linking.openURL(termsUrl)
-        },
       },
       {
-        key: 'privacy',
-        title: 'Privacy Policy',
-        hideChevron: true,
-        onPress: () => {
-          Linking.openURL(privacyUrl)
-        },
-      },
-      {
-        key: 'destroy',
         title: 'Destroy this wallet',
-        titleStyle: {
-          color: colors.warning,
-        },
         hideChevron: true,
         onPress: () => this._onDestroyWallet(),
       },
     ]
 
     if (settings.biometryType) {
-      listData.splice(0, 0, {
-        key: 'biometryEnabled',
+      securityListData.splice(0, 0, {
         title: getBiometryTitle(settings.biometryType),
         hideChevron: true,
         value: settings.biometryStatus === BIOMETRY_STATUS.enabled,
@@ -223,44 +216,64 @@ class Settings extends Component<Props, State> {
     }
 
     if (isFloonet) {
-      listData.splice(0, 0, {
-        key: 'chain',
+      dangerousListData.splice(0, 0, {
         title: 'Switch to Mainnet',
         hideChevron: true,
         onPress: () => this._onMigrateToMainnet(),
-        titleStyle: {
-          color: colors.success,
-        },
       })
     }
 
+    const data = [
+      { title: 'Main', data: mainListData },
+      { title: 'Security', data: securityListData },
+      { title: 'Resources', data: resourcesListData },
+      { title: 'Dangerous Zone', data: dangerousListData },
+    ]
+
     return (
-      <Fragment>
-        <FlatList
-          style={{
-            paddingLeft: 16,
-          }}
-          data={listData}
-          renderItem={({ item }: { item: SettingsItem }) => (
-            <SettingsListItem {...item} />
-          )}
-        />
-        <VersionText style={{}}>
-          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
-        </VersionText>
-      </Fragment>
+      <SectionList
+        style={styles.container}
+        sections={data}
+        initialNumToRender={20}
+        keyExtractor={(item: SettingsListItemProps, index) =>
+          item.title + index
+        }
+        renderItem={({ item }: { item: SettingsListItemProps }) => (
+          <SettingsListItem {...item} />
+        )}
+        renderSectionHeader={({ section }) => (
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+        )}
+        ListFooterComponent={
+          <VersionText>Version: {DeviceInfo.getVersion()}</VersionText>
+        }
+        stickySectionHeadersEnabled={false}
+      />
     )
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    backgroundColor: colors.background,
+  },
+  sectionTitle: {
+    paddingTop: 28,
+    paddingBottom: 8,
+    paddingHorizontal: 16,
+    color: colors.onBackgroundLight,
+    fontWeight: '600',
+  },
+})
+
+const mapStateToProps = (state: GlobalState): StateProps => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
-  error: state.tx.txCreate.error,
   isFloonet: state.settings.chain === 'floonet',
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => {
     dispatch({
       type: 'SET_SETTINGS',
@@ -269,7 +282,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       },
     })
   },
-  setChain: (chain: string) => {
+  setChain: (chain: GlobalState['settings']['chain']) => {
     dispatch({
       type: 'SET_SETTINGS',
       newSettings: {
@@ -309,4 +322,7 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
   },
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Settings)
+export default connect<StateProps, DispatchProps, {}, GlobalState>(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Settings)

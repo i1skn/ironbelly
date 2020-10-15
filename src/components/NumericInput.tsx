@@ -16,6 +16,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components/native'
 import { Text, TextInput } from 'src/components/CustomFont'
 import colors from 'src/common/colors'
+import { Platform } from 'react-native'
 type Props = {
   units?: string
   placeholder?: string
@@ -38,12 +39,19 @@ const Spacer = styled(Text)`
   height: 58;
   line-height: 58;
 `
+
+const HiddenSpacer = styled(Text)`
+  color: ${colors.surface};
+  font-size: 36;
+  height: 58;
+  line-height: 58;
+`
+
 const StyledInput = styled(TextInput)`
   font-size: ${(props) => (props.value ? 36 : 36)};
-  font-weight: ${(props) => (props.value ? 600 : 300)};
-  flex-grow: 1;
-  color: ${colors.black} 
-  height: 58;
+  font-weight: ${(props) => (props.value ? 400 : 300)};
+  color: ${colors.onSurface} 
+  height: 68;
   text-align-vertical: center;
 `
 export default class NumericInput extends Component<Props, State> {
@@ -59,6 +67,7 @@ export default class NumericInput extends Component<Props, State> {
     } = this.props
     return (
       <Layout style={style}>
+        {units && <HiddenSpacer>{units}</HiddenSpacer>}
         <StyledInput
           selectionColor={colors.grey[700]}
           autoFocus={autoFocus}

@@ -59,7 +59,7 @@ const ButtonTitle = styled(Text)`
   font-weight: 500;
   width: auto;
   text-align: center;
-  color: ${(props) => (props.danger ? '#FFF' : '#000')};
+  color: ${(props) => (props.danger ? '#FFF' : colors.onPrimary)};
 `
 export const Button = (props: any) => {
   return (

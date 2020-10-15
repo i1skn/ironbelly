@@ -1,19 +1,4 @@
-//
-// Copyright 2019 Ivan Sorokin.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//     http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
 import React, { Component } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import {
   Alert,
   TouchableHighlight,
@@ -30,7 +15,6 @@ import Balance from 'src/components/Balance'
 import TxListItem from 'src/components/TxListItem'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_STATUS } from 'src/modules/settings'
-import FeatherIcon from 'react-native-vector-icons/Feather'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import {
   Balance as BalanceType,
@@ -38,7 +22,7 @@ import {
   Tx,
 } from 'src/common/types'
 import colors from 'src/common/colors'
-import { getBiometryTitle, ListItemSeparator } from 'src/common'
+import { getBiometryTitle } from 'src/common'
 import { WalletInitState } from 'src/modules/wallet'
 import { State as SettingsState } from 'src/modules/settings'
 import { NavigationProps } from 'src/common/types'
@@ -49,7 +33,6 @@ interface OwnProps {
   settings: SettingsState
   txCancel: (id: number, slateId: string, isResponse: boolean) => void
   txsGet: (showLoader: boolean, refreshFromNode: boolean) => void
-  resetTxForm: () => void
   enableBiometry: () => void
   disableBiometry: () => void
   txConfirm: (txSlateId: string) => void
@@ -64,10 +47,7 @@ type Props = NavigationProps<'Overview'> & OwnProps
 
 type State = {}
 const Footer = styled.View`
-  flex-direction: row;
-  height: ${() => (isIphoneX() ? '80px' : '56px')};
-  padding-bottom: ${() => (isIphoneX() ? '24px' : '0')};
-  padding-top: 16px;
+  height: 24px;
 `
 // background-color: ${() => colors.grey[300]};
 const ActionButton = styled.TouchableOpacity`
@@ -142,20 +122,18 @@ class Overview extends Component<Props, State> {
       txCancel,
       txsGet,
       settings,
-      resetTxForm,
       isOffline,
       firstLoading,
       txConfirm,
       currencyRates,
     } = this.props
-    const { currencyObject, chain, minimumConfirmations } = settings
+    const { currencyObject, minimumConfirmations } = settings
     return (
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <View style={styles.container}>
         <Balance
           balance={balance}
           rates={currencyRates.rates}
           currency={currencyObject}
-          isOffline={isOffline}
           navigation={navigation}
         />
         <SwipeListView
@@ -223,8 +201,17 @@ class Overview extends Component<Props, State> {
               </TouchableHighlight>
             </SwipeRow>
           )}
-          style={{ backgroundColor: colors.grey[100] }}
+          style={styles.txList}
           keyExtractor={(item) => `${item.id}`}
+          ListFooterComponent={<Footer />}
+          ListHeaderComponent={
+            (isOffline && (
+              <Text style={styles.offlineWarningText}>
+                Grin node is not reachable
+              </Text>
+            )) ||
+            null
+          }
           refreshControl={
             <RefreshControl
               refreshing={txListRefreshInProgress}
@@ -234,38 +221,7 @@ class Overview extends Component<Props, State> {
             />
           }
         />
-        <Footer>
-          <ActionButton
-            onPress={() => {
-              navigation.navigate('TxIncompleteReceive')
-            }}
-            disabled={false}>
-            <FeatherIcon
-              name="arrow-down-circle"
-              size={28}
-              style={{
-                color: colors.blueGrey[800],
-              }}
-            />
-            <ActionButtonText>Receive</ActionButtonText>
-          </ActionButton>
-          <ActionButton
-            onPress={() => {
-              resetTxForm()
-              navigation.navigate('TxIncompleteSend')
-            }}
-            disabled={!balance.amountCurrentlySpendable}>
-            <FeatherIcon
-              name="arrow-up-circle"
-              size={28}
-              style={{
-                color: colors.blueGrey[800],
-              }}
-            />
-            <ActionButtonText>Send</ActionButtonText>
-          </ActionButton>
-        </Footer>
-      </SafeAreaView>
+      </View>
     )
   }
 }
@@ -300,11 +256,6 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       refreshFromNode,
     })
   },
-  resetTxForm: () => {
-    dispatch({
-      type: 'TX_FORM_RESET',
-    })
-  },
   txConfirm: (txSlateId) => {
     dispatch({
       type: 'TX_POST_SHOW',
@@ -324,9 +275,12 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
 })
 
 const styles = StyleSheet.create({
-  safeArea: {
-    backgroundColor: colors.background,
+  container: {
     height: '100%',
+    backgroundColor: colors.background,
+  },
+  txList: {
+    paddingTop: 12,
   },
   cancel: {
     alignItems: 'center',
@@ -349,13 +303,21 @@ const styles = StyleSheet.create({
   },
   listItem: {
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: colors.surface,
     marginVertical: 4,
     marginHorizontal: 16,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderRadius: 4,
+  },
+  offlineWarningText: {
+    fontWeight: '600',
+    fontSize: 16,
+    color: colors.warning,
+    backgroundColor: colors.background,
+    textAlign: 'center',
+    paddingBottom: 8,
   },
 })
 

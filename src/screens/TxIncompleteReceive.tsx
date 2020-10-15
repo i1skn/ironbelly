@@ -277,14 +277,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flex: 1,
   },
-  wrapper: {
-    backgroundColor: 'green',
-    flexGrow: 0,
-  },
-  firstStep: {
-    // flex: 1,
-    // paddingBottom: 64,
-  },
   info: {
     color: colors.grey[700],
     marginBottom: 8,

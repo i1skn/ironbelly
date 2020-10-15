@@ -227,15 +227,21 @@ export const LoaderView = styled.View`
   justify-content: center;
   align-items: center;
 `
-export const ListItemSeparator = styled.View`
-  height: 1;
-  width: 100%;
-  background-color: ${() => colors.grey[200]};
-`
 export const UnderHeaderBlock = styled.View`
-  background-color: ${colors.primary};
-  padding: ${isAndroid ? '16px' : '8px'} 16px 16px 16px;
+  background-color: ${colors.primaryLight};
+  padding: 12px 16px;
+  margin-top: 16px;
+  border-radius: 8px;
 `
+
+export const Notice = styled.Text`
+  color: ${colors.onBackgroundLight};
+  font-size: 16;
+  line-height: 24;
+  text-align: center;
+  margin-top: 8px;
+`
+
 export const getBiometryTitle = (biometryType?: string | null) => {
   switch (biometryType) {
     case BIOMETRY_TYPE.TOUCH_ID:

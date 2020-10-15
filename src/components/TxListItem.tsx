@@ -9,21 +9,20 @@ import colors from 'src/common/colors'
 import { FlexGrow } from 'src/common'
 const Time = styled(Text)`
   font-size: 14;
-  color: ${() => colors.grey[700]};
+  color: ${() => colors.onSurfaceLight};
 `
 const UnconfirmedGuide = styled(Text)`
   font-size: 14;
-  color: ${() => colors.warning};
+  color: ${() => colors.secondary};
 `
-const AmountGrin = styled(Text)<{ isSent: boolean }>`
-  font-weight: 600;
-  font-size: 18;
-  color: ${(props) => (props.isSent && colors.black) || colors.success};
+const AmountGrin = styled(Text)`
+  font-size: 21;
+  color: ${() => colors.onSurface};
 `
 const AmountFiat = styled(Text)`
   font-size: 12;
   padding-top: 4px;
-  color: ${() => colors.grey[700]};
+  color: ${() => colors.onSurface};
 `
 const Title = styled(Text)`
   font-weight: 500;
@@ -94,7 +93,7 @@ const TxListItem = (props: Props) => {
         style={{
           alignItems: 'flex-end',
         }}>
-        <AmountGrin isSent={isSent}>{hrGrin(amount)}</AmountGrin>
+        <AmountGrin>{hrGrin(amount)}</AmountGrin>
         <AmountFiat>
           {hrFiat(convertToFiat(amount, currency, rates), currency)}
         </AmountFiat>

@@ -32,6 +32,7 @@ import {
   Spacer,
   getSlatePath,
   isValidSlatepack,
+  Notice,
 } from 'src/common'
 import { isTxFormValid } from 'src/modules/tx'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -175,6 +176,28 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
     }
   }, [amount])
 
+  let noticeText
+
+  if (balance.amountCurrentlySpendable) {
+    noticeText = `You can send up to ${hrGrin(
+      balance.amountCurrentlySpendable,
+    )}`
+  } else {
+    noticeText = `You don't have any funds available`
+  }
+  if (balance.amountLocked) {
+    noticeText += ` because ${hrGrin(
+      balance.amountLocked,
+    )} is locked for unconfirmed transactions`
+  }
+  if (balance.amountAwaitingConfirmation) {
+    noticeText +=
+      (balance.amountAwaitingConfirmation ? ' and' : ' because') +
+      ` ${hrGrin(
+        balance.amountAwaitingConfirmation,
+      )} is not older than ${minimumConfirmations} confirmations`
+  }
+
   return (
     <KeyboardAwareScrollView
       keyboardDismissMode={'on-drag'}
@@ -185,31 +208,33 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
         }),
         paddingHorizontal: 16,
       }}>
-      <View style={styles.amountRow}>
-        <NumericInput
-          autoFocus={!amount}
-          onChange={(value: string) => {
-            const amount = parseFloat(value.replace(/,/, '.') || '0')
+      <Notice>{noticeText}</Notice>
+      {!!balance.amountCurrentlySpendable && (
+        <View style={styles.amount}>
+          <NumericInput
+            autoFocus={!amount}
+            onChange={(value: string) => {
+              const amount = parseFloat(value.replace(/,/, '.') || '0')
 
-            if (!isNaN(amount) && amount) {
-              setAmount(amount * 1e9, value)
-            } else {
-              setAmount(0, value)
-            }
-          }}
-          placeholder="Amount"
-          value={textAmount}
-          maxLength={100000}
-          units={'ツ'}
-        />
-        <Text style={styles.alternativeAmount}>
-          ≈{' '}
-          {hrFiat(
-            convertToFiat(amount, currency, currencyRates.rates),
-            currency,
-          )}
-        </Text>
-      </View>
+              if (!isNaN(amount) && amount) {
+                setAmount(amount * 1e9, value)
+              } else {
+                setAmount(0, value)
+              }
+            }}
+            placeholder="0"
+            value={textAmount}
+            maxLength={100000}
+            units={'ツ'}
+          />
+          <Text style={styles.alternativeAmount}>
+            {hrFiat(
+              convertToFiat(amount, currency, currencyRates.rates),
+              currency,
+            )}
+          </Text>
+        </View>
+      )}
       <View style={styles.feeStatus}>
         {false && (
           <Text style={styles.available}>{`Available: ${hrGrin(amount)}`}</Text>
@@ -369,6 +394,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
       refScrollView.current?.scrollToEnd()
     }, 100)
   }
+
   // Loading my Slatepack
   useEffect(() => {
     const path = getSlatePath(slateId, false /** not a response **/)
@@ -438,7 +464,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
           it back to you.
         </Text>
 
-        <View style={styles.firstStep}>
+        <View>
           {(slatepack && (
             <>
               <View style={styles.copyPasteContent}>
@@ -489,8 +515,8 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
               </View>
               <Button
                 title="Finish transaction"
-                style={styles.button}
                 onPress={txFinalize}
+                disabled={!isValidSlatepack(recipientSlatepack)}
               />
             </>
           )) || (
@@ -508,9 +534,24 @@ const TxIncompleteSend = ({ navigation, route }: Props) => {
   const tx = route?.params?.tx
   const title = tx ? `Sending ${hrGrin(Math.abs(tx.amount))}` : `Send`
   const subTitle = tx && `fee: ${hrGrin(tx.fee)}`
+  const dispatch = useDispatch()
+
+  const resetTxForm = () => {
+    console.log('RESET')
+    dispatch({
+      type: 'TX_FORM_RESET',
+    })
+  }
+
   useEffect(() => {
     navigation.setParams({ title, subTitle })
   }, [title, subTitle])
+
+  useEffect(() => {
+    return navigation.addListener('blur', () => {
+      resetTxForm()
+    })
+  }, [navigation])
 
   return (
     <>
@@ -626,19 +667,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
     flex: 1,
   },
-  wrapper: {
-    backgroundColor: 'green',
-    flexGrow: 0,
-  },
-  firstStep: {
-    // flex: 1,
-    // paddingBottom: 64,
-  },
   info: {
     color: colors.grey[700],
     marginBottom: 8,
   },
-  button: {},
   textarea: {
     maxHeight: 360,
     fontSize: 16,
@@ -668,17 +700,15 @@ const styles = StyleSheet.create({
     color: colors.link,
     fontSize: 16,
   },
-  amountRow: {
-    flexDirection: 'row',
+  amount: {
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   alternativeAmount: {
-    color: colors.grey[700],
+    color: colors.onBackgroundLight,
     fontSize: 18,
+    fontWeight: '300',
     textAlign: 'right',
-    height: 50,
-    lineHeight: 50,
-    marginLeft: 2,
   },
   feeStatus: {
     flexDirection: 'row',

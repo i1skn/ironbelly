@@ -116,7 +116,8 @@ class RealApp extends React.Component<Props, State> {
   async componentDidMount() {
     StatusBar.setBarStyle('dark-content')
     if (isAndroid) {
-      StatusBar.setBackgroundColor(colors.androidStatusBar)
+      StatusBar.setBackgroundColor('rgba(0,0,0,0)')
+      StatusBar.setTranslucent(true)
     }
     GrinBridge.setLogger().then(console.log).catch(console.log)
     const { slateUrl, legalAccepted } = this.props

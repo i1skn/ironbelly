@@ -238,8 +238,6 @@ export const cyan = {
   A400: '#00e5ff',
   A700: '#00b8d4',
 }
-export const black = '#000'
-export const white = '#fff'
 export const brown = {
   50: '#efebe9',
   100: '#d7ccc8',
@@ -304,19 +302,49 @@ export const amber = {
   A400: '#ffc400',
   A700: '#ffab00',
 }
+
+export const black = '#000'
+export const white = '#fff'
+
+const primary = yellow
+const secondary = blue
 export default {
-  primary: yellow['400'],
-  warning: red['500'],
+  primaryUltraLight: primary[200],
+  primaryLight: primary[300],
+  primary: primary[500],
+  primaryDark: primary[800],
+  primaryUltraDark: primary[900],
+
+  secondaryUltraLight: secondary[200],
+  secondaryLight: secondary[300],
+  secondary: secondary[500],
+  secondaryDark: secondary[800],
+  secondaryUltraDark: secondary[900],
+
+  onPrimary: blueGrey[900],
+  onPrimaryLight: blueGrey[900] + 'aa',
+
+  background: grey[100],
+  onBackground: blueGrey[900],
+  onBackgroundLight: blueGrey[900] + 'aa',
+
+  surface: white,
+  onSurface: blueGrey[900],
+  onSurfaceLight: blueGrey[900] + 'aa',
+
+  warning: deepOrange['500'],
   success: green.A700,
-  link: blue[700],
-  grey,
+  link: blue['500'],
+
   red,
   green,
-  yellow,
   black,
   white,
   orange,
   blueGrey,
-  androidStatusBar: '#EECE00',
-  background: grey[100],
+  cyan,
+  amber,
+  yellow,
+  grey,
+  lightBlue,
 }

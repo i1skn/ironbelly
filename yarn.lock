@@ -1174,6 +1174,14 @@
   resolved "https://registry.yarnpkg.com/@react-native-community/netinfo/-/netinfo-5.9.7.tgz#769c6b306ea6bbaa1c4a3fffdd183d0cfc30ed7e"
   integrity sha512-NAkkT68oF+M9o6El2xeUqZK7magPjG/tAcEbvCbqyhlh3yElKWnI1e1vpbVvFXzTefy67FwYFWOJqBN6U7Mnkg==
 
+"@react-navigation/bottom-tabs@^5.9.2":
+  version "5.9.2"
+  resolved "https://registry.yarnpkg.com/@react-navigation/bottom-tabs/-/bottom-tabs-5.9.2.tgz#b071d9f39b275d4ea256df7bfb1ee83bbddeebeb"
+  integrity sha512-nSaAXFNbRukhMGq4U3m1rqbFZEPT64/gPTwUwQ5YQom5Q0a6xZ0AnOmtFIXvDBbK5VJiokGdBLJ/TMDchqcujQ==
+  dependencies:
+    color "^3.1.2"
+    react-native-iphone-x-helper "^1.2.1"
+
 "@react-navigation/core@^5.12.4":
   version "5.12.4"
   resolved "https://registry.yarnpkg.com/@react-navigation/core/-/core-5.12.4.tgz#1bd0c81d098895c8ffe49f8624fae60c9abc5684"
@@ -6901,6 +6909,11 @@ react-native-keychain@^5.0.0:
   version "5.0.1"
   resolved "https://registry.yarnpkg.com/react-native-keychain/-/react-native-keychain-5.0.1.tgz#2751de436f017c87b8aabb32533bee88657d643e"
   integrity sha512-CLIPNexPBufPpNqgF7/smZNAiv6x0SCsztfEi/hWPCQ7yHxNwdRUyUzOLGrw1lPe/6fQE+TC3iS1+cbDTaRJag==
+
+react-native-linear-gradient@^2.5.6:
+  version "2.5.6"
+  resolved "https://registry.yarnpkg.com/react-native-linear-gradient/-/react-native-linear-gradient-2.5.6.tgz#96215cbc5ec7a01247a20890888aa75b834d44a0"
+  integrity sha512-HDwEaXcQIuXXCV70O+bK1rizFong3wj+5Q/jSyifKFLg0VWF95xh8XQgfzXwtq0NggL9vNjPKXa016KuFu+VFg==
 
 react-native-markdown-renderer@^3.2.8:
   version "3.2.8"
