@@ -738,41 +738,55 @@ fn tx_send_https(
 ) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let api = Owner::new(wallet.clone(), None);
-    let args = InitTxArgs {
-        src_acct_name: None,
-        amount,
-        minimum_confirmations: state.minimum_confirmations,
-        max_outputs: 500,
-        num_change_outputs: 1,
-        selection_strategy_is_use_all,
-        target_slate_version: None,
-        estimate_only: Some(false),
-        send_args: None,
-        payment_proof_recipient_address: None,
-        ttl_blocks: None,
+    let parent_key_id = {
+        wallet_lock!(wallet, w);
+        w.parent_key_id().clone()
     };
-    let slate = api.init_send_tx(None, args)?;
-    // slate.version_info.version = 2;
-    // slate.version_info.orig_version = 2;
+
+    let slate = {
+        wallet_lock!(wallet, w);
+        let mut slate = tx::new_tx_slate(&mut **w, amount, false, 2, false, None)?;
+        let height = w.w2n_client().get_chain_tip()?.0;
+
+        let context = tx::add_inputs_to_slate(
+            &mut **w,
+            None,
+            &mut slate,
+            height,
+            state.minimum_confirmations,
+            500,
+            1,
+            selection_strategy_is_use_all,
+            &parent_key_id,
+            true,
+            false,
+        )?;
+
+        {
+            let mut batch = w.batch(None)?;
+            batch.save_private_context(slate.id.as_bytes(), &context)?;
+            batch.commit()?;
+        }
+
+        // slate.version_info.version = 4;
+        // slate.version_info.orig_version = 2;
+        selection::lock_tx_context(&mut **w, None, &slate, height, &context, None)?;
+        slate.compact()?;
+        slate
+    };
+
+    let api = Owner::new(wallet.clone(), None);
+
     let mut sender = Box::new(
         HttpSlateSender::new(url)
             .map_err(|_| ErrorKind::GenericError(format!("Invalid destination URL: {}", url)))?,
     );
     api.tx_lock_outputs(None, &slate)?;
-    let packer = Slatepacker::new(SlatepackerArgs {
-        sender: None, // sender
-        recipients: vec![],
-        dec_key: None,
-    });
 
-    let slatepack = packer.create_slatepack(&slate)?;
-
-    match sender.send_tx(&slate, true) {
+    match sender.send_tx(&slate, false) {
         Ok(mut slate) => {
-            // api.verify_slate_messages(None, &slate)?;
             api.finalize_tx(None, &mut slate)?;
-            Ok(SlatepackArmor::encode(&slatepack)
+            Ok(serde_json::to_string(&slate.id)
                 .map_err(|e| ErrorKind::GenericError(e.to_string()))?)
         }
         Err(e) => {
@@ -839,7 +853,7 @@ pub unsafe extern "C" fn c_tx_post(
 }
 
 fn slatepack_decode(state_json: &str, slatepack: &str) -> Result<String, Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let _ = get_wallet(State::from_str(state_json)?)?;
     let packer = Slatepacker::new(SlatepackerArgs {
         sender: None,
         recipients: vec![],

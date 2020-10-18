@@ -432,23 +432,25 @@ export const sideEffects = {
         finalized = []
       }
 
-      const slate = await GrinBridge.txSendHttps(
+      const slateId = await GrinBridge.txSendHttps(
         getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
-        action.message,
         action.url,
       ).then(JSON.parse)
       Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
       Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
-      finalized.push(slate.id)
+      finalized.push(slateId)
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({
         type: 'TX_SEND_HTTPS_SUCCESS',
       })
+      const navigation = await getNavigation()
+      navigation?.goBack()
+
       store.dispatch({
         type: 'TX_POST_SHOW',
-        txSlateId: slate.id,
+        txSlateId: slateId,
       })
     } catch (e) {
       store.dispatch({

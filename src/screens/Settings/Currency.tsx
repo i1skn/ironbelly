@@ -96,8 +96,15 @@ class CurrencyList extends Component<Props, State> {
     )
   }
 
+  onChoose = (item: Currency) => {
+    return () => {
+      this.props.setCurrency(item)
+      this.props.navigation.goBack()
+    }
+  }
+
   render() {
-    const { currency, setCurrency, currencyRates } = this.props
+    const { currency, currencyRates } = this.props
     return (
       <View style={styles.container}>
         <FlatList
@@ -112,7 +119,7 @@ class CurrencyList extends Component<Props, State> {
             <ListItem
               checked={currency.code === item.code}
               value={item.code.toUpperCase()}
-              onPress={() => setCurrency(item)}
+              onPress={this.onChoose(item)}
             />
           )}
           refreshing={currencyRates.inProgress}

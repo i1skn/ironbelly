@@ -201,6 +201,7 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
   return (
     <KeyboardAwareScrollView
       keyboardDismissMode={'on-drag'}
+      keyboardShouldPersistTaps="always"
       contentContainerStyle={{
         ...Platform.select({
           android: { paddingVertical: 16 },
@@ -537,7 +538,6 @@ const TxIncompleteSend = ({ navigation, route }: Props) => {
   const dispatch = useDispatch()
 
   const resetTxForm = () => {
-    console.log('RESET')
     dispatch({
       type: 'TX_FORM_RESET',
     })
