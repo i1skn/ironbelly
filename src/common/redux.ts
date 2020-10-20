@@ -98,7 +98,7 @@ const persistConfig = {
   key: 'root',
   stateReconciler: autoMergeLevel2,
   storage: AsyncStorage,
-  version: 0,
+  version: 1,
   // default is -1, increment as we make migrations
   whitelist: ['settings'],
   migrate: createMigrate(migrations, {

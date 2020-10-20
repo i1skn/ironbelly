@@ -1,12 +1,9 @@
 import { Epic, combineEpics, ofType } from 'redux-observable'
-import { Client, Configuration } from 'bugsnag-react-native'
 import {
   filter,
   ignoreElements,
   catchError,
-  take,
   mergeMap,
-  map,
   tap,
 } from 'rxjs/operators'
 import RNFS from 'react-native-fs'
@@ -14,10 +11,8 @@ import { Action, Slate, State as RootState } from 'src/common/types'
 import { getNavigation } from 'src/modules/navigation'
 import { getStateForRust, isResponseSlate } from 'src/common'
 import { of, partition, merge } from 'rxjs'
-import { MAINNET_CHAIN, FLOONET_CHAIN } from 'src/modules/settings'
 import { log } from 'src/common/logger'
 // @ts-ignore
-import Countly from 'countly-sdk-react-native-bridge'
 import { NativeModules } from 'react-native'
 
 const { GrinBridge } = NativeModules
@@ -134,34 +129,6 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
   return combined$
 }
 
-const thirdPartyEpic: Epic<Action, Action, RootState> = (action$, state$) => {
-  return action$.pipe(
-    filter(() => state$.value.app.legalAccepted),
-    tap(() => {
-      // Countly
-      const serverURL = 'https://analytics.i1skn.dev'
-      const appKey = '94809c388e9eced2c2c297a3acb368ab26161ae0'
-      Countly.init(serverURL, appKey)
-      Countly.enableParameterTamperingProtection('salt')
-      // Run only on mainnet in release build
-      if (!__DEV__ && state$.value.settings.chain === MAINNET_CHAIN) {
-        Countly.start()
-      }
-
-      // BugSnag
-      const configuration = new Configuration()
-      // Run only in release builds
-      configuration.notifyReleaseStages = [MAINNET_CHAIN, FLOONET_CHAIN]
-      configuration.releaseStage = __DEV__
-        ? 'development'
-        : state$.value.settings.chain //stage
-      new Client(configuration)
-    }),
-    take(1),
-    ignoreElements(),
-  )
-}
-
 const checkBiometryEpic: Epic<Action, Action, RootState> = () => {
   return of({
     type: 'CHECK_BIOMETRY_REQUEST',
@@ -172,5 +139,4 @@ export const appEpic: Epic<Action, Action, RootState> = combineEpics(
   checkBiometryEpic,
   handleOpenSlateEpic,
   handleOpenedSlateEpic,
-  thirdPartyEpic,
 )

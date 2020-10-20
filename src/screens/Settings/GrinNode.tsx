@@ -42,7 +42,11 @@ class GrinNode extends Component<Props, State> {
       this.setState({
         apiSecret,
       })
-    } catch (e) {}
+    } catch (e) {
+      this.setState({
+        apiSecret: '',
+      })
+    }
   }
 
   constructor(props: Props) {
@@ -94,12 +98,14 @@ class GrinNode extends Component<Props, State> {
             })
           }
           onBlur={() => {
-            apiSecret && setApiSecret(apiSecret)
+            if (apiSecret != undefined) {
+              setApiSecret(apiSecret)
+            }
           }}
           value={apiSecret ?? ''}
-          placeholder="API Secret"
+          placeholder="None"
           autoCorrect={false}
-          title="API Secret"
+          title="Secret"
         />
       </KeyboardAvoidingWrapper>
     )

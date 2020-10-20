@@ -1,8 +1,14 @@
+# iOS
 app_identifier("app.ironbelly") # The bundle identifier of your app
 apple_id("ivan@sorokin.io") # Your Apple email address
 
 itc_team_id("120279655") # App Store Connect Team ID
 team_id("4496JM56CN") # Developer Portal Team ID
+
+# Android
+json_key_file("android/key.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+package_name("app.ironbelly") # e.g. com.krausefx.app
+
 
 # For more information about the Appfile, see:
 #     https://docs.fastlane.tools/advanced/#appfile

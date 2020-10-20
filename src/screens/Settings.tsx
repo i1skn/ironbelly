@@ -245,7 +245,10 @@ class Settings extends Component<Props, State> {
           <Text style={styles.sectionTitle}>{section.title}</Text>
         )}
         ListFooterComponent={
-          <VersionText>Version: {DeviceInfo.getVersion()}</VersionText>
+          <VersionText>
+            Version: {DeviceInfo.getVersion()} build{' '}
+            {DeviceInfo.getBuildNumber()}
+          </VersionText>
         }
         stickySectionHeadersEnabled={false}
       />

@@ -1,0 +1,11 @@
+diff --git a/node_modules/react-native-share/RNShare.podspec b/node_modules/react-native-share/RNShare.podspec
+index 80944b2..32750f0 100644
+--- a/node_modules/react-native-share/RNShare.podspec
++++ b/node_modules/react-native-share/RNShare.podspec
+@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
+ 
+   s.source_files  = "ios/**/*.{h,m}"
+ 
+-  s.dependency "React"
++  s.dependency "React-Core"
+ end

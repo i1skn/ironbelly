@@ -44,11 +44,11 @@ export type State = {
   biometryType: string | undefined | null
 }
 export const MAINNET_CHAIN = 'mainnet'
-export const MAINNET_API_SECRET = 'H2vnwhAjhhTAVEYgNRen'
-export const MAINNET_DEFAULT_NODE = 'http://grinnode.cycle42.com:3413'
+export const MAINNET_API_SECRET = ''
+export const MAINNET_DEFAULT_NODE = 'https://node.ironbelly.app'
 export const FLOONET_CHAIN = 'floonet'
-export const FLOONET_API_SECRET = 'ac9rOHFKASTRzZ4SNJun'
-export const FLOONET_DEFAULT_NODE = 'http://floonode.cycle42.com:13413'
+export const FLOONET_API_SECRET = ''
+export const FLOONET_DEFAULT_NODE = 'http://testnode.ironbelly.app:13413'
 export const initialState: State = {
   currencyObject: currencyList[8], // USD
   checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
@@ -112,7 +112,11 @@ export const sideEffects = {
     await RNFS.writeFile(apiSecretFilePath, MAINNET_API_SECRET)
   },
   ['SET_API_SECRET']: async (action: setApiSecretAction, store: Store) => {
-    await RNFS.writeFile(apiSecretFilePath, action.apiSecret)
+    if (action.apiSecret) {
+      await RNFS.writeFile(apiSecretFilePath, action.apiSecret)
+    } else {
+      await RNFS.unlink(apiSecretFilePath)
+    }
   },
   ['CHECK_BIOMETRY_REQUEST']: async (
     action: checkBiometryRequestAction,

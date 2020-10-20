@@ -245,7 +245,6 @@
 				F64186D5218895DC00A99CA0 /* Sources */,
 				F64186D6218895DC00A99CA0 /* Frameworks */,
 				F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */,
-				F617A2F12210771000FDF0C0 /* Upload Sourcemaps to bugsnap */,
 				F64186D7218895DC00A99CA0 /* Resources */,
 				F67B83C8219345180004D4A1 /* Embed App Extensions */,
 				6813828878130C5CDDE20AA9 /* [CP] Embed Pods Frameworks */,
@@ -378,24 +377,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		F617A2F12210771000FDF0C0 /* Upload Sourcemaps to bugsnap */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Upload Sourcemaps to bugsnap";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ \"${CONFIGURATION}\" == \"Release\" ]; then\n    ${SRCROOT}/upload-sourcemaps.sh\nfi\n\n\n\n\n\n\n";
 		};
 		F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -564,9 +545,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9BFD0890890CA8B9A5CA5455 /* Pods-Ironbelly.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 33;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;
@@ -601,9 +583,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CDE3813CDAEB5E1EE1B5DFE8 /* Pods-Ironbelly.release.xcconfig */;
 			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 31;
+				CURRENT_PROJECT_VERSION = 33;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = Ironbelly/Info.plist;

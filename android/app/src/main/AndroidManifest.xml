@@ -101,9 +101,6 @@
 
 
       </activity>
-
-      <meta-data android:name="com.bugsnag.android.API_KEY"
-             android:value="5a7142175552dab1f8d9a566b43c5ec9"/>
      <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="app.ironbelly.provider"

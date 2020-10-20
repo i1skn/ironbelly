@@ -29,7 +29,6 @@ import {
   SLATES_DIRECTORY,
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
-  checkApiSecret,
   isWalletInitialized,
 } from 'src/common'
 import urlParser from 'url'
@@ -140,13 +139,6 @@ class RealApp extends React.Component<Props, State> {
 
     Linking.addEventListener('url', this._handleOpenURL)
     AppState.addEventListener('change', this._handleAppStateChange)
-    checkApiSecret(() => {
-      this.props.setApiSecret(
-        this.props.chain === MAINNET_CHAIN
-          ? MAINNET_API_SECRET
-          : FLOONET_API_SECRET,
-      )
-    })
     // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
     this.props.requestWalletExists()
     // this.setState({ walletCreated: await isWalletInitialized() })

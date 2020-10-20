@@ -14,7 +14,6 @@
 // limitations under the License.
 import { NativeModules } from 'react-native'
 import Share from 'react-native-share'
-import Countly from 'countly-sdk-react-native-bridge'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
@@ -254,11 +253,6 @@ export const sideEffects = {
 
           if (pos !== -1) {
             if (tx.confirmed) {
-              Countly.sendEvent({
-                eventName: 'tx_sent_confirmed',
-                eventCount: 1,
-              })
-
               return tx
             } else {
               newPosted.push(tx.tx_slate_id)
@@ -268,15 +262,8 @@ export const sideEffects = {
 
           pos = received.indexOf(tx.tx_slate_id)
 
-          if (pos !== -1) {
-            if (!tx.confirmed) {
-              newReceived.push(tx.tx_slate_id)
-            } else {
-              Countly.sendEvent({
-                eventName: 'tx_received_confirmed',
-                eventCount: 1,
-              })
-            }
+          if (pos !== -1 && !tx.confirmed) {
+            newReceived.push(tx.tx_slate_id)
           }
 
           return tx
@@ -329,7 +316,6 @@ export const sideEffects = {
         store.dispatch({
           type: 'TX_CANCEL_SUCCESS',
         })
-        Countly.sendEvent({ eventName: 'tx_cancel', eventCount: 1 })
         store.dispatch({
           type: 'SLATE_REMOVE_REQUEST',
           id: action.slateId,
@@ -390,7 +376,6 @@ export const sideEffects = {
       store.dispatch({
         type: 'TX_CREATE_SUCCESS',
       })
-      Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
       store.dispatch({
         type: 'SLATE_SET_REQUEST',
         id: tx.slateId,
@@ -438,8 +423,6 @@ export const sideEffects = {
         action.selectionStrategyIsUseAll,
         action.url,
       ).then(JSON.parse)
-      Countly.sendEvent({ eventName: 'tx_created', eventCount: 1 })
-      Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
       finalized.push(slateId)
       await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
       store.dispatch({
@@ -480,7 +463,6 @@ export const sideEffects = {
         getStateForRust(store.getState()),
         action.txSlateId,
       )
-      Countly.sendEvent({ eventName: 'tx_sent_unconfirmed', eventCount: 1 })
       posted.push(action.txSlateId)
       let pos = finalized.indexOf(action.txSlateId)
 
@@ -534,7 +516,6 @@ export const sideEffects = {
       store.dispatch({
         type: 'TX_RECEIVE_SUCCESS',
       })
-      Countly.sendEvent({ eventName: 'tx_received_unconfirmed', eventCount: 1 })
       store.dispatch({
         type: 'SLATE_SET_REQUEST',
         id: tx.slateId,
@@ -581,7 +562,6 @@ export const sideEffects = {
         store.dispatch({
           type: 'TX_FINALIZE_SUCCESS',
         })
-        Countly.sendEvent({ eventName: 'tx_finalized', eventCount: 1 })
 
         finalized.push(tx.slateId)
         await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))

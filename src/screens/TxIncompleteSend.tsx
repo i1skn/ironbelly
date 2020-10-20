@@ -192,7 +192,7 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
   }
   if (balance.amountAwaitingConfirmation) {
     noticeText +=
-      (balance.amountAwaitingConfirmation ? ' and' : ' because') +
+      (balance.amountLocked ? ' and' : ' because') +
       ` ${hrGrin(
         balance.amountAwaitingConfirmation,
       )} is not older than ${minimumConfirmations} confirmations`

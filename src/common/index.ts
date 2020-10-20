@@ -160,14 +160,6 @@ export const checkWalletDataDirectory = () => {
     return
   })
 }
-export const checkApiSecret = (cb: () => void) => {
-  const apiSecretFilePath = APPLICATION_SUPPORT_DIRECTORY + '/.api_secret'
-  RNFS.exists(apiSecretFilePath).then((exists) => {
-    if (!exists) {
-      cb()
-    }
-  })
-}
 export const isWalletInitialized = () => {
   const seedFilePath = WALLET_DATA_DIRECTORY + '/wallet.seed'
   return RNFS.exists(seedFilePath)

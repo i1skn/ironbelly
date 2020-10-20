@@ -13,7 +13,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 import { NativeModules } from 'react-native'
-import Countly from 'countly-sdk-react-native-bridge'
 import AsyncStorage from '@react-native-community/async-storage'
 import { persistReducer } from 'redux-persist'
 import {
@@ -413,7 +412,6 @@ export const sideEffects = {
           store.dispatch({
             type: 'WALLET_INIT_SUCCESS',
           })
-          Countly.sendEvent({ eventName: 'wallet_created', eventCount: 1 })
         }, 250)
       })
       .catch((error: Error) => {

@@ -13,9 +13,9 @@
 // limitations under the License.
 
 use grin_wallet_libwallet::{
-    scan, selection, slate_versions, tx, updater, wallet_lock, InitTxArgs, NodeClient,
-    NodeVersionInfo, Slate, SlateVersion, SlatepackArmor, Slatepacker, SlatepackerArgs,
-    VersionedSlate, WalletInst, WalletLCProvider,
+    scan, selection, slate_versions, tx, updater, wallet_lock, NodeClient, NodeVersionInfo, Slate,
+    SlateVersion, SlatepackArmor, Slatepacker, SlatepackerArgs, VersionedSlate, WalletInst,
+    WalletLCProvider,
 };
 use grin_wallet_util::grin_core::global;
 use grin_wallet_util::grin_core::global::ChainTypes;
@@ -23,6 +23,7 @@ use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
 use grin_wallet_util::grin_util::file::get_first_line;
 use grin_wallet_util::grin_util::Mutex;
 use grin_wallet_util::grin_util::ZeroingString;
+use std::path::Path;
 
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_impls::{
@@ -73,18 +74,23 @@ impl State {
 fn create_wallet_config(state: State) -> Result<WalletConfig, Error> {
     let chain_type = match state.chain.as_ref() {
         "mainnet" => ChainTypes::Mainnet,
-        "floonet" => ChainTypes::Floonet,
+        "floonet" => ChainTypes::Testnet,
         "usertesting" => ChainTypes::UserTesting,
         "automatedtesting" => ChainTypes::AutomatedTesting,
-        _ => ChainTypes::Floonet,
+        _ => ChainTypes::Testnet,
     };
 
+    let api_secret_path = state.wallet_dir.clone() + "/.api_secret";
     Ok(WalletConfig {
         chain_type: Some(chain_type),
         api_listen_interface: "127.0.0.1".to_string(),
         api_listen_port: 13415,
-        api_secret_path: Some(".api_secret".to_string()),
-        node_api_secret_path: Some(state.wallet_dir.clone() + "/.api_secret"),
+        api_secret_path: None,
+        node_api_secret_path: if Path::new(&api_secret_path).exists() {
+            Some(api_secret_path)
+        } else {
+            None
+        },
         check_node_api_http_addr: state.check_node_api_http_addr,
         data_file_dir: state.wallet_dir,
         tls_certificate_file: None,
@@ -781,7 +787,6 @@ fn tx_send_https(
         HttpSlateSender::new(url)
             .map_err(|_| ErrorKind::GenericError(format!("Invalid destination URL: {}", url)))?,
     );
-    api.tx_lock_outputs(None, &slate)?;
 
     match sender.send_tx(&slate, false) {
         Ok(mut slate) => {
