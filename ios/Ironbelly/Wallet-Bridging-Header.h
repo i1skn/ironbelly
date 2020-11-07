@@ -21,4 +21,5 @@
 
 #import <React/RCTBridgeModule.h>
 #import "bindings.h"
+#import "Tor/Helpers/NetworkTools.h"
 #endif /* Wallet_Bridging_Header_h */

@@ -69,6 +69,7 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
+  - IPtProxy (0.1.0)
   - LaunchScreenSnapshot (1.2.0)
   - OpenSSL-Universal (1.0.2.19):
     - OpenSSL-Universal/Static (= 1.0.2.19)
@@ -79,6 +80,7 @@ PODS:
     - Folly (= 2020.01.13.00)
     - RCTRequired (= 0.63.3)
     - React-Core (= 0.63.3)
+  - ReachabilitySwift (5.0.0)
   - React (0.63.3):
     - React-Core (= 0.63.3)
     - React-Core/DevSupport (= 0.63.3)
@@ -361,9 +363,11 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.54.0)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
+  - IPtProxy (~> 0.1)
   - LaunchScreenSnapshot
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
+  - ReachabilitySwift
   - React (from `../node_modules/react-native/`)
   - React-callinvoker (from `../node_modules/react-native/ReactCommon/callinvoker`)
   - React-Core (from `../node_modules/react-native/`)
@@ -414,8 +418,10 @@ SPEC REPOS:
     - Flipper-PeerTalk
     - Flipper-RSocket
     - FlipperKit
+    - IPtProxy
     - LaunchScreenSnapshot
     - OpenSSL-Universal
+    - ReachabilitySwift
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -523,10 +529,12 @@ SPEC CHECKSUMS:
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
+  IPtProxy: 15e1c3b6d828bc4e7dadaaeedc7ddf1377a48ca8
   LaunchScreenSnapshot: cee0c0fec0d9b9186c76a1fd010c5c4677ccb6fc
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
   RCTTypeSafety: edf4b618033c2f1c5b7bc3d90d8e085ed95ba2ab
+  ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
   React: f36e90f3ceb976546e97df3403e37d226f79d0e3
   React-callinvoker: 18874f621eb96625df7a24a7dc8d6e07391affcd
   React-Core: ac3d816b8e3493970153f4aaf0cff18af0bb95e6
@@ -564,6 +572,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: e4d8202db28dec5c6f64517c90c2cccf92444b62
+PODFILE CHECKSUM: 193bfd86367b61fe45f1dd11356ee7c342434465
 
 COCOAPODS: 1.10.0.rc.1

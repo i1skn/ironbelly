@@ -14,15 +14,17 @@
  * limitations under the License.
  */
 
-import { AppRegistry } from 'react-native'
-import App from './src/App'
-import { name as appName } from './app.json'
+import Foundation
 
-import NetInfo from '@react-native-community/netinfo'
+@objc(TorBridge)
+class TorBridge: NSObject {
 
-NetInfo.configure({
-  reachabilityUrl: ' https://node.ironbelly.app/',
-  reachabilityTest: async (response) => response.status === 200,
-})
-
-AppRegistry.registerComponent(appName, () => App)
+    @objc static func requiresMainQueueSetup() -> Bool {
+        return false
+    }
+    
+    @objc func startTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        OnionConnector.shared.start()
+        resolve(true)
+    }
+}

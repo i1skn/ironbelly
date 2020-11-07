@@ -43,18 +43,12 @@ import RNFS from 'react-native-fs'
 import { Dispatch, State as GlobalState } from 'src/common/types'
 import { store, persistor } from 'src/common/redux'
 import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
-import colors from 'src/common/colors'
 import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
-import {
-  MAINNET_CHAIN,
-  MAINNET_API_SECRET,
-  FLOONET_API_SECRET,
-} from 'src/modules/settings'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 
-const { GrinBridge } = NativeModules // Filesystem
+const { GrinBridge, TorBridge } = NativeModules
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -121,6 +115,7 @@ class RealApp extends React.Component<Props, State> {
       StatusBar.setTranslucent(true)
     }
     GrinBridge.setLogger().then(console.log).catch(console.log)
+    TorBridge.startTor()
     const { slateUrl, legalAccepted } = this.props
 
     if (slateUrl) {

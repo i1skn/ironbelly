@@ -36,6 +36,13 @@
 		CE5F56BE44E94BA78933ADA8 /* Close@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = C342A60D16E24E1882B784C1 /* Close@2x.png */; };
 		DCADF58ADB344767BB4E3D41 /* Poppins-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */; };
 		EF5651BE92804582A8BA3D00 /* x@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = AEB4E1B47E9D4CB1B965F729 /* x@3x.png */; };
+		F601C28B25559D99003866E2 /* OnionSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C28A25559D99003866E2 /* OnionSettings.swift */; };
+		F601C28F25559F58003866E2 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = F601C28E25559F58003866E2 /* NetworkTools.m */; };
+		F601C2D72555B159003866E2 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C2D62555B159003866E2 /* OnionConnector.swift */; };
+		F601C2DB2555B253003866E2 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C2DA2555B253003866E2 /* Ipv6Tester.swift */; };
+		F601C3972555B9FB003866E2 /* TorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C3962555B9FB003866E2 /* TorBridge.swift */; };
+		F601C39A2555BA31003866E2 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C3992555BA31003866E2 /* Utils.swift */; };
+		F601C39D2555BA76003866E2 /* TorBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F601C39C2555BA76003866E2 /* TorBridge.m */; };
 		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
 		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
 		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
@@ -49,6 +56,8 @@
 		F6B88C50252A4CFA007FF36C /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6B88C4F252A4CFA007FF36C /* FontAwesome5_Solid.ttf */; };
 		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
 		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
+		F6F4CE7F2555946B00953576 /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F4CE7E2555946B00953576 /* OnionManager.swift */; };
+		F6F4CE85255595ED00953576 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F4CE84255595ED00953576 /* Tor.framework */; };
 		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
 /* End PBXBuildFile section */
 
@@ -93,6 +102,14 @@
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
+		F601C28A25559D99003866E2 /* OnionSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnionSettings.swift; sourceTree = "<group>"; };
+		F601C28D25559F58003866E2 /* NetworkTools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NetworkTools.h; sourceTree = "<group>"; };
+		F601C28E25559F58003866E2 /* NetworkTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkTools.m; sourceTree = "<group>"; };
+		F601C2D62555B159003866E2 /* OnionConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnionConnector.swift; path = Ironbelly/Tor/OnionConnector.swift; sourceTree = SOURCE_ROOT; };
+		F601C2DA2555B253003866E2 /* Ipv6Tester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ipv6Tester.swift; sourceTree = "<group>"; };
+		F601C3962555B9FB003866E2 /* TorBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridge.swift; sourceTree = "<group>"; };
+		F601C3992555BA31003866E2 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		F601C39C2555BA76003866E2 /* TorBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TorBridge.m; sourceTree = "<group>"; };
 		F64186D9218895DC00A99CA0 /* Ironbelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ironbelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186DC218895DC00A99CA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -112,6 +129,9 @@
 		F6DDC63F2197893300B51AAE /* bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bindings.h; path = ../../rust/bindings.h; sourceTree = "<group>"; };
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
 		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
+		F6F4CE7E2555946B00953576 /* OnionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnionManager.swift; sourceTree = "<group>"; };
+		F6F4CE822555956800953576 /* Tor.framework.dSYM */ = {isa = PBXFileReference; lastKnownFileType = wrapper.dsym; name = Tor.framework.dSYM; path = Carthage/Build/iOS/Tor.framework.dSYM; sourceTree = "<group>"; };
+		F6F4CE84255595ED00953576 /* Tor.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Tor.framework; path = Carthage/Build/iOS/Tor.framework; sourceTree = "<group>"; };
 		F6FA2EC2AB4B4824AF99E13B /* Poppins-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraBold.ttf"; path = "../src/assets/fonts/Poppins-ExtraBold.ttf"; sourceTree = "<group>"; };
 		F9E3B3C7257947359B7DDDE9 /* Share@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@2x.png"; path = "../src/assets/images/Share@2x.png"; sourceTree = "<group>"; };
 		FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@2x.png"; path = "../src/assets/images/ChevronRight@2x.png"; sourceTree = "<group>"; };
@@ -124,6 +144,7 @@
 			files = (
 				F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */,
 				F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */,
+				F6F4CE85255595ED00953576 /* Tor.framework in Frameworks */,
 				0D30D8BF853A0944D2D3A41E /* Pods_Ironbelly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -198,6 +219,7 @@
 		F64186DB218895DC00A99CA0 /* Ironbelly */ = {
 			isa = PBXGroup;
 			children = (
+				F6F4CE7D2555944F00953576 /* Tor */,
 				F65FE35C2410B8E000E3C118 /* Fonts */,
 				F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */,
 				F64186DC218895DC00A99CA0 /* AppDelegate.swift */,
@@ -207,6 +229,9 @@
 				F64186E8218895DE00A99CA0 /* Info.plist */,
 				F6E9509121C50DE90066C203 /* GrinBridge.m */,
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
+				F601C3962555B9FB003866E2 /* TorBridge.swift */,
+				F601C39C2555BA76003866E2 /* TorBridge.m */,
+				F601C3992555BA31003866E2 /* Utils.swift */,
 			);
 			path = Ironbelly;
 			sourceTree = "<group>";
@@ -214,6 +239,8 @@
 		F64186FC2188967A00A99CA0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6F4CE84255595ED00953576 /* Tor.framework */,
+				F6F4CE822555956800953576 /* Tor.framework.dSYM */,
 				F67AD98B23C15A5100FC4CEA /* libwallet.a */,
 				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
 				E9A19393C5C8574880620905 /* Pods_Ironbelly.framework */,
@@ -234,6 +261,27 @@
 			path = Fonts;
 			sourceTree = "<group>";
 		};
+		F6F4CE7D2555944F00953576 /* Tor */ = {
+			isa = PBXGroup;
+			children = (
+				F6F4CF4025559A4700953576 /* Helpers */,
+				F601C2D62555B159003866E2 /* OnionConnector.swift */,
+				F6F4CE7E2555946B00953576 /* OnionManager.swift */,
+				F601C28A25559D99003866E2 /* OnionSettings.swift */,
+			);
+			path = Tor;
+			sourceTree = "<group>";
+		};
+		F6F4CF4025559A4700953576 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				F601C2DA2555B253003866E2 /* Ipv6Tester.swift */,
+				F601C28D25559F58003866E2 /* NetworkTools.h */,
+				F601C28E25559F58003866E2 /* NetworkTools.m */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -248,6 +296,7 @@
 				F64186D7218895DC00A99CA0 /* Resources */,
 				F67B83C8219345180004D4A1 /* Embed App Extensions */,
 				6813828878130C5CDDE20AA9 /* [CP] Embed Pods Frameworks */,
+				F6F4CE832555959C00953576 /* Carthage */,
 			);
 			buildRules = (
 			);
@@ -396,6 +445,26 @@
 			shellPath = /bin/sh;
 			shellScript = "if [ \"${CONFIGURATION}\" == \"Debug\" ]; then\nexport SKIP_BUNDLING=true\nfi\nDEST=$CONFIGURATION_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH\n\n[ -s \"$HOME/.n/bin/node\" ] && export NODE_BINARY=\"$HOME/.n/bin/node\"\n\nexport EXTRA_PACKAGER_ARGS=\"--sourcemap-output ${DEST}/main.jsbundle.map\"\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
+		F6F4CE832555959C00953576 /* Carthage */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/Carthage/Build/iOS/Tor.framework",
+			);
+			name = Carthage;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/usr/local/bin/carthage.sh copy-frameworks\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -403,9 +472,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F601C39D2555BA76003866E2 /* TorBridge.m in Sources */,
 				F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */,
+				F601C28B25559D99003866E2 /* OnionSettings.swift in Sources */,
 				F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */,
 				F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */,
+				F601C2D72555B159003866E2 /* OnionConnector.swift in Sources */,
+				F601C39A2555BA31003866E2 /* Utils.swift in Sources */,
+				F601C3972555B9FB003866E2 /* TorBridge.swift in Sources */,
+				F601C28F25559F58003866E2 /* NetworkTools.m in Sources */,
+				F6F4CE7F2555946B00953576 /* OnionManager.swift in Sources */,
+				F601C2DB2555B253003866E2 /* Ipv6Tester.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -551,6 +628,10 @@
 				CURRENT_PROJECT_VERSION = 33;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Ironbelly/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -589,6 +670,10 @@
 				CURRENT_PROJECT_VERSION = 33;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
 				INFOPLIST_FILE = Ironbelly/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (

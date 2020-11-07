@@ -14,15 +14,10 @@
  * limitations under the License.
  */
 
-import { AppRegistry } from 'react-native'
-import App from './src/App'
-import { name as appName } from './app.json'
+#import <React/RCTBridgeModule.h>
 
-import NetInfo from '@react-native-community/netinfo'
+@interface RCT_EXTERN_MODULE(TorBridge, NSObject)
 
-NetInfo.configure({
-  reachabilityUrl: ' https://node.ironbelly.app/',
-  reachabilityTest: async (response) => response.status === 200,
-})
+RCT_EXTERN_METHOD(startTor:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-AppRegistry.registerComponent(appName, () => App)
+@end

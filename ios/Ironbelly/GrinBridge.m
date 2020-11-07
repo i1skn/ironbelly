@@ -55,4 +55,7 @@ RCT_EXTERN_METHOD(walletScanOutputs:(NSString*)state lastRetrievedIndex:(int64_t
 RCT_EXTERN_METHOD(checkPassword:(NSString*)state password:(NSString*)password resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(slatepackDecode:(NSString*)state slatepack:(NSString*)slatepack resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(listenWithTor:(NSString*)state resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
 @end

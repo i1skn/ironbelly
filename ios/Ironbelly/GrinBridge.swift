@@ -18,17 +18,6 @@
 
 import Foundation
 
-func returnToReact(error: UInt8, cResult: UnsafePointer<Int8>, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-
-    let result = String(cString: cResult)
-    if error == 0 {
-        resolve(result)
-    } else {
-        reject(nil, result, nil)
-    }
-    cstr_free(UnsafeMutablePointer(mutating: cResult))
-}
-
 @objc(GrinBridge)
 class GrinBridge: NSObject {
 
@@ -137,6 +126,12 @@ class GrinBridge: NSObject {
     @objc func slatepackDecode(_ state:String, slatepack:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_slatepack_decode(state, slatepack, &error)
+        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+    }
+    
+    @objc func listenWithTor(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_listen_with_tor(state, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 }
