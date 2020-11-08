@@ -13,18 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+use grin_wallet_impls::tor::config as tor_config;
 
+use std::net::SocketAddr;
+
+use failure::ResultExt;
+
+use grin_wallet_controller;
 use grin_wallet_libwallet::{
-    scan, selection, slate_versions, tx, updater, wallet_lock, NodeClient, NodeVersionInfo, Slate,
-    SlateVersion, SlatepackArmor, Slatepacker, SlatepackerArgs, VersionedSlate, WalletInst,
-    WalletLCProvider,
+    address, scan, selection, slate_versions, tx, updater, wallet_lock, NodeClient,
+    NodeVersionInfo, Slate, SlateVersion, SlatepackAddress, SlatepackArmor, Slatepacker,
+    SlatepackerArgs, VersionedSlate, WalletInst, WalletLCProvider,
 };
+use grin_wallet_util::grin_api::{ApiServer, Router};
 use grin_wallet_util::grin_core::global;
 use grin_wallet_util::grin_core::global::ChainTypes;
 use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
 use grin_wallet_util::grin_util::file::get_first_line;
 use grin_wallet_util::grin_util::Mutex;
 use grin_wallet_util::grin_util::ZeroingString;
+use grin_wallet_util::OnionV3Address;
+use std::convert::TryFrom;
 use std::path::Path;
 
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
@@ -33,7 +42,7 @@ use grin_wallet_impls::{
     SlateSender, WalletSeed,
 };
 
-use grin_wallet_api::{Foreign, ForeignCheckMiddlewareFn, Owner};
+use grin_wallet_api::{self, Foreign, ForeignCheckMiddlewareFn, Owner};
 use serde::{Deserialize, Serialize};
 use std::ffi::{CStr, CString};
 use std::os::raw::c_char;
@@ -86,7 +95,7 @@ fn create_wallet_config(state: State) -> Result<WalletConfig, Error> {
     Ok(WalletConfig {
         chain_type: Some(chain_type),
         api_listen_interface: "127.0.0.1".to_string(),
-        api_listen_port: 13415,
+        api_listen_port: 3415,
         api_secret_path: None,
         node_api_secret_path: if Path::new(&api_secret_path).exists() {
             Some(api_secret_path)
@@ -252,7 +261,11 @@ pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c
 }
 
 fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String, Error> {
-    let wallet = get_wallet(State::from_str(state_json)?)?;
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
+    let wallet_config = create_wallet_config(state.clone())?;
+
+    // create wallet
     let mut wallet_lock = wallet.lock();
     let lc = wallet_lock.lc_provider()?;
     lc.create_wallet(
@@ -263,6 +276,21 @@ fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String,
         false,
         true,
     )?;
+
+    // create TOR config
+    let w_inst = lc.wallet_inst()?;
+    let k = w_inst.keychain((None).as_ref())?;
+    let parent_key_id = w_inst.parent_key_id();
+    let tor_dir = format!("{}/tor/listener", lc.get_top_level_directory()?);
+    let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
+        .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
+    tor_config::output_tor_listener_config(
+        &tor_dir,
+        &wallet_config.api_listen_addr(),
+        &vec![sec_key],
+    )
+    .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
+
     Ok("".to_owned())
 }
 
@@ -885,6 +913,76 @@ pub unsafe extern "C" fn c_slatepack_decode(
         slatepack_decode(&c_str_to_rust(state_json), &c_str_to_rust(slatepack)),
         error
     )
+}
+
+fn start_listen_with_tor(state_json: &str) -> Result<String, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
+    let wallet_config = create_wallet_config(state.clone())?;
+
+    let keychain_mask = None;
+
+    let mut w_lock = wallet.lock();
+    let lc = w_lock.lc_provider()?;
+    let w_inst = lc.wallet_inst()?;
+    let k = w_inst.keychain((keychain_mask).as_ref())?;
+    let parent_key_id = w_inst.parent_key_id();
+    let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
+        .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
+    let onion_address = OnionV3Address::from_private(&sec_key.0)
+        .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
+    let sp_address = SlatepackAddress::try_from(onion_address.clone())?;
+
+    let addr = &wallet_config.api_listen_addr();
+
+    // create TOR config
+    let w_inst = lc.wallet_inst()?;
+    let k = w_inst.keychain((keychain_mask).as_ref())?;
+    let parent_key_id = w_inst.parent_key_id();
+    let tor_dir = format!("{}/tor/listener", lc.get_top_level_directory()?);
+    let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
+        .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
+    tor_config::output_tor_listener_config(&tor_dir, &addr, &vec![sec_key])
+        .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
+
+    let api_handler_v2 = grin_wallet_controller::ForeignAPIHandlerV2::new(
+        wallet.clone(),
+        Arc::new(Mutex::new(keychain_mask)),
+        false,
+        Mutex::new(None),
+    );
+    let mut router = Router::new();
+
+    router
+        .add_route("/v2/foreign", Arc::new(api_handler_v2))
+        .map_err(|_| ErrorKind::GenericError("Router failed to add route".to_string()))?;
+
+    let mut apis = ApiServer::new();
+    warn!("Starting HTTP Foreign listener API server at {}.", addr);
+    let socket_addr: SocketAddr = addr.parse().expect("unable to parse socket address");
+    let api_thread = apis
+        .start(socket_addr, router, None)
+        .context(ErrorKind::GenericError(
+            "API thread failed to start".to_string(),
+        ))?;
+
+    warn!("HTTP Foreign listener started.");
+    warn!("Slatepack Address is: {}", sp_address);
+
+    // api_thread
+    // .join()
+    // .map_err(|_| ErrorKind::GenericError("API thread panicked".to_string()))?;
+    // .map_err(|e| ErrorKind::GenericError(format!("API thread panicked :{:?}", e)).into());
+
+    Ok(sp_address.to_string())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_start_listen_with_tor(
+    state_json: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(start_listen_with_tor(&c_str_to_rust(state_json)), error)
 }
 
 /// Expose the JNI interface for android below

@@ -24,7 +24,7 @@ class TorBridge: NSObject {
     }
     
     @objc func startTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        OnionConnector.shared.start()
+       // OnionConnector.shared.start()
         resolve(true)
     }
 }

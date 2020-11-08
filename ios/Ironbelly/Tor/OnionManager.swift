@@ -88,9 +88,13 @@ class OnionManager: NSObject {
         let configuration = TorConfiguration()
         configuration.cookieAuthentication = true
         
-        if let dataDir = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask)
-                    .first?.appendingPathComponent("tor", isDirectory: true) {
-            //TariLogger.tor("dataDir=\(dataDir)")
+        if let dataDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
+                    .first?.appendingPathComponent("tor/listener", isDirectory: true) {
+            #if DEBUG
+            print("dataDir=\(dataDir)")
+            #endif
+        
+            let torrcFile = dataDir.appendingPathComponent("torrc", isDirectory: false);
 
             // Create tor data directory if it does not yet exist
             do {
@@ -107,6 +111,7 @@ class OnionManager: NSObject {
             }
             
             configuration.dataDirectory = dataDir
+            
 
             #if DEBUG
             let log_loc = "notice stdout"
@@ -115,16 +120,17 @@ class OnionManager: NSObject {
             #endif
             
             configuration.arguments = [
-                "--allow-missing-torrc",
-                "--ignore-missing-torrc",
-                "--clientonly", "1",
+//                "--allow-missing-torrc",
+//                "--ignore-missing-torrc",
+                "-f", torrcFile.path,
+//                "--clientonly", "1",
                 "--AvoidDiskWrites", "1",
-                "--socksport", "39059",
-                "--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
+//                "--socksport", "39059",
+                //"--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
                 "--log", log_loc,
                 "--clientuseipv6", "1",
-                "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",
-                "--ClientTransportPlugin", "meek_lite socks5 127.0.0.1:47352",
+//                "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",
+//                "--ClientTransportPlugin", "meek_lite socks5 127.0.0.1:47352",
                 "--ClientOnionAuthDir", authDir.path
             ]
         }

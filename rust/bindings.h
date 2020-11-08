@@ -11,6 +11,8 @@ const char *c_set_logger(uint8_t *error);
 
 const char *c_slatepack_decode(const char *state_json, const char *slatepack, uint8_t *error);
 
+const char *c_start_listen_with_tor(const char *state_json, uint8_t *error);
+
 const char *c_tx_cancel(const char *state_json, uint32_t id, uint8_t *error);
 
 const char *c_tx_create(const char *state_json,

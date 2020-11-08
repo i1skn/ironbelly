@@ -129,9 +129,29 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
     
-    @objc func listenWithTor(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func startListenWithTor(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_listen_with_tor(state, &error)
+        let cResult = c_start_listen_with_tor(state, &error)
+        OnionConnector.shared.start()
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
+}
+
+class ReceiveObserver {
+    init() {
+       OnionConnector.shared.addObserver(self)
+    }
+}
+
+extension ReceiveObserver:OnionConnectorObserver {
+    func onTorConnProgress(_ progress: Int) {
+        print("WE are at \(progress)")
+    }
+    func onTorConnFinished(_ configuration: BridgesConfuguration) {
+        print("WE are 100%")
+
+    }
+    func onTorConnDifficulties() {print("WE are Difficulties") }
+    func onTorConnDifficulties(error: OnionError) {print("WE are error: \(error)") }
+    func onTorPortsOpened() {print("WE are open") }
 }

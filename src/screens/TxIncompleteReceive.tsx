@@ -26,6 +26,7 @@ import {
   StyleSheet,
   View,
   Platform,
+  NativeModules,
 } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
@@ -34,8 +35,16 @@ import { Tx } from 'src/common/types'
 import { NavigationProps } from 'src/common/types'
 import Clipboard from '@react-native-community/clipboard'
 import Textarea from 'src/components/Textarea'
-import { hrGrin, getSlatePath, isValidSlatepack } from 'src/common'
+import {
+  hrGrin,
+  getSlatePath,
+  isValidSlatepack,
+  getStateForRust,
+} from 'src/common'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { store } from 'src/common/redux'
+
+const { GrinBridge } = NativeModules
 
 interface OwnProps {
   tx: Tx
@@ -91,6 +100,9 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
     }
     navigation.setParams({ title })
     refScrollView.current?.scrollToEnd()
+    GrinBridge.startListenWithTor(getStateForRust(store.getState()))
+      .then(console.log)
+      .catch(console.error)
   }, [tx, title])
 
   const generateResponse = () => {
