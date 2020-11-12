@@ -26,6 +26,10 @@ import { RootStackParamList } from 'src/modules/navigation'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteProp } from '@react-navigation/native'
 
+// reduxjs/toolkit
+
+import { TorActions } from 'src/modules/tor'
+
 export type txListRequestAction = {
   type: 'TX_LIST_REQUEST'
   showLoader: boolean
@@ -580,6 +584,7 @@ export type Action =
   | walletExistsRequestAction
   | walletExistsSuccessAction
   | walletExistsFalureAction
+  | TorActions
 
 export type Currency = {
   code: string

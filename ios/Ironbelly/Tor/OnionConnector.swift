@@ -41,14 +41,10 @@
 import Foundation
 
 protocol OnionConnectorObserver: OnionManagerDelegate {
-    func onTorConnDifficulties()
-}
-extension OnionConnectorObserver {
-    func onTorConnProgress(_ progress: Int) { }
-    func onTorConnFinished(_ configuration: BridgesConfuguration) { }
-    func onTorConnDifficulties() { }
-    func onTorConnDifficulties(error: OnionError) { }
-    func onTorPortsOpened() { }
+    func onTorConnProgress(_ progress: Int)
+    func onTorConnFinished(_ configuration: BridgesConfuguration)
+    func onTorConnDifficulties(error: OnionError)
+    func onTorPortsOpened()
 }
 
 public final class OnionConnector {
@@ -129,7 +125,6 @@ extension OnionConnector: OnionManagerDelegate {
             self.torObservers.allObjects.forEach {
                 if let object = $0 as? OnionConnectorObserver {
                     object.onTorConnDifficulties(error: error)
-                    object.onTorConnDifficulties()
                 }
             }
         }

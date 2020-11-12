@@ -100,7 +100,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
     }
     navigation.setParams({ title })
     refScrollView.current?.scrollToEnd()
-    GrinBridge.startListenWithTor(getStateForRust(store.getState()))
+    GrinBridge.listenWithHttp(getStateForRust(store.getState()))
       .then(console.log)
       .catch(console.error)
   }, [tx, title])
@@ -195,6 +195,14 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
               </>
             )) || (
               <>
+                <Button
+                  title="Receive via Grin address"
+                  style={styles.grinAddressButton}
+                  onPress={generateResponse}
+                />
+                <Text>
+                  grin1kk0zv53h0f49pwkhvgfkgy98xlpy9e0kh8nj4eefvv2nr404akxs89yata
+                </Text>
                 <Text style={styles.info}>
                   Please enter sender's part of the transaction below, so you
                   can you generate your part of the transaction and send it back
@@ -223,7 +231,6 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                 <Button
                   title="Generate response"
                   disabled={!isValidSlatepack(receiveSlatepack)}
-                  style={styles.button}
                   onPress={generateResponse}
                 />
               </>
@@ -308,8 +315,13 @@ const styles = StyleSheet.create({
   info: {
     color: colors.grey[700],
     marginBottom: 8,
+    fontSize: 17,
+    textAlign: 'center',
   },
-  button: {},
+  grinAddressButton: {
+    marginTop: 12,
+    marginBottom: 16,
+  },
   textarea: {
     maxHeight: 360,
     fontSize: 16,

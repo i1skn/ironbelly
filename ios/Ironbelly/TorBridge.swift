@@ -16,15 +16,54 @@
 
 import Foundation
 
-@objc(TorBridge)
-class TorBridge: NSObject {
+let torStatusUpdateEventName = "TorStatusUpdate"
 
-    @objc static func requiresMainQueueSetup() -> Bool {
+@objc(TorBridge)
+class TorBridge: RCTEventEmitter {
+    
+    @objc override static func requiresMainQueueSetup() -> Bool {
         return false
     }
     
-    @objc func startTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-       // OnionConnector.shared.start()
-        resolve(true)
+    @objc func startTor(_ state: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0;
+        let cResult = c_create_tor_config(state, &error)
+        let result = String(cString: cResult!)
+        if error == 0 {
+            OnionConnector.shared.addObserver(self)
+            OnionConnector.shared.start()
+            resolve(result)
+        } else {
+            reject(nil, result, nil)
+        }
+        cstr_free(UnsafeMutablePointer(mutating: cResult))
     }
+    
+    @objc func stopTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        OnionConnector.shared.stop()
+        OnionConnector.shared.removeObserver(self)
+    }
+    
+    override func supportedEvents() -> [String]! {
+        return [torStatusUpdateEventName]
+      }
+    
+    func onTorConnProgress(_ progress: Int) {
+        self.sendEvent( withName: torStatusUpdateEventName, body: "in-progress" )
+    }
+    func onTorConnFinished(_ configuration: BridgesConfuguration) {
+        self.sendEvent( withName: torStatusUpdateEventName, body: "connected" )
+    }
+    func onTorConnDifficulties(error: OnionError) {
+        logTor("Difficulties: \(error)")
+        self.sendEvent( withName: torStatusUpdateEventName, body: "failed" )
+    }
+    func onTorPortsOpened() {
+        logTor("Ports are opened")
+        
+    }
+}
+
+extension TorBridge:OnionConnectorObserver {
+
 }

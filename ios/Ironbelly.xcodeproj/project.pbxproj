@@ -229,8 +229,8 @@
 				F64186E8218895DE00A99CA0 /* Info.plist */,
 				F6E9509121C50DE90066C203 /* GrinBridge.m */,
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
-				F601C3962555B9FB003866E2 /* TorBridge.swift */,
 				F601C39C2555BA76003866E2 /* TorBridge.m */,
+				F601C3962555B9FB003866E2 /* TorBridge.swift */,
 				F601C3992555BA31003866E2 /* Utils.swift */,
 			);
 			path = Ironbelly;

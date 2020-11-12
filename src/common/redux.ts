@@ -45,6 +45,7 @@ import {
   reducer as walletReducer,
   sideEffects as walletEffects,
 } from 'src/modules/wallet'
+import { torReducer, torEpic } from 'src/modules/tor'
 import { State, Action } from 'src/common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createMigrate, persistStore, persistReducer } from 'redux-persist'
@@ -72,7 +73,7 @@ const currencyRatesConfig = {
   whitelist: ['rates', 'lastUpdated'],
 }
 
-export const rootReducer = combineReducers<State, Action>({
+export const rootReducer = combineReducers({
   balance: persistReducer(
     balanceConfig,
     balanceReducer,
@@ -86,14 +87,17 @@ export const rootReducer = combineReducers<State, Action>({
   settings: settingsReducer,
   toaster: toasterReducer,
   wallet: walletReducer,
-}) as () => State
+  tor: torReducer,
+})
+
+export type RootState = ReturnType<typeof rootReducer>
 
 export const rootEpic: Epic<Action, Action, State> = (
   action$,
   store$,
   dependencies,
 ) =>
-  combineEpics(appEpic)(action$, store$, dependencies).pipe(
+  combineEpics(appEpic, torEpic)(action$, store$, dependencies).pipe(
     catchError((error, source) => {
       console.error(error)
       return source
@@ -127,7 +131,7 @@ const enhancers = [applyMiddleware(sideEffectsMiddleware, epicMiddleware)]
 const composeEnhancers =
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
-const persistedReducer = persistReducer<State, Action>(
+const persistedReducer = persistReducer<RootState, Action>(
   persistConfig,
   rootReducer,
 )

@@ -70,7 +70,7 @@ class OnionManager: NSObject {
         if let cookieURL = OnionManager.torBaseConf().dataDirectory?.appendingPathComponent("control_auth_cookie") {
             let cookie = try Data(contentsOf: cookieURL)
 
-            //TariLogger.tor("Using cookie for control auth")
+            logTor("Using cookie for control auth")
 
             return cookie
         } else {
@@ -100,14 +100,14 @@ class OnionManager: NSObject {
             do {
                 try FileManager.default.createDirectory(atPath: dataDir.path, withIntermediateDirectories: true, attributes: nil)
             } catch let error as NSError {
-                //TariLogger.tor("Failed to create tor directory", error: error)
+                logTor("Failed to create tor directory: \(error)")
             }
             // Create tor v3 auth directory if it does not yet exist
             let authDir = URL(fileURLWithPath: dataDir.path, isDirectory: true).appendingPathComponent("auth", isDirectory: true)
             do {
                 try FileManager.default.createDirectory(atPath: authDir.path, withIntermediateDirectories: true, attributes: nil)
             } catch let error as NSError {
-                //TariLogger.tor("Failed to create tor auth directory", error: error)
+                logTor("Failed to create tor auth directory: \(error)")
             }
             
             configuration.dataDirectory = dataDir
@@ -126,7 +126,7 @@ class OnionManager: NSObject {
 //                "--clientonly", "1",
                 "--AvoidDiskWrites", "1",
 //                "--socksport", "39059",
-                //"--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
+		"--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
                 "--log", log_loc,
                 "--clientuseipv6", "1",
 //                "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",
@@ -157,14 +157,14 @@ class OnionManager: NSObject {
 
     func torReconnect() {
         guard self.torThread != nil else {
-            //TariLogger.tor("No tor thread, aborting reconnect")
+            logTor("No tor thread, aborting reconnect")
             return
         }
         
-        //TariLogger.tor("Tor reconnecting...")
+        logTor("Tor reconnecting...")
         
         torController?.resetConnection({ (complete) in
-            //TariLogger.tor("Tor reconnected")
+            logTor("Tor reconnected")
         })
     }
 
@@ -199,9 +199,9 @@ class OnionManager: NSObject {
 
         do {
             try startObserveReachability()
-            //TariLogger.tor("Listening for reachability changes to reconnect tor")
+            logTor("Listening for reachability changes to reconnect tor")
         } catch {
-            //TariLogger.tor("Failed to init Reachability", error: error)
+            logTor("Failed to init Reachability: \(error)")
         }
 
 
@@ -218,7 +218,7 @@ class OnionManager: NSObject {
             // Use Ipv6Tester. If we _think_ we're IPv6-only, tell Tor to prefer IPv6 ports.
             // (Tor doesn't always guess this properly due to some internal IPv4 addresses being used,
             // so "auto" sometimes fails to bootstrap.)
-            //TariLogger.tor("ipv6_status: \(Ipv6Tester.ipv6_status())")
+            logTor("ipv6_status: \(Ipv6Tester.ipv6_status())")
             if (Ipv6Tester.ipv6_status() == .torIpv6ConnOnly) {
                 args += ["--ClientPreferIPv6ORPort", "1"]
 
@@ -244,7 +244,7 @@ class OnionManager: NSObject {
             }
 
             #if DEBUG
-            //TariLogger.tor("arguments=\(String(describing: args))")
+            logTor("arguments=\(String(describing: args))")
             #endif
 
             torConf.arguments = args
@@ -253,7 +253,7 @@ class OnionManager: NSObject {
 
             torThread?.start()
             startIObfs4Proxy()
-            //TariLogger.tor("Starting Tor")
+            logTor("Starting Tor")
         }
         else {
             if needsReconfiguration {
@@ -298,7 +298,7 @@ class OnionManager: NSObject {
                         s = "default"
                     }
 
-                    //TariLogger.tor("[Tor libevent \(s)] \(String(cString: msg))")
+                    logTor("[Tor libevent \(s)] \(String(cString: msg))")
                 }
                 TORInstallEventLoggingCallback { severity, msg in
                     let s: String
@@ -320,7 +320,7 @@ class OnionManager: NSObject {
                     default:
                         s = "default"
                     }
-                    //TariLogger.tor("[Tor libevent \(s)] \(String(cString: msg).trimmingCharacters(in: .whitespacesAndNewlines))")
+                    logTor("[Tor libevent \(s)] \(String(cString: msg).trimmingCharacters(in: .whitespacesAndNewlines))")
                 }
             }
 
@@ -328,18 +328,18 @@ class OnionManager: NSObject {
                 do {
                     try self.torController?.connect()
                 } catch {
-                    //TariLogger.tor("Tor controller connection", error: error)
+                    logTor("Tor controller connection: \(error)")
                 }
             }
 
             guard let cookie = self.cookie else {
-                //TariLogger.tor("Could not connect to Tor - invalid bridges!")
+                logTor("Could not connect to Tor - invalid bridges!")
                 delegate?.onTorConnDifficulties(error: OnionError.invalidBridges)
                 return
             }
 
             #if DEBUG
-            //TariLogger.tor("cookie= \(cookie.base64EncodedString())")
+            logTor("cookie= \(cookie.base64EncodedString())")
             #endif
 
             self.torController?.authenticate(with: cookie, completion: { success, error in
@@ -352,7 +352,7 @@ class OnionManager: NSObject {
                             self.torController?.removeObserver(completeObs)
                             self.cancelInitRetry()
                             #if DEBUG
-                            //TariLogger.tor("Connection established!")
+                            logTor("Connection established!")
                             #endif
                             let bridgeConfiguration = BridgesConfuguration(bridges: self.bridgesType, customBridges: self.customBridges)
                             weakDelegate?.onTorConnFinished(bridgeConfiguration)
@@ -366,7 +366,7 @@ class OnionManager: NSObject {
                         if type == "STATUS_CLIENT" && action == "BOOTSTRAP" {
                             let progress = Int(arguments!["PROGRESS"]!)!
                             #if DEBUG
-                            //TariLogger.tor("progress=\(progress)")
+                            logTor("progress=\(progress)")
                             #endif
 
                             weakDelegate?.onTorConnProgress(progress)
@@ -381,14 +381,14 @@ class OnionManager: NSObject {
                         return false
                     })
                 } else {
-                    //TariLogger.tor("Didn't connect to control port.", error: error)
+                    logTor("Didn't connect to control port: \(error)")
                 }
             }) // controller authenticate
         }) //delay
 
         initRetry = DispatchWorkItem {
             #if DEBUG
-            //TariLogger.tor("Triggering Tor connection retry.")
+            logTor("Triggering Tor connection retry.")
             #endif
 
             self.torController?.setConfForKey("DisableNetwork", withValue: "1")
@@ -407,7 +407,7 @@ class OnionManager: NSObject {
     Experimental Tor shutdown.
     */
     func stopTor(completion:(() -> Void)? = nil) { // completion only in foreground
-        //TariLogger.tor("Stopping tor")
+        logTor("Stopping tor")
 
         // Under the hood, TORController will SIGNAL SHUTDOWN and set it's channel to nil, so
         // we actually rely on that to stop Tor and reset the state of torController. (we can
@@ -463,7 +463,7 @@ extension OnionManager {
     */
     private func getBridges() -> [String] {
         #if DEBUG
-        //TariLogger.tor("bridgesId=\(bridgesType)")
+        logTor("bridgesId=\(bridgesType)")
         #endif
 
         switch bridgesType {
@@ -514,7 +514,7 @@ extension OnionManager {
 
 extension OnionManager {
     @objc private func networkChange() {
-        //TariLogger.tor("ipv6_status: \(Ipv6Tester.ipv6_status())")
+        logTor("ipv6_status: \(Ipv6Tester.ipv6_status())")
         var confs:[Dictionary<String,String>] = []
 
         if (Ipv6Tester.ipv6_status() == .torIpv6ConnOnly) {

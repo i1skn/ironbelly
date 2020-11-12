@@ -1,5 +1,5 @@
 /**
- * Copyright 2019 Ironbelly Devs
+ * Copyright 2020 Ironbelly Devs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 
 @interface RCT_EXTERN_MODULE(TorBridge, NSObject)
 
-RCT_EXTERN_METHOD(startTor:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(startTor:(NSString*)state resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(stopTor:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 @end

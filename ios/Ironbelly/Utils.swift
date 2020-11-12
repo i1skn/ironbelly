@@ -72,3 +72,10 @@ extension NSPointerArray {
         }
     }
 }
+
+let dateFormatter = DateFormatter()
+
+func logTor(_ logMessage: String) {
+    dateFormatter.dateFormat = "HH:mm:ss.SSS"
+    print("TOR: \(dateFormatter.string(from: Date())) \(logMessage)")
+}

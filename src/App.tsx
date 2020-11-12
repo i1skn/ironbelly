@@ -115,7 +115,6 @@ class RealApp extends React.Component<Props, State> {
       StatusBar.setTranslucent(true)
     }
     GrinBridge.setLogger().then(console.log).catch(console.log)
-    TorBridge.startTor()
     const { slateUrl, legalAccepted } = this.props
 
     if (slateUrl) {
@@ -138,17 +137,6 @@ class RealApp extends React.Component<Props, State> {
     AppState.addEventListener('change', this._handleAppStateChange)
     // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
     this.props.requestWalletExists()
-    // this.setState({ walletCreated: await isWalletInitialized() })
-
-    // TODO: remove, when nobody is using v3.0.5
-    // Set legalAccepted = TRUE for already created wallets
-    const exists = await isWalletInitialized()
-    if (exists && !legalAccepted) {
-      store.dispatch({
-        type: 'ACCEPT_LEGAL',
-        value: true,
-      })
-    }
   }
 
   componentWillUnmount() {

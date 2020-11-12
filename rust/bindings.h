@@ -5,13 +5,15 @@
 
 const char *c_check_password(const char *state_str, const char *password, uint8_t *error);
 
+const char *c_create_tor_config(const char *state_json, uint8_t *error);
+
+const char *c_listen_with_http(const char *state_json, uint8_t *error);
+
 const char *c_seed_new(uint8_t seed_length, uint8_t *error);
 
 const char *c_set_logger(uint8_t *error);
 
 const char *c_slatepack_decode(const char *state_json, const char *slatepack, uint8_t *error);
-
-const char *c_start_listen_with_tor(const char *state_json, uint8_t *error);
 
 const char *c_tx_cancel(const char *state_json, uint32_t id, uint8_t *error);
 

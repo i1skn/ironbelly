@@ -915,7 +915,7 @@ pub unsafe extern "C" fn c_slatepack_decode(
     )
 }
 
-fn start_listen_with_tor(state_json: &str) -> Result<String, Error> {
+fn listen_with_http(state_json: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
     let wallet_config = create_wallet_config(state.clone())?;
@@ -934,16 +934,6 @@ fn start_listen_with_tor(state_json: &str) -> Result<String, Error> {
     let sp_address = SlatepackAddress::try_from(onion_address.clone())?;
 
     let addr = &wallet_config.api_listen_addr();
-
-    // create TOR config
-    let w_inst = lc.wallet_inst()?;
-    let k = w_inst.keychain((keychain_mask).as_ref())?;
-    let parent_key_id = w_inst.parent_key_id();
-    let tor_dir = format!("{}/tor/listener", lc.get_top_level_directory()?);
-    let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
-        .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    tor_config::output_tor_listener_config(&tor_dir, &addr, &vec![sec_key])
-        .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
 
     let api_handler_v2 = grin_wallet_controller::ForeignAPIHandlerV2::new(
         wallet.clone(),
@@ -978,11 +968,43 @@ fn start_listen_with_tor(state_json: &str) -> Result<String, Error> {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn c_start_listen_with_tor(
+pub unsafe extern "C" fn c_listen_with_http(
     state_json: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(start_listen_with_tor(&c_str_to_rust(state_json)), error)
+    unwrap_to_c!(listen_with_http(&c_str_to_rust(state_json)), error)
+}
+
+fn create_tor_config(state_json: &str) -> Result<String, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
+    let wallet_config = create_wallet_config(state.clone())?;
+
+    let keychain_mask = None;
+
+    let mut w_lock = wallet.lock();
+    let lc = w_lock.lc_provider()?;
+
+    let addr = &wallet_config.api_listen_addr();
+
+    let w_inst = lc.wallet_inst()?;
+    let k = w_inst.keychain((keychain_mask).as_ref())?;
+    let parent_key_id = w_inst.parent_key_id();
+    let tor_dir = format!("{}/tor/listener", lc.get_top_level_directory()?);
+    let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
+        .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
+    tor_config::output_tor_listener_config(&tor_dir, &addr, &vec![sec_key])
+        .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
+
+    Ok("".to_owned())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_create_tor_config(
+    state_json: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(create_tor_config(&c_str_to_rust(state_json)), error)
 }
 
 /// Expose the JNI interface for android below
