@@ -136,6 +136,7 @@ export const checkSlatesDirectory = () => {
     }
   })
 }
+export const ADDRESS_TRANSPORT_METHOD = 'address'
 export const FILE_TRANSPORT_METHOD = 'file'
 export const HTTP_TRANSPORT_METHOD = 'http'
 export const checkApplicationSupportDirectory = () => {

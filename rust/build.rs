@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 extern crate cbindgen;
 
 use std::env;
@@ -24,6 +23,8 @@ fn main() {
     cbindgen::Builder::new()
         .with_crate(crate_dir)
         .with_language(cbindgen::Language::C)
+        .with_autogen_warning("typedef struct api_server {} api_server;")
+        .rename_item("ApiServer", "api_server")
         .generate()
         .expect("Unable to generate bindings")
         .write_to_file("bindings.h");

@@ -1,3 +1,5 @@
+typedef struct api_server {} api_server;
+
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -7,13 +9,17 @@ const char *c_check_password(const char *state_str, const char *password, uint8_
 
 const char *c_create_tor_config(const char *state_json, uint8_t *error);
 
-const char *c_listen_with_http(const char *state_json, uint8_t *error);
+const char *c_get_grin_address(const char *state_json, uint8_t *error);
 
 const char *c_seed_new(uint8_t seed_length, uint8_t *error);
 
 const char *c_set_logger(uint8_t *error);
 
 const char *c_slatepack_decode(const char *state_json, const char *slatepack, uint8_t *error);
+
+api_server *c_start_listen_with_http(const char *state_json, uint8_t *error);
+
+const char *c_stop_listen_with_http(api_server *api_server, uint8_t *error);
 
 const char *c_tx_cancel(const char *state_json, uint32_t id, uint8_t *error);
 
@@ -32,6 +38,12 @@ const char *c_tx_get(const char *state_json,
 const char *c_tx_post(const char *state_json, const char *tx_slate_id, uint8_t *error);
 
 const char *c_tx_receive(const char *state_json, const char *slate_armored, uint8_t *error);
+
+const char *c_tx_send_address(const char *state_json,
+                              uint64_t amount,
+                              bool selection_strategy_is_use_all,
+                              const char *address,
+                              uint8_t *error);
 
 const char *c_tx_send_https(const char *state_json,
                             uint64_t amount,

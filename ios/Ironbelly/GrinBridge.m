@@ -34,6 +34,8 @@ RCT_EXTERN_METHOD(txCreate:(NSString*)state amount:(int64_t)amount selectionStra
 
 RCT_EXTERN_METHOD(txSendHttps:(NSString*)state amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll url:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
+RCT_EXTERN_METHOD(txSendAddress:(NSString*)state amount:(int64_t)amount selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll address:(NSString*)address resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
 RCT_EXTERN_METHOD(txStrategies:(NSString*)state amount:(int64_t)amount resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txCancel:(NSString*)state id:(NSUInteger)id resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
@@ -54,6 +56,8 @@ RCT_EXTERN_METHOD(checkPassword:(NSString*)state password:(NSString*)password re
 
 RCT_EXTERN_METHOD(slatepackDecode:(NSString*)state slatepack:(NSString*)slatepack resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(listenWithHttp:(NSString*)state resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+RCT_EXTERN_METHOD(startListenWithHttp:(NSString*)state resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(stopListenWithHttp:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 @end

@@ -28,15 +28,22 @@ const { TorBridge } = NativeModules
 
 const torBridgeEmitter = new NativeEventEmitter(TorBridge)
 
-type TorStatus = 'connected' | 'in-progress' | 'failed' | 'disconnected'
+export const TOR_CONNECTED = 'connected'
+export const TOR_IN_PROGRESS = 'in-progress'
+export const TOR_FAILED = 'failed'
+export const TOR_DISCONNECTED = 'disconnected'
+
+export type TorStatus =
+  | typeof TOR_CONNECTED
+  | typeof TOR_IN_PROGRESS
+  | typeof TOR_FAILED
+  | typeof TOR_DISCONNECTED
 
 export type State = {
-  allowed: boolean
   status: TorStatus
 }
 export const initialState: State = {
-  allowed: false,
-  status: 'disconnected',
+  status: TOR_DISCONNECTED,
 }
 
 const torSlice = createSlice({
@@ -46,29 +53,23 @@ const torSlice = createSlice({
     setStatus: (state, action: PayloadAction<TorStatus>) => {
       state.status = action.payload
     },
-    setAllowed: (state, action: PayloadAction<boolean>) => {
-      state.allowed = action.payload
-    },
   },
 })
 
 export const torReducer = torSlice.reducer
 export const torActions = torSlice.actions
-export type TorActions =
-  | typeof torActions.setAllowed
-  | typeof torActions.setStatus
+export type TorActions = typeof torActions.setStatus
 
 export const startTorEpic: Epic<Action, Action, RootState> = (
   action$,
   state$,
 ) =>
   action$.pipe(
-    ofType('VALID_PASSWORD', torActions.setAllowed.toString()),
+    ofType('VALID_PASSWORD'),
     filter(
       () =>
-        !state$.value.tor.allowed &&
         state$.value.wallet.password.valid &&
-        state$.value.tor.status !== 'in-progress',
+        state$.value.tor.status !== TOR_IN_PROGRESS,
     ),
     tap(() => {
       TorBridge.startTor(getStateForRust(state$.value))
@@ -83,11 +84,11 @@ export const stopTorEpic: Epic<Action, Action, RootState> = (
   _state$,
 ) =>
   action$.pipe(
-    ofType('CLEAR_PASSWORD'),
+    ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     tap(() => {
       TorBridge.stopTor().then(console.log).catch(console.error)
     }),
-    mapTo(torActions.setStatus('disconnected') as Action),
+    mapTo(torActions.setStatus(TOR_DISCONNECTED) as Action),
   )
 
 export const statusUpdates: Epic<Action, Action, RootState> = (_, state$) =>
@@ -101,3 +102,5 @@ export const torEpic: Epic<Action, Action, RootState> = combineEpics(
   stopTorEpic,
   statusUpdates,
 )
+
+export const torStatusSelector = (state: RootState) => state.tor.status

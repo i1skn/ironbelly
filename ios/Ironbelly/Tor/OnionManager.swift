@@ -89,7 +89,7 @@ class OnionManager: NSObject {
         configuration.cookieAuthentication = true
         
         if let dataDir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)
-                    .first?.appendingPathComponent("tor/listener", isDirectory: true) {
+                    .first?.appendingPathComponent("tor", isDirectory: true) {
             #if DEBUG
             print("dataDir=\(dataDir)")
             #endif
@@ -125,8 +125,8 @@ class OnionManager: NSObject {
                 "-f", torrcFile.path,
 //                "--clientonly", "1",
                 "--AvoidDiskWrites", "1",
-//                "--socksport", "39059",
-		"--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
+                "--socksport", "39059",
+                "--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
                 "--log", log_loc,
                 "--clientuseipv6", "1",
 //                "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",

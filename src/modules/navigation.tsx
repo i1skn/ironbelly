@@ -32,8 +32,8 @@ import SettingsScreen from 'src/screens/Settings'
 import TxDetailsScreen from 'src/screens/TxDetails'
 import TxIncompleteSendScreen, {
   androidHeaderTitle as TxIncompleteSendAndroidHeaderTitle,
-} from 'src/screens/TxIncompleteSend'
-import TxIncompleteReceiveScreen from 'src/screens/TxIncompleteReceive'
+} from 'src/screens/TxIncompleteSend/TxIncompleteSend'
+import TxIncompleteReceiveScreen from 'src/screens/TxIncompleteReceive/TxIncompleteReceive'
 import LandingScreen from 'src/screens/Landing'
 import ShowPaperKeyScreen from 'src/screens/PaperKey/Show'
 import VerifyPaperKeyScreen from 'src/screens/PaperKey/Verify'

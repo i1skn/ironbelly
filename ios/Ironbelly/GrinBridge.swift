@@ -16,9 +16,13 @@
 
 import Foundation
 
+
+
 @objc(GrinBridge)
 class GrinBridge: NSObject {
-
+    
+    var httpListenerApi: UnsafeMutablePointer<api_server>?
+    
     @objc static func requiresMainQueueSetup() -> Bool {
         return false
     }
@@ -62,6 +66,12 @@ class GrinBridge: NSObject {
     @objc func txSendHttps(_ state: String, amount: UInt64, selectionStrategyIsUseAll: Bool, url: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_tx_send_https(state, amount, selectionStrategyIsUseAll, url, &error)
+        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+    }
+    
+    @objc func txSendAddress(_ state: String, amount: UInt64, selectionStrategyIsUseAll: Bool, address: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_tx_send_address(state, amount, selectionStrategyIsUseAll, address, &error)
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
@@ -127,9 +137,29 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
     
-    @objc func listenWithHttp(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+    @objc func startListenWithHttp(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_listen_with_http(state, &error)
-        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        print("httpListenerApi: \(String(describing: httpListenerApi))")
+        if httpListenerApi == nil {
+            httpListenerApi = c_start_listen_with_http(state, &error)
+            if error == 0 {
+                let cResult = c_get_grin_address(state, &error)
+                returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+            } else {
+                reject(nil, "Can not start HTTP server. See logs.", nil)
+            }
+        } else {
+            logTor("Can not start HTTP listener as it's already running")
+        }
+
+    }
+    
+    @objc func stopListenWithHttp(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        if let api = httpListenerApi {
+            let cResult = c_stop_listen_with_http(api, &error)
+            httpListenerApi = nil;
+            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        }
     }
 }

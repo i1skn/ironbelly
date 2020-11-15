@@ -143,4 +143,4 @@ export const persistor = persistStore(store)
 
 epicMiddleware.run(rootEpic)
 
-export const useSelector: TypedUseSelectorHook<State> = useUntypedSelector
+export const useSelector: TypedUseSelectorHook<RootState> = useUntypedSelector

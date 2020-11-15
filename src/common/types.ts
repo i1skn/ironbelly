@@ -104,6 +104,21 @@ export type txSendHttpsFalureAction = {
   code?: number
   message: string
 }
+export type txSendAddressRequestAction = {
+  type: 'TX_SEND_ADDRESS_REQUEST'
+  amount: number
+  selectionStrategyIsUseAll: boolean
+  address: string
+}
+export type txSendAddressSuccessAction = {
+  type: 'TX_SEND_ADDRESS_SUCCESS'
+}
+export type txSendAddressFalureAction = {
+  type: 'TX_SEND_ADDRESS_FAILURE'
+  code?: number
+  message: string
+}
+
 export type txPostShowAction = {
   type: 'TX_POST_SHOW'
   txSlateId: string
@@ -415,9 +430,9 @@ export type txFormSetAmountAction = {
   amount: number
   textAmount: string
 }
-export type txFormSetUrlAction = {
-  type: 'TX_FORM_SET_URL'
-  url: string
+export type txFormSetAddressAction = {
+  type: 'TX_FORM_SET_ADDRESS'
+  address: string
 }
 export type txFormSetOutputStrategyAction = {
   type: 'TX_FORM_SET_OUTPUT_STRATEGY'
@@ -490,6 +505,9 @@ export type Action =
   | txCreateSuccessAction
   | txCreateFalureAction
   | txSendHttpsRequestAction
+  | txSendAddressRequestAction
+  | txSendAddressSuccessAction
+  | txSendAddressFalureAction
   | txSendHttpsSuccessAction
   | txSendHttpsFalureAction
   | txPostShowAction
@@ -541,7 +559,7 @@ export type Action =
   | toastClearAction
   | txFormSetFromLinkAction
   | txFormSetAmountAction
-  | txFormSetUrlAction
+  | txFormSetAddressAction
   | txFormSetMessageAction
   | txFormResetAction
   | txFormSetOutputStrategyAction
@@ -659,6 +677,7 @@ export type RustState = {
   chain: string
   account?: string
   password?: string
+  minimum_confirmations: number
 }
 export type RustBalance = {
   amount_awaiting_confirmation: number

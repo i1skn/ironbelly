@@ -19,6 +19,8 @@ use std::net::SocketAddr;
 
 use failure::ResultExt;
 
+use std::fs;
+
 use grin_wallet_controller;
 use grin_wallet_libwallet::{
     address, scan, selection, slate_versions, tx, updater, wallet_lock, NodeClient,
@@ -35,6 +37,7 @@ use grin_wallet_util::grin_util::ZeroingString;
 use grin_wallet_util::OnionV3Address;
 use std::convert::TryFrom;
 use std::path::Path;
+use std::path::MAIN_SEPARATOR;
 
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_impls::{
@@ -263,7 +266,6 @@ pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c
 fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let wallet_config = create_wallet_config(state.clone())?;
 
     // create wallet
     let mut wallet_lock = wallet.lock();
@@ -276,20 +278,6 @@ fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String,
         false,
         true,
     )?;
-
-    // create TOR config
-    let w_inst = lc.wallet_inst()?;
-    let k = w_inst.keychain((None).as_ref())?;
-    let parent_key_id = w_inst.parent_key_id();
-    let tor_dir = format!("{}/tor/listener", lc.get_top_level_directory()?);
-    let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
-        .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    tor_config::output_tor_listener_config(
-        &tor_dir,
-        &wallet_config.api_listen_addr(),
-        &vec![sec_key],
-    )
-    .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
 
     Ok("".to_owned())
 }
@@ -850,6 +838,96 @@ pub unsafe extern "C" fn c_tx_send_https(
     )
 }
 
+fn tx_send_address(
+    state_json: &str,
+    address: &str,
+    amount: u64,
+    selection_strategy_is_use_all: bool,
+) -> Result<String, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
+    let parent_key_id = {
+        wallet_lock!(wallet, w);
+        w.parent_key_id().clone()
+    };
+
+    let slate = {
+        wallet_lock!(wallet, w);
+        let mut slate = tx::new_tx_slate(&mut **w, amount, false, 2, false, None)?;
+        let height = w.w2n_client().get_chain_tip()?.0;
+
+        let context = tx::add_inputs_to_slate(
+            &mut **w,
+            None,
+            &mut slate,
+            height,
+            state.minimum_confirmations,
+            500,
+            1,
+            selection_strategy_is_use_all,
+            &parent_key_id,
+            true,
+            false,
+        )?;
+
+        {
+            let mut batch = w.batch(None)?;
+            batch.save_private_context(slate.id.as_bytes(), &context)?;
+            batch.commit()?;
+        }
+
+        selection::lock_tx_context(&mut **w, None, &slate, height, &context, None)?;
+        slate.compact()?;
+        slate
+    };
+
+    let api = Owner::new(wallet.clone(), None);
+
+    let address = SlatepackAddress::try_from(address)?;
+    let tor_addr = OnionV3Address::try_from(&address)
+        .map_err(|_| ErrorKind::GenericError(format!("{} is not SlatepackAddress", address)))?;
+
+    let mut sender = HttpSlateSender::with_socks_proxy(
+        &tor_addr.to_http_str(),
+        "127.0.0.1:39059",
+        "", // Ignored
+    )
+    .map_err(|error| {
+        ErrorKind::GenericError(format!("Can not send to {}: {:?}", tor_addr, error))
+    })?;
+
+    match sender.send_tx(&slate, false) {
+        Ok(mut slate) => {
+            api.finalize_tx(None, &mut slate)?;
+            Ok(serde_json::to_string(&slate.id)
+                .map_err(|e| ErrorKind::GenericError(e.to_string()))?)
+        }
+        Err(e) => {
+            api.cancel_tx(None, None, Some(slate.id))?;
+            Err(Error::from(e))
+        }
+    }
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_tx_send_address(
+    state_json: *const c_char,
+    amount: u64,
+    selection_strategy_is_use_all: bool,
+    address: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(
+        tx_send_address(
+            &c_str_to_rust(state_json),
+            &c_str_to_rust(address),
+            amount,
+            selection_strategy_is_use_all,
+        ),
+        error
+    )
+}
+
 fn tx_post(state_json: &str, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone(), None);
@@ -915,10 +993,9 @@ pub unsafe extern "C" fn c_slatepack_decode(
     )
 }
 
-fn listen_with_http(state_json: &str) -> Result<String, Error> {
+fn get_grin_address(state_json: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state.clone())?;
-    let wallet_config = create_wallet_config(state.clone())?;
 
     let keychain_mask = None;
 
@@ -931,7 +1008,24 @@ fn listen_with_http(state_json: &str) -> Result<String, Error> {
         .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
     let onion_address = OnionV3Address::from_private(&sec_key.0)
         .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
-    let sp_address = SlatepackAddress::try_from(onion_address.clone())?;
+    let address = SlatepackAddress::try_from(onion_address.clone())?;
+    Ok(address.to_string())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_get_grin_address(
+    state_json: *const c_char,
+    error: *mut u8,
+) -> *const c_char {
+    unwrap_to_c!(get_grin_address(&c_str_to_rust(state_json)), error)
+}
+
+fn start_listen_with_http(state_json: &str, apis: &mut ApiServer) -> Result<(), Error> {
+    let state = State::from_str(state_json)?;
+    let wallet = get_wallet(state.clone())?;
+    let wallet_config = create_wallet_config(state.clone())?;
+
+    let keychain_mask = None;
 
     let addr = &wallet_config.api_listen_addr();
 
@@ -941,38 +1035,45 @@ fn listen_with_http(state_json: &str) -> Result<String, Error> {
         false,
         Mutex::new(None),
     );
-    let mut router = Router::new();
 
+    let mut router = Router::new();
     router
         .add_route("/v2/foreign", Arc::new(api_handler_v2))
         .map_err(|_| ErrorKind::GenericError("Router failed to add route".to_string()))?;
 
-    let mut apis = ApiServer::new();
     warn!("Starting HTTP Foreign listener API server at {}.", addr);
     let socket_addr: SocketAddr = addr.parse().expect("unable to parse socket address");
-    let api_thread = apis
-        .start(socket_addr, router, None)
+    apis.start(socket_addr, router, None)
         .context(ErrorKind::GenericError(
             "API thread failed to start".to_string(),
         ))?;
 
     warn!("HTTP Foreign listener started.");
-    warn!("Slatepack Address is: {}", sp_address);
-
-    // api_thread
-    // .join()
-    // .map_err(|_| ErrorKind::GenericError("API thread panicked".to_string()))?;
-    // .map_err(|e| ErrorKind::GenericError(format!("API thread panicked :{:?}", e)).into());
-
-    Ok(sp_address.to_string())
+    Ok(())
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn c_listen_with_http(
+pub unsafe extern "C" fn c_start_listen_with_http(
     state_json: *const c_char,
     error: *mut u8,
+) -> *mut ApiServer {
+    let mut apis = ApiServer::new();
+    let result = start_listen_with_http(&c_str_to_rust(state_json), &mut apis);
+    *error = if result.is_err() { 1 } else { 0 };
+    Box::into_raw(Box::new(apis))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_stop_listen_with_http(
+    api_server: *mut ApiServer,
+    error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(listen_with_http(&c_str_to_rust(state_json)), error)
+    if let Some(apis) = api_server.as_mut() {
+        apis.stop();
+        Box::from_raw(api_server);
+    }
+    *error = 0;
+    CString::new("".to_owned()).unwrap().into_raw()
 }
 
 fn create_tor_config(state_json: &str) -> Result<String, Error> {
@@ -990,11 +1091,25 @@ fn create_tor_config(state_json: &str) -> Result<String, Error> {
     let w_inst = lc.wallet_inst()?;
     let k = w_inst.keychain((keychain_mask).as_ref())?;
     let parent_key_id = w_inst.parent_key_id();
-    let tor_dir = format!("{}/tor/listener", lc.get_top_level_directory()?);
+    let tor_config_directory = format!("{}/tor", lc.get_top_level_directory()?);
+
     let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
         .map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    tor_config::output_tor_listener_config(&tor_dir, &addr, &vec![sec_key])
-        .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
+
+    let tor_data_dir = format!("{}{}{}", tor_config_directory, MAIN_SEPARATOR, "data");
+
+    // create data directory if it doesn't exist
+    fs::create_dir_all(&tor_data_dir).context(ErrorKind::IO)?;
+
+    let mut service_dirs = vec![];
+
+    for k in &vec![sec_key] {
+        let service_dir = tor_config::output_onion_service_config(&tor_config_directory, &k)?;
+        service_dirs.push(service_dir.to_string());
+    }
+
+    // hidden service listener doesn't need a socks port
+    tor_config::output_torrc(&tor_config_directory, &addr, "39059", &service_dirs)?;
 
     Ok("".to_owned())
 }

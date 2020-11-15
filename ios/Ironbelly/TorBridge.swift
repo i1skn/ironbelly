@@ -60,7 +60,6 @@ class TorBridge: RCTEventEmitter {
     }
     func onTorPortsOpened() {
         logTor("Ports are opened")
-        
     }
 }
 

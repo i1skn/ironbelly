@@ -23,6 +23,7 @@ import RNFS from 'react-native-fs'
 import { persistReducer } from 'redux-persist'
 import {
   HTTP_TRANSPORT_METHOD,
+  ADDRESS_TRANSPORT_METHOD,
   getStateForRust,
   mapRustTx,
   mapRustOutputStrategy,
@@ -39,6 +40,7 @@ import {
   txListRequestAction,
   txCreateRequestAction,
   txSendHttpsRequestAction,
+  txSendAddressRequestAction,
   txPostRequestAction,
   txReceiveRequestAction,
   txFinalizeRequestAction,
@@ -51,6 +53,7 @@ import {
   OutputStrategy,
 } from 'src/common/types'
 import { getNavigation } from './navigation'
+import { RootState } from 'src/common/redux'
 const { GrinBridge } = NativeModules
 export type ListState = {
   data: Array<Tx>
@@ -111,7 +114,7 @@ export type TxForm = {
   outputStrategies_inProgress: boolean
   textAmount: string
   message: string
-  url: string
+  address: string
 }
 export type SlateShareState = {
   inProgress: boolean
@@ -194,7 +197,7 @@ const initialState: State = {
     outputStrategies_inProgress: false,
     textAmount: '',
     message: '',
-    url: '',
+    address: '',
   },
   slate: {
     data: null,
@@ -440,6 +443,45 @@ export const sideEffects = {
     } catch (e) {
       store.dispatch({
         type: 'TX_SEND_HTTPS_FAILURE',
+        message: e.message,
+      })
+      log(e, true)
+    }
+  },
+  ['TX_SEND_ADDRESS_REQUEST']: async (
+    action: txSendAddressRequestAction,
+    store: Store,
+  ) => {
+    try {
+      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(
+        JSON.parse,
+      )
+
+      if (!finalized) {
+        finalized = []
+      }
+
+      const slateId = await GrinBridge.txSendAddress(
+        getStateForRust(store.getState()),
+        action.amount,
+        action.selectionStrategyIsUseAll,
+        action.address,
+      ).then(JSON.parse)
+      finalized.push(slateId)
+      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
+      store.dispatch({
+        type: 'TX_SEND_ADDRESS_SUCCESS',
+      })
+      const navigation = await getNavigation()
+      navigation?.goBack()
+
+      store.dispatch({
+        type: 'TX_POST_SHOW',
+        txSlateId: slateId,
+      })
+    } catch (e) {
+      store.dispatch({
+        type: 'TX_SEND_ADDRESS_FAILURE',
         message: e.message,
       })
       log(e, true)
@@ -977,15 +1019,15 @@ const txForm = function (
         ...initialState.txForm,
         amount: action.amount,
         textAmount: action.textAmount,
-        url: action.url,
+        address: action.url,
         message: action.message,
       }
 
     case 'TX_FORM_SET_AMOUNT':
       return { ...state, amount: action.amount, textAmount: action.textAmount }
 
-    case 'TX_FORM_SET_URL':
-      return { ...state, url: action.url }
+    case 'TX_FORM_SET_ADDRESS':
+      return { ...state, address: action.address }
 
     case 'TX_FORM_SET_OUTPUT_STRATEGY':
       return { ...state, outputStrategy: action.outputStrategy }
@@ -1092,14 +1134,16 @@ const listPersistConfig = {
   storage: AsyncStorage,
   whitelist: ['data'],
 }
-export const isTxFormValid = (txForm: TxForm, transferMethod: string) => {
-  const { url, amount, outputStrategy } = txForm
+export const isTxFormInvalid = (txForm: TxForm, transferMethod: string) => {
+  const { address, amount, outputStrategy } = txForm
 
   if (
     !amount ||
     !outputStrategy ||
     (transferMethod === HTTP_TRANSPORT_METHOD &&
-      url.toLowerCase().indexOf('http') === -1)
+      address.toLowerCase().indexOf('http') === -1) ||
+    (transferMethod === ADDRESS_TRANSPORT_METHOD &&
+      address.toLowerCase().indexOf('grin') === -1)
   ) {
     return true
   }
@@ -1119,3 +1163,5 @@ export const reducer = combineReducers({
   slate,
   slateShare,
 })
+
+export const txListSelector = (state: RootState) => state.tx.list.data
