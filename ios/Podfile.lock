@@ -241,7 +241,7 @@ PODS:
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
   - React-jsinspector (0.63.3)
-  - react-native-document-picker (3.5.4):
+  - react-native-document-picker (4.1.0):
     - React-Core
   - react-native-keep-awake (4.0.0):
     - React-Core
@@ -309,21 +309,21 @@ PODS:
     - React-Core (= 0.63.3)
     - React-cxxreact (= 0.63.3)
     - React-jsi (= 0.63.3)
-  - RNCAsyncStorage (1.9.0):
+  - RNCAsyncStorage (1.12.1):
     - React-Core
-  - RNCClipboard (1.2.2):
+  - RNCClipboard (1.5.0):
     - React-Core
   - RNCMaskedView (0.1.10):
     - React-Core
-  - RNDeviceInfo (6.0.4):
+  - RNDeviceInfo (6.2.1):
     - React-Core
   - RNFS (2.16.6):
     - React-Core
-  - RNGestureHandler (1.6.1):
+  - RNGestureHandler (1.8.0):
     - React-Core
   - RNKeychain (5.0.1):
     - React-Core
-  - RNScreens (2.5.0):
+  - RNScreens (2.14.0):
     - React-Core
   - RNShare (3.3.1):
     - React-Core
@@ -543,7 +543,7 @@ SPEC CHECKSUMS:
   React-jsi: df07aa95b39c5be3e41199921509bfa929ed2b9d
   React-jsiexecutor: b56c03e61c0dd5f5801255f2160a815f4a53d451
   React-jsinspector: 8e68ffbfe23880d3ee9bafa8be2777f60b25cbe2
-  react-native-document-picker: a1d2dc578f106686182595f24706adcc59a6dfe2
+  react-native-document-picker: d870e0a41510b241d5b764e7a2b5ccf129af7967
   react-native-keep-awake: 6c078705f3fb2586963b13588d31148adc6bd128
   react-native-netinfo: 250dc0ca126512f618a8a2ca6a936577e1f66586
   react-native-safe-area-context: 79fea126c6830c85f65947c223a5e3058a666937
@@ -557,14 +557,14 @@ SPEC CHECKSUMS:
   React-RCTText: 65a6de06a7389098ce24340d1d3556015c38f746
   React-RCTVibration: 8e9fb25724a0805107fc1acc9075e26f814df454
   ReactCommon: 4167844018c9ed375cc01a843e9ee564399e53c3
-  RNCAsyncStorage: 668bec86aeceb21a604a4ab33b7ea858b35db6a2
-  RNCClipboard: 381b02821c63a0e389e9f263e4f4fa2077362152
+  RNCAsyncStorage: b03032fdbdb725bea0bd9e5ec5a7272865ae7398
+  RNCClipboard: c7abea1baea58adca5c1f29e56dd5261837b4892
   RNCMaskedView: bed2a1eb783ec4b149167f0fd72d05593686d745
-  RNDeviceInfo: 5eb11f4aef9395cca403c0c92dff458252fc0b2c
+  RNDeviceInfo: 9b6aba9ffaed69ecb72bd13c7bcb0debf277bc9f
   RNFS: 7161a36db9bbdaab96d91fff660820f94e29ca58
-  RNGestureHandler: 90e274c7f94b32e116b1e4d6be2f28477291ce37
+  RNGestureHandler: c90fad10d3581eae21ff4ecf0c25327f8eb41d19
   RNKeychain: 3ad1a901ec55cf1287d67730997cc2df6d494f09
-  RNScreens: 69ed08460b00c35d2ebc8828290918d1d4f96629
+  RNScreens: 2e278a90eb15092ed261d4f2271e3fc9b60d08d4
   RNShare: 22b4424353e6b7021ed40b77aa4de4e90145e0b6
   RNSVG: 59dfa0b461f9e94136e1b1f3878da58a743d4795
   RNVectorIcons: ec4602418567919017a2756d2113e0c9c6366ad3
@@ -574,4 +574,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: 193bfd86367b61fe45f1dd11356ee7c342434465
 
-COCOAPODS: 1.10.0.rc.1
+COCOAPODS: 1.10.0

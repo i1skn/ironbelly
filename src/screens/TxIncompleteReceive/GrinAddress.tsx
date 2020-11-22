@@ -14,80 +14,17 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useMemo, useState } from 'react'
+import React from 'react'
 import CopyHeader from 'src/components/CopyHeader'
 import { Text, monoSpaceFont } from 'src/components/CustomFont'
-import {
-  ActivityIndicator,
-  StyleSheet,
-  View,
-  NativeModules,
-} from 'react-native'
-import { store, useSelector } from 'src/common/redux'
-import {
-  torStatusSelector,
-  TOR_DISCONNECTED,
-  TOR_FAILED,
-  TOR_IN_PROGRESS,
-} from 'src/modules/tor'
-import { getStateForRust } from 'src/common'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { useSelector } from 'src/common/redux'
+import { torStatusSelector, TOR_FAILED, TOR_IN_PROGRESS } from 'src/modules/tor'
 import colors from 'src/common/colors'
-import { txListSelector } from 'src/modules/tx'
-import { getNavigation } from 'src/modules/navigation'
-import { useDispatch } from 'react-redux'
-import { RustTx } from 'src/common/types'
-
-const { GrinBridge } = NativeModules
-
-const REFRESH_INTERVAL = 5000
+import { grinAddressSelector } from 'src/modules/tx/receive'
 
 function GrinAddress() {
-  const dispatch = useDispatch()
-  let [grinAddress, setGrinAddress] = useState('')
-
-  const rustState = useMemo(() => getStateForRust(store.getState()), [
-    getStateForRust,
-    store,
-  ])
-
-  // HTTP Listening
-  useEffect(() => {
-    GrinBridge.startListenWithHttp(rustState)
-      .then(setGrinAddress)
-      // .then(() => {})
-      .catch(console.error)
-
-    return () => {
-      GrinBridge.stopListenWithHttp()
-    }
-  }, [rustState])
-
-  const txList = useSelector(txListSelector)
-  useEffect(() => {
-    const interval = setInterval(async () => {
-      const txs = await GrinBridge.txsGet(rustState, false).then(JSON.parse)
-      if (
-        txs[1].filter((tx: RustTx) => tx.tx_type.indexOf('Cancelled') === -1)
-          .length !== txList.length
-      ) {
-        const navigation = await getNavigation()
-        navigation.navigate('Overview')
-        dispatch({
-          type: 'TX_LIST_REQUEST',
-          showLoader: false,
-          refreshFromNode: false,
-        })
-        dispatch({
-          type: 'TOAST_SHOW',
-          text: 'Transaction has been received',
-        })
-      }
-    }, REFRESH_INTERVAL)
-    return () => {
-      clearInterval(interval)
-    }
-  }, [rustState])
-
+  const grinAddress = useSelector(grinAddressSelector)
   const torStatus = useSelector(torStatusSelector)
 
   let address
@@ -110,9 +47,7 @@ function GrinAddress() {
     <>
       <CopyHeader content={grinAddress} label={'Grin Address'} />
       <View style={styles.container}>{address}</View>
-      <Text style={styles.warning}>
-        Do not close this window to receive via Grin Address!
-      </Text>
+      <Text style={styles.warning}>Keep the app open to use Grin Address!</Text>
     </>
   )
 }
@@ -138,7 +73,7 @@ const styles = StyleSheet.create({
     color: colors.warning,
     marginBottom: 8,
     fontSize: 17,
-    // textAlign: 'center',
+    textAlign: 'center',
   },
 })
 

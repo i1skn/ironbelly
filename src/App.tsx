@@ -24,7 +24,7 @@ import {
   StatusBar,
   PermissionsAndroid,
   AppStateStatus,
-  YellowBox,
+  LogBox,
 } from 'react-native'
 import { Provider, connect } from 'react-redux'
 import {
@@ -48,14 +48,13 @@ import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 
-const { GrinBridge, TorBridge } = NativeModules
+const { GrinBridge } = NativeModules
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
 
-YellowBox.ignoreWarnings([
+LogBox.ignoreLogs([
   'Expected style',
-  'YellowBox',
   'useNativeDriver',
   'currentlyFocusedField',
 ])

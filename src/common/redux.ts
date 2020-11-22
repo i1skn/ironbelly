@@ -29,6 +29,7 @@ import {
   reducer as txReducer,
   sideEffects as txSideEffects,
 } from 'src/modules/tx'
+import { txReceiveReducer, txReceiveEpic } from 'src/modules/tx/receive'
 import {
   reducer as settingsReducer,
   sideEffects as settingsEffects,
@@ -80,6 +81,7 @@ export const rootReducer = combineReducers({
   ) as typeof balanceReducer,
   app: persistReducer(appConfig, appReducer) as typeof appReducer,
   tx: txReducer,
+  txReceive: txReceiveReducer,
   currencyRates: persistReducer(
     currencyRatesConfig,
     currencyRates,
@@ -97,7 +99,11 @@ export const rootEpic: Epic<Action, Action, State> = (
   store$,
   dependencies,
 ) =>
-  combineEpics(appEpic, torEpic)(action$, store$, dependencies).pipe(
+  combineEpics(appEpic, txReceiveEpic, torEpic)(
+    action$,
+    store$,
+    dependencies,
+  ).pipe(
     catchError((error, source) => {
       console.error(error)
       return source

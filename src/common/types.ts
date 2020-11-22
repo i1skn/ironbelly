@@ -28,6 +28,7 @@ import { RouteProp } from '@react-navigation/native'
 
 // reduxjs/toolkit
 
+import { TxReceiveActions } from 'src/modules/tx/receive'
 import { TorActions } from 'src/modules/tor'
 
 export type txListRequestAction = {
@@ -40,7 +41,7 @@ export type txListClearAction = {
 }
 export type txListSuccessAction = {
   type: 'TX_LIST_SUCCESS'
-  data: Array<RustTx>
+  data: Array<Tx>
   balance: RustBalance
   isRefreshed: boolean
 }
@@ -603,6 +604,7 @@ export type Action =
   | walletExistsSuccessAction
   | walletExistsFalureAction
   | TorActions
+  | TxReceiveActions
 
 export type Currency = {
   code: string
@@ -721,3 +723,5 @@ export interface NavigationProps<Screen extends keyof RootStackParamList> {
   navigation: StackNavigationProp<RootStackParamList, Screen>
   route: RouteProp<RootStackParamList, Screen>
 }
+
+export type valueof<T> = T[keyof T]

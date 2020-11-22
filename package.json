@@ -38,7 +38,7 @@
     "react-native-check-box": "^2.1.7",
     "react-native-circular-progress": "^1.1.0",
     "react-native-device-info": "^6.0.4",
-    "react-native-document-picker": "^3.5.4",
+    "react-native-document-picker": "^4.1.0",
     "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^1.1.0",
     "react-native-fs": "^2.13.3",

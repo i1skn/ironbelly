@@ -64,9 +64,13 @@ const ButtonTitle = styled(Text)`
   color: ${(props) => (props.danger ? '#FFF' : colors.onPrimary)};
 `
 export const Button = (props: any) => {
+  const isTitleString = typeof props.title === 'string'
   return (
     <StyledButton {...props}>
-      <ButtonTitle danger={props.danger}>{props.title}</ButtonTitle>
+      {(isTitleString && (
+        <ButtonTitle danger={props.danger}>{props.title}</ButtonTitle>
+      )) ||
+        props.title}
     </StyledButton>
   )
 }

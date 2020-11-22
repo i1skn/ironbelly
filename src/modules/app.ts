@@ -21,7 +21,9 @@ import {
   catchError,
   mergeMap,
   tap,
+  mapTo,
 } from 'rxjs/operators'
+import { interval } from 'rxjs'
 import RNFS from 'react-native-fs'
 import { Action, Slate, State as RootState } from 'src/common/types'
 import { getNavigation } from 'src/modules/navigation'
@@ -32,6 +34,8 @@ import { log } from 'src/common/logger'
 import { NativeModules } from 'react-native'
 
 const { GrinBridge } = NativeModules
+
+const REFRESH_TXS_INTERVAL = 10 * 1000 // 10 sec
 
 export type State = {
   unopenedSlatePath: string
@@ -151,8 +155,22 @@ const checkBiometryEpic: Epic<Action, Action, RootState> = () => {
   })
 }
 
+const refreshTxsPeriodicallyEpic: Epic<Action, Action, RootState> = (
+  _,
+  state$,
+) =>
+  interval(REFRESH_TXS_INTERVAL).pipe(
+    filter(() => state$.value.wallet.password.valid),
+    mapTo({
+      type: 'TX_LIST_REQUEST',
+      showLoader: false,
+      refreshFromNode: true,
+    }),
+  )
+
 export const appEpic: Epic<Action, Action, RootState> = combineEpics(
   checkBiometryEpic,
   handleOpenSlateEpic,
   handleOpenedSlateEpic,
+  refreshTxsPeriodicallyEpic,
 )

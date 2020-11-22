@@ -19,7 +19,7 @@ import { ignoreElements, filter, tap, map, mapTo } from 'rxjs/operators'
 import { fromEvent } from 'rxjs'
 import { RootState } from 'src/common/redux'
 import { Epic, combineEpics, ofType } from 'redux-observable'
-import { Action } from 'src/common/types'
+import { Action, valueof } from 'src/common/types'
 import { getStateForRust } from 'src/common'
 // @ts-ignore
 import { NativeModules, NativeEventEmitter } from 'react-native'
@@ -58,7 +58,7 @@ const torSlice = createSlice({
 
 export const torReducer = torSlice.reducer
 export const torActions = torSlice.actions
-export type TorActions = typeof torActions.setStatus
+export type TorActions = valueof<typeof torActions>
 
 export const startTorEpic: Epic<Action, Action, RootState> = (
   action$,

@@ -56,6 +56,12 @@ const Title = styled.Text`
   color: ${colors.grey[700]};
   font-size: 16;
   font-weight: 600;
+`
+
+const DeprecationWarning = styled.Text`
+  color: ${colors.warning};
+  font-size: 16;
+  font-weight: 500;
   padding-bottom: 8;
   padding-top: 8;
 `
@@ -87,6 +93,16 @@ const Locked = styled.Text`
   padding: 0 0 0 8px;
 `
 
+function SendLoader() {
+  return (
+    <ActivityIndicator
+      style={styles.sendLoader}
+      size="small"
+      color={colors.grey[700]}
+    />
+  )
+}
+
 const SlateNotCreated = ({}: SlateNotCreateProps) => {
   const dispatch = useDispatch()
   const setAmount = (amount: number, textAmount: string) => {
@@ -109,6 +125,8 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
       address: address.toLowerCase(),
     })
   }
+
+  const isSending = useSelector((state) => state.tx.txSend.inProgress)
 
   const send = (
     amount: number,
@@ -209,7 +227,11 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
           ios: { paddingBottom: 64 },
         }),
         paddingHorizontal: 16,
-      }}>
+      }}
+      extraScrollHeight={Platform.select({
+        android: 0,
+        ios: 88,
+      })}>
       <Notice>{noticeText}</Notice>
       {!!balance.amountCurrentlySpendable && (
         <View style={styles.amount}>
@@ -303,7 +325,7 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
               <OptioIcon active={transportMethod === FILE_TRANSPORT_METHOD} />
               <TransportMethodTitle
                 active={transportMethod === FILE_TRANSPORT_METHOD}>
-                File
+                Manual
               </TransportMethodTitle>
             </TransportMethod>
             <TransportMethod
@@ -321,45 +343,36 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
           </View>
           {transportMethod === ADDRESS_TRANSPORT_METHOD && (
             <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <FormTextInput
-                  autoFocus={false}
-                  onChange={(address) => setAddress(address)}
-                  value={address}
-                  placeholder="grin......."
-                  autoCorrect={false}
-                />
-              </View>
+              <FormTextInput
+                autoFocus={false}
+                onChange={(address) => setAddress(address)}
+                value={address}
+                placeholder="grin......."
+                autoCorrect={false}
+              />
               <Spacer />
             </>
           )}
           {transportMethod === HTTP_TRANSPORT_METHOD && (
             <>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <FormTextInput
-                  autoFocus={false}
-                  onChange={(url) => setAddress(url)}
-                  value={address}
-                  placeholder="http(s)://"
-                  textContentType={'URL'}
-                  keyboardType={'url'}
-                  autoCorrect={false}
-                  multiline={true}
-                />
-              </View>
+              <DeprecationWarning>
+                Will be deprecated in version 5
+              </DeprecationWarning>
+              <FormTextInput
+                autoFocus={false}
+                onChange={(url) => setAddress(url)}
+                value={address}
+                placeholder="http(s)://"
+                textContentType={'URL'}
+                keyboardType={'url'}
+                autoCorrect={false}
+                multiline={true}
+              />
               <Spacer />
             </>
           )}
           <Button
-            title={'Send'}
+            title={isSending ? <SendLoader /> : 'Send'}
             onPress={() => {
               if (outputStrategy) {
                 send(amount, address, outputStrategy)
@@ -408,6 +421,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingBottom: 16,
     justifyContent: 'space-around',
+  },
+  sendLoader: {
+    height: 25,
   },
 })
 

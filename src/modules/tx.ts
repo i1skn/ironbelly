@@ -240,7 +240,7 @@ export const sideEffects = {
         getStateForRust(store.getState()),
         action.refreshFromNode,
       ).then(JSON.parse)
-      const mappedData = data[1]
+      let mappedData = data[1]
         .filter((tx: RustTx) => tx.tx_type.indexOf('Cancelled') === -1)
         .map((tx: RustTx) => {
           let pos = finalized.indexOf(tx.tx_slate_id)
@@ -301,6 +301,25 @@ export const sideEffects = {
       ) {
         await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
       }
+
+      mappedData = mappedData.map(mapRustTx)
+
+      // Catching received transaction
+      function filterReceivedUnconfirmed(tx: Tx) {
+        return !tx.confirmed && tx.type === 'TxReceived'
+      }
+
+      if (
+        mappedData.filter(filterReceivedUnconfirmed).length >
+        store.getState().tx.list.data.filter(filterReceivedUnconfirmed).length
+      ) {
+        store.dispatch({
+          type: 'TOAST_SHOW',
+          text: 'Transaction has been received',
+        })
+      }
+      // ------------------------------
+
       store.dispatch({
         type: 'TX_LIST_SUCCESS',
         data: mappedData,
@@ -753,13 +772,16 @@ const list = function (
       }
 
     case 'TX_LIST_SUCCESS':
-      var txs = action.data.slice(0)
+      var txs: Tx[] = action.data.slice(0)
       txs.sort(function (a, b) {
-        return new Date(b.creation_ts) - new Date(a.creation_ts)
+        return (
+          new Date(b.creationTime).getTime() -
+          new Date(a.creationTime).getTime()
+        )
       })
       return {
         ...state,
-        data: txs.map(mapRustTx),
+        data: txs,
         showLoader: false,
         refreshFromNode: false,
         isOffline: state.refreshFromNode && !action.isRefreshed,
@@ -822,12 +844,15 @@ const txSend = function (
 ): TxSendState {
   switch (action.type) {
     case 'TX_SEND_HTTPS_REQUEST':
+    case 'TX_SEND_ADDRESS_REQUEST':
       return { ...state, inProgress: true, sent: false, error: null }
 
     case 'TX_SEND_HTTPS_SUCCESS':
+    case 'TX_SEND_ADDRESS_SUCCESS':
       return { ...state, sent: true, inProgress: false }
 
     case 'TX_SEND_HTTPS_FAILURE':
+    case 'TX_SEND_ADDRESS_FAILURE':
       return {
         ...state,
         error: {
