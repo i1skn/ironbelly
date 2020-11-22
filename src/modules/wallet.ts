@@ -36,6 +36,7 @@ import {
   walletScanPmmrRangeSuccessAction,
   walletScanOutputsSuccessAction,
   walletScanFailureAction,
+  clearPasswordAction,
 } from 'src/common/types'
 import { log } from 'src/common/logger'
 import { combineReducers } from 'redux'
@@ -427,6 +428,13 @@ export const sideEffects = {
   ['WALLET_SCAN_FAILURE']: async (action: walletScanFailureAction) => {
     log(action, true)
   },
+  ['CLEAR_PASSWORD']: async (_action: clearPasswordAction) => {
+    try {
+      await GrinBridge.closeWallet()
+    } catch (error) {
+      log(error, true)
+    }
+  },
   ['WALLET_SCAN_PMMR_RANGE_REQUEST']: async (
     _action: walletScanPmmrRangeRequestAction,
     store: Store,
@@ -575,7 +583,7 @@ export const sideEffects = {
   },
   ['CHECK_PASSWORD']: (_action: checkPasswordAction, store: Store) => {
     const { value } = store.getState().wallet.password
-    return GrinBridge.checkPassword(getStateForRust(store.getState()), value)
+    return GrinBridge.openWallet(getStateForRust(store.getState()), value)
       .then(() => {
         store.dispatch({
           type: 'VALID_PASSWORD',

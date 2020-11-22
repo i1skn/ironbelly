@@ -1,15 +1,22 @@
+
 typedef struct api_server {} api_server;
+typedef struct wallet {} wallet;
+        
 
 #include <stdarg.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 
-const char *c_check_password(const char *state_str, const char *password, uint8_t *error);
+typedef struct wallet wallet;
 
-const char *c_create_tor_config(const char *state_json, uint8_t *error);
+const char *c_close_wallet(wallet *opened_wallet, uint8_t *error);
+
+const char *c_create_tor_config(wallet *wallet, const char *listen_addr, uint8_t *error);
 
 const char *c_get_grin_address(const char *state_json, uint8_t *error);
+
+wallet *c_open_wallet(const char *state_str, const char *password, uint8_t *error);
 
 const char *c_seed_new(uint8_t seed_length, uint8_t *error);
 

@@ -40,9 +40,7 @@
 		F601C28F25559F58003866E2 /* NetworkTools.m in Sources */ = {isa = PBXBuildFile; fileRef = F601C28E25559F58003866E2 /* NetworkTools.m */; };
 		F601C2D72555B159003866E2 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C2D62555B159003866E2 /* OnionConnector.swift */; };
 		F601C2DB2555B253003866E2 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C2DA2555B253003866E2 /* Ipv6Tester.swift */; };
-		F601C3972555B9FB003866E2 /* TorBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C3962555B9FB003866E2 /* TorBridge.swift */; };
 		F601C39A2555BA31003866E2 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C3992555BA31003866E2 /* Utils.swift */; };
-		F601C39D2555BA76003866E2 /* TorBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F601C39C2555BA76003866E2 /* TorBridge.m */; };
 		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
 		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
 		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
@@ -107,9 +105,7 @@
 		F601C28E25559F58003866E2 /* NetworkTools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NetworkTools.m; sourceTree = "<group>"; };
 		F601C2D62555B159003866E2 /* OnionConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnionConnector.swift; path = Ironbelly/Tor/OnionConnector.swift; sourceTree = SOURCE_ROOT; };
 		F601C2DA2555B253003866E2 /* Ipv6Tester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ipv6Tester.swift; sourceTree = "<group>"; };
-		F601C3962555B9FB003866E2 /* TorBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TorBridge.swift; sourceTree = "<group>"; };
 		F601C3992555BA31003866E2 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
-		F601C39C2555BA76003866E2 /* TorBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TorBridge.m; sourceTree = "<group>"; };
 		F64186D9218895DC00A99CA0 /* Ironbelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ironbelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186DC218895DC00A99CA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -229,8 +225,6 @@
 				F64186E8218895DE00A99CA0 /* Info.plist */,
 				F6E9509121C50DE90066C203 /* GrinBridge.m */,
 				F6E9509321C50E560066C203 /* GrinBridge.swift */,
-				F601C39C2555BA76003866E2 /* TorBridge.m */,
-				F601C3962555B9FB003866E2 /* TorBridge.swift */,
 				F601C3992555BA31003866E2 /* Utils.swift */,
 			);
 			path = Ironbelly;
@@ -472,14 +466,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F601C39D2555BA76003866E2 /* TorBridge.m in Sources */,
 				F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */,
 				F601C28B25559D99003866E2 /* OnionSettings.swift in Sources */,
 				F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */,
 				F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */,
 				F601C2D72555B159003866E2 /* OnionConnector.swift in Sources */,
 				F601C39A2555BA31003866E2 /* Utils.swift in Sources */,
-				F601C3972555B9FB003866E2 /* TorBridge.swift in Sources */,
 				F601C28F25559F58003866E2 /* NetworkTools.m in Sources */,
 				F6F4CE7F2555946B00953576 /* OnionManager.swift in Sources */,
 				F601C2DB2555B253003866E2 /* Ipv6Tester.swift in Sources */,

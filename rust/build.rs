@@ -23,8 +23,14 @@ fn main() {
     cbindgen::Builder::new()
         .with_crate(crate_dir)
         .with_language(cbindgen::Language::C)
-        .with_autogen_warning("typedef struct api_server {} api_server;")
+        .with_autogen_warning(
+            r#"
+typedef struct api_server {} api_server;
+typedef struct wallet {} wallet;
+        "#,
+        )
         .rename_item("ApiServer", "api_server")
+        .rename_item("Wallet", "wallet")
         .generate()
         .expect("Unable to generate bindings")
         .write_to_file("bindings.h");

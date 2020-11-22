@@ -16,17 +16,61 @@
 
 import Foundation
 
-
+let torStatusUpdateEventName = "TorStatusUpdate"
+let torListenAddress = "127.0.0.1:3415"
 
 @objc(GrinBridge)
-class GrinBridge: NSObject {
+class GrinBridge: RCTEventEmitter {
     
     var httpListenerApi: UnsafeMutablePointer<api_server>?
+    var openedWallet: UnsafeMutablePointer<wallet>?
     
-    @objc static func requiresMainQueueSetup() -> Bool {
+    @objc override static func requiresMainQueueSetup() -> Bool {
         return false
     }
 
+    // BEGIN of refactored with using passed wallet
+    
+    @objc func openWallet(_ state:String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        openedWallet = c_open_wallet(state, password, &error)
+        if (error == 0) {
+            resolve("Opened wallet successfully")
+        } else {
+            reject(nil, "Can not open wallet", nil)
+        }
+    }
+    
+    @objc func closeWallet(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0
+        let cResult = c_close_wallet(openedWallet, &error)
+        if (error == 0) {
+            openedWallet = nil
+        }
+        returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
+    }
+    
+    @objc func startTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        var error: UInt8 = 0;
+        let cResult = c_create_tor_config(openedWallet, torListenAddress, &error)
+        let result = String(cString: cResult!)
+        if error == 0 {
+            OnionConnector.shared.addObserver(self)
+            OnionConnector.shared.start()
+            resolve(result)
+        } else {
+            reject(nil, result, nil)
+        }
+        cstr_free(UnsafeMutablePointer(mutating: cResult))
+    }
+    
+    @objc func stopTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
+        OnionConnector.shared.stop()
+        OnionConnector.shared.removeObserver(self)
+    }
+    
+    // END of refactored with using passed wallet
+    
     @objc func walletPmmrRange(_ state: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_wallet_pmmr_range(state, &error)
@@ -112,13 +156,6 @@ class GrinBridge: NSObject {
         returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
     }
 
-    @objc func checkPassword(_ state:String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        var error: UInt8 = 0
-        let cResult = c_check_password(state, password, &error)
-        returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
-    }
-
-
     @objc func walletInit(_ state:String, phrase: String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_wallet_init(state, phrase, password, &error)
@@ -139,7 +176,6 @@ class GrinBridge: NSObject {
     
     @objc func startListenWithHttp(_ state:String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        print("httpListenerApi: \(String(describing: httpListenerApi))")
         if httpListenerApi == nil {
             httpListenerApi = c_start_listen_with_http(state, &error)
             if error == 0 {
@@ -161,5 +197,25 @@ class GrinBridge: NSObject {
             httpListenerApi = nil;
             returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
+    }
+    
+    override func supportedEvents() -> [String]! {
+        return [torStatusUpdateEventName]
+    }
+}
+
+extension GrinBridge:OnionConnectorObserver {
+    func onTorConnProgress(_ progress: Int) {
+        self.sendEvent( withName: torStatusUpdateEventName, body: "in-progress" )
+    }
+    func onTorConnFinished(_ configuration: BridgesConfuguration) {
+        self.sendEvent( withName: torStatusUpdateEventName, body: "connected" )
+    }
+    func onTorConnDifficulties(error: OnionError) {
+        logTor("Difficulties: \(error)")
+        self.sendEvent( withName: torStatusUpdateEventName, body: "failed" )
+    }
+    func onTorPortsOpened() {
+        logTor("Ports are opened")
     }
 }

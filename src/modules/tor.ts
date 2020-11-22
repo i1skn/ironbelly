@@ -24,9 +24,9 @@ import { getStateForRust } from 'src/common'
 // @ts-ignore
 import { NativeModules, NativeEventEmitter } from 'react-native'
 
-const { TorBridge } = NativeModules
+const { GrinBridge } = NativeModules
 
-const torBridgeEmitter = new NativeEventEmitter(TorBridge)
+const torBridgeEmitter = new NativeEventEmitter(GrinBridge)
 
 export const TOR_CONNECTED = 'connected'
 export const TOR_IN_PROGRESS = 'in-progress'
@@ -66,15 +66,9 @@ export const startTorEpic: Epic<Action, Action, RootState> = (
 ) =>
   action$.pipe(
     ofType('VALID_PASSWORD'),
-    filter(
-      () =>
-        state$.value.wallet.password.valid &&
-        state$.value.tor.status !== TOR_IN_PROGRESS,
-    ),
+    filter(() => state$.value.tor.status !== TOR_IN_PROGRESS),
     tap(() => {
-      TorBridge.startTor(getStateForRust(state$.value))
-        .then(console.log)
-        .catch(console.error)
+      GrinBridge.startTor().then(console.log).catch(console.error)
     }),
     ignoreElements(),
   )
@@ -86,7 +80,7 @@ export const stopTorEpic: Epic<Action, Action, RootState> = (
   action$.pipe(
     ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     tap(() => {
-      TorBridge.stopTor().then(console.log).catch(console.error)
+      GrinBridge.stopTor().then(console.log).catch(console.error)
     }),
     mapTo(torActions.setStatus(TOR_DISCONNECTED) as Action),
   )

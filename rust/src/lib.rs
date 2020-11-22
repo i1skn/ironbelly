@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-use grin_wallet_impls::tor::config as tor_config;
-
-use std::net::SocketAddr;
-
 use failure::ResultExt;
-
-use std::fs;
-
+use grin_wallet_api::{self, Foreign, ForeignCheckMiddlewareFn, Owner};
+use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_controller;
+use grin_wallet_impls::tor::config as tor_config;
+use grin_wallet_impls::{
+    DefaultLCProvider, DefaultWalletImpl, Error, ErrorKind, HTTPNodeClient, HttpSlateSender,
+    SlateSender, WalletSeed,
+};
 use grin_wallet_libwallet::{
     address, scan, selection, slate_versions, tx, updater, wallet_lock, NodeClient,
     NodeVersionInfo, Slate, SlateVersion, SlatepackAddress, SlatepackArmor, Slatepacker,
@@ -35,28 +35,22 @@ use grin_wallet_util::grin_util::file::get_first_line;
 use grin_wallet_util::grin_util::Mutex;
 use grin_wallet_util::grin_util::ZeroingString;
 use grin_wallet_util::OnionV3Address;
+use serde::{Deserialize, Serialize};
+use simplelog::{Config, LevelFilter, SimpleLogger};
 use std::convert::TryFrom;
+use std::ffi::{CStr, CString};
+use std::fs;
+use std::net::SocketAddr;
+use std::os::raw::c_char;
 use std::path::Path;
 use std::path::MAIN_SEPARATOR;
-
-use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
-use grin_wallet_impls::{
-    DefaultLCProvider, DefaultWalletImpl, Error, ErrorKind, HTTPNodeClient, HttpSlateSender,
-    SlateSender, WalletSeed,
-};
-
-use grin_wallet_api::{self, Foreign, ForeignCheckMiddlewareFn, Owner};
-use serde::{Deserialize, Serialize};
-use std::ffi::{CStr, CString};
-use std::os::raw::c_char;
 use std::sync::Arc;
 use uuid::Uuid;
+
 #[macro_use]
 extern crate log;
 
-use simplelog::{Config, LevelFilter, SimpleLogger};
-
-fn c_str_to_rust(s: *const c_char) -> String {
+fn cstr_to_rust(s: *const c_char) -> String {
     unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
 }
 
@@ -77,6 +71,19 @@ struct State {
     account: Option<String>,
     password: String,
 }
+
+type Wallet = Arc<
+    Mutex<
+        Box<
+            dyn WalletInst<
+                'static,
+                DefaultLCProvider<'static, HTTPNodeClient, ExtKeychain>,
+                HTTPNodeClient,
+                ExtKeychain,
+            >,
+        >,
+    >,
+>;
 
 impl State {
     fn from_str(json: &str) -> Result<Self, Error> {
@@ -117,23 +124,7 @@ fn create_wallet_config(state: State) -> Result<WalletConfig, Error> {
     })
 }
 
-fn get_wallet(
-    state: State,
-) -> Result<
-    Arc<
-        Mutex<
-            Box<
-                dyn WalletInst<
-                    'static,
-                    DefaultLCProvider<'static, HTTPNodeClient, ExtKeychain>,
-                    HTTPNodeClient,
-                    ExtKeychain,
-                >,
-            >,
-        >,
-    >,
-    Error,
-> {
+fn get_wallet(state: State) -> Result<Wallet, Error> {
     let wallet_config = create_wallet_config(state.clone())?;
     global::set_local_chain_type(wallet_config.chain_type.as_ref().unwrap().clone());
 
@@ -194,21 +185,6 @@ macro_rules! unwrap_to_c (
         }
         ));
 
-macro_rules! unwrap_to_c_with_e2e (
-    ($e2e_func:expr, $func:expr, $error:expr) => (
-        match if option_env!("E2E_TEST").is_some() { $e2e_func } else { $func } {
-            Ok(res) => {
-                *$error = 0;
-                CString::new(res.to_owned()).unwrap().into_raw()
-            }
-            Err(e) => {
-                *$error = 1;
-                CString::new(
-                    serde_json::to_string(&format!("{}",e)).unwrap()).unwrap().into_raw()
-            }
-        }
-        ));
-
 #[no_mangle]
 pub unsafe extern "C" fn c_set_logger(error: *mut u8) -> *const c_char {
     unwrap_to_c!(
@@ -225,42 +201,95 @@ pub unsafe extern "C" fn c_set_logger(error: *mut u8) -> *const c_char {
     )
 }
 
-fn check_password(state_json: &str, password: ZeroingString) -> Result<String, Error> {
-    let wallet_config = create_wallet_config(State::from_str(state_json)?)?;
-    WalletSeed::from_file(
-        &format!("{}/{}", &wallet_config.data_file_dir, GRIN_WALLET_DIR),
-        password,
-    )
-    .map_err(|e| Error::from(e))?;
-    Ok("".to_owned())
+fn open_wallet(state_json: &str, password: ZeroingString) -> Result<Wallet, Error> {
+    let state = State::from_str(state_json)?;
+    let wallet_config = create_wallet_config(state.clone())?;
+    global::set_local_chain_type(wallet_config.chain_type.as_ref().unwrap().clone());
+
+    let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
+
+    let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
+    let wallet = inst_wallet::<
+        DefaultLCProvider<HTTPNodeClient, ExtKeychain>,
+        HTTPNodeClient,
+        ExtKeychain,
+    >(wallet_config.clone(), node_client)?;
+    {
+        let mut wallet_lock = wallet.lock();
+        let lc = wallet_lock.lc_provider()?;
+        if let Ok(open_wallet) = lc.wallet_exists(None) {
+            if open_wallet {
+                lc.open_wallet(None, ZeroingString::from(password), false, false)?;
+                if let Some(account) = state.account {
+                    let wallet_inst = lc.wallet_inst()?;
+                    wallet_inst.set_parent_key_id_by_name(&account)?;
+                }
+            }
+        }
+    }
+
+    return Ok(wallet);
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn c_check_password(
+pub unsafe extern "C" fn c_open_wallet(
     state_str: *const c_char,
     password: *const c_char,
     error: *mut u8,
+) -> *mut Wallet {
+    match open_wallet(
+        &cstr_to_rust(state_str),
+        ZeroingString::from(cstr_to_rust(password)),
+    ) {
+        Ok(wallet) => {
+            *error = 0;
+            Box::into_raw(Box::new(wallet))
+        }
+        Err(e) => {
+            error!("Error opening wallet: {}", e);
+            *error = 1;
+            std::ptr::null_mut()
+        }
+    }
+}
+
+fn close_wallet(wallet: &Wallet) -> Result<String, Error> {
+    let mut wallet_lock = wallet.lock();
+    let lc = wallet_lock.lc_provider()?;
+    if let Ok(open_wallet) = lc.wallet_exists(None) {
+        if open_wallet {
+            lc.close_wallet(None)?;
+        }
+    }
+    Ok("Wallet has been closed".to_owned())
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn c_close_wallet(
+    opened_wallet: *mut Wallet,
+    error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(
-        check_password(
-            &c_str_to_rust(state_str),
-            ZeroingString::from(c_str_to_rust(password))
-        ),
-        error
-    )
+    if let Some(wallet) = opened_wallet.as_mut() {
+        let result = close_wallet(&wallet);
+        if result.is_ok() {
+            Box::from_raw(wallet);
+        };
+        unwrap_to_c!(result, error)
+    } else {
+        *error = 1;
+        CString::new("Can not close wallet".to_owned())
+            .unwrap()
+            .into_raw()
+    }
 }
 
 fn seed_new(seed_length: usize) -> Result<String, Error> {
     WalletSeed::init_new(seed_length, false, None).to_mnemonic()
 }
 
-fn e2e_seed_new() -> Result<String, Error> {
-    Ok("confirm erupt mirror palace hockey final admit announce minimum apple work slam return jeans lobster chalk fatal sense prison water host fat eagle seed".to_owned())
-}
-
 #[no_mangle]
 pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c_char {
-    unwrap_to_c_with_e2e!(e2e_seed_new(), seed_new(seed_length as usize), error)
+    unwrap_to_c!(seed_new(seed_length as usize), error)
 }
 
 fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String, Error> {
@@ -291,9 +320,9 @@ pub unsafe extern "C" fn c_wallet_init(
 ) -> *const c_char {
     unwrap_to_c!(
         wallet_init(
-            &c_str_to_rust(state),
-            &c_str_to_rust(phrase),
-            &c_str_to_rust(password),
+            &cstr_to_rust(state),
+            &cstr_to_rust(phrase),
+            &cstr_to_rust(password),
         ),
         error
     )
@@ -339,7 +368,7 @@ pub unsafe extern "C" fn c_wallet_scan_outputs(
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        wallet_scan_outputs(&c_str_to_rust(state), last_retrieved_index, highest_index),
+        wallet_scan_outputs(&cstr_to_rust(state), last_retrieved_index, highest_index),
         error
     )
 }
@@ -360,7 +389,7 @@ pub unsafe extern "C" fn c_wallet_pmmr_range(
     state: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(wallet_pmmr_range(&c_str_to_rust(state)), error)
+    unwrap_to_c!(wallet_pmmr_range(&cstr_to_rust(state)), error)
 }
 
 fn wallet_phrase(state_json: &str) -> Result<String, Error> {
@@ -377,7 +406,7 @@ pub unsafe extern "C" fn c_wallet_phrase(
     state_json: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(wallet_phrase(&c_str_to_rust(state_json)), error)
+    unwrap_to_c!(wallet_phrase(&cstr_to_rust(state_json)), error)
 }
 
 fn tx_get(state_json: &str, refresh_from_node: bool, tx_slate_id: &str) -> Result<String, Error> {
@@ -397,9 +426,9 @@ pub unsafe extern "C" fn c_tx_get(
 ) -> *const c_char {
     unwrap_to_c!(
         tx_get(
-            &c_str_to_rust(state_json),
+            &cstr_to_rust(state_json),
             refresh_from_node,
-            &c_str_to_rust(tx_slate_id),
+            &cstr_to_rust(tx_slate_id),
         ),
         error
     )
@@ -502,10 +531,7 @@ pub unsafe extern "C" fn c_txs_get(
     refresh_from_node: bool,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(
-        txs_get(&c_str_to_rust(state_json), refresh_from_node),
-        error
-    )
+    unwrap_to_c!(txs_get(&cstr_to_rust(state_json), refresh_from_node), error)
 }
 
 #[derive(Serialize, Deserialize)]
@@ -550,7 +576,7 @@ pub unsafe extern "C" fn c_tx_strategies(
     amount: u64,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(tx_strategies(&c_str_to_rust(state_json), amount), error)
+    unwrap_to_c!(tx_strategies(&cstr_to_rust(state_json), amount), error)
 }
 
 fn tx_create(
@@ -622,7 +648,7 @@ pub unsafe extern "C" fn c_tx_create(
 ) -> *const c_char {
     unwrap_to_c!(
         tx_create(
-            &c_str_to_rust(state_json),
+            &cstr_to_rust(state_json),
             amount,
             selection_strategy_is_use_all,
         ),
@@ -646,7 +672,7 @@ pub unsafe extern "C" fn c_tx_cancel(
     id: u32,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(tx_cancel(&c_str_to_rust(state_json), id,), error)
+    unwrap_to_c!(tx_cancel(&cstr_to_rust(state_json), id,), error)
 }
 
 fn check_middleware(
@@ -721,7 +747,7 @@ pub unsafe extern "C" fn c_tx_receive(
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        tx_receive(&c_str_to_rust(state_json), &c_str_to_rust(slate_armored),),
+        tx_receive(&cstr_to_rust(state_json), &cstr_to_rust(slate_armored),),
         error
     )
 }
@@ -749,7 +775,7 @@ pub unsafe extern "C" fn c_tx_finalize(
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        tx_finalize(&c_str_to_rust(state_json), &c_str_to_rust(slate_armored),),
+        tx_finalize(&cstr_to_rust(state_json), &cstr_to_rust(slate_armored),),
         error
     )
 }
@@ -829,8 +855,8 @@ pub unsafe extern "C" fn c_tx_send_https(
 ) -> *const c_char {
     unwrap_to_c!(
         tx_send_https(
-            &c_str_to_rust(state_json),
-            &c_str_to_rust(url),
+            &cstr_to_rust(state_json),
+            &cstr_to_rust(url),
             amount,
             selection_strategy_is_use_all,
         ),
@@ -919,8 +945,8 @@ pub unsafe extern "C" fn c_tx_send_address(
 ) -> *const c_char {
     unwrap_to_c!(
         tx_send_address(
-            &c_str_to_rust(state_json),
-            &c_str_to_rust(address),
+            &cstr_to_rust(state_json),
+            &cstr_to_rust(address),
             amount,
             selection_strategy_is_use_all,
         ),
@@ -960,7 +986,7 @@ pub unsafe extern "C" fn c_tx_post(
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        tx_post(&c_str_to_rust(state_json), &c_str_to_rust(tx_slate_id)),
+        tx_post(&cstr_to_rust(state_json), &cstr_to_rust(tx_slate_id)),
         error
     )
 }
@@ -988,7 +1014,7 @@ pub unsafe extern "C" fn c_slatepack_decode(
     error: *mut u8,
 ) -> *const c_char {
     unwrap_to_c!(
-        slatepack_decode(&c_str_to_rust(state_json), &c_str_to_rust(slatepack)),
+        slatepack_decode(&cstr_to_rust(state_json), &cstr_to_rust(slatepack)),
         error
     )
 }
@@ -1017,7 +1043,7 @@ pub unsafe extern "C" fn c_get_grin_address(
     state_json: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(get_grin_address(&c_str_to_rust(state_json)), error)
+    unwrap_to_c!(get_grin_address(&cstr_to_rust(state_json)), error)
 }
 
 fn start_listen_with_http(state_json: &str, apis: &mut ApiServer) -> Result<(), Error> {
@@ -1058,7 +1084,7 @@ pub unsafe extern "C" fn c_start_listen_with_http(
     error: *mut u8,
 ) -> *mut ApiServer {
     let mut apis = ApiServer::new();
-    let result = start_listen_with_http(&c_str_to_rust(state_json), &mut apis);
+    let result = start_listen_with_http(&cstr_to_rust(state_json), &mut apis);
     *error = if result.is_err() { 1 } else { 0 };
     Box::into_raw(Box::new(apis))
 }
@@ -1076,21 +1102,14 @@ pub unsafe extern "C" fn c_stop_listen_with_http(
     CString::new("".to_owned()).unwrap().into_raw()
 }
 
-fn create_tor_config(state_json: &str) -> Result<String, Error> {
-    let state = State::from_str(state_json)?;
-    let wallet = get_wallet(state.clone())?;
-    let wallet_config = create_wallet_config(state.clone())?;
-
-    let keychain_mask = None;
-
+fn create_tor_config(wallet: &Wallet, listen_addr: &str) -> Result<String, Error> {
     let mut w_lock = wallet.lock();
     let lc = w_lock.lc_provider()?;
+    let w = lc.wallet_inst()?;
+    let keychain_mask = None;
 
-    let addr = &wallet_config.api_listen_addr();
-
-    let w_inst = lc.wallet_inst()?;
-    let k = w_inst.keychain((keychain_mask).as_ref())?;
-    let parent_key_id = w_inst.parent_key_id();
+    let k = w.keychain((keychain_mask).as_ref())?;
+    let parent_key_id = w.parent_key_id();
     let tor_config_directory = format!("{}/tor", lc.get_top_level_directory()?);
 
     let sec_key = address::address_from_derivation_path(&k, &parent_key_id, 0)
@@ -1109,17 +1128,28 @@ fn create_tor_config(state_json: &str) -> Result<String, Error> {
     }
 
     // hidden service listener doesn't need a socks port
-    tor_config::output_torrc(&tor_config_directory, &addr, "39059", &service_dirs)?;
+    tor_config::output_torrc(&tor_config_directory, listen_addr, "39059", &service_dirs)?;
 
     Ok("".to_owned())
 }
 
 #[no_mangle]
 pub unsafe extern "C" fn c_create_tor_config(
-    state_json: *const c_char,
+    wallet: *mut Wallet,
+    listen_addr: *const c_char,
     error: *mut u8,
 ) -> *const c_char {
-    unwrap_to_c!(create_tor_config(&c_str_to_rust(state_json)), error)
+    if let Some(wallet) = wallet.as_mut() {
+        unwrap_to_c!(
+            create_tor_config(&*wallet, &cstr_to_rust(listen_addr)),
+            error
+        )
+    } else {
+        *error = 1;
+        CString::new("Can not create TOR config, passed wallet is NULL".to_owned())
+            .unwrap()
+            .into_raw()
+    }
 }
 
 /// Expose the JNI interface for android below
