@@ -43,6 +43,8 @@ import WalletScanScreen from 'src/screens/WalletScan'
 import SettingsGrinNodeScreen from 'src/screens/Settings/GrinNode'
 import SettingsCurrencyScreen from 'src/screens/Settings/Currency'
 import LegalDisclaimerScreen from 'src/screens/LegalDisclaimer'
+import LicensesScreen from 'src/screens/Licenses'
+import LicenseScreen from 'src/screens/License'
 import colors from 'src/common/colors'
 import { store } from 'src/common/redux'
 import {
@@ -76,6 +78,8 @@ export type RootStackParamList = {
   Overview: { slatePath: string }
   Settings: undefined
   SettingsGrinNode: undefined | { apiSecret: string }
+  Licenses: undefined
+  License: { licenseText: string }
   SettingsCurrency: undefined
   ViewPaperKey: undefined | { fromSettings: boolean }
   VerifyPaperKey: { title: string }
@@ -221,6 +225,14 @@ const SettingsStack = () => {
           title: 'Paper key',
         }}
       />
+      <Stack.Screen
+        name="Licenses"
+        options={{
+          title: 'Open Source',
+        }}
+        component={LicensesScreen}
+      />
+      <Stack.Screen name="License" component={LicenseScreen} />
     </Stack.Navigator>
   )
 }

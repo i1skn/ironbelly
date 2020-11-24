@@ -20,9 +20,9 @@ import { name as appName } from './app.json'
 
 import NetInfo from '@react-native-community/netinfo'
 
-NetInfo.configure({
-  reachabilityUrl: ' https://node.ironbelly.app/',
-  reachabilityTest: async (response) => response.status === 200,
-})
+// NetInfo.configure({
+// reachabilityUrl: ' https://node.ironbelly.app/',
+// reachabilityTest: async (response) => response.status === 200,
+// })
 
 AppRegistry.registerComponent(appName, () => App)

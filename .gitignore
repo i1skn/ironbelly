@@ -79,3 +79,6 @@ android/key.json
 # Local tools
 slates/*
 
+# Licenses
+licenses.json
+

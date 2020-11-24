@@ -8,7 +8,8 @@
     "build": "tsc --noEmit",
     "test": "jest",
     "lint": "eslint src/ --ext .js,.jsx,.ts,.tsx",
-    "postinstall": "patch-package"
+    "generate-licenses": "node ./scripts/licenses.js",
+    "postinstall": "patch-package && yarn generate-licenses"
   },
   "hooks": {
     "pre-commit": "npm run lint"
@@ -92,6 +93,7 @@
     "husky": "^4.2.5",
     "jest": "^25.4.0",
     "jest-serializer": "^25.2.6",
+    "license-checker": "^25.0.1",
     "metro-react-native-babel-preset": "^0.63.0",
     "prettier": "^2.0.5",
     "react-test-renderer": "16.11.0",

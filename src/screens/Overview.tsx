@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginVertical: 4,
     marginHorizontal: 16,
-    borderRadius: 4,
+    borderRadius: 5,
   },
   cancelButton: {
     height: '100%',
@@ -319,6 +319,8 @@ const styles = StyleSheet.create({
   },
   listItem: {
     alignItems: 'center',
+    position: 'relative',
+    zIndex: 0,
     backgroundColor: colors.surface,
     marginVertical: 4,
     marginHorizontal: 16,

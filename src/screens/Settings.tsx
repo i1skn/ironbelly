@@ -180,6 +180,21 @@ class Settings extends Component<Props, State> {
 
     const resourcesListData: Array<SettingsListItemProps> = [
       {
+        title: 'Support',
+        hideChevron: true,
+        onPress: () => {
+          Linking.openURL('mailto:support@ironbelly.app')
+        },
+      },
+      {
+        title: 'Open Source',
+        hideChevron: true,
+        isLink: false,
+        onPress: () => {
+          navigation.navigate('Licenses')
+        },
+      },
+      {
         title: 'Terms of Use',
         hideChevron: true,
         isLink: true,
@@ -193,13 +208,6 @@ class Settings extends Component<Props, State> {
         isLink: true,
         onPress: () => {
           Linking.openURL(privacyUrl)
-        },
-      },
-      {
-        title: 'Got feedback?',
-        hideChevron: true,
-        onPress: () => {
-          Linking.openURL('mailto:support@ironbelly.app')
         },
       },
     ]

@@ -17,9 +17,15 @@ default_platform(:ios)
 
 platform :ios do
   desc "Push a new beta build to TestFlight"
+
+  lane :bump do |options|
+    if options[:type]
+      increment_version_number(xcodeproj: "ios/Ironbelly.xcodeproj", bump_type: options[:type])
+      increment_build_number(xcodeproj: "ios/Ironbelly.xcodeproj")
+    end
+  end
+
   lane :beta do
-    increment_build_number(xcodeproj: "ios/Ironbelly.xcodeproj")
-    # increment_version_number(bump_type: "patch")
     build_app(workspace: "ios/Ironbelly.xcworkspace", scheme: "Ironbelly")
     upload_to_testflight()
   end

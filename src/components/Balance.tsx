@@ -64,7 +64,8 @@ const BalanceComponent = ({ balance, currency, rates }: Props) => {
 const styles = StyleSheet.create({
   gradient: {
     paddingHorizontal: 16,
-    paddingVertical: 48,
+    paddingBottom: 48,
+    paddingTop: 80,
     backgroundColor: colors.primaryLight,
   },
   container: {
@@ -77,6 +78,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
 
     elevation: 3,
+    zIndex: 1,
+    position: 'relative',
     backgroundColor: 'white', // only need to be for elevation to work
   },
   menuButton: {

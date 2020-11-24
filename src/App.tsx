@@ -76,7 +76,6 @@ interface StateProps {
   sharingInProgress: boolean
   walletCreated: boolean | null
   isPasswordValid: boolean
-  legalAccepted: boolean
 }
 
 interface DispatchProps {
@@ -114,7 +113,7 @@ class RealApp extends React.Component<Props, State> {
       StatusBar.setTranslucent(true)
     }
     GrinBridge.setLogger().then(console.log).catch(console.log)
-    const { slateUrl, legalAccepted } = this.props
+    const { slateUrl } = this.props
 
     if (slateUrl) {
       this._handleOpenURL({
@@ -306,7 +305,6 @@ const mapStateToProps = (state: GlobalState): StateProps => {
     currencyRates: state.currencyRates,
     sharingInProgress: state.tx.slateShare.inProgress,
     walletCreated: state.wallet.isCreated,
-    legalAccepted: state.app.legalAccepted,
   }
 }
 
