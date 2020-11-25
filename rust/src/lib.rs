@@ -36,12 +36,9 @@ use grin_wallet_util::grin_util::Mutex;
 use grin_wallet_util::grin_util::ZeroingString;
 use grin_wallet_util::OnionV3Address;
 use serde::{Deserialize, Serialize};
-use simplelog::{Config, LevelFilter, SimpleLogger};
 use std::convert::TryFrom;
-use std::ffi::{CStr, CString};
 use std::fs;
 use std::net::SocketAddr;
-use std::os::raw::c_char;
 use std::path::Path;
 use std::path::MAIN_SEPARATOR;
 use std::sync::Arc;
@@ -50,17 +47,11 @@ use uuid::Uuid;
 #[macro_use]
 extern crate log;
 
-fn cstr_to_rust(s: *const c_char) -> String {
-    unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn cstr_free(s: *mut c_char) {
-    if s.is_null() {
-        return;
-    }
-    CString::from_raw(s);
-}
+#[cfg(target_os = "android")]
+#[allow(non_snake_case)]
+mod android;
+#[cfg(target_os = "ios")]
+mod ios;
 
 #[derive(Serialize, Deserialize, Clone)]
 struct State {
@@ -170,37 +161,6 @@ where
     Ok(Arc::new(Mutex::new(wallet)))
 }
 
-macro_rules! unwrap_to_c (
-    ($func:expr, $error:expr) => (
-        match $func {
-            Ok(res) => {
-                *$error = 0;
-                CString::new(res.to_owned()).unwrap().into_raw()
-            }
-            Err(e) => {
-                *$error = 1;
-                CString::new(
-                    serde_json::to_string(&format!("{}",e)).unwrap()).unwrap().into_raw()
-            }
-        }
-        ));
-
-#[no_mangle]
-pub unsafe extern "C" fn c_set_logger(error: *mut u8) -> *const c_char {
-    unwrap_to_c!(
-        SimpleLogger::init(
-            if cfg!(debug_assertions) {
-                LevelFilter::Debug
-            } else {
-                LevelFilter::Info
-            },
-            Config::default()
-        )
-        .map(|_| "Logger initiated successfully!"),
-        error
-    )
-}
-
 fn open_wallet(state_json: &str, password: ZeroingString) -> Result<Wallet, Error> {
     let state = State::from_str(state_json)?;
     let wallet_config = create_wallet_config(state.clone())?;
@@ -231,28 +191,6 @@ fn open_wallet(state_json: &str, password: ZeroingString) -> Result<Wallet, Erro
     return Ok(wallet);
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_open_wallet(
-    state_str: *const c_char,
-    password: *const c_char,
-    error: *mut u8,
-) -> *mut Wallet {
-    match open_wallet(
-        &cstr_to_rust(state_str),
-        ZeroingString::from(cstr_to_rust(password)),
-    ) {
-        Ok(wallet) => {
-            *error = 0;
-            Box::into_raw(Box::new(wallet))
-        }
-        Err(e) => {
-            error!("Error opening wallet: {}", e);
-            *error = 1;
-            std::ptr::null_mut()
-        }
-    }
-}
-
 fn close_wallet(wallet: &Wallet) -> Result<String, Error> {
     let mut wallet_lock = wallet.lock();
     let lc = wallet_lock.lc_provider()?;
@@ -264,32 +202,8 @@ fn close_wallet(wallet: &Wallet) -> Result<String, Error> {
     Ok("Wallet has been closed".to_owned())
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_close_wallet(
-    opened_wallet: *mut Wallet,
-    error: *mut u8,
-) -> *const c_char {
-    if let Some(wallet) = opened_wallet.as_mut() {
-        let result = close_wallet(&wallet);
-        if result.is_ok() {
-            Box::from_raw(wallet);
-        };
-        unwrap_to_c!(result, error)
-    } else {
-        *error = 1;
-        CString::new("Can not close wallet".to_owned())
-            .unwrap()
-            .into_raw()
-    }
-}
-
 fn seed_new(seed_length: usize) -> Result<String, Error> {
     WalletSeed::init_new(seed_length, false, None).to_mnemonic()
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_seed_new(seed_length: u8, error: *mut u8) -> *const c_char {
-    unwrap_to_c!(seed_new(seed_length as usize), error)
 }
 
 fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String, Error> {
@@ -309,23 +223,6 @@ fn wallet_init(state_json: &str, phrase: &str, password: &str) -> Result<String,
     )?;
 
     Ok("".to_owned())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_wallet_init(
-    state: *const c_char,
-    phrase: *const c_char,
-    password: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        wallet_init(
-            &cstr_to_rust(state),
-            &cstr_to_rust(phrase),
-            &cstr_to_rust(password),
-        ),
-        error
-    )
 }
 
 fn wallet_scan_outputs(
@@ -360,19 +257,6 @@ fn wallet_scan_outputs(
     Ok(serde_json::to_string(&result).unwrap())
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_wallet_scan_outputs(
-    state: *const c_char,
-    last_retrieved_index: u64,
-    highest_index: u64,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        wallet_scan_outputs(&cstr_to_rust(state), last_retrieved_index, highest_index),
-        error
-    )
-}
-
 fn wallet_pmmr_range(state_json: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let wallet = get_wallet(state)?;
@@ -384,14 +268,6 @@ fn wallet_pmmr_range(state_json: &str) -> Result<String, Error> {
     Ok(serde_json::to_string(&pmmr_range).unwrap())
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_wallet_pmmr_range(
-    state: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(wallet_pmmr_range(&cstr_to_rust(state)), error)
-}
-
 fn wallet_phrase(state_json: &str) -> Result<String, Error> {
     let state = State::from_str(state_json)?;
     let seed = WalletSeed::from_file(
@@ -401,37 +277,12 @@ fn wallet_phrase(state_json: &str) -> Result<String, Error> {
     seed.to_mnemonic()
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_wallet_phrase(
-    state_json: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(wallet_phrase(&cstr_to_rust(state_json)), error)
-}
-
 fn tx_get(state_json: &str, refresh_from_node: bool, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone(), None);
     let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
     let txs = api.retrieve_txs(None, refresh_from_node, None, Some(uuid))?;
     Ok(serde_json::to_string(&txs).unwrap())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_get(
-    state_json: *const c_char,
-    refresh_from_node: bool,
-    tx_slate_id: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_get(
-            &cstr_to_rust(state_json),
-            refresh_from_node,
-            &cstr_to_rust(tx_slate_id),
-        ),
-        error
-    )
 }
 
 fn update_state<'a, L, C, K>(
@@ -525,15 +376,6 @@ fn txs_get(state_json: &str, refresh_from_node: bool) -> Result<String, Error> {
     Ok(serde_json::to_string(&result).unwrap())
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_txs_get(
-    state_json: *const c_char,
-    refresh_from_node: bool,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(txs_get(&cstr_to_rust(state_json), refresh_from_node), error)
-}
-
 #[derive(Serialize, Deserialize)]
 struct Strategy {
     selection_strategy_is_use_all: bool,
@@ -568,15 +410,6 @@ fn tx_strategies(state_json: &str, amount: u64) -> Result<String, Error> {
         }
     }
     Ok(serde_json::to_string(&result).unwrap())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_strategies(
-    state_json: *const c_char,
-    amount: u64,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(tx_strategies(&cstr_to_rust(state_json), amount), error)
 }
 
 fn tx_create(
@@ -639,23 +472,6 @@ fn tx_create(
     Ok(serde_json::to_string(&result).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_create(
-    state_json: *const c_char,
-    amount: u64,
-    selection_strategy_is_use_all: bool,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_create(
-            &cstr_to_rust(state_json),
-            amount,
-            selection_strategy_is_use_all,
-        ),
-        error
-    )
-}
-
 fn tx_cancel(state_json: &str, id: u32) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     // let api = Owner::new(wallet.clone(), None);
@@ -664,15 +480,6 @@ fn tx_cancel(state_json: &str, id: u32) -> Result<String, Error> {
     let parent_key_id = w.parent_key_id();
     tx::cancel_tx(&mut **w, None, &parent_key_id, Some(id), None)?;
     Ok("".to_owned())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_cancel(
-    state_json: *const c_char,
-    id: u32,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(tx_cancel(&cstr_to_rust(state_json), id,), error)
 }
 
 fn check_middleware(
@@ -740,18 +547,6 @@ fn tx_receive(state_json: &str, slate_armored: &str) -> Result<String, Error> {
     }
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_receive(
-    state_json: *const c_char,
-    slate_armored: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_receive(&cstr_to_rust(state_json), &cstr_to_rust(slate_armored),),
-        error
-    )
-}
-
 fn tx_finalize(state_json: &str, slate_armored: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let owner_api = Owner::new(wallet.clone(), None);
@@ -766,18 +561,6 @@ fn tx_finalize(state_json: &str, slate_armored: &str) -> Result<String, Error> {
     let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id))?;
 
     Ok(serde_json::to_string(&txs.1).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_finalize(
-    state_json: *const c_char,
-    slate_armored: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_finalize(&cstr_to_rust(state_json), &cstr_to_rust(slate_armored),),
-        error
-    )
 }
 
 fn tx_send_https(
@@ -843,25 +626,6 @@ fn tx_send_https(
             Err(Error::from(e))
         }
     }
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_send_https(
-    state_json: *const c_char,
-    amount: u64,
-    selection_strategy_is_use_all: bool,
-    url: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_send_https(
-            &cstr_to_rust(state_json),
-            &cstr_to_rust(url),
-            amount,
-            selection_strategy_is_use_all,
-        ),
-        error
-    )
 }
 
 fn tx_send_address(
@@ -935,25 +699,6 @@ fn tx_send_address(
     }
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_send_address(
-    state_json: *const c_char,
-    amount: u64,
-    selection_strategy_is_use_all: bool,
-    address: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_send_address(
-            &cstr_to_rust(state_json),
-            &cstr_to_rust(address),
-            amount,
-            selection_strategy_is_use_all,
-        ),
-        error
-    )
-}
-
 fn tx_post(state_json: &str, tx_slate_id: &str) -> Result<String, Error> {
     let wallet = get_wallet(State::from_str(state_json)?)?;
     let api = Owner::new(wallet.clone(), None);
@@ -979,18 +724,6 @@ fn tx_post(state_json: &str, tx_slate_id: &str) -> Result<String, Error> {
     }
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_tx_post(
-    state_json: *const c_char,
-    tx_slate_id: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        tx_post(&cstr_to_rust(state_json), &cstr_to_rust(tx_slate_id)),
-        error
-    )
-}
-
 fn slatepack_decode(state_json: &str, slatepack: &str) -> Result<String, Error> {
     let _ = get_wallet(State::from_str(state_json)?)?;
     let packer = Slatepacker::new(SlatepackerArgs {
@@ -1005,18 +738,6 @@ fn slatepack_decode(state_json: &str, slatepack: &str) -> Result<String, Error> 
         SlateVersion::V4,
     )?)
     .map_err(|e| ErrorKind::GenericError(e.to_string()))?)
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_slatepack_decode(
-    state_json: *const c_char,
-    slatepack: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(
-        slatepack_decode(&cstr_to_rust(state_json), &cstr_to_rust(slatepack)),
-        error
-    )
 }
 
 fn get_grin_address(state_json: &str) -> Result<String, Error> {
@@ -1036,14 +757,6 @@ fn get_grin_address(state_json: &str) -> Result<String, Error> {
         .map_err(|e| ErrorKind::GenericError(format!("{:?}", e).into()))?;
     let address = SlatepackAddress::try_from(onion_address.clone())?;
     Ok(address.to_string())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_get_grin_address(
-    state_json: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    unwrap_to_c!(get_grin_address(&cstr_to_rust(state_json)), error)
 }
 
 fn start_listen_with_http(state_json: &str, apis: &mut ApiServer) -> Result<(), Error> {
@@ -1078,30 +791,6 @@ fn start_listen_with_http(state_json: &str, apis: &mut ApiServer) -> Result<(), 
     Ok(())
 }
 
-#[no_mangle]
-pub unsafe extern "C" fn c_start_listen_with_http(
-    state_json: *const c_char,
-    error: *mut u8,
-) -> *mut ApiServer {
-    let mut apis = ApiServer::new();
-    let result = start_listen_with_http(&cstr_to_rust(state_json), &mut apis);
-    *error = if result.is_err() { 1 } else { 0 };
-    Box::into_raw(Box::new(apis))
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_stop_listen_with_http(
-    api_server: *mut ApiServer,
-    error: *mut u8,
-) -> *const c_char {
-    if let Some(apis) = api_server.as_mut() {
-        apis.stop();
-        Box::from_raw(api_server);
-    }
-    *error = 0;
-    CString::new("".to_owned()).unwrap().into_raw()
-}
-
 fn create_tor_config(wallet: &Wallet, listen_addr: &str) -> Result<String, Error> {
     let mut w_lock = wallet.lock();
     let lc = w_lock.lc_provider()?;
@@ -1131,293 +820,4 @@ fn create_tor_config(wallet: &Wallet, listen_addr: &str) -> Result<String, Error
     tor_config::output_torrc(&tor_config_directory, listen_addr, "39059", &service_dirs)?;
 
     Ok("".to_owned())
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_create_tor_config(
-    wallet: *mut Wallet,
-    listen_addr: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    if let Some(wallet) = wallet.as_mut() {
-        unwrap_to_c!(
-            create_tor_config(&*wallet, &cstr_to_rust(listen_addr)),
-            error
-        )
-    } else {
-        *error = 1;
-        CString::new("Can not create TOR config, passed wallet is NULL".to_owned())
-            .unwrap()
-            .into_raw()
-    }
-}
-
-/// Expose the JNI interface for android below
-#[cfg(target_os = "android")]
-#[allow(non_snake_case)]
-pub mod android {
-    extern crate jni;
-
-    use self::jni::objects::{JClass, JString};
-    use self::jni::sys::{jlong, jstring};
-    use self::jni::JNIEnv;
-    use super::*;
-
-    extern crate android_logger;
-
-    macro_rules! unwrap_to_jni (
-        ($env:expr, $func:expr) => (
-            match $func {
-                Ok(res) => {
-                    $env.new_string(res).unwrap().into_inner()
-                }
-                Err(e) => {
-                    let result = $env.new_string("").unwrap().into_inner();
-                    $env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
-                    result
-                }
-            }
-        )
-    );
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_setLogger(
-        env: JNIEnv,
-        _: JClass,
-    ) -> jstring {
-        android_logger::init_once(
-            android_logger::Config::default()
-                .with_min_level(if cfg!(debug_assertions) {
-                    log::Level::Debug
-                } else {
-                    log::Level::Info
-                })
-                .with_tag("Ironbelly"),
-        );
-        env.new_string("Logger initiated successfully!")
-            .unwrap()
-            .into_inner()
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_seedNew(
-        env: JNIEnv,
-        _: JClass,
-        seed_length: jlong,
-    ) -> jstring {
-        unwrap_to_jni!(
-            env,
-            WalletSeed::init_new(seed_length as usize, false, None).to_mnemonic()
-        )
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletInit(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        phrase: JString,
-        password: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let phrase: String = env.get_string(phrase).expect("Invalid phrase").into();
-        let password: String = env.get_string(password).expect("Invalid password").into();
-        unwrap_to_jni!(env, wallet_init(&state_json, &phrase, &password))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txGet(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        refresh_from_node: bool,
-        tx_slate_id: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let tx_slate_id: String = env
-            .get_string(tx_slate_id)
-            .expect("Invalid tx_slate_id")
-            .into();
-        unwrap_to_jni!(env, tx_get(&state_json, refresh_from_node, &tx_slate_id))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txsGet(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        refresh_from_node: bool,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, txs_get(&state_json, refresh_from_node))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_checkPassword(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        password: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let password: String = env.get_string(password).expect("Invalid password").into();
-        unwrap_to_jni!(
-            env,
-            check_password(&state_json, ZeroingString::from(password))
-        )
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletPmmrRange(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, wallet_pmmr_range(&state_json))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletScanOutputs(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        last_retrieved_index: jlong,
-        highest_index: jlong,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(
-            env,
-            wallet_scan_outputs(
-                &state_json,
-                last_retrieved_index as u64,
-                highest_index as u64
-            )
-        )
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_walletPhrase(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, wallet_phrase(&state_json))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txStrategies(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        amount: jlong,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, tx_strategies(&state_json, amount as u64))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txCreate(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        amount: jlong,
-        selection_strategy_is_use_all: bool,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(
-            env,
-            tx_create(&state_json, amount as u64, selection_strategy_is_use_all)
-        )
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txCancel(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        id: jlong,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        unwrap_to_jni!(env, tx_cancel(&state_json, id as u32,))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txReceive(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        slate_armored: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let slate_armored: String = env
-            .get_string(slate_armored)
-            .expect("Invalid slate_armored")
-            .into();
-        unwrap_to_jni!(env, tx_receive(&state_json, &slate_armored))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txFinalize(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        slate_armored: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let slate_armored: String = env
-            .get_string(slate_armored)
-            .expect("Invalid slate_armored")
-            .into();
-        unwrap_to_jni!(env, tx_finalize(&state_json, &slate_armored))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txSendHttps(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        amount: jlong,
-        selection_strategy_is_use_all: bool,
-        url: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let url: String = env.get_string(url).expect("Invalid url").into();
-        unwrap_to_jni!(
-            env,
-            tx_send_https(
-                &state_json,
-                &url,
-                amount as u64,
-                selection_strategy_is_use_all
-            )
-        )
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txPost(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        tx_slate_id: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let tx_slate_id: String = env
-            .get_string(tx_slate_id)
-            .expect("Invalid tx_slate_id")
-            .into();
-        unwrap_to_jni!(env, tx_post(&state_json, &tx_slate_id))
-    }
-
-    #[no_mangle]
-    pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_slatepackDecode(
-        env: JNIEnv,
-        _: JClass,
-        state_json: JString,
-        slatepack: JString,
-    ) -> jstring {
-        let state_json: String = env.get_string(state_json).expect("Invalid state").into();
-        let slatepack: String = env.get_string(slatepack).expect("Invalid slatepack").into();
-        unwrap_to_jni!(env, slatepack_decode(&state_json, &slatepack))
-    }
 }

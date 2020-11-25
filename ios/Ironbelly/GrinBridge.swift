@@ -43,11 +43,15 @@ class GrinBridge: RCTEventEmitter {
     
     @objc func closeWallet(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
-        let cResult = c_close_wallet(openedWallet, &error)
-        if (error == 0) {
-            openedWallet = nil
+        if openedWallet != nil {
+            let cResult = c_close_wallet(openedWallet, &error)
+            if (error == 0) {
+                openedWallet = nil
+            }
+            returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
+        } else {
+            reject(nil, "Can not close wallet, wallet is nil", nil)
         }
-        returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
     }
     
     @objc func startTor(_ resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
@@ -185,7 +189,7 @@ class GrinBridge: RCTEventEmitter {
                 reject(nil, "Can not start HTTP server. See logs.", nil)
             }
         } else {
-            logTor("Can not start HTTP listener as it's already running")
+            reject(nil, "Can not start HTTP listener as it's already running", nil)
         }
 
     }

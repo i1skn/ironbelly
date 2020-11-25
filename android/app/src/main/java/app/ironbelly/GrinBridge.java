@@ -9,6 +9,9 @@ import android.os.AsyncTask;
 
 public class GrinBridge extends ReactContextBaseJavaModule {
 
+    private Long openedWallet;
+    private Long httpListenerApi;
+
     static {
         System.loadLibrary("wallet");
     }
@@ -23,18 +26,40 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void checkPassword(String state, String password, Promise promise) {
+    public void openWallet(String state, String password, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(checkPassword(state, password));
+                    openedWallet = openWallet(state, password);
+                    promise.resolve("Opened wallet successfully");
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
             }
         });
     }
+
+    @ReactMethod
+    public void closeWallet(Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (openedWallet != null) {
+                    try {
+                        String result = closeWallet(openedWallet);
+                        openedWallet = null;
+                        promise.resolve(result);
+                    } catch (Exception e) {
+                        promise.reject("", e.getMessage());
+                    }
+                } else {
+                    promise.reject("", "Can not close wallet, wallet is nil");
+                }
+            }
+        });
+    }
+
 
     @ReactMethod
     public void balance(String state, Boolean refreshFromNode, Promise promise) {
@@ -279,6 +304,88 @@ public class GrinBridge extends ReactContextBaseJavaModule {
         });
     }
 
+    @ReactMethod
+    public void getGrinAddress(String state, Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(getGrinAddress(state));
+                } catch (Exception e) {
+                    promise.reject("", e.getMessage());
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void startListenWithHttp(String state, Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (httpListenerApi == null) {
+                    try {
+                        httpListenerApi = startListenWithHttp(state);
+                        promise.resolve(getGrinAddress(state));
+                    } catch (Exception e) {
+                        promise.reject("", e.getMessage());
+                    }
+                } else {
+                    promise.reject("", "Can not start HTTP listener as it's already running");
+
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void stopListenWithHttp(Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (httpListenerApi != null) {
+                    try {
+                        String result = stopListenWithHttp(httpListenerApi);
+                        httpListenerApi = null;
+                        promise.resolve(result);
+                    } catch (Exception e) {
+                        promise.reject("", e.getMessage());
+                    }
+                } else {
+                    promise.reject("", "Can not start HTTP listener as it's already running");
+
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void startTor(Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve("TBD");
+                } catch (Exception e) {
+                    promise.reject("", e.getMessage());
+                }
+            }
+        });
+    }
+
+    @ReactMethod
+    public void stopTor(Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve("TBD");
+                } catch (Exception e) {
+                    promise.reject("", e.getMessage());
+                }
+            }
+        });
+    }
 
     private static native String setLogger();
 
@@ -292,7 +399,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
     private static native String walletInit(String state, String phrase, String password);
 
-    private static native String checkPassword(String state, String password);
+    private static native long openWallet(String state, String password);
+
+    private static native String closeWallet(long openedWallet);
 
     private static native String walletScanOutputs(String state, long lastRetrievedIndex,
             long highestIndex);
@@ -318,4 +427,13 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     private static native String txPost(String state, String txSlateId);
 
     private static native String slatepackDecode(String state, String slatepack);
+
+    private static native String getGrinAddress(String state);
+
+    private static native long startListenWithHttp(String state);
+
+    private static native String stopListenWithHttp(long apiServer);
+
+    private static native String createTorConfig(Long wallet, Long listenAddress);
+
 }
