@@ -365,9 +365,17 @@ pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_stopListenWithHttp(
 pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_createTorConfig(
     env: JNIEnv,
     _: JClass,
-    wallet: jlong,
+    opened_wallet: jlong,
     listen_addr: JString,
 ) -> jstring {
-    // Implement this when TOR is ready
-    env.new_string("").unwrap().into_inner()
+    let listen_addr: String = env
+        .get_string(listen_addr)
+        .expect("Invalid listen addr")
+        .into();
+    if let Some(wallet) = (opened_wallet as *mut Wallet).as_mut() {
+        unwrap_to_jni!(env, create_tor_config(&wallet, &listen_addr))
+    } else {
+        let _ = env.throw(serde_json::to_string(&format!("Opened wallet is empty")).unwrap());
+        env.new_string("").unwrap().into_inner()
+    }
 }

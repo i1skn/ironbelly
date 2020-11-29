@@ -39,15 +39,6 @@ if [ -z "$platform" ] || [ "$platform" == "android" ] || [ "$platform" == "all" 
   AR_armv7_linux_androideabi="${ANDROID_PREBUILD_BIN}/arm-linux-androideabi-ar" \
     cargo build --target armv7-linux-androideabi $rust_mode --lib
 
-  printf "Building 32-bit x86 Android target...\n";
-  # needed for rust-bindgen
-  CLANG_PATH="${ANDROID_PREBUILD_BIN}/i686-linux-android${API_LEVEL}-clang" \
-  CC_i686_linux_android="${ANDROID_PREBUILD_BIN}/i686-linux-android${API_LEVEL}-clang" \
-  CXX_i686_linux_android="${ANDROID_PREBUILD_BIN}/i686-linux-android${API_LEVEL}-clang++" \
-  CARGO_TARGET_I686_LINUX_ANDROID_LINKER="${ANDROID_PREBUILD_BIN}/i686-linux-android${API_LEVEL}-clang" \
-  AR_i686_linux_android="${ANDROID_PREBUILD_BIN}/i686-linux-android-ar" \
-    cargo build --target i686-linux-android $rust_mode --lib
-
   printf "Building 64-bit x86 Android target...\n";
   # needed for rust-bindgen
   CLANG_PATH="${ANDROID_PREBUILD_BIN}/x86_64-linux-android${API_LEVEL}-clang" \

@@ -7,10 +7,16 @@ import com.facebook.react.bridge.ReactMethod;
 import android.util.Log;
 import android.os.AsyncTask;
 
+import app.ironbelly.tor.TorConfig;
+import app.ironbelly.tor.TorProxyManager;
+
 public class GrinBridge extends ReactContextBaseJavaModule {
 
     private Long openedWallet;
     private Long httpListenerApi;
+    private TorProxyManager torProxyManager;
+    private TorConfig torConfig;
+    private String torListenAddress = "127.0.0.1:3415";
 
     static {
         System.loadLibrary("wallet");
@@ -365,7 +371,26 @@ public class GrinBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve("TBD");
+                    Log.d("openedWallet: %s", String.valueOf(openedWallet));
+                    createTorConfig(openedWallet, torListenAddress);
+                    torConfig = new TorConfig(
+                            39059,
+                            "127.0.0.1",
+                            39069,
+                             0,
+                             "control_auth_cookie",
+                                new byte[0],
+                             "",
+                            ""
+                    );
+                    torProxyManager = new TorProxyManager(GrinBridge.super.getReactApplicationContext(), torConfig);
+                    Thread thread = new Thread(){
+                        public void run(){
+                            torProxyManager.run();
+                            promise.resolve("Run sucessfully");
+                        }
+                    };
+                    thread.start();
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -434,6 +459,6 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
     private static native String stopListenWithHttp(long apiServer);
 
-    private static native String createTorConfig(Long wallet, Long listenAddress);
+    private static native String createTorConfig(long wallet, String listenAddress);
 
 }

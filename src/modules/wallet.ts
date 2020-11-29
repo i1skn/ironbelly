@@ -601,7 +601,7 @@ export const sideEffects = {
     action: checkPasswordFromBiometryAction,
     store: Store,
   ) => {
-    return GrinBridge.checkPassword(
+    return GrinBridge.openWallet(
       getStateForRust(store.getState()),
       action.password,
     )
