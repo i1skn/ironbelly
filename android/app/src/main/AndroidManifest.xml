@@ -23,6 +23,7 @@
 	android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
 	android:launchMode="singleTask"
 	android:screenOrientation="portrait"
+	android:fitsSystemWindows="true"
         android:windowSoftInputMode="adjustResize">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
@@ -103,7 +104,7 @@
       </activity>
      <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="app.ironbelly.provider"
+            android:authorities="${applicationId}.provider"
             android:grantUriPermissions="true"
             android:exported="false">
             <meta-data

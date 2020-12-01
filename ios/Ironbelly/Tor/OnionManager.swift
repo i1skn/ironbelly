@@ -93,7 +93,8 @@ class OnionManager: NSObject {
             #if DEBUG
             print("dataDir=\(dataDir)")
             #endif
-        
+            configuration.dataDirectory = dataDir.appendingPathComponent("data")
+            
             let torrcFile = dataDir.appendingPathComponent("torrc", isDirectory: false);
 
             // Create tor data directory if it does not yet exist
@@ -102,15 +103,6 @@ class OnionManager: NSObject {
             } catch let error as NSError {
                 logTor("Failed to create tor directory: \(error)")
             }
-            // Create tor v3 auth directory if it does not yet exist
-            let authDir = URL(fileURLWithPath: dataDir.path, isDirectory: true).appendingPathComponent("auth", isDirectory: true)
-            do {
-                try FileManager.default.createDirectory(atPath: authDir.path, withIntermediateDirectories: true, attributes: nil)
-            } catch let error as NSError {
-                logTor("Failed to create tor auth directory: \(error)")
-            }
-            
-            configuration.dataDirectory = dataDir
             
 
             #if DEBUG
@@ -120,18 +112,13 @@ class OnionManager: NSObject {
             #endif
             
             configuration.arguments = [
-//                "--allow-missing-torrc",
-//                "--ignore-missing-torrc",
                 "-f", torrcFile.path,
-//                "--clientonly", "1",
+                "--clientonly", "1",
                 "--AvoidDiskWrites", "1",
                 "--socksport", "39059",
                 "--controlport", "\(OnionManager.CONTROL_ADDRESS):\(OnionManager.CONTROL_PORT)",
                 "--log", log_loc,
                 "--clientuseipv6", "1",
-//                "--ClientTransportPlugin", "obfs4 socks5 127.0.0.1:47351",
-//                "--ClientTransportPlugin", "meek_lite socks5 127.0.0.1:47352",
-                "--ClientOnionAuthDir", authDir.path
             ]
         }
         

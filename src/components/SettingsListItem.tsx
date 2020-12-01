@@ -88,9 +88,16 @@ const SettingsListItem = ({
         {isSwitch && (
           <StyledSwitch
             trackColor={{
-              true: colors.secondary,
+              true: Platform.select({
+                android: colors.secondaryUltraLight,
+                ios: colors.secondary,
+              }),
               false: colors.grey[100],
             }}
+            thumbColor={Platform.select({
+              android: colors.secondary,
+              ios: colors.white,
+            })}
             value={!!value}
             onValueChange={onValueChange}
           />

@@ -1,5 +1,7 @@
 package app.ironbelly;
 
+// com.myapp should be your package name
+import app.ironbelly.generated.BasePackageList;
 import android.content.Context;
 import android.app.Application;
 import com.facebook.react.PackageList;
@@ -11,9 +13,14 @@ import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Arrays;
+
+import org.unimodules.adapters.react.ModuleRegistryAdapter;
+import org.unimodules.adapters.react.ReactModuleRegistryProvider;
+import org.unimodules.core.interfaces.SingletonModule;
 
 public class MainApplication extends Application implements ReactApplication {
-
+    private final ReactModuleRegistryProvider mModuleRegistryProvider = new ReactModuleRegistryProvider(new BasePackageList().getPackageList(), null);
   private final ReactNativeHost mReactNativeHost =
       new ReactNativeHost(this) {
         @Override
@@ -27,6 +34,12 @@ public class MainApplication extends Application implements ReactApplication {
           List<ReactPackage> packages = new PackageList(this).getPackages();
           // Packages that cannot be autolinked yet can be added manually here, for example:
 	  packages.add(new CustomGrinBridge());
+        // Add unimodules
+        List<ReactPackage> unimodules = Arrays.<ReactPackage>asList(
+                new ModuleRegistryAdapter(mModuleRegistryProvider)
+        );
+        packages.addAll(unimodules);
+
           return packages;
         }
 

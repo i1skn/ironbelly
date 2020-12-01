@@ -204,6 +204,7 @@ export type setApiSecretAction = {
 }
 export type checkPasswordAction = {
   type: 'CHECK_PASSWORD'
+  password: string
 }
 export type checkPasswordFromBiometryAction = {
   type: 'CHECK_PASSWORD_FROM_BIOMETRY'

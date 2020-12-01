@@ -125,6 +125,7 @@ export const APPLICATION_SUPPORT_DIRECTORY = isAndroid
   : RNFS.LibraryDirectoryPath + '/Application Support'
 export const WALLET_DATA_DIRECTORY =
   APPLICATION_SUPPORT_DIRECTORY + '/wallet_data'
+export const TOR_DIRECTORY = APPLICATION_SUPPORT_DIRECTORY + '/tor'
 export const checkSlatesDirectory = () => {
   RNFS.exists(SLATES_DIRECTORY).then((exists) => {
     if (!exists) {

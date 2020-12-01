@@ -21,6 +21,7 @@ import {
   TouchableOpacity,
   RefreshControl,
   View,
+  Platform,
   StyleSheet,
 } from 'react-native'
 import { connect } from 'react-redux'
@@ -105,28 +106,6 @@ class Overview extends Component<Props, State> {
   componentDidMount() {
     const { settings, route } = this.props
     this.props.txsGet(false, false)
-
-    if (
-      settings.biometryType &&
-      settings.biometryStatus === BIOMETRY_STATUS.unknown
-    ) {
-      const biometryName = getBiometryTitle(settings.biometryType)
-      biometryName &&
-        Alert.alert(
-          `Enable ${biometryName}`,
-          `Would like to activate ${biometryName} to access the wallet?`,
-          [
-            {
-              text: 'No',
-              onPress: this._onDisableBiometry,
-            },
-            {
-              text: 'Yes',
-              onPress: this._onEnableBiometry,
-            },
-          ],
-        )
-    }
   }
 
   render() {
@@ -185,36 +164,38 @@ class Overview extends Component<Props, State> {
                   <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
                 </TouchableOpacity>
               </View>
-              <TouchableHighlight
-                onPress={(_) => {
-                  if (data.item.confirmed) {
-                    navigation.navigate('TxDetails', {
-                      txId: data.item.id,
-                    })
-                  } else if (
-                    data.item.type === 'TxFinalized' ||
-                    data.item.type === 'TxPosted'
-                  ) {
-                    txConfirm(data.item.slateId)
-                  } else if (data.item.type === 'TxReceived') {
-                    navigation.navigate('TxIncompleteReceive', {
-                      tx: data.item,
-                    })
-                  } else if (data.item.type === 'TxSent') {
-                    navigation.navigate('TxIncompleteSend', {
-                      tx: data.item,
-                    })
-                  }
-                }}
-                style={styles.listItem}
-                underlayColor={'#FBFBFB'}>
-                <TxListItem
-                  currency={currencyObject}
-                  rates={currencyRates.rates}
-                  tx={data.item}
-                  minimumConfirmations={minimumConfirmations}
-                />
-              </TouchableHighlight>
+              <View>
+                <TouchableHighlight
+                  onPress={(_) => {
+                    if (data.item.confirmed) {
+                      navigation.navigate('TxDetails', {
+                        txId: data.item.id,
+                      })
+                    } else if (
+                      data.item.type === 'TxFinalized' ||
+                      data.item.type === 'TxPosted'
+                    ) {
+                      txConfirm(data.item.slateId)
+                    } else if (data.item.type === 'TxReceived') {
+                      navigation.navigate('TxIncompleteReceive', {
+                        tx: data.item,
+                      })
+                    } else if (data.item.type === 'TxSent') {
+                      navigation.navigate('TxIncompleteSend', {
+                        tx: data.item,
+                      })
+                    }
+                  }}
+                  style={styles.listItem}
+                  underlayColor={'#FBFBFB'}>
+                  <TxListItem
+                    currency={currencyObject}
+                    rates={currencyRates.rates}
+                    tx={data.item}
+                    minimumConfirmations={minimumConfirmations}
+                  />
+                </TouchableHighlight>
+              </View>
             </SwipeRow>
           )}
           style={styles.txList}
@@ -300,7 +281,10 @@ const styles = StyleSheet.create({
   },
   cancel: {
     alignItems: 'center',
-    backgroundColor: colors.warning,
+    backgroundColor: Platform.select({
+      ios: colors.warning,
+      android: colors.grey[300],
+    }),
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -314,7 +298,10 @@ const styles = StyleSheet.create({
   },
   cancelButtonText: {
     width: 100,
-    color: 'white',
+    color: Platform.select({
+      ios: colors.background,
+      android: colors.warning,
+    }),
     textAlign: 'center',
   },
   listItem: {

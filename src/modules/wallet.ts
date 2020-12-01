@@ -47,7 +47,7 @@ import {
   isWalletInitialized,
 } from 'src/common'
 import RNFS from 'react-native-fs'
-import { WALLET_DATA_DIRECTORY } from 'src/common'
+import { WALLET_DATA_DIRECTORY, TOR_DIRECTORY } from 'src/common'
 const MAX_RETRIES = 10
 export const RECOVERY_LIMIT = 1000
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
@@ -400,7 +400,8 @@ export const sideEffects = {
           password,
         })
         store.dispatch({
-          type: 'VALID_PASSWORD',
+          type: 'CHECK_PASSWORD',
+          password,
         })
         if (isNew) {
           store.dispatch({
@@ -581,9 +582,11 @@ export const sideEffects = {
       })
     }
   },
-  ['CHECK_PASSWORD']: (_action: checkPasswordAction, store: Store) => {
-    const { value } = store.getState().wallet.password
-    return GrinBridge.openWallet(getStateForRust(store.getState()), value)
+  ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
+    return GrinBridge.openWallet(
+      getStateForRust(store.getState()),
+      action.password,
+    )
       .then(() => {
         store.dispatch({
           type: 'VALID_PASSWORD',
@@ -651,16 +654,18 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      await RNFS.unlink(WALLET_DATA_DIRECTORY).then(() => {
-        store.dispatch({
-          type: 'TX_LIST_CLEAR',
-        })
-        store.dispatch({
-          type: 'RESET_BIOMETRY_REQUEST',
-        })
-        store.dispatch({
-          type: 'WALLET_DESTROY_SUCCESS',
-        })
+      if (await RNFS.exists(TOR_DIRECTORY)) {
+        await RNFS.unlink(TOR_DIRECTORY)
+      }
+      await RNFS.unlink(WALLET_DATA_DIRECTORY)
+      store.dispatch({
+        type: 'TX_LIST_CLEAR',
+      })
+      store.dispatch({
+        type: 'RESET_BIOMETRY_REQUEST',
+      })
+      store.dispatch({
+        type: 'WALLET_DESTROY_SUCCESS',
       })
     } catch (error) {
       store.dispatch({

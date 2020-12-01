@@ -2,21 +2,28 @@ package app.ironbelly;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
+import com.facebook.react.bridge.WritableMap;
+import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.orhanobut.logger.Logger;
+
 import android.util.Log;
 import android.os.AsyncTask;
 
+import androidx.annotation.Nullable;
+
 import app.ironbelly.tor.TorConfig;
 import app.ironbelly.tor.TorProxyManager;
+import app.ironbelly.tor.TorProxyState;
+import kotlin.Unit;
 
 public class GrinBridge extends ReactContextBaseJavaModule {
 
     private Long openedWallet;
     private Long httpListenerApi;
     private TorProxyManager torProxyManager;
-    private TorConfig torConfig;
-    private String torListenAddress = "127.0.0.1:3415";
 
     static {
         System.loadLibrary("wallet");
@@ -60,7 +67,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
                         promise.reject("", e.getMessage());
                     }
                 } else {
-                    promise.reject("", "Can not close wallet, wallet is nil");
+                    promise.resolve("Wallet is not open");
                 }
             }
         });
@@ -283,6 +290,22 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
+    public void txSendAddress(String state, double amount, Boolean selectionStrategyIsUseAll,
+                            String address, Promise promise) {
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    promise.resolve(
+                            txSendAddress(state, (long) amount, selectionStrategyIsUseAll, address));
+                } catch (Exception e) {
+                    promise.reject("", e.getMessage());
+                }
+            }
+        });
+    }
+
+    @ReactMethod
     public void txPost(String state, String txSlateId, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
@@ -358,8 +381,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
                         promise.reject("", e.getMessage());
                     }
                 } else {
-                    promise.reject("", "Can not start HTTP listener as it's already running");
-
+                    promise.resolve("No HTTP listener to stop");
                 }
             }
         });
@@ -367,35 +389,50 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
     @ReactMethod
     public void startTor(Promise promise) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Log.d("openedWallet: %s", String.valueOf(openedWallet));
-                    createTorConfig(openedWallet, torListenAddress);
-                    torConfig = new TorConfig(
-                            39059,
-                            "127.0.0.1",
-                            39069,
-                             0,
-                             "control_auth_cookie",
-                                new byte[0],
-                             "",
-                            ""
-                    );
-                    torProxyManager = new TorProxyManager(GrinBridge.super.getReactApplicationContext(), torConfig);
-                    Thread thread = new Thread(){
-                        public void run(){
-                            torProxyManager.run();
-                            promise.resolve("Run sucessfully");
+        try {
+            Log.d("openedWallet: %s", String.valueOf(openedWallet));
+            String torListenAddress = "127.0.0.1:3415";
+            createTorConfig(openedWallet, torListenAddress);
+            TorConfig torConfig = new TorConfig(
+                    39059,
+                    "127.0.0.1",
+                    39069,
+                    "data/control_auth_cookie"
+            );
+            ReactContext reactContext = GrinBridge.super.getReactApplicationContext();
+            torProxyManager = new TorProxyManager(reactContext, torConfig);
+            Thread thread = new Thread(){
+                public void run(){
+                    torProxyManager.subscribeToTorProxyState(this, torProxyState -> {
+                        String status = null;
+
+                        if (torProxyState instanceof TorProxyState.Failed) {
+                            status = "failed";
                         }
-                    };
-                    thread.start();
-                } catch (Exception e) {
-                    promise.reject("", e.getMessage());
+                        if (torProxyState instanceof TorProxyState.NotReady) {
+                            status = "disconnected";
+                        }
+                        if (torProxyState instanceof TorProxyState.Initializing) {
+                            status = "in-progress";
+                        }
+                        if (torProxyState instanceof TorProxyState.Running) {
+                            status = "connected";
+                        }
+                        if (status != null) {
+                            reactContext
+                                    .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+                                    .emit("TorStatusUpdate", status);
+                        }
+                        return Unit.INSTANCE;
+                    });
+                    torProxyManager.run();
+                    promise.resolve("Run successfully");
                 }
-            }
-        });
+            };
+            thread.start();
+        } catch (Exception e) {
+            promise.reject("", e.getMessage());
+        }
     }
 
     @ReactMethod
@@ -404,7 +441,10 @@ public class GrinBridge extends ReactContextBaseJavaModule {
             @Override
             public void run() {
                 try {
-                    promise.resolve("TBD");
+                    if (torProxyManager != null) {
+                        torProxyManager.shutdown();
+                    }
+                    promise.resolve("Done");
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -448,6 +488,9 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
     private static native String txSendHttps(String state, long amount,
             boolean selectionStrategyIsUseAll, String url);
+
+    private static native String txSendAddress(String state, long amount,
+            boolean selectionStrategyIsUseAll, String address);
 
     private static native String txPost(String state, String txSlateId);
 

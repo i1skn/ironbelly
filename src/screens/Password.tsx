@@ -15,6 +15,7 @@
  */
 
 import React, { Component } from 'react'
+import * as LocalAuthentication from 'expo-local-authentication'
 import {
   View,
   TouchableWithoutFeedback,
@@ -32,13 +33,12 @@ import { KeyboardAvoidingWrapper } from 'src/common'
 import { Button } from 'src/components/CustomFont'
 import { State as ReduxState, Navigation } from 'src/common/types'
 import * as Keychain from 'react-native-keychain'
-import TouchID from 'react-native-touch-id'
 import { Dispatch } from 'src/common/types'
 import colors from 'src/common/colors'
 type Props = {
   navigation: Navigation
   setPassword: (password: string) => void
-  checkPassword: () => void
+  checkPassword: (password: string) => void
   isPasswordValid: boolean
   error: {
     message: string
@@ -75,25 +75,29 @@ class Password extends Component<Props, State> {
 
   async _getPasswordFromBiometry() {
     const { checkPasswordFromBiometry, biometryType } = this.props
-    const authenticationPrompt =
-      biometryType === Keychain.BIOMETRY_TYPE.FACE_ID
-        ? 'Use Face ID to unlock your wallet'
-        : 'Place your finger to unlock your wallet'
+    const authenticationPrompt = {
+      title:
+        biometryType === Keychain.BIOMETRY_TYPE.FACE_ID
+          ? 'Use Face ID to unlock your wallet'
+          : 'Place your finger to unlock your wallet',
+    }
 
     try {
+      // Force on Android authentication until we figure how
+      // to force it automatically on Keychain.getGenericPassword
       if (isAndroid) {
-        await TouchID.authenticate(authenticationPrompt, {
-          title: 'Authentication Required',
-          passcodeFallback: false,
-          cancelText: 'Cancel',
-          fallbackLabel: '',
+        const result = await LocalAuthentication.authenticateAsync({
+          promptMessage: authenticationPrompt.title,
+          disableDeviceFallback: true,
+          cancelLabel: 'Enter Password',
         })
+        if (!result.success) {
+          return
+        }
       }
-
       const creds = await Keychain.getGenericPassword({
         authenticationPrompt,
       })
-
       if (creds && creds.password) {
         checkPasswordFromBiometry(creds.password)
       }
@@ -183,7 +187,7 @@ class Password extends Component<Props, State> {
                 if (biometryEnabled && !password) {
                   this._getPasswordFromBiometry()
                 } else {
-                  checkPassword()
+                  checkPassword(password)
                 }
               }}
             />
@@ -242,9 +246,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       password,
     })
   },
-  checkPassword: () => {
+  checkPassword: (password: string) => {
     dispatch({
       type: 'CHECK_PASSWORD',
+      password,
     })
   },
   destroyWallet: () => {

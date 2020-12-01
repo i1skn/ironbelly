@@ -1,9 +1,12 @@
 package app.ironbelly;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Window;
 import android.view.WindowManager;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -22,9 +25,10 @@ public class MainActivity extends ReactActivity {
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    getWindow()
-        .setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    Window window = getWindow();
+    window.setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+    window.setStatusBarColor(Color.TRANSPARENT);
+    window.setNavigationBarColor(Color.TRANSPARENT);
   }
 
   @Override

@@ -30,7 +30,6 @@ import RNFS from 'react-native-fs'
 import { APPLICATION_SUPPORT_DIRECTORY } from 'src/common'
 import * as Keychain from 'react-native-keychain'
 import { log } from 'src/common/logger'
-import TouchID from 'react-native-touch-id'
 import { getBiometryTitle } from 'src/common'
 import { isAndroid, currencyList } from 'src/common'
 import { State as RootState } from 'src/common/types'
@@ -153,18 +152,10 @@ export const sideEffects = {
           authenticationType: Keychain.AUTHENTICATION_TYPE.BIOMETRICS,
         }))
       ) {
-        await TouchID.authenticate(
-          `Unlock this wallet in the future with ${getBiometryTitle(
-            store.getState().settings.biometryType,
-          )}`,
-          {
-            passcodeFallback: false,
-            fallbackLabel: '',
-          },
-        )
         await Keychain.setGenericPassword('user', password, {
           accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
           accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+          storage: Keychain.STORAGE_TYPE.AES,
         })
         store.dispatch({
           type: 'ENABLE_BIOMETRY_SUCCESS',
