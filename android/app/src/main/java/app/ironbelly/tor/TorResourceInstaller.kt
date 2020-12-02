@@ -121,7 +121,7 @@ class TorResourceInstaller(
             TOR_BINARY_FILE_NAME
         )
         if (!torBinaryFile.exists()) {
-            throw RuntimeException("Tor binary cannot be found.")
+            throw RuntimeException("Tor binary cannot be found: ${torBinaryFile.absolutePath}")
         }
         //Util.makeFileExecutable(torBinaryFile)
         if (!torBinaryFile.canExecute()) {

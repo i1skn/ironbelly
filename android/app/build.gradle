@@ -3,8 +3,8 @@ apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 apply plugin: 'kotlin-android'
 
 project.ext.envConfigFiles = [
-        debug: "../.env",
-        release: "../.env.release",
+        debug: ".env",
+        release: project.hasProperty('LOCAL_RELEASE') ? ".env" : ".env.release",
 ]
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
@@ -138,11 +138,13 @@ android {
         applicationId project.env.get("APP_ID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30 
-        versionName "4.0.0"
-	multiDexEnabled true
+        versionCode 34 
+        versionName "4.1.2"
+	    multiDexEnabled true
         resValue "string", "app_name", project.env.get("APP_DISPLAY_NAME")
-
+        ndk {
+            abiFilters "arm64-v8a", "armeabi-v7a", "x86_64"
+        }
     }
     splits {
         abi {
@@ -160,7 +162,12 @@ android {
             keyPassword 'android'
         }
         release {
-            if (project.hasProperty('IRONBELLY_UPLOAD_STORE_FILE')) {
+            if (project.hasProperty('LOCAL_RELEASE')) {
+                storeFile file('debug.keystore')
+                storePassword 'android'
+                keyAlias 'androiddebugkey'
+                keyPassword 'android'
+            } else if (project.hasProperty('IRONBELLY_UPLOAD_STORE_FILE')) {
                 storeFile file(IRONBELLY_UPLOAD_STORE_FILE)
                 storePassword pass
                 keyAlias IRONBELLY_UPLOAD_KEY_ALIAS

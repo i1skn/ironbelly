@@ -50,7 +50,7 @@ class GrinBridge: RCTEventEmitter {
             }
             returnToReact(error:error, cResult:cResult! , resolve: resolve, reject: reject)
         } else {
-            reject(nil, "Can not close wallet, wallet is nil", nil)
+            resolve("Wallet is not open")
         }
     }
     
@@ -200,6 +200,8 @@ class GrinBridge: RCTEventEmitter {
             let cResult = c_stop_listen_with_http(api, &error)
             httpListenerApi = nil;
             returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
+        } else {
+            resolve("No HTTP listener to stop")
         }
     }
     
