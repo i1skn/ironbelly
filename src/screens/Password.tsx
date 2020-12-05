@@ -159,6 +159,7 @@ class Password extends Component<Props, State> {
         behavior={isAndroid ? undefined : 'padding'}
         style={styles.container}>
         <TouchableWithoutFeedback
+          accessible={false}
           onPress={() => {
             Keyboard.dismiss()
           }}>
@@ -190,6 +191,7 @@ class Password extends Component<Props, State> {
                   checkPassword(password)
                 }
               }}
+              testID="UnlockBtn"
             />
             <View style={styles.spanBottom} />
           </View>

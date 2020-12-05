@@ -20,13 +20,10 @@ import { fromEvent } from 'rxjs'
 import { RootState } from 'src/common/redux'
 import { Epic, combineEpics, ofType } from 'redux-observable'
 import { Action, valueof } from 'src/common/types'
-import { getStateForRust } from 'src/common'
-// @ts-ignore
-import { NativeModules, NativeEventEmitter } from 'react-native'
+import { NativeEventEmitter } from 'react-native'
+import WalletBridge from 'src/bridges/wallet'
 
-const { GrinBridge } = NativeModules
-
-const torBridgeEmitter = new NativeEventEmitter(GrinBridge)
+const torBridgeEmitter = new NativeEventEmitter(WalletBridge as any)
 
 export const TOR_CONNECTED = 'connected'
 export const TOR_IN_PROGRESS = 'in-progress'
@@ -68,7 +65,7 @@ export const startTorEpic: Epic<Action, Action, RootState> = (
     ofType('VALID_PASSWORD'),
     filter(() => state$.value.tor.status !== TOR_IN_PROGRESS),
     tap(() => {
-      GrinBridge.startTor().then(console.log).catch(console.error)
+      WalletBridge.startTor().then(console.log).catch(console.error)
     }),
     ignoreElements(),
   )
@@ -80,7 +77,7 @@ export const stopTorEpic: Epic<Action, Action, RootState> = (
   action$.pipe(
     ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     tap(() => {
-      GrinBridge.stopTor().then(console.log).catch(console.error)
+      WalletBridge.stopTor().then(console.log).catch(console.error)
     }),
     mapTo(torActions.setStatus(TOR_DISCONNECTED) as Action),
   )

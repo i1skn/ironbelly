@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { NativeModules } from 'react-native'
+// @ts-ignore
 import Share from 'react-native-share'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
@@ -54,14 +54,15 @@ import {
 } from 'src/common/types'
 import { getNavigation } from './navigation'
 import { RootState } from 'src/common/redux'
-const { GrinBridge } = NativeModules
+import WalletBridge from 'src/bridges/wallet'
+
 export type ListState = {
   data: Array<Tx>
   inProgress: boolean
   isOffline: boolean
   refreshFromNode: boolean
   showLoader: boolean
-  lastUpdated: moment | undefined | null
+  lastUpdated: moment.Moment | undefined | null
   error: Error | undefined | null
 }
 export type TxCreateState = {
@@ -236,10 +237,11 @@ export const sideEffects = {
       }
       const newReceived: String[] = []
 
-      const data = await GrinBridge.txsGet(
+      const data = await WalletBridge.txsGet(
         getStateForRust(store.getState()),
         action.refreshFromNode,
       ).then(JSON.parse)
+      console.log(data)
       let mappedData = data[1]
         .filter((tx: RustTx) => tx.tx_type.indexOf('Cancelled') === -1)
         .map((tx: RustTx) => {
@@ -335,7 +337,7 @@ export const sideEffects = {
     }
   },
   ['TX_CANCEL_REQUEST']: (action: txCancelRequestAction, store: Store) => {
-    return GrinBridge.txCancel(getStateForRust(store.getState()), action.id)
+    return WalletBridge.txCancel(getStateForRust(store.getState()), action.id)
       .then((list) => {
         store.dispatch({
           type: 'TX_CANCEL_SUCCESS',
@@ -362,7 +364,7 @@ export const sideEffects = {
       })
   },
   ['TX_GET_REQUEST']: async (action: txGetRequestAction, store: Store) => {
-    return GrinBridge.txGet(
+    return WalletBridge.txGet(
       getStateForRust(store.getState()),
       true,
       action.txSlateId,
@@ -390,7 +392,7 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      const jsonResponse = await GrinBridge.txCreate(
+      const jsonResponse = await WalletBridge.txCreate(
         getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
@@ -441,7 +443,7 @@ export const sideEffects = {
         finalized = []
       }
 
-      const slateId = await GrinBridge.txSendHttps(
+      const slateId = await WalletBridge.txSendHttps(
         getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
@@ -480,7 +482,7 @@ export const sideEffects = {
         finalized = []
       }
 
-      const slateId = await GrinBridge.txSendAddress(
+      const slateId = await WalletBridge.txSendAddress(
         getStateForRust(store.getState()),
         action.amount,
         action.selectionStrategyIsUseAll,
@@ -522,7 +524,7 @@ export const sideEffects = {
         posted = []
       }
 
-      await GrinBridge.txPost(
+      await WalletBridge.txPost(
         getStateForRust(store.getState()),
         action.txSlateId,
       )
@@ -568,7 +570,7 @@ export const sideEffects = {
         received = []
       }
 
-      const [[rustTx], slatepack] = await GrinBridge.txReceive(
+      const [[rustTx], slatepack] = await WalletBridge.txReceive(
         getStateForRust(store.getState()),
         action.slatepack,
       ).then((json: string) => JSON.parse(json))
@@ -616,7 +618,7 @@ export const sideEffects = {
       }
 
       try {
-        const [rustTx] = await GrinBridge.txFinalize(
+        const [rustTx] = await WalletBridge.txFinalize(
           getStateForRust(store.getState()),
           action.slatepack,
         ).then(JSON.parse)
@@ -730,7 +732,7 @@ export const sideEffects = {
     action: txFormOutputStrategiesRequestAction,
     store: Store,
   ) => {
-    return GrinBridge.txStrategies(
+    return WalletBridge.txStrategies(
       getStateForRust(store.getState()),
       action.amount,
     )

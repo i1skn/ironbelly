@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { NativeModules } from 'react-native'
 import AsyncStorage from '@react-native-community/async-storage'
 import { persistReducer } from 'redux-persist'
 import {
@@ -44,15 +43,14 @@ import {
   mapPmmrRange,
   getStateForRust,
   checkWalletDataDirectory,
-  isWalletInitialized,
 } from 'src/common'
 import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY, TOR_DIRECTORY } from 'src/common'
+import WalletBridge from 'src/bridges/wallet'
 const MAX_RETRIES = 10
 export const RECOVERY_LIMIT = 1000
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
 
-const { GrinBridge } = NativeModules
 export type WalletInitState = {
   mnemonic: string
   password: string
@@ -368,7 +366,7 @@ export const reducer = combineReducers({
 })
 export const sideEffects = {
   ['SEED_NEW_REQUEST']: (action: seedNewRequestAction, store: Store) => {
-    return GrinBridge.seedNew(action.length)
+    return WalletBridge.seedNew(action.length)
       .then((mnemonic: string) => {
         store.dispatch({
           type: 'SEED_NEW_SUCCESS',
@@ -389,7 +387,7 @@ export const sideEffects = {
   ) => {
     const { password, phrase, isNew } = action
     await checkWalletDataDirectory()
-    return GrinBridge.walletInit(
+    return WalletBridge.walletInit(
       getStateForRust(store.getState()),
       phrase,
       password,
@@ -431,7 +429,7 @@ export const sideEffects = {
   },
   ['CLEAR_PASSWORD']: async (_action: clearPasswordAction) => {
     try {
-      await GrinBridge.closeWallet()
+      await WalletBridge.closeWallet()
     } catch (error) {
       log(error, true)
     }
@@ -445,7 +443,7 @@ export const sideEffects = {
     try {
       const range = mapPmmrRange(
         JSON.parse(
-          await GrinBridge.walletPmmrRange(getStateForRust(store.getState())),
+          await WalletBridge.walletPmmrRange(getStateForRust(store.getState())),
         ),
       )
       store.dispatch({
@@ -512,9 +510,9 @@ export const sideEffects = {
 
     try {
       const newlastRetrievedIndex = JSON.parse(
-        await GrinBridge.walletScanOutputs(
+        await WalletBridge.walletScanOutputs(
           getStateForRust(store.getState()),
-          lastRetrievedIndex,
+          lastRetrievedIndex ?? 0,
           highestIndex,
         ),
       )
@@ -583,7 +581,7 @@ export const sideEffects = {
     }
   },
   ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
-    return GrinBridge.openWallet(
+    return WalletBridge.openWallet(
       getStateForRust(store.getState()),
       action.password,
     )
@@ -604,7 +602,7 @@ export const sideEffects = {
     action: checkPasswordFromBiometryAction,
     store: Store,
   ) => {
-    return GrinBridge.openWallet(
+    return WalletBridge.openWallet(
       getStateForRust(store.getState()),
       action.password,
     )
@@ -634,7 +632,7 @@ export const sideEffects = {
     store: Store,
   ) => {
     // return GrinBridge.walletPhrase(getStateForRust(store.getState()), 'her')
-    return GrinBridge.walletPhrase(getStateForRust(store.getState()))
+    return WalletBridge.walletPhrase(getStateForRust(store.getState()))
       .then((phrase: string) => {
         store.dispatch({
           type: 'WALLET_PHRASE_SUCCESS',
@@ -703,7 +701,7 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      const exists = await isWalletInitialized()
+      const exists = await WalletBridge.isWalletCreated()
       store.dispatch({
         type: 'WALLET_EXISTS_SUCCESS',
         exists,

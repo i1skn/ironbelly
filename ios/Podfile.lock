@@ -69,7 +69,6 @@ PODS:
     - DoubleConversion
     - glog
   - glog (0.3.5)
-  - IPtProxy (0.1.0)
   - LaunchScreenSnapshot (1.2.0)
   - OpenSSL-Universal (1.0.2.19):
     - OpenSSL-Universal/Static (= 1.0.2.19)
@@ -365,7 +364,6 @@ DEPENDENCIES:
   - FlipperKit/SKIOSNetworkPlugin (~> 0.54.0)
   - Folly (from `../node_modules/react-native/third-party-podspecs/Folly.podspec`)
   - glog (from `../node_modules/react-native/third-party-podspecs/glog.podspec`)
-  - IPtProxy (~> 0.1)
   - LaunchScreenSnapshot
   - RCTRequired (from `../node_modules/react-native/Libraries/RCTRequired`)
   - RCTTypeSafety (from `../node_modules/react-native/Libraries/TypeSafety`)
@@ -420,7 +418,6 @@ SPEC REPOS:
     - Flipper-PeerTalk
     - Flipper-RSocket
     - FlipperKit
-    - IPtProxy
     - LaunchScreenSnapshot
     - OpenSSL-Universal
     - ReachabilitySwift
@@ -531,7 +528,6 @@ SPEC CHECKSUMS:
   FlipperKit: ab353d41aea8aae2ea6daaf813e67496642f3d7d
   Folly: b73c3869541e86821df3c387eb0af5f65addfab4
   glog: 40a13f7840415b9a77023fbcae0f1e6f43192af3
-  IPtProxy: 15e1c3b6d828bc4e7dadaaeedc7ddf1377a48ca8
   LaunchScreenSnapshot: cee0c0fec0d9b9186c76a1fd010c5c4677ccb6fc
   OpenSSL-Universal: 8b48cc0d10c1b2923617dfe5c178aa9ed2689355
   RCTRequired: 48884c74035a0b5b76dbb7a998bd93bcfc5f2047
@@ -574,6 +570,6 @@ SPEC CHECKSUMS:
   Yoga: 7d13633d129fd179e01b8953d38d47be90db185a
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 193bfd86367b61fe45f1dd11356ee7c342434465
+PODFILE CHECKSUM: e4a3e407904c6f8e7dc7b2e455476901e476b2a5
 
 COCOAPODS: 1.10.0

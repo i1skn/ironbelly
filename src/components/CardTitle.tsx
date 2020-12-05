@@ -81,6 +81,7 @@ export default ({ title, subTitle, navigation, style }: Props) => {
       <View style={styles.cardTitle}>
         <TouchableOpacity
           style={[styles.chevron, { paddingTop: (subTitle && 24) || 16 }]}
+          testID="GoBackChevron"
           onPress={() => {
             navigation.goBack()
           }}>

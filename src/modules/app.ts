@@ -30,10 +30,7 @@ import { getNavigation } from 'src/modules/navigation'
 import { getStateForRust, isResponseSlate } from 'src/common'
 import { of, partition, merge } from 'rxjs'
 import { log } from 'src/common/logger'
-// @ts-ignore
-import { NativeModules } from 'react-native'
-
-const { GrinBridge } = NativeModules
+import WalletBridge from 'src/bridges/wallet'
 
 const REFRESH_TXS_INTERVAL = 10 * 1000 // 10 sec
 
@@ -87,7 +84,7 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
         state$.value.app.unopenedSlatePath,
         'utf8',
       )
-      const slate: Slate = await GrinBridge.slatepackDecode(
+      const slate: Slate = await WalletBridge.slatepackDecode(
         getStateForRust(state$.value),
         slatepack,
       ).then((json: string) => JSON.parse(json))
@@ -162,7 +159,7 @@ const refreshTxsPeriodicallyEpic: Epic<Action, Action, RootState> = (
   interval(REFRESH_TXS_INTERVAL).pipe(
     filter(() => state$.value.wallet.password.valid),
     mapTo({
-      type: 'TX_LIST_REQUEST',
+      type: 'TX_LIST_REQUEST1',
       showLoader: false,
       refreshFromNode: true,
     }),

@@ -10,7 +10,6 @@
 import Foundation
 import Reachability
 import Tor
-import IPtProxy
 
 enum OnionError: Error {
     case connectionError
@@ -168,10 +167,6 @@ class OnionManager: NSObject {
     func closeCircuits(_ circuits: [TorCircuit], _ callback: @escaping ((_ success: Bool) -> Void)) {
         torController?.close(circuits, completion: callback)
     }
-    
-    func startIObfs4Proxy() {
-        IPtProxyStartObfs4Proxy()
-    }
 
     func startTor(delegate: OnionManagerDelegate?) {
         // Avoid a retain cycle. Only use the weakDelegate in closures!
@@ -239,7 +234,6 @@ class OnionManager: NSObject {
             needsReconfiguration = false
 
             torThread?.start()
-            startIObfs4Proxy()
             logTor("Starting Tor")
         }
         else {

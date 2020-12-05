@@ -14,12 +14,8 @@
  * limitations under the License.
  */
 
-import { NativeModules } from 'react-native'
-import moment from 'moment'
-import { getStateForRust, mapRustBalance } from 'src/common'
-import { Action, Store, Balance, RustBalance, Error } from 'src/common/types'
-import { log } from 'src/common/logger'
-const { GrinBridge } = NativeModules
+import { mapRustBalance } from 'src/common'
+import { Action, Balance } from 'src/common/types'
 export type State = Balance
 const initialState: State = {
   amountAwaitingConfirmation: 0,

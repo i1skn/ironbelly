@@ -3,8 +3,8 @@ apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 apply plugin: 'kotlin-android'
 
 project.ext.envConfigFiles = [
-        debug: ".env",
-        release: project.hasProperty('LOCAL_RELEASE') ? ".env" : ".env.release",
+        debug: ".env.dev",
+        release: project.hasProperty('LOCAL_RELEASE') ? ".env.dev" : ".env.release",
 ]
 
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"

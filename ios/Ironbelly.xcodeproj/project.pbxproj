@@ -41,6 +41,8 @@
 		F601C2D72555B159003866E2 /* OnionConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C2D62555B159003866E2 /* OnionConnector.swift */; };
 		F601C2DB2555B253003866E2 /* Ipv6Tester.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C2DA2555B253003866E2 /* Ipv6Tester.swift */; };
 		F601C39A2555BA31003866E2 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = F601C3992555BA31003866E2 /* Utils.swift */; };
+		F62B0D182573DB8D009B8E1D /* UITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62B0D172573DB8D009B8E1D /* UITests.swift */; };
+		F62B0D222573DD42009B8E1D /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F62B0D212573DD42009B8E1D /* SnapshotHelper.swift */; };
 		F64186DD218895DC00A99CA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F64186DC218895DC00A99CA0 /* AppDelegate.swift */; };
 		F64186E4218895DE00A99CA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F64186E3218895DE00A99CA0 /* Assets.xcassets */; };
 		F64186E7218895DE00A99CA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */; };
@@ -58,6 +60,16 @@
 		F6F4CE85255595ED00953576 /* Tor.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6F4CE84255595ED00953576 /* Tor.framework */; };
 		FA515AC6575446A3BBC440B4 /* ChevronRight@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FC2A4438203E4716AC9C05D9 /* ChevronRight@2x.png */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F62B0D1A2573DB8D009B8E1D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F64186D1218895DC00A99CA0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F64186D8218895DC00A99CA0;
+			remoteInfo = Ironbelly;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		F67B83C8219345180004D4A1 /* Embed App Extensions */ = {
@@ -106,6 +118,10 @@
 		F601C2D62555B159003866E2 /* OnionConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = OnionConnector.swift; path = Ironbelly/Tor/OnionConnector.swift; sourceTree = SOURCE_ROOT; };
 		F601C2DA2555B253003866E2 /* Ipv6Tester.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Ipv6Tester.swift; sourceTree = "<group>"; };
 		F601C3992555BA31003866E2 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		F62B0D152573DB8D009B8E1D /* UITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F62B0D172573DB8D009B8E1D /* UITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITests.swift; sourceTree = "<group>"; };
+		F62B0D192573DB8D009B8E1D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F62B0D212573DD42009B8E1D /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SnapshotHelper.swift; path = ../../fastlane/SnapshotHelper.swift; sourceTree = "<group>"; };
 		F64186D9218895DC00A99CA0 /* Ironbelly.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Ironbelly.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		F64186DC218895DC00A99CA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		F64186E3218895DE00A99CA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -134,6 +150,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		F62B0D122573DB8C009B8E1D /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F64186D6218895DC00A99CA0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -193,10 +216,21 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		F62B0D162573DB8D009B8E1D /* UITests */ = {
+			isa = PBXGroup;
+			children = (
+				F62B0D212573DD42009B8E1D /* SnapshotHelper.swift */,
+				F62B0D172573DB8D009B8E1D /* UITests.swift */,
+				F62B0D192573DB8D009B8E1D /* Info.plist */,
+			);
+			path = UITests;
+			sourceTree = "<group>";
+		};
 		F64186D0218895DC00A99CA0 = {
 			isa = PBXGroup;
 			children = (
 				F64186DB218895DC00A99CA0 /* Ironbelly */,
+				F62B0D162573DB8D009B8E1D /* UITests */,
 				F64186DA218895DC00A99CA0 /* Products */,
 				F64186FC2188967A00A99CA0 /* Frameworks */,
 				E3DD2FF56799419782C99E1C /* Resources */,
@@ -208,6 +242,7 @@
 			isa = PBXGroup;
 			children = (
 				F64186D9218895DC00A99CA0 /* Ironbelly.app */,
+				F62B0D152573DB8D009B8E1D /* UITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -279,6 +314,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		F62B0D142573DB8C009B8E1D /* UITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F62B0D1E2573DB8D009B8E1D /* Build configuration list for PBXNativeTarget "UITests" */;
+			buildPhases = (
+				F62B0D112573DB8C009B8E1D /* Sources */,
+				F62B0D122573DB8C009B8E1D /* Frameworks */,
+				F62B0D132573DB8C009B8E1D /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F62B0D1B2573DB8D009B8E1D /* PBXTargetDependency */,
+			);
+			name = UITests;
+			productName = UITests;
+			productReference = F62B0D152573DB8D009B8E1D /* UITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		F64186D8218895DC00A99CA0 /* Ironbelly */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F64186F6218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "Ironbelly" */;
@@ -307,10 +360,15 @@
 		F64186D1218895DC00A99CA0 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1010;
+				DefaultBuildSystemTypeForWorkspace = Latest;
+				LastSwiftUpdateCheck = 1220;
 				LastUpgradeCheck = 1000;
 				ORGANIZATIONNAME = "Ivan Sorokin";
 				TargetAttributes = {
+					F62B0D142573DB8C009B8E1D = {
+						CreatedOnToolsVersion = 12.2;
+						TestTargetID = F64186D8218895DC00A99CA0;
+					};
 					F64186D8218895DC00A99CA0 = {
 						CreatedOnToolsVersion = 10.0;
 					};
@@ -330,11 +388,19 @@
 			projectRoot = "";
 			targets = (
 				F64186D8218895DC00A99CA0 /* Ironbelly */,
+				F62B0D142573DB8C009B8E1D /* UITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		F62B0D132573DB8C009B8E1D /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F64186D7218895DC00A99CA0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -462,6 +528,15 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		F62B0D112573DB8C009B8E1D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F62B0D182573DB8D009B8E1D /* UITests.swift in Sources */,
+				F62B0D222573DD42009B8E1D /* SnapshotHelper.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		F64186D5218895DC00A99CA0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -480,6 +555,14 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		F62B0D1B2573DB8D009B8E1D /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F64186D8218895DC00A99CA0 /* Ironbelly */;
+			targetProxy = F62B0D1A2573DB8D009B8E1D /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
@@ -492,6 +575,66 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		F62B0D1C2573DB8D009B8E1D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4496JM56CN;
+				INFOPLIST_FILE = UITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					IOKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly.UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Ironbelly;
+			};
+			name = Debug;
+		};
+		F62B0D1D2573DB8D009B8E1D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 4496JM56CN;
+				INFOPLIST_FILE = UITests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				OTHER_CFLAGS = (
+					"$(inherited)",
+					"-DFB_SONARKIT_ENABLED=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					IOKit,
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = app.ironbelly.UITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Ironbelly;
+			};
+			name = Release;
+		};
 		F64186F4218895DE00A99CA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -697,6 +840,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		F62B0D1E2573DB8D009B8E1D /* Build configuration list for PBXNativeTarget "UITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F62B0D1C2573DB8D009B8E1D /* Debug */,
+				F62B0D1D2573DB8D009B8E1D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		F64186D4218895DC00A99CA0 /* Build configuration list for PBXProject "Ironbelly" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

@@ -15,24 +15,13 @@
  */
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import {
-  ignoreElements,
-  filter,
-  catchError,
-  tap,
-  map,
-  mapTo,
-  mergeMap,
-} from 'rxjs/operators'
-import { fromEvent, from, EMPTY, of } from 'rxjs'
+import { catchError, map, mergeMap } from 'rxjs/operators'
+import { from, EMPTY } from 'rxjs'
 import { RootState } from 'src/common/redux'
 import { Epic, combineEpics, ofType } from 'redux-observable'
 import { Action, valueof } from 'src/common/types'
 import { getStateForRust } from 'src/common'
-// @ts-ignore
-import { NativeModules } from 'react-native'
-
-const { GrinBridge } = NativeModules
+import WalletBridge from 'src/bridges/wallet'
 
 export type State = {
   address: string | undefined
@@ -63,7 +52,7 @@ export const startHttpListenEpic: Epic<Action, Action, RootState> = (
     ofType('VALID_PASSWORD'),
     mergeMap(() =>
       from(
-        GrinBridge.startListenWithHttp(
+        WalletBridge.startListenWithHttp(
           getStateForRust(state$.value),
         ) as Promise<string>,
       ).pipe(
@@ -83,7 +72,7 @@ export const stopHttpListenEpic: Epic<Action, Action, RootState> = (
   action$.pipe(
     ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     mergeMap(async () => {
-      await GrinBridge.stopListenWithHttp()
+      await WalletBridge.stopListenWithHttp()
       return txReceiveActions.setAddress(undefined) as Action
     }),
   )

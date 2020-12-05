@@ -253,6 +253,20 @@ const HomeTabs = () => (
         tabBarIcon: ({ color, size }) => {
           return <FeatherIcon name="list" size={size + 4} color={color} />
         },
+        tabBarButton: ({ children }) => {
+          return (
+            <TouchableOpacity
+              testID="OverviewTab"
+              style={{ flex: 1 }}
+              onPress={() => {
+                getNavigation().then((navigation) => {
+                  navigation.navigate('Overview')
+                })
+              }}>
+              {children}
+            </TouchableOpacity>
+          )
+        },
       }}
     />
     <Tab.Screen
@@ -267,6 +281,7 @@ const HomeTabs = () => (
         tabBarButton: ({ children }) => {
           return (
             <TouchableOpacity
+              testID="SendTab"
               style={{ flex: 1 }}
               onPress={() => {
                 getNavigation().then((navigation) => {
@@ -291,6 +306,7 @@ const HomeTabs = () => (
         tabBarButton: ({ children }) => {
           return (
             <TouchableOpacity
+              testID="ReceiveTab"
               style={{ flex: 1 }}
               onPress={() => {
                 getNavigation().then((navigation) => {
@@ -309,6 +325,20 @@ const HomeTabs = () => (
       options={{
         tabBarIcon: ({ color, size }) => {
           return <FeatherIcon name="settings" size={size} color={color} />
+        },
+        tabBarButton: ({ children }) => {
+          return (
+            <TouchableOpacity
+              testID="SettingsTab"
+              style={{ flex: 1 }}
+              onPress={() => {
+                getNavigation().then((navigation) => {
+                  navigation.navigate('Settings')
+                })
+              }}>
+              {children}
+            </TouchableOpacity>
+          )
         },
       }}
     />

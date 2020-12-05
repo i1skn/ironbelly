@@ -164,10 +164,6 @@ export const checkWalletDataDirectory = () => {
     return
   })
 }
-export const isWalletInitialized = () => {
-  const seedFilePath = WALLET_DATA_DIRECTORY + '/wallet.seed'
-  return RNFS.exists(seedFilePath)
-}
 export const Spacer = styled.View`
   height: ${({ height }) => (height ? height : isIphoneX() ? '24px' : '16px')};
   width: 100%;

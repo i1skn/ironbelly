@@ -27,21 +27,21 @@ openssl = { version = "0.10", features = ["vendored"] }
 # Does not exist yet
 
 # For bleeding edge
-# grin_wallet_api = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
-# grin_wallet_impls = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
-# grin_wallet_libwallet = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
-# grin_wallet_config = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
-# grin_wallet_util = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
-# grin_wallet_controller = { git = "https://github.com/i1skn/grin-wallet", branch = "ironbelly_v4" }
+grin_wallet_api = { git = "https://github.com/i1skn/grin-wallet", branch = "master" }
+grin_wallet_impls = { git = "https://github.com/i1skn/grin-wallet", branch = "master" }
+grin_wallet_libwallet = { git = "https://github.com/i1skn/grin-wallet", branch = "master" }
+grin_wallet_config = { git = "https://github.com/i1skn/grin-wallet", branch = "master" }
+grin_wallet_util = { git = "https://github.com/i1skn/grin-wallet", branch = "master" }
+grin_wallet_controller = { git = "https://github.com/i1skn/grin-wallet", branch = "master" }
 
 
 # For local testing
-grin_wallet_api = { path = "../../../i1skn/grin-wallet/api", version = "4.1.0-alpha.1" }
-grin_wallet_impls = { path = "../../../i1skn/grin-wallet/impls", version = "4.1.0-alpha.1" }
-grin_wallet_libwallet = { path = "../../../i1skn/grin-wallet/libwallet", version = "4.1.0-alpha.1" }
-grin_wallet_config = { path = "../../../i1skn/grin-wallet/config", version = "4.1.0-alpha.1" }
-grin_wallet_util = { path = "../../../i1skn/grin-wallet/util", version = "4.1.0-alpha.1" }
-grin_wallet_controller = { path = "../../../i1skn/grin-wallet/controller", version = "4.1.0-alpha.1" }
+# grin_wallet_api = { path = "../../../i1skn/grin-wallet/api", version = "4.1.0-alpha.1" }
+# grin_wallet_impls = { path = "../../../i1skn/grin-wallet/impls", version = "4.1.0-alpha.1" }
+# grin_wallet_libwallet = { path = "../../../i1skn/grin-wallet/libwallet", version = "4.1.0-alpha.1" }
+# grin_wallet_config = { path = "../../../i1skn/grin-wallet/config", version = "4.1.0-alpha.1" }
+# grin_wallet_util = { path = "../../../i1skn/grin-wallet/util", version = "4.1.0-alpha.1" }
+# grin_wallet_controller = { path = "../../../i1skn/grin-wallet/controller", version = "4.1.0-alpha.1" }
 
 [target.'cfg(target_os = "android")'.dependencies]
 android_logger = "0.8"

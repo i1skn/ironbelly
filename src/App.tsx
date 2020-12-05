@@ -18,7 +18,6 @@ import React, { Component } from 'react'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 // @ts-ignore
 import {
-  NativeModules,
   Linking,
   AppState,
   StatusBar,
@@ -26,12 +25,12 @@ import {
   AppStateStatus,
   LogBox,
 } from 'react-native'
+import WalletBridge from 'src/bridges/wallet'
 import { Provider, connect } from 'react-redux'
 import {
   SLATES_DIRECTORY,
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
-  isWalletInitialized,
 } from 'src/common'
 import urlParser from 'url'
 import Modal from 'react-native-modal'
@@ -47,8 +46,6 @@ import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-
-const { GrinBridge } = NativeModules
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -112,7 +109,7 @@ class RealApp extends React.Component<Props, State> {
       StatusBar.setBackgroundColor('rgba(0,0,0,0)')
       StatusBar.setTranslucent(true)
     }
-    GrinBridge.setLogger().then(console.log).catch(console.log)
+    WalletBridge.setLogger().then(console.log).catch(console.log)
     const { slateUrl } = this.props
 
     if (slateUrl) {
@@ -145,7 +142,7 @@ class RealApp extends React.Component<Props, State> {
 
   _handleOpenURL = (event: { url: string }) => {
     // const { setFromLink } = this.props
-    isWalletInitialized().then(async (exists) => {
+    WalletBridge.isWalletCreated().then(async (exists) => {
       if (exists) {
         if (isAndroid) {
           try {
@@ -210,7 +207,7 @@ class RealApp extends React.Component<Props, State> {
     const { sharingInProgress } = this.props
 
     if (nextAppState === 'background' && !sharingInProgress) {
-      isWalletInitialized().then(async (exists) => {
+      WalletBridge.isWalletCreated().then(async (exists) => {
         if (exists) {
           store.dispatch({
             type: 'CLEAR_PASSWORD',

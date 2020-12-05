@@ -67,7 +67,6 @@ target 'Ironbelly' do
 
   # Add new pods below this line
   pod 'LaunchScreenSnapshot'
-  pod 'IPtProxy', '~> 0.1'
   pod 'ReachabilitySwift'
 
   $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
