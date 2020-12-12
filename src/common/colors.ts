@@ -349,6 +349,7 @@ export default {
   onSurfaceLight: blueGrey[900] + 'aa',
 
   warning: deepOrange['500'],
+  warningLight: deepOrange['300'],
   success: green.A700,
   link: blue['500'],
 

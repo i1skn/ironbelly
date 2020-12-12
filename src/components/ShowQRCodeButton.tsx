@@ -15,28 +15,36 @@
  */
 
 import React from 'react'
-import Clipboard from '@react-native-community/clipboard'
 import colors from 'src/common/colors'
 import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
-import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
+
 import { Text } from 'src/components/CustomFont'
+import { useNavigation } from '@react-navigation/native'
 
-export type SetFunction = (s: string) => void
-
-type Props = {
-  setFunction: SetFunction
-}
-function PasteButton({ setFunction }: Props) {
-  const pasteToClipboard = () => {
-    Clipboard.getString().then(setFunction)
+function ShowQRCodeButton({
+  label,
+  content,
+}: {
+  label: string
+  content: string
+}) {
+  const navigation = useNavigation()
+  const show = (content: string, label: string) => {
+    return () => {
+      navigation.navigate('ShowQRCode', {
+        content,
+        label,
+      })
+    }
   }
 
   return (
-    <TouchableOpacity onPress={pasteToClipboard}>
-      <Text style={styles.button}>
-        Paste{' '}
-        <FontAwesome5Icons
-          name="paste"
+    <TouchableOpacity onPress={show(content, label)}>
+      <Text style={styles.slatepackHeaderCopy}>
+        Show QR{' '}
+        <MaterialCommunityIcons
+          name="qrcode"
           size={18}
           style={{
             color: colors.link,
@@ -48,11 +56,11 @@ function PasteButton({ setFunction }: Props) {
 }
 
 const styles = StyleSheet.create({
-  button: {
+  slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
     color: colors.link,
     fontSize: 16,
   },
 })
 
-export default PasteButton
+export default ShowQRCodeButton

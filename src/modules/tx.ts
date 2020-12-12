@@ -241,7 +241,6 @@ export const sideEffects = {
         getStateForRust(store.getState()),
         action.refreshFromNode,
       ).then(JSON.parse)
-      console.log(data)
       let mappedData = data[1]
         .filter((tx: RustTx) => tx.tx_type.indexOf('Cancelled') === -1)
         .map((tx: RustTx) => {

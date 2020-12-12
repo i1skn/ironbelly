@@ -15,44 +15,31 @@
  */
 
 import React from 'react'
-import Clipboard from '@react-native-community/clipboard'
-import colors from 'src/common/colors'
-import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
-import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
+import { StyleSheet, View, Platform } from 'react-native'
 import { Text } from 'src/components/CustomFont'
 
-export type SetFunction = (s: string) => void
-
 type Props = {
-  setFunction: SetFunction
+  title: string
 }
-function PasteButton({ setFunction }: Props) {
-  const pasteToClipboard = () => {
-    Clipboard.getString().then(setFunction)
-  }
 
+function SectionTitle({ title }: Props) {
   return (
-    <TouchableOpacity onPress={pasteToClipboard}>
-      <Text style={styles.button}>
-        Paste{' '}
-        <FontAwesome5Icons
-          name="paste"
-          size={18}
-          style={{
-            color: colors.link,
-          }}
-        />
-      </Text>
-    </TouchableOpacity>
+    <View style={styles.container}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginVertical: 8,
+  },
+  title: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
-    color: colors.link,
     fontSize: 16,
   },
 })
 
-export default PasteButton
+export default SectionTitle

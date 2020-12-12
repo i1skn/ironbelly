@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import DocumentPicker from 'react-native-document-picker'
@@ -28,7 +28,7 @@ import {
   Platform,
 } from 'react-native'
 import CopyHeader from 'src/components/CopyHeader'
-import PasteHeader from 'src/components/PasteHeader'
+import InputContentRow from 'src/components/InputContentRow'
 import { useDispatch } from 'react-redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
@@ -37,6 +37,9 @@ import { NavigationProps } from 'src/common/types'
 import Textarea from 'src/components/Textarea'
 import { hrGrin, getSlatePath, isValidSlatepack } from 'src/common'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import SectionTitle from 'src/components/SectionTitle'
+import { useFocusEffect } from '@react-navigation/native'
+import ShareRow from 'src/components/ShareRow'
 
 interface OwnProps {
   tx: Tx
@@ -64,7 +67,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
   let refScrollView = useRef<KeyboardAwareScrollView>()
   const title = tx ? `Receiving ${hrGrin(Math.abs(tx.amount))}` : `Receive`
 
-  const pasteFromClipboard = (s: string) => {
+  const setWithValidation = (s: string) => {
     if (!isValidSlatepack(s)) {
       dispatch({
         type: 'TOAST_SHOW',
@@ -74,6 +77,16 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
     }
     setReceiveSlatepack(s)
   }
+
+  useFocusEffect(
+    // useCallback is needed here: https://bit.ly/2G0WKTJ
+    useCallback(() => {
+      const qrContent = route.params?.qrContent
+      if (qrContent) {
+        setWithValidation(qrContent)
+      }
+    }, [route.params]),
+  )
 
   useEffect(() => {
     if (loadedSlatepack) {
@@ -98,9 +111,9 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
         .finally(() => {
           setIsLoadingSlatepack(false)
         })
+      refScrollView.current?.scrollToEnd()
     }
     navigation.setParams({ title })
-    refScrollView.current?.scrollToEnd()
   }, [tx, title])
 
   const generateResponse = () => {
@@ -110,10 +123,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
     })
   }
 
-  const openFile = async () => {
-    const { uri } = await DocumentPicker.pick({
-      type: [DocumentPicker.types.allFiles],
-    })
+  const openFile = (uri: string) => {
     dispatch({
       type: 'SLATE_LOAD_REQUEST',
       slatePath: uri,
@@ -127,9 +137,6 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
         <KeyboardAwareScrollView
           innerRef={(ref) => {
             refScrollView.current = (ref as unknown) as KeyboardAwareScrollView
-            setTimeout(() => {
-              refScrollView.current?.scrollToEnd()
-            }, 300)
           }}
           contentContainerStyle={{
             ...Platform.select({
@@ -162,10 +169,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                         <Text style={styles.info}>
                           Please send your part of the transaction to the sender
                         </Text>
-                        <CopyHeader
-                          content={slatepack!}
-                          label={'Your part of the transaction'}
-                        />
+                        <SectionTitle title={'Your part of the transaction'} />
                         <Textarea
                           textAlignVertical={'top'}
                           containerStyle={styles.slatepack}
@@ -174,11 +178,11 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                           returnKeyType={'done'}>
                           {slatepack}
                         </Textarea>
-                        <View style={styles.shareAsFile}>
-                          <TouchableOpacity onPress={slatepackShare(tx!)}>
-                            <Text style={styles.textButton}>Share as file</Text>
-                          </TouchableOpacity>
-                        </View>
+                        <ShareRow
+                          content={slatepack}
+                          label="Slatepack"
+                          onShareFile={slatepackShare(tx!)}
+                        />
                       </>
                     )) ||
                     null}
@@ -195,10 +199,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                     can you generate your part of the transaction and send it
                     back to the sender
                   </Text>
-                  <PasteHeader
-                    label="Sender's part of the transaction"
-                    setFunction={pasteFromClipboard}
-                  />
+                  <SectionTitle title="Sender's part of the transaction" />
                   <Textarea
                     containerStyle={styles.slatepack}
                     onChangeText={setReceiveSlatepack}
@@ -210,11 +211,12 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                     returnKeyType={'done'}>
                     {receiveSlatepack}
                   </Textarea>
-                  <View style={styles.shareAsFile}>
-                    <TouchableOpacity onPress={openFile}>
-                      <Text style={styles.textButton}>Open file</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <InputContentRow
+                    openFileCallback={openFile}
+                    setFunction={setWithValidation}
+                    nextScreen={'TxIncompleteReceive'}
+                    label="Grin Address"
+                  />
                   <Button
                     title="Generate response"
                     disabled={!isValidSlatepack(receiveSlatepack)}
@@ -268,12 +270,6 @@ const styles = StyleSheet.create({
   textButton: {
     color: colors.link,
     fontSize: 18,
-  },
-  shareAsFile: {
-    flexDirection: 'row',
-    paddingTop: 16,
-    paddingBottom: 24,
-    justifyContent: 'center',
   },
   amountRow: {
     flexDirection: 'row',

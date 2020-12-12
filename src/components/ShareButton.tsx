@@ -15,34 +15,34 @@
  */
 
 import React from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
-import PasteButton from 'src/components/PasteButton'
+import colors from 'src/common/colors'
+import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import { Text } from 'src/components/CustomFont'
 
-type Props = {
-  setFunction: (s: string) => void
-  label: string
-}
-
-function PasteHeader({ label, setFunction }: Props) {
+function ShareButton({ onClick }: { onClick: () => void }) {
   return (
-    <View style={styles.copyPasteContent}>
-      <Text style={styles.copyPasteContentTitle}>{label}</Text>
-      <PasteButton setFunction={setFunction} />
-    </View>
+    <TouchableOpacity onPress={onClick}>
+      <Text style={styles.slatepackHeaderCopy}>
+        Share{' '}
+        <FontAwesome5Icons
+          name="share"
+          size={18}
+          style={{
+            color: colors.link,
+          }}
+        />
+      </Text>
+    </TouchableOpacity>
   )
 }
 
 const styles = StyleSheet.create({
-  copyPasteContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 8,
-  },
-  copyPasteContentTitle: {
+  slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
+    color: colors.link,
     fontSize: 16,
   },
 })
 
-export default PasteHeader
+export default ShareButton

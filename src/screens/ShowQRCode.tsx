@@ -15,44 +15,48 @@
  */
 
 import React from 'react'
-import Clipboard from '@react-native-community/clipboard'
 import colors from 'src/common/colors'
-import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import {
+  View,
+  TouchableOpacity,
+  StyleSheet,
+  Platform,
+  Image,
+  Dimensions,
+} from 'react-native'
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import { Text } from 'src/components/CustomFont'
+import QRCode from 'react-native-qrcode-svg'
+import { NavigationProps } from 'src/common/types'
+import CardTitle from 'src/components/CardTitle'
 
-export type SetFunction = (s: string) => void
+interface OwnProps {}
 
-type Props = {
-  setFunction: SetFunction
-}
-function PasteButton({ setFunction }: Props) {
-  const pasteToClipboard = () => {
-    Clipboard.getString().then(setFunction)
-  }
+type Props = NavigationProps<'ShowQRCode'> & OwnProps
 
+function ScanQRCode({ route, navigation }: Props) {
+  const { label, content } = route.params
+  const width = Dimensions.get('window').width - 32
   return (
-    <TouchableOpacity onPress={pasteToClipboard}>
-      <Text style={styles.button}>
-        Paste{' '}
-        <FontAwesome5Icons
-          name="paste"
-          size={18}
-          style={{
-            color: colors.link,
-          }}
-        />
-      </Text>
-    </TouchableOpacity>
+    <>
+      <CardTitle title={label} navigation={navigation} />
+      <View style={styles.container}>
+        <QRCode value={content} size={width} />
+      </View>
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  button: {
-    fontWeight: Platform.select({ android: '700', ios: '500' }),
-    color: colors.link,
-    fontSize: 16,
+  container: {
+    flex: 1,
+    backgroundColor: colors.white,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  label: {
+    fontSize: 24,
   },
 })
 
-export default PasteButton
+export default ScanQRCode

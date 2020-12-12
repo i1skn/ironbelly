@@ -23,22 +23,26 @@ import FlipperKit
 #endif
 #endif
 import LaunchScreenSnapshot
+import UMReactNativeAdapter
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
     func sourceURL(for bridge: RCTBridge!) -> URL! {
     #if DEBUG
-    return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
+        return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index", fallbackResource: nil)
     #else
-    return RCTBundleURLProvider.sharedSettings().jsBundleURL(
-        forFallbackResource: "main", fallbackExtension: "jsbundle"
-    )
+        return RCTBundleURLProvider.sharedSettings().jsBundleURL(
+            forFallbackResource: "main", fallbackExtension: "jsbundle"
+        )
     #endif
     }
 
     var window: UIWindow?
+    var moduleRegistryAdapter: UMModuleRegistryAdapter!
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        self.moduleRegistryAdapter = UMModuleRegistryAdapter(moduleRegistryProvider: UMModuleRegistryProvider())
+        
         initializeFlipper(with: application)
         
         let bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
@@ -100,5 +104,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
         #endif
         #endif
     }
+    
+    func extraModules(for bridge: RCTBridge!) -> [RCTBridgeModule]! {
+        let extraModules = self.moduleRegistryAdapter.extraModules(for: bridge)
+        return extraModules
+      }
 
 }

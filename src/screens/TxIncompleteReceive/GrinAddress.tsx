@@ -15,7 +15,8 @@
  */
 
 import React from 'react'
-import CopyHeader from 'src/components/CopyHeader'
+import SectionTitle from 'src/components/SectionTitle'
+import ShareRow from 'src/components/ShareRow'
 import { Text, monoSpaceFont } from 'src/components/CustomFont'
 import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { useSelector } from 'src/common/redux'
@@ -45,9 +46,14 @@ function GrinAddress() {
 
   return (
     <>
-      <CopyHeader content={grinAddress} label={'Grin Address'} />
+      <SectionTitle title={'Grin Address'} />
       <View style={styles.container}>{address}</View>
-      <Text style={styles.warning}>Keep the app open to use Grin Address!</Text>
+      <ShareRow content={grinAddress} label="Grin Address" />
+      <View style={styles.warning}>
+        <Text style={styles.warningText}>
+          Keep the app open to use Grin Address!
+        </Text>
+      </View>
     </>
   )
 }
@@ -55,6 +61,7 @@ function GrinAddress() {
 const styles = StyleSheet.create({
   container: {
     height: 80,
+    marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -70,10 +77,20 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   warning: {
-    color: colors.warning,
     marginBottom: 8,
+    marginTop: 4,
     fontSize: 17,
+    flexDirection: 'row',
+    borderLeftColor: colors.warning,
+    borderLeftWidth: 4,
+  },
+  warningText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    backgroundColor: colors.warningLight,
     textAlign: 'center',
+    padding: 8,
+    flex: 1,
   },
 })
 

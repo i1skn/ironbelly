@@ -14,19 +14,13 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
 import colors from 'src/common/colors'
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Platform,
-} from 'react-native'
+import { ActivityIndicator, StyleSheet, View, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'src/common/redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
@@ -35,7 +29,10 @@ import Textarea from 'src/components/Textarea'
 import { getSlatePath, isValidSlatepack } from 'src/common'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import CopyHeader from 'src/components/CopyHeader'
-import PasteHeader from 'src/components/PasteHeader'
+import ShareRow from 'src/components/ShareRow'
+import SectionTitle from 'src/components/SectionTitle'
+import InputContentRow from 'src/components/InputContentRow'
+import { useFocusEffect } from '@react-navigation/native'
 
 type SlateCreateProps = {
   slateId: string
@@ -74,7 +71,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   let [recipientSlatepack, setRecipientSlatepack] = useState('')
   let refScrollView = useRef<KeyboardAwareScrollView>()
 
-  const pasteFromClipboard = (s: string) => {
+  const setWithValidation = (s: string) => {
     if (!isValidSlatepack(s)) {
       dispatch({
         type: 'TOAST_SHOW',
@@ -108,6 +105,16 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
       refScrollView.current?.scrollToEnd()
     }
   }, [loadedSlatepack])
+
+  useFocusEffect(
+    // useCallback is needed here: https://bit.ly/2G0WKTJ
+    useCallback(() => {
+      const qrContent = route.params?.qrContent
+      if (qrContent) {
+        setWithValidation(qrContent)
+      }
+    }, [route.params]),
+  )
 
   const finalizeInProgress = useSelector(
     (state) => state.tx.txFinalize.inProgress,
@@ -158,10 +165,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
         <View>
           {(slatepack && (
             <>
-              <CopyHeader
-                content={slatepack}
-                label={'Your part of the transaction'}
-              />
+              <SectionTitle title={'Your part of the transaction'} />
               <Textarea
                 containerStyle={styles.slatepack}
                 style={styles.textarea}
@@ -170,19 +174,16 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
                 returnKeyType={'done'}>
                 {slatepack}
               </Textarea>
-              <View style={styles.shareAsFile}>
-                <TouchableOpacity onPress={slatepackShare}>
-                  <Text style={styles.textButton}>Share as file</Text>
-                </TouchableOpacity>
-              </View>
+              <ShareRow
+                content={slatepack}
+                label="Slatepack"
+                onShareFile={slatepackShare}
+              />
               <Text style={styles.info}>
                 If you have received recipient's part of the transaction, please
                 enter it below.
               </Text>
-              <PasteHeader
-                label="Recipient's part of the transaction"
-                setFunction={pasteFromClipboard}
-              />
+              <SectionTitle title="Recipient's part of the transaction" />
               <Textarea
                 containerStyle={styles.slatepack}
                 onChangeText={setRecipientSlatepack}
@@ -192,11 +193,12 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
                 returnKeyType={'done'}>
                 {recipientSlatepack}
               </Textarea>
-              <View style={styles.shareAsFile}>
-                <TouchableOpacity onPress={openFile}>
-                  <Text style={styles.textButton}>Open file</Text>
-                </TouchableOpacity>
-              </View>
+              <InputContentRow
+                openFileCallback={openFile}
+                setFunction={setWithValidation}
+                nextScreen={'TxIncompleteSend'}
+                label="Slatepack"
+              />
               <Button
                 title="Finish transaction"
                 onPress={txFinalize}
@@ -238,12 +240,6 @@ const styles = StyleSheet.create({
   textButton: {
     color: colors.link,
     fontSize: 18,
-  },
-  shareAsFile: {
-    flexDirection: 'row',
-    paddingTop: 16,
-    paddingBottom: 24,
-    justifyContent: 'center',
   },
   slatepackLoading: {
     justifyContent: 'center',

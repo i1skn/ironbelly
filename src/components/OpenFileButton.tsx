@@ -15,28 +15,28 @@
  */
 
 import React from 'react'
-import Clipboard from '@react-native-community/clipboard'
 import colors from 'src/common/colors'
 import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import { Text } from 'src/components/CustomFont'
+import DocumentPicker from 'react-native-document-picker'
 
-export type SetFunction = (s: string) => void
-
-type Props = {
-  setFunction: SetFunction
-}
-function PasteButton({ setFunction }: Props) {
-  const pasteToClipboard = () => {
-    Clipboard.getString().then(setFunction)
+function OpenFileButton({ callback }: { callback: (uri: string) => void }) {
+  const openFile = async () => {
+    try {
+      const { uri } = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+      })
+      callback(uri)
+    } catch (e) {}
   }
 
   return (
-    <TouchableOpacity onPress={pasteToClipboard}>
-      <Text style={styles.button}>
-        Paste{' '}
+    <TouchableOpacity onPress={openFile}>
+      <Text style={styles.slatepackHeaderCopy}>
+        Open{' '}
         <FontAwesome5Icons
-          name="paste"
+          name="folder-open"
           size={18}
           style={{
             color: colors.link,
@@ -48,11 +48,11 @@ function PasteButton({ setFunction }: Props) {
 }
 
 const styles = StyleSheet.create({
-  button: {
+  slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
     color: colors.link,
     fontSize: 16,
   },
 })
 
-export default PasteButton
+export default OpenFileButton

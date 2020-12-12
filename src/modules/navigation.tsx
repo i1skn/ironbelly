@@ -45,6 +45,8 @@ import SettingsCurrencyScreen from 'src/screens/Settings/Currency'
 import LegalDisclaimerScreen from 'src/screens/LegalDisclaimer'
 import LicensesScreen from 'src/screens/Licenses'
 import LicenseScreen from 'src/screens/License'
+import ShowQRCodeScreen from 'src/screens/ShowQRCode'
+import ScanQRCodeScreen from 'src/screens/ScanQRCode'
 import colors from 'src/common/colors'
 import { store } from 'src/common/redux'
 import {
@@ -80,18 +82,31 @@ export type RootStackParamList = {
   SettingsGrinNode: undefined | { apiSecret: string }
   Licenses: undefined
   License: { licenseText: string }
+  ShowQRCode: {
+    label: string
+    content: string
+  }
+  ScanQRCode: {
+    label: string
+    nextScreen: keyof RootStackParamList
+  }
   SettingsCurrency: undefined
   ViewPaperKey: undefined | { fromSettings: boolean }
   VerifyPaperKey: { title: string }
   TxDetails: { txId: number }
   TxIncompleteSend:
     | undefined
-    | { tx?: Tx; title?: string; subTitle?: string; slatepack?: string }
+    | {
+        tx?: Tx
+        title?: string
+        subTitle?: string
+        slatepack?: string
+        qrContent?: string
+      }
   TxIncompleteReceive:
     | undefined
-    | { slatepack?: string; tx?: Tx; title?: string }
+    | { slatepack?: string; tx?: Tx; title?: string; qrContent?: string }
   Receive: { slatePath: string; slate: string }
-  ScanQRCode: undefined
   Password: undefined
   Created: undefined
   NotCreated: undefined
@@ -381,6 +396,28 @@ const Created = () => (
           ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
               title: route?.params?.title,
+            })
+          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+      }
+    />
+    <Stack.Screen
+      name="ShowQRCode"
+      component={ShowQRCodeScreen}
+      options={
+        isAndroid
+          ? () => ({
+              ...TransitionPresets.DefaultTransition,
+            })
+          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+      }
+    />
+    <Stack.Screen
+      name="ScanQRCode"
+      component={ScanQRCodeScreen}
+      options={
+        isAndroid
+          ? () => ({
+              ...TransitionPresets.DefaultTransition,
             })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
