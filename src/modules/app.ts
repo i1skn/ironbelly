@@ -159,7 +159,7 @@ const refreshTxsPeriodicallyEpic: Epic<Action, Action, RootState> = (
   interval(REFRESH_TXS_INTERVAL).pipe(
     filter(() => state$.value.wallet.password.valid),
     mapTo({
-      type: 'TX_LIST_REQUEST1',
+      type: 'TX_LIST_REQUEST',
       showLoader: false,
       refreshFromNode: true,
     }),

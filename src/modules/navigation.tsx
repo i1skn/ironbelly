@@ -83,10 +83,13 @@ export type RootStackParamList = {
   Licenses: undefined
   License: { licenseText: string }
   ShowQRCode: {
+    title?: string
+
     label: string
     content: string
   }
   ScanQRCode: {
+    title?: string
     label: string
     nextScreen: keyof RootStackParamList
   }
@@ -405,8 +408,11 @@ const Created = () => (
       component={ShowQRCodeScreen}
       options={
         isAndroid
-          ? () => ({
+          ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
+              headerTitle: TxIncompleteSendAndroidHeaderTitle({
+                title: route?.params?.label,
+              }),
             })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
@@ -416,8 +422,11 @@ const Created = () => (
       component={ScanQRCodeScreen}
       options={
         isAndroid
-          ? () => ({
+          ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
+              headerTitle: TxIncompleteSendAndroidHeaderTitle({
+                title: route?.params?.label,
+              }),
             })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }

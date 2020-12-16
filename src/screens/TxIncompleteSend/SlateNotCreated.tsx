@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
-
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
@@ -39,8 +39,15 @@ import { isTxFormInvalid } from 'src/modules/tx'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { currencySelector, currencyRatesSelector } from 'src/modules/settings'
 import FormTextInput from 'src/components/FormTextInput'
+import { useNavigation } from '@react-navigation/native'
 
-type SlateNotCreateProps = {}
+type Props = {}
+
+const ScanQRCode = styled.TouchableOpacity`
+  margin-top: -46px;
+  margin-bottom: 40px;
+  align-self: flex-end;
+`
 
 const TransportMethod = styled.TouchableOpacity`
   flex-direction: row;
@@ -103,8 +110,9 @@ function SendLoader() {
   )
 }
 
-const SlateNotCreated = ({}: SlateNotCreateProps) => {
+const SlateNotCreated = () => {
   const dispatch = useDispatch()
+  const navigation = useNavigation()
   const setAmount = (amount: number, textAmount: string) => {
     dispatch({
       type: 'TX_FORM_SET_AMOUNT',
@@ -178,6 +186,7 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
     outputStrategies_error,
     outputStrategies_inProgress,
   } = txForm
+
   const [transportMethod, setTransportMethod] = useState(
     ADDRESS_TRANSPORT_METHOD,
   )
@@ -348,15 +357,25 @@ const SlateNotCreated = ({}: SlateNotCreateProps) => {
                 onChange={(address) => setAddress(address)}
                 value={address}
                 placeholder="grin......."
-                autoCorrect={false}
-              />
+                autoCorrect={false}></FormTextInput>
+              {!address && (
+                <ScanQRCode
+                  onPress={() =>
+                    navigation.navigate('ScanQRCode', {
+                      label: 'Grin Address',
+                      nextScreen: 'TxIncompleteSend',
+                    })
+                  }>
+                  <MaterialCommunityIcons name="qrcode-scan" size={26} />
+                </ScanQRCode>
+              )}
               <Spacer />
             </>
           )}
           {transportMethod === HTTP_TRANSPORT_METHOD && (
             <>
               <DeprecationWarning>
-                Will be deprecated in version 5
+                Will be deprecated in version 5.x
               </DeprecationWarning>
               <FormTextInput
                 autoFocus={false}

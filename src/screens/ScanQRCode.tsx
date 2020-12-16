@@ -14,26 +14,12 @@
  * limitations under the License.
  */
 
-import React, { Component, useEffect, useState } from 'react'
-import { processColor, StatusBar, StyleSheet, Text, View } from 'react-native'
-import { isAndroid, parseSendLink } from 'src/common'
+import React, { useEffect, useState } from 'react'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import colors from 'src/common/colors'
-import {
-  State as GlobalState,
-  Navigation,
-  NavigationProps,
-} from 'src/common/types'
-import urlParser from 'url'
-import styled from 'styled-components/native'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-import Ionicons from 'react-native-vector-icons/Ionicons'
-import { useNavigation } from '@react-navigation/native'
+import { State as GlobalState, NavigationProps } from 'src/common/types'
 import CardTitle from 'src/components/CardTitle'
-import {
-  Constants,
-  BarCodeScanner,
-  PermissionStatus,
-} from 'expo-barcode-scanner'
+import { BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner'
 import { Button } from 'src/components/CustomFont'
 
 type Props = NavigationProps<'ScanQRCode'>
@@ -56,7 +42,7 @@ function ScanQRCode({ route, navigation }: Props) {
 
   const inner = () => {
     if (hasPermission === null) {
-      return <Text style={styles.status}>Requesting for camera permission</Text>
+      return <ActivityIndicator size="large" color={colors.grey[700]} />
     }
     if (hasPermission === false) {
       return <Text style={styles.status}>No access to camera</Text>
@@ -79,17 +65,15 @@ function ScanQRCode({ route, navigation }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.white,
-    padding: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'relative',
   },
   viewFinder: {
     ...StyleSheet.absoluteFillObject,
   },
   status: {
     fontSize: 24,
+    textAlign: 'center',
   },
 })
 

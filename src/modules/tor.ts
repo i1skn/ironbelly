@@ -65,7 +65,7 @@ export const startTorEpic: Epic<Action, Action, RootState> = (
     ofType('VALID_PASSWORD'),
     filter(() => state$.value.tor.status !== TOR_IN_PROGRESS),
     tap(() => {
-      WalletBridge.startTor().then(console.log).catch(console.error)
+      WalletBridge.startTor().then().catch(console.error)
     }),
     ignoreElements(),
   )
@@ -77,7 +77,7 @@ export const stopTorEpic: Epic<Action, Action, RootState> = (
   action$.pipe(
     ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     tap(() => {
-      WalletBridge.stopTor().then(console.log).catch(console.error)
+      WalletBridge.stopTor().then().catch(console.error)
     }),
     mapTo(torActions.setStatus(TOR_DISCONNECTED) as Action),
   )

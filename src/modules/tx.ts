@@ -500,11 +500,19 @@ export const sideEffects = {
         txSlateId: slateId,
       })
     } catch (e) {
-      store.dispatch({
-        type: 'TX_SEND_ADDRESS_FAILURE',
-        message: e.message,
-      })
-      log(e, true)
+      if (e.message.indexOf('HostUnreachable') !== -1) {
+        store.dispatch({
+          type: 'TX_CREATE_REQUEST',
+          amount: action.amount,
+          selectionStrategyIsUseAll: action.selectionStrategyIsUseAll,
+        })
+      } else {
+        store.dispatch({
+          type: 'TX_SEND_ADDRESS_FAILURE',
+          message: e.message,
+        })
+        log(e, true)
+      }
     }
   },
   ['TX_POST_REQUEST']: async (action: txPostRequestAction, store: Store) => {

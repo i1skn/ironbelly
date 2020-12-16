@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import colors from 'src/common/colors'
 import { StyleSheet, View } from 'react-native'
-import { useDispatch } from 'react-redux'
 import { Text } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
 import { Tx } from 'src/common/types'
@@ -26,6 +25,7 @@ import { NavigationProps } from 'src/common/types'
 import SlateCreated from 'src/screens/TxIncompleteSend/SlateCreated'
 import SlateNotCreated from 'src/screens/TxIncompleteSend/SlateNotCreated'
 import { hrGrin } from 'src/common'
+import { useDispatch } from 'react-redux'
 
 interface OwnProps {
   tx: Tx
@@ -34,26 +34,29 @@ interface OwnProps {
 type Props = NavigationProps<'TxIncompleteSend'> & OwnProps
 
 const TxIncompleteSend = ({ navigation, route }: Props) => {
+  const dispatch = useDispatch()
   const tx = route?.params?.tx
   const title = tx ? `Sending ${hrGrin(Math.abs(tx.amount))}` : `Send`
   const subTitle = tx && `fee: ${hrGrin(tx.fee)}`
-  const dispatch = useDispatch()
-
-  const resetTxForm = () => {
-    dispatch({
-      type: 'TX_FORM_RESET',
-    })
-  }
 
   useEffect(() => {
     navigation.setParams({ title, subTitle })
   }, [title, subTitle])
 
-  useEffect(() => {
-    return navigation.addListener('blur', () => {
-      resetTxForm()
+  const setAddress = (address: string) => {
+    dispatch({
+      type: 'TX_FORM_SET_ADDRESS',
+      address: address.toLowerCase(),
     })
-  }, [navigation])
+  }
+
+  useEffect(() => {
+    const qrContent = route.params?.qrContent
+    if (qrContent) {
+      setAddress(qrContent)
+      navigation.setParams({ qrContent: undefined })
+    }
+  }, [route.params?.qrContent])
 
   return (
     <>

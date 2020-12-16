@@ -1,0 +1,805 @@
+diff --git a/node_modules/expo-barcode-scanner/android/build/.transforms/794e1c84940cdef658e2ce36e863b83f.bin b/node_modules/expo-barcode-scanner/android/build/.transforms/794e1c84940cdef658e2ce36e863b83f.bin
+new file mode 100644
+index 0000000..0d259dd
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/.transforms/794e1c84940cdef658e2ce36e863b83f.bin
+@@ -0,0 +1 @@
++o/classes
+diff --git a/node_modules/expo-barcode-scanner/android/build/.transforms/794e1c84940cdef658e2ce36e863b83f/classes/classes.dex b/node_modules/expo-barcode-scanner/android/build/.transforms/794e1c84940cdef658e2ce36e863b83f/classes/classes.dex
+new file mode 100644
+index 0000000..f30925c
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/.transforms/794e1c84940cdef658e2ce36e863b83f/classes/classes.dex differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/generated/source/buildConfig/release/expo/modules/barcodescanner/BuildConfig.java b/node_modules/expo-barcode-scanner/android/build/generated/source/buildConfig/release/expo/modules/barcodescanner/BuildConfig.java
+new file mode 100644
+index 0000000..211cf25
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/generated/source/buildConfig/release/expo/modules/barcodescanner/BuildConfig.java
+@@ -0,0 +1,18 @@
++/**
++ * Automatically generated file. DO NOT MODIFY
++ */
++package expo.modules.barcodescanner;
++
++public final class BuildConfig {
++  public static final boolean DEBUG = false;
++  public static final String LIBRARY_PACKAGE_NAME = "expo.modules.barcodescanner";
++  /**
++   * @deprecated APPLICATION_ID is misleading in libraries. For the library package name use LIBRARY_PACKAGE_NAME
++   */
++  @Deprecated
++  public static final String APPLICATION_ID = "expo.modules.barcodescanner";
++  public static final String BUILD_TYPE = "release";
++  public static final String FLAVOR = "";
++  public static final int VERSION_CODE = 25;
++  public static final String VERSION_NAME = "9.1.0";
++}
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/aapt_friendly_merged_manifests/release/aapt/AndroidManifest.xml b/node_modules/expo-barcode-scanner/android/build/intermediates/aapt_friendly_merged_manifests/release/aapt/AndroidManifest.xml
+new file mode 100644
+index 0000000..c65ded5
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/aapt_friendly_merged_manifests/release/aapt/AndroidManifest.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.barcodescanner"
++    android:versionCode="25"
++    android:versionName="9.1.0" >
++
++    <uses-sdk
++        android:minSdkVersion="24"
++        android:targetSdkVersion="29" />
++
++    <uses-permission android:name="android.permission.CAMERA" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/aapt_friendly_merged_manifests/release/aapt/output.json b/node_modules/expo-barcode-scanner/android/build/intermediates/aapt_friendly_merged_manifests/release/aapt/output.json
+new file mode 100644
+index 0000000..ce46b55
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/aapt_friendly_merged_manifests/release/aapt/output.json
+@@ -0,0 +1 @@
++[{"outputType":{"type":"AAPT_FRIENDLY_MERGED_MANIFESTS"},"apkData":{"type":"MAIN","splits":[],"versionCode":25,"versionName":"9.1.0","enabled":true,"outputFile":"expo-barcode-scanner-release.aar","fullName":"release","baseName":"release"},"path":"AndroidManifest.xml","properties":{"packageId":"expo.modules.barcodescanner","split":""}}]
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/annotation_processor_list/release/annotationProcessors.json b/node_modules/expo-barcode-scanner/android/build/intermediates/annotation_processor_list/release/annotationProcessors.json
+new file mode 100644
+index 0000000..9e26dfe
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/annotation_processor_list/release/annotationProcessors.json
+@@ -0,0 +1 @@
++{}
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/compile_library_classes/release/classes.jar b/node_modules/expo-barcode-scanner/android/build/intermediates/compile_library_classes/release/classes.jar
+new file mode 100644
+index 0000000..b2951da
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/compile_library_classes/release/classes.jar differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/compile_only_not_namespaced_r_class_jar/release/R.jar b/node_modules/expo-barcode-scanner/android/build/intermediates/compile_only_not_namespaced_r_class_jar/release/R.jar
+new file mode 100644
+index 0000000..c77f013
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/compile_only_not_namespaced_r_class_jar/release/R.jar differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml
+new file mode 100644
+index 0000000..872b97d
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/mergeReleaseJniLibFolders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/jniLibs"/></dataSet><dataSet config="release" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/release/jniLibs"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/mergeReleaseShaders/merger.xml b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/mergeReleaseShaders/merger.xml
+new file mode 100644
+index 0000000..a1821ba
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/mergeReleaseShaders/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/shaders"/></dataSet><dataSet config="release" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/release/shaders"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseAssets/merger.xml b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseAssets/merger.xml
+new file mode 100644
+index 0000000..ab21a79
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseAssets/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet config="main" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/assets"/><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/build/intermediates/shader_assets/release/compileReleaseShaders/out"/></dataSet><dataSet config="release" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/release/assets"/></dataSet></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties
+new file mode 100644
+index 0000000..1a13b53
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseResources/compile-file-map.properties
+@@ -0,0 +1 @@
++#Sun Dec 13 21:05:43 CET 2020
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseResources/merger.xml b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseResources/merger.xml
+new file mode 100644
+index 0000000..4203180
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/packageReleaseResources/merger.xml
+@@ -0,0 +1,2 @@
++<?xml version="1.0" encoding="utf-8"?>
++<merger version="3"><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/res"/><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/build/generated/res/rs/release"/><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/build/generated/res/resValues/release"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="main" generated-set="main$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/res"/><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/build/generated/res/rs/release"/><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/build/generated/res/resValues/release"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="release$Generated" generated="true" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/release/res"/></dataSet><dataSet aapt-namespace="http://schemas.android.com/apk/res-auto" config="release" generated-set="release$Generated" ignore_pattern="!.svn:!.git:!.ds_store:!*.scc:.*:&lt;dir>_*:!CVS:!thumbs.db:!picasa.ini:!*~"><source path="/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/release/res"/></dataSet><mergedItems/></merger>
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/release-mergeNativeLibs/merge-state b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/release-mergeNativeLibs/merge-state
+new file mode 100644
+index 0000000..c049f2a
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/incremental/release-mergeNativeLibs/merge-state differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannedEvent.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannedEvent.class
+new file mode 100644
+index 0000000..bffe54c
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannedEvent.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$1.class
+new file mode 100644
+index 0000000..2c574cd
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$2$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$2$1.class
+new file mode 100644
+index 0000000..0b1344e
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$2$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$2.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$2.class
+new file mode 100644
+index 0000000..e0602d8
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$2.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$3$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$3$1.class
+new file mode 100644
+index 0000000..1c17784
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$3$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$3.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$3.class
+new file mode 100644
+index 0000000..4b07aea
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule$3.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule.class
+new file mode 100644
+index 0000000..80ee339
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerModule.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerPackage.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerPackage.class
+new file mode 100644
+index 0000000..85ef483
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerPackage.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerProvider.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerProvider.class
+new file mode 100644
+index 0000000..fd538e5
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerProvider.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerView$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerView$1.class
+new file mode 100644
+index 0000000..c698495
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerView$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerView.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerView.class
+new file mode 100644
+index 0000000..2370af0
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerView.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$1.class
+new file mode 100644
+index 0000000..343d183
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$BarCodeScannerAsyncTask$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$BarCodeScannerAsyncTask$1.class
+new file mode 100644
+index 0000000..f8180d6
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$BarCodeScannerAsyncTask$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$BarCodeScannerAsyncTask.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$BarCodeScannerAsyncTask.class
+new file mode 100644
+index 0000000..208dd3e
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder$BarCodeScannerAsyncTask.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder.class
+new file mode 100644
+index 0000000..180d417
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewFinder.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager$1.class
+new file mode 100644
+index 0000000..df140a1
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager$Events.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager$Events.class
+new file mode 100644
+index 0000000..b4f0943
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager$Events.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager.class
+new file mode 100644
+index 0000000..eb184af
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BarCodeScannerViewManager.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BuildConfig.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BuildConfig.class
+new file mode 100644
+index 0000000..c1d906e
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/BuildConfig.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/ExpoBarCodeScanner$CameraInfoWrapper.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/ExpoBarCodeScanner$CameraInfoWrapper.class
+new file mode 100644
+index 0000000..7cf3eaf
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/ExpoBarCodeScanner$CameraInfoWrapper.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/ExpoBarCodeScanner.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/ExpoBarCodeScanner.class
+new file mode 100644
+index 0000000..e64e36b
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/ExpoBarCodeScanner.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ExpoBarCodeScanner.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ExpoBarCodeScanner.class
+new file mode 100644
+index 0000000..53601e9
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ExpoBarCodeScanner.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/GMVBarCodeScanner.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/GMVBarCodeScanner.class
+new file mode 100644
+index 0000000..f3c14fd
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/GMVBarCodeScanner.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner$1.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner$1.class
+new file mode 100644
+index 0000000..33f5166
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner$1.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner$2.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner$2.class
+new file mode 100644
+index 0000000..b94b9ec
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner$2.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner.class
+new file mode 100644
+index 0000000..30ee6b1
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/scanners/ZxingBarCodeScanner.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/BarCodeScannerResultSerializer.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/BarCodeScannerResultSerializer.class
+new file mode 100644
+index 0000000..03819d8
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/BarCodeScannerResultSerializer.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/Frame.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/Frame.class
+new file mode 100644
+index 0000000..1d3de66
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/Frame.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/FrameFactory.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/FrameFactory.class
+new file mode 100644
+index 0000000..9ff72f6
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/FrameFactory.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/ImageDimensions.class b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/ImageDimensions.class
+new file mode 100644
+index 0000000..72824c1
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/javac/release/classes/expo/modules/barcodescanner/utils/ImageDimensions.class differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/library_java_res/release/res.jar b/node_modules/expo-barcode-scanner/android/build/intermediates/library_java_res/release/res.jar
+new file mode 100644
+index 0000000..15cb0ec
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/library_java_res/release/res.jar differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/library_manifest/release/AndroidManifest.xml b/node_modules/expo-barcode-scanner/android/build/intermediates/library_manifest/release/AndroidManifest.xml
+new file mode 100644
+index 0000000..c65ded5
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/library_manifest/release/AndroidManifest.xml
+@@ -0,0 +1,13 @@
++<?xml version="1.0" encoding="utf-8"?>
++<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++    package="expo.modules.barcodescanner"
++    android:versionCode="25"
++    android:versionName="9.1.0" >
++
++    <uses-sdk
++        android:minSdkVersion="24"
++        android:targetSdkVersion="29" />
++
++    <uses-permission android:name="android.permission.CAMERA" />
++
++</manifest>
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/local_only_symbol_list/release/parseReleaseLibraryResources/R-def.txt b/node_modules/expo-barcode-scanner/android/build/intermediates/local_only_symbol_list/release/parseReleaseLibraryResources/R-def.txt
+new file mode 100644
+index 0000000..78ac5b8
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/local_only_symbol_list/release/parseReleaseLibraryResources/R-def.txt
+@@ -0,0 +1,2 @@
++R_DEF: Internal format may change without notice
++local
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/manifest_merge_blame_file/release/manifest-merger-blame-release-report.txt b/node_modules/expo-barcode-scanner/android/build/intermediates/manifest_merge_blame_file/release/manifest-merger-blame-release-report.txt
+new file mode 100644
+index 0000000..32549e9
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/manifest_merge_blame_file/release/manifest-merger-blame-release-report.txt
+@@ -0,0 +1,17 @@
++1<?xml version="1.0" encoding="utf-8"?>
++2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
++3    package="expo.modules.barcodescanner"
++4    android:versionCode="25"
++5    android:versionName="9.1.0" >
++6
++7    <uses-sdk
++8        android:minSdkVersion="24"
++8-->/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++9        android:targetSdkVersion="29" />
++9-->/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++10
++11    <uses-permission android:name="android.permission.CAMERA" />
++11-->/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:2:3-63
++11-->/Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:2:20-60
++12
++13</manifest>
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/merged_manifests/release/output.json b/node_modules/expo-barcode-scanner/android/build/intermediates/merged_manifests/release/output.json
+new file mode 100644
+index 0000000..e93c798
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/merged_manifests/release/output.json
+@@ -0,0 +1 @@
++[{"outputType":{"type":"MERGED_MANIFESTS"},"apkData":{"type":"MAIN","splits":[],"versionCode":25,"versionName":"9.1.0","enabled":true,"outputFile":"expo-barcode-scanner-release.aar","fullName":"release","baseName":"release"},"path":"../../library_manifest/release/AndroidManifest.xml","properties":{"packageId":"expo.modules.barcodescanner","split":""}}]
+\ No newline at end of file
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/res/symbol-table-with-package/release/package-aware-r.txt b/node_modules/expo-barcode-scanner/android/build/intermediates/res/symbol-table-with-package/release/package-aware-r.txt
+new file mode 100644
+index 0000000..44f29d8
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/res/symbol-table-with-package/release/package-aware-r.txt
+@@ -0,0 +1,185 @@
++expo.modules.barcodescanner
++attr alpha
++attr buttonSize
++attr circleCrop
++attr colorScheme
++attr coordinatorLayoutStyle
++attr font
++attr fontProviderAuthority
++attr fontProviderCerts
++attr fontProviderFetchStrategy
++attr fontProviderFetchTimeout
++attr fontProviderPackage
++attr fontProviderQuery
++attr fontStyle
++attr fontVariationSettings
++attr fontWeight
++attr imageAspectRatio
++attr imageAspectRatioAdjust
++attr keylines
++attr layout_anchor
++attr layout_anchorGravity
++attr layout_behavior
++attr layout_dodgeInsetEdges
++attr layout_insetEdge
++attr layout_keyline
++attr scopeUris
++attr statusBarBackground
++attr ttcIndex
++color common_google_signin_btn_text_dark
++color common_google_signin_btn_text_dark_default
++color common_google_signin_btn_text_dark_disabled
++color common_google_signin_btn_text_dark_focused
++color common_google_signin_btn_text_dark_pressed
++color common_google_signin_btn_text_light
++color common_google_signin_btn_text_light_default
++color common_google_signin_btn_text_light_disabled
++color common_google_signin_btn_text_light_focused
++color common_google_signin_btn_text_light_pressed
++color common_google_signin_btn_tint
++color notification_action_color_filter
++color notification_icon_bg_color
++color ripple_material_light
++color secondary_text_default_material_light
++dimen compat_button_inset_horizontal_material
++dimen compat_button_inset_vertical_material
++dimen compat_button_padding_horizontal_material
++dimen compat_button_padding_vertical_material
++dimen compat_control_corner_material
++dimen compat_notification_large_icon_max_height
++dimen compat_notification_large_icon_max_width
++dimen notification_action_icon_size
++dimen notification_action_text_size
++dimen notification_big_circle_margin
++dimen notification_content_margin_start
++dimen notification_large_icon_height
++dimen notification_large_icon_width
++dimen notification_main_column_padding_top
++dimen notification_media_narrow_margin
++dimen notification_right_icon_size
++dimen notification_right_side_padding_top
++dimen notification_small_icon_background_padding
++dimen notification_small_icon_size_as_large
++dimen notification_subtext_size
++dimen notification_top_pad
++dimen notification_top_pad_large_text
++drawable common_full_open_on_phone
++drawable common_google_signin_btn_icon_dark
++drawable common_google_signin_btn_icon_dark_focused
++drawable common_google_signin_btn_icon_dark_normal
++drawable common_google_signin_btn_icon_dark_normal_background
++drawable common_google_signin_btn_icon_disabled
++drawable common_google_signin_btn_icon_light
++drawable common_google_signin_btn_icon_light_focused
++drawable common_google_signin_btn_icon_light_normal
++drawable common_google_signin_btn_icon_light_normal_background
++drawable common_google_signin_btn_text_dark
++drawable common_google_signin_btn_text_dark_focused
++drawable common_google_signin_btn_text_dark_normal
++drawable common_google_signin_btn_text_dark_normal_background
++drawable common_google_signin_btn_text_disabled
++drawable common_google_signin_btn_text_light
++drawable common_google_signin_btn_text_light_focused
++drawable common_google_signin_btn_text_light_normal
++drawable common_google_signin_btn_text_light_normal_background
++drawable googleg_disabled_color_18
++drawable googleg_standard_color_18
++drawable notification_action_background
++drawable notification_bg
++drawable notification_bg_low
++drawable notification_bg_low_normal
++drawable notification_bg_low_pressed
++drawable notification_bg_normal
++drawable notification_bg_normal_pressed
++drawable notification_icon_background
++drawable notification_template_icon_bg
++drawable notification_template_icon_low_bg
++drawable notification_tile_bg
++drawable notify_panel_notification_icon_bg
++id action_container
++id action_divider
++id action_image
++id action_text
++id actions
++id adjust_height
++id adjust_width
++id async
++id auto
++id blocking
++id bottom
++id chronometer
++id dark
++id end
++id forever
++id icon
++id icon_group
++id icon_only
++id info
++id italic
++id left
++id light
++id line1
++id line3
++id none
++id normal
++id notification_background
++id notification_main_column
++id notification_main_column_container
++id right
++id right_icon
++id right_side
++id standard
++id start
++id tag_transition_group
++id tag_unhandled_key_event_manager
++id tag_unhandled_key_listeners
++id text
++id text2
++id time
++id title
++id top
++id wide
++integer google_play_services_version
++integer status_bar_notification_info_maxnum
++layout notification_action
++layout notification_action_tombstone
++layout notification_template_custom_big
++layout notification_template_icon_group
++layout notification_template_part_chronometer
++layout notification_template_part_time
++string common_google_play_services_enable_button
++string common_google_play_services_enable_text
++string common_google_play_services_enable_title
++string common_google_play_services_install_button
++string common_google_play_services_install_text
++string common_google_play_services_install_title
++string common_google_play_services_notification_channel_name
++string common_google_play_services_notification_ticker
++string common_google_play_services_unknown_issue
++string common_google_play_services_unsupported_text
++string common_google_play_services_update_button
++string common_google_play_services_update_text
++string common_google_play_services_update_title
++string common_google_play_services_updating_text
++string common_google_play_services_wear_update_text
++string common_open_on_phone
++string common_signin_button_text
++string common_signin_button_text_long
++string status_bar_notification_info_overflow
++style TextAppearance_Compat_Notification
++style TextAppearance_Compat_Notification_Info
++style TextAppearance_Compat_Notification_Line2
++style TextAppearance_Compat_Notification_Time
++style TextAppearance_Compat_Notification_Title
++style Widget_Compat_NotificationActionContainer
++style Widget_Compat_NotificationActionText
++style Widget_Support_CoordinatorLayout
++styleable ColorStateListItem alpha android_alpha android_color
++styleable CoordinatorLayout keylines statusBarBackground
++styleable CoordinatorLayout_Layout android_layout_gravity layout_anchor layout_anchorGravity layout_behavior layout_dodgeInsetEdges layout_insetEdge layout_keyline
++styleable FontFamily fontProviderAuthority fontProviderCerts fontProviderFetchStrategy fontProviderFetchTimeout fontProviderPackage fontProviderQuery
++styleable FontFamilyFont android_font android_fontStyle android_fontVariationSettings android_fontWeight android_ttcIndex font fontStyle fontVariationSettings fontWeight ttcIndex
++styleable GradientColor android_centerColor android_centerX android_centerY android_endColor android_endX android_endY android_gradientRadius android_startColor android_startX android_startY android_tileMode android_type
++styleable GradientColorItem android_color android_offset
++styleable LoadingImageView circleCrop imageAspectRatio imageAspectRatioAdjust
++styleable SignInButton buttonSize colorScheme scopeUris
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/runtime_library_classes/release/classes.jar b/node_modules/expo-barcode-scanner/android/build/intermediates/runtime_library_classes/release/classes.jar
+new file mode 100644
+index 0000000..b2951da
+Binary files /dev/null and b/node_modules/expo-barcode-scanner/android/build/intermediates/runtime_library_classes/release/classes.jar differ
+diff --git a/node_modules/expo-barcode-scanner/android/build/intermediates/symbols/release/R.txt b/node_modules/expo-barcode-scanner/android/build/intermediates/symbols/release/R.txt
+new file mode 100644
+index 0000000..7346a68
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/intermediates/symbols/release/R.txt
+@@ -0,0 +1,232 @@
++int attr alpha 0x7f040001
++int attr buttonSize 0x7f040002
++int attr circleCrop 0x7f040003
++int attr colorScheme 0x7f040004
++int attr coordinatorLayoutStyle 0x7f040005
++int attr font 0x7f040006
++int attr fontProviderAuthority 0x7f040007
++int attr fontProviderCerts 0x7f040008
++int attr fontProviderFetchStrategy 0x7f040009
++int attr fontProviderFetchTimeout 0x7f04000a
++int attr fontProviderPackage 0x7f04000b
++int attr fontProviderQuery 0x7f04000c
++int attr fontStyle 0x7f04000d
++int attr fontVariationSettings 0x7f04000e
++int attr fontWeight 0x7f04000f
++int attr imageAspectRatio 0x7f040010
++int attr imageAspectRatioAdjust 0x7f040011
++int attr keylines 0x7f040012
++int attr layout_anchor 0x7f040013
++int attr layout_anchorGravity 0x7f040014
++int attr layout_behavior 0x7f040015
++int attr layout_dodgeInsetEdges 0x7f040016
++int attr layout_insetEdge 0x7f040017
++int attr layout_keyline 0x7f040018
++int attr scopeUris 0x7f040019
++int attr statusBarBackground 0x7f04001a
++int attr ttcIndex 0x7f04001b
++int color common_google_signin_btn_text_dark 0x7f060001
++int color common_google_signin_btn_text_dark_default 0x7f060002
++int color common_google_signin_btn_text_dark_disabled 0x7f060003
++int color common_google_signin_btn_text_dark_focused 0x7f060004
++int color common_google_signin_btn_text_dark_pressed 0x7f060005
++int color common_google_signin_btn_text_light 0x7f060006
++int color common_google_signin_btn_text_light_default 0x7f060007
++int color common_google_signin_btn_text_light_disabled 0x7f060008
++int color common_google_signin_btn_text_light_focused 0x7f060009
++int color common_google_signin_btn_text_light_pressed 0x7f06000a
++int color common_google_signin_btn_tint 0x7f06000b
++int color notification_action_color_filter 0x7f06000c
++int color notification_icon_bg_color 0x7f06000d
++int color ripple_material_light 0x7f06000e
++int color secondary_text_default_material_light 0x7f06000f
++int dimen compat_button_inset_horizontal_material 0x7f070001
++int dimen compat_button_inset_vertical_material 0x7f070002
++int dimen compat_button_padding_horizontal_material 0x7f070003
++int dimen compat_button_padding_vertical_material 0x7f070004
++int dimen compat_control_corner_material 0x7f070005
++int dimen compat_notification_large_icon_max_height 0x7f070006
++int dimen compat_notification_large_icon_max_width 0x7f070007
++int dimen notification_action_icon_size 0x7f070008
++int dimen notification_action_text_size 0x7f070009
++int dimen notification_big_circle_margin 0x7f07000a
++int dimen notification_content_margin_start 0x7f07000b
++int dimen notification_large_icon_height 0x7f07000c
++int dimen notification_large_icon_width 0x7f07000d
++int dimen notification_main_column_padding_top 0x7f07000e
++int dimen notification_media_narrow_margin 0x7f07000f
++int dimen notification_right_icon_size 0x7f070010
++int dimen notification_right_side_padding_top 0x7f070011
++int dimen notification_small_icon_background_padding 0x7f070012
++int dimen notification_small_icon_size_as_large 0x7f070013
++int dimen notification_subtext_size 0x7f070014
++int dimen notification_top_pad 0x7f070015
++int dimen notification_top_pad_large_text 0x7f070016
++int drawable common_full_open_on_phone 0x7f080001
++int drawable common_google_signin_btn_icon_dark 0x7f080002
++int drawable common_google_signin_btn_icon_dark_focused 0x7f080003
++int drawable common_google_signin_btn_icon_dark_normal 0x7f080004
++int drawable common_google_signin_btn_icon_dark_normal_background 0x7f080005
++int drawable common_google_signin_btn_icon_disabled 0x7f080006
++int drawable common_google_signin_btn_icon_light 0x7f080007
++int drawable common_google_signin_btn_icon_light_focused 0x7f080008
++int drawable common_google_signin_btn_icon_light_normal 0x7f080009
++int drawable common_google_signin_btn_icon_light_normal_background 0x7f08000a
++int drawable common_google_signin_btn_text_dark 0x7f08000b
++int drawable common_google_signin_btn_text_dark_focused 0x7f08000c
++int drawable common_google_signin_btn_text_dark_normal 0x7f08000d
++int drawable common_google_signin_btn_text_dark_normal_background 0x7f08000e
++int drawable common_google_signin_btn_text_disabled 0x7f08000f
++int drawable common_google_signin_btn_text_light 0x7f080010
++int drawable common_google_signin_btn_text_light_focused 0x7f080011
++int drawable common_google_signin_btn_text_light_normal 0x7f080012
++int drawable common_google_signin_btn_text_light_normal_background 0x7f080013
++int drawable googleg_disabled_color_18 0x7f080014
++int drawable googleg_standard_color_18 0x7f080015
++int drawable notification_action_background 0x7f080016
++int drawable notification_bg 0x7f080017
++int drawable notification_bg_low 0x7f080018
++int drawable notification_bg_low_normal 0x7f080019
++int drawable notification_bg_low_pressed 0x7f08001a
++int drawable notification_bg_normal 0x7f08001b
++int drawable notification_bg_normal_pressed 0x7f08001c
++int drawable notification_icon_background 0x7f08001d
++int drawable notification_template_icon_bg 0x7f08001e
++int drawable notification_template_icon_low_bg 0x7f08001f
++int drawable notification_tile_bg 0x7f080020
++int drawable notify_panel_notification_icon_bg 0x7f080021
++int id action_container 0x7f0b0001
++int id action_divider 0x7f0b0002
++int id action_image 0x7f0b0003
++int id action_text 0x7f0b0004
++int id actions 0x7f0b0005
++int id adjust_height 0x7f0b0006
++int id adjust_width 0x7f0b0007
++int id async 0x7f0b0008
++int id auto 0x7f0b0009
++int id blocking 0x7f0b000a
++int id bottom 0x7f0b000b
++int id chronometer 0x7f0b000c
++int id dark 0x7f0b000d
++int id end 0x7f0b000e
++int id forever 0x7f0b000f
++int id icon 0x7f0b0010
++int id icon_group 0x7f0b0011
++int id icon_only 0x7f0b0012
++int id info 0x7f0b0013
++int id italic 0x7f0b0014
++int id left 0x7f0b0015
++int id light 0x7f0b0016
++int id line1 0x7f0b0017
++int id line3 0x7f0b0018
++int id none 0x7f0b0019
++int id normal 0x7f0b001a
++int id notification_background 0x7f0b001b
++int id notification_main_column 0x7f0b001c
++int id notification_main_column_container 0x7f0b001d
++int id right 0x7f0b001e
++int id right_icon 0x7f0b001f
++int id right_side 0x7f0b0020
++int id standard 0x7f0b0021
++int id start 0x7f0b0022
++int id tag_transition_group 0x7f0b0023
++int id tag_unhandled_key_event_manager 0x7f0b0024
++int id tag_unhandled_key_listeners 0x7f0b0025
++int id text 0x7f0b0026
++int id text2 0x7f0b0027
++int id time 0x7f0b0028
++int id title 0x7f0b0029
++int id top 0x7f0b002a
++int id wide 0x7f0b002b
++int integer google_play_services_version 0x7f0c0001
++int integer status_bar_notification_info_maxnum 0x7f0c0002
++int layout notification_action 0x7f0e0001
++int layout notification_action_tombstone 0x7f0e0002
++int layout notification_template_custom_big 0x7f0e0003
++int layout notification_template_icon_group 0x7f0e0004
++int layout notification_template_part_chronometer 0x7f0e0005
++int layout notification_template_part_time 0x7f0e0006
++int string common_google_play_services_enable_button 0x7f140001
++int string common_google_play_services_enable_text 0x7f140002
++int string common_google_play_services_enable_title 0x7f140003
++int string common_google_play_services_install_button 0x7f140004
++int string common_google_play_services_install_text 0x7f140005
++int string common_google_play_services_install_title 0x7f140006
++int string common_google_play_services_notification_channel_name 0x7f140007
++int string common_google_play_services_notification_ticker 0x7f140008
++int string common_google_play_services_unknown_issue 0x7f140009
++int string common_google_play_services_unsupported_text 0x7f14000a
++int string common_google_play_services_update_button 0x7f14000b
++int string common_google_play_services_update_text 0x7f14000c
++int string common_google_play_services_update_title 0x7f14000d
++int string common_google_play_services_updating_text 0x7f14000e
++int string common_google_play_services_wear_update_text 0x7f14000f
++int string common_open_on_phone 0x7f140010
++int string common_signin_button_text 0x7f140011
++int string common_signin_button_text_long 0x7f140012
++int string status_bar_notification_info_overflow 0x7f140013
++int style TextAppearance_Compat_Notification 0x7f150001
++int style TextAppearance_Compat_Notification_Info 0x7f150002
++int style TextAppearance_Compat_Notification_Line2 0x7f150003
++int style TextAppearance_Compat_Notification_Time 0x7f150004
++int style TextAppearance_Compat_Notification_Title 0x7f150005
++int style Widget_Compat_NotificationActionContainer 0x7f150006
++int style Widget_Compat_NotificationActionText 0x7f150007
++int style Widget_Support_CoordinatorLayout 0x7f150008
++int[] styleable ColorStateListItem { 0x7f040001, 0x101031f, 0x10101a5 }
++int styleable ColorStateListItem_alpha 0
++int styleable ColorStateListItem_android_alpha 1
++int styleable ColorStateListItem_android_color 2
++int[] styleable CoordinatorLayout { 0x7f040012, 0x7f04001a }
++int styleable CoordinatorLayout_keylines 0
++int styleable CoordinatorLayout_statusBarBackground 1
++int[] styleable CoordinatorLayout_Layout { 0x10100b3, 0x7f040013, 0x7f040014, 0x7f040015, 0x7f040016, 0x7f040017, 0x7f040018 }
++int styleable CoordinatorLayout_Layout_android_layout_gravity 0
++int styleable CoordinatorLayout_Layout_layout_anchor 1
++int styleable CoordinatorLayout_Layout_layout_anchorGravity 2
++int styleable CoordinatorLayout_Layout_layout_behavior 3
++int styleable CoordinatorLayout_Layout_layout_dodgeInsetEdges 4
++int styleable CoordinatorLayout_Layout_layout_insetEdge 5
++int styleable CoordinatorLayout_Layout_layout_keyline 6
++int[] styleable FontFamily { 0x7f040007, 0x7f040008, 0x7f040009, 0x7f04000a, 0x7f04000b, 0x7f04000c }
++int styleable FontFamily_fontProviderAuthority 0
++int styleable FontFamily_fontProviderCerts 1
++int styleable FontFamily_fontProviderFetchStrategy 2
++int styleable FontFamily_fontProviderFetchTimeout 3
++int styleable FontFamily_fontProviderPackage 4
++int styleable FontFamily_fontProviderQuery 5
++int[] styleable FontFamilyFont { 0x1010532, 0x101053f, 0x1010570, 0x1010533, 0x101056f, 0x7f040006, 0x7f04000d, 0x7f04000e, 0x7f04000f, 0x7f04001b }
++int styleable FontFamilyFont_android_font 0
++int styleable FontFamilyFont_android_fontStyle 1
++int styleable FontFamilyFont_android_fontVariationSettings 2
++int styleable FontFamilyFont_android_fontWeight 3
++int styleable FontFamilyFont_android_ttcIndex 4
++int styleable FontFamilyFont_font 5
++int styleable FontFamilyFont_fontStyle 6
++int styleable FontFamilyFont_fontVariationSettings 7
++int styleable FontFamilyFont_fontWeight 8
++int styleable FontFamilyFont_ttcIndex 9
++int[] styleable GradientColor { 0x101020b, 0x10101a2, 0x10101a3, 0x101019e, 0x1010512, 0x1010513, 0x10101a4, 0x101019d, 0x1010510, 0x1010511, 0x1010201, 0x10101a1 }
++int styleable GradientColor_android_centerColor 0
++int styleable GradientColor_android_centerX 1
++int styleable GradientColor_android_centerY 2
++int styleable GradientColor_android_endColor 3
++int styleable GradientColor_android_endX 4
++int styleable GradientColor_android_endY 5
++int styleable GradientColor_android_gradientRadius 6
++int styleable GradientColor_android_startColor 7
++int styleable GradientColor_android_startX 8
++int styleable GradientColor_android_startY 9
++int styleable GradientColor_android_tileMode 10
++int styleable GradientColor_android_type 11
++int[] styleable GradientColorItem { 0x10101a5, 0x1010514 }
++int styleable GradientColorItem_android_color 0
++int styleable GradientColorItem_android_offset 1
++int[] styleable LoadingImageView { 0x7f040003, 0x7f040010, 0x7f040011 }
++int styleable LoadingImageView_circleCrop 0
++int styleable LoadingImageView_imageAspectRatio 1
++int styleable LoadingImageView_imageAspectRatioAdjust 2
++int[] styleable SignInButton { 0x7f040002, 0x7f040004, 0x7f040019 }
++int styleable SignInButton_buttonSize 0
++int styleable SignInButton_colorScheme 1
++int styleable SignInButton_scopeUris 2
+diff --git a/node_modules/expo-barcode-scanner/android/build/outputs/logs/manifest-merger-release-report.txt b/node_modules/expo-barcode-scanner/android/build/outputs/logs/manifest-merger-release-report.txt
+new file mode 100644
+index 0000000..e03b3b0
+--- /dev/null
++++ b/node_modules/expo-barcode-scanner/android/build/outputs/logs/manifest-merger-release-report.txt
+@@ -0,0 +1,41 @@
++-- Merging decision tree log ---
++manifest
++ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++	package
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:11-48
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++	android:versionName
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++	android:versionCode
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:1-3:12
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++	xmlns:android
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:1:49-107
++uses-permission#android.permission.CAMERA
++ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:2:3-63
++	android:name
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml:2:20-60
++uses-sdk
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml reason: use-sdk injection requested
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++	android:targetSdkVersion
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++	android:minSdkVersion
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		ADDED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
++		INJECTED from /Users/i1skn/Source/github.com/i1skn/ironbelly/node_modules/expo-barcode-scanner/android/src/main/AndroidManifest.xml
+diff --git a/node_modules/expo-barcode-scanner/ios/EXBarCodeScanner/EXBarCodeCameraRequester.m b/node_modules/expo-barcode-scanner/ios/EXBarCodeScanner/EXBarCodeCameraRequester.m
+index 7c9efd9..1915a0b 100644
+--- a/node_modules/expo-barcode-scanner/ios/EXBarCodeScanner/EXBarCodeCameraRequester.m
++++ b/node_modules/expo-barcode-scanner/ios/EXBarCodeScanner/EXBarCodeCameraRequester.m
+@@ -18,9 +18,8 @@ - (NSDictionary *)getPermissions
+   AVAuthorizationStatus systemStatus;
+   UMPermissionStatus status;
+   NSString *cameraUsageDescription = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSCameraUsageDescription"];
+-  NSString *microphoneUsageDescription = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"NSMicrophoneUsageDescription"];
+-  if (!(cameraUsageDescription && microphoneUsageDescription)) {
+-    UMFatal(UMErrorWithMessage(@"This app is missing either 'NSCameraUsageDescription' or 'NSMicrophoneUsageDescription', so audio/video services will fail. Add both of these entries to your bundle's Info.plist."));
++  if (!(cameraUsageDescription)) {
++    UMFatal(UMErrorWithMessage(@"This app is missing 'NSCameraUsageDescription', so video services will fail. Add this entry to your bundle's Info.plist."));
+     systemStatus = AVAuthorizationStatusDenied;
+   } else {
+     systemStatus = [AVCaptureDevice authorizationStatusForMediaType:AVMediaTypeVideo];

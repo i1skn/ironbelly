@@ -60,8 +60,6 @@ function GrinAddress() {
 
 const styles = StyleSheet.create({
   container: {
-    height: 80,
-    marginTop: 16,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
@@ -72,7 +70,7 @@ const styles = StyleSheet.create({
   grinAddress: {
     fontFamily: monoSpaceFont,
     paddingTop: 12,
-    paddingBottom: 16,
+    paddingBottom: 8,
     paddingHorizontal: 16,
     textAlign: 'center',
   },

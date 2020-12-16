@@ -60,7 +60,7 @@ interface IGrinBridge {
     state: string,
     amount: number,
     selectionStrategyIsUseAll: boolean,
-    url: string,
+    address: string,
   ) => Promise<string>
   txCreate: (
     state: string,

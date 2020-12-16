@@ -20,13 +20,12 @@ import LinearGradient from 'react-native-linear-gradient'
 import { Text } from 'src/components/CustomFont'
 import { hrGrin, hrFiat, convertToFiat } from 'src/common'
 import colors from 'src/common/colors'
-import { Balance, Navigation, Currency } from 'src/common/types'
+import { Balance, Currency } from 'src/common/types'
 import { StyleSheet, View } from 'react-native'
 
 type Props = {
   balance: Balance
   currency: Currency
-  navigation: Navigation
   rates: object
 }
 

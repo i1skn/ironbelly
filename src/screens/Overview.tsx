@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import {
-  Alert,
   TouchableHighlight,
   TouchableOpacity,
   RefreshControl,
@@ -24,14 +23,12 @@ import {
   Platform,
   StyleSheet,
 } from 'react-native'
-import { connect } from 'react-redux'
+import { connect, useDispatch } from 'react-redux'
 import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text } from 'src/components/CustomFont'
 import Balance from 'src/components/Balance'
 import TxListItem from 'src/components/TxListItem'
-import { isIphoneX } from 'react-native-iphone-x-helper'
-import { BIOMETRY_STATUS } from 'src/modules/settings'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import {
   Balance as BalanceType,
@@ -39,10 +36,10 @@ import {
   Tx,
 } from 'src/common/types'
 import colors from 'src/common/colors'
-import { getBiometryTitle } from 'src/common'
 import { WalletInitState } from 'src/modules/wallet'
 import { State as SettingsState } from 'src/modules/settings'
 import { NavigationProps } from 'src/common/types'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 
 interface OwnProps {
   balance: BalanceType
@@ -62,24 +59,8 @@ interface OwnProps {
 
 type Props = NavigationProps<'Overview'> & OwnProps
 
-type State = {}
 const Footer = styled.View`
   height: 24px;
-`
-// background-color: ${() => colors.grey[300]};
-const ActionButton = styled.TouchableOpacity`
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-  opacity: ${(props) => (props.disabled ? '0.3' : '1')};
-  flex: 1;
-`
-// background-color: red;
-const ActionButtonText = styled(Text)`
-  font-size: 20;
-  padding-left: 8px;
-  line-height: 28px;
-  color: ${() => colors.blueGrey[800]};
 `
 const NoTxsView = styled.View`
   padding: 16px;
@@ -91,136 +72,126 @@ const EmptyTxListMessage = styled(Text)`
   margin-bottom: 20;
 `
 
-class Overview extends Component<Props, State> {
-  static navigationOptions = {
-    header: null,
-  }
+function Overview({
+  txListRefreshInProgress,
+  txsGet,
+  txs,
+  balance,
+  txCancel,
+  settings,
+  isOffline,
+  firstLoading,
+  txConfirm,
+  currencyRates,
+}: Props) {
+  const navigation = useNavigation()
+  const dispatch = useDispatch()
 
-  _onDisableBiometry = () => {
-    this.props.disableBiometry()
-  }
-  _onEnableBiometry = () => {
-    this.props.enableBiometry()
-  }
+  useEffect(() => {
+    txsGet(false, false)
+  }, [])
 
-  componentDidMount() {
-    const { settings, route } = this.props
-    this.props.txsGet(false, false)
-  }
+  useFocusEffect(
+    useCallback(() => {
+      dispatch({
+        type: 'TX_FORM_RESET',
+      })
+    }, []),
+  )
 
-  render() {
-    const {
-      txListRefreshInProgress,
-      txs,
-      balance,
-      navigation,
-      txCancel,
-      txsGet,
-      settings,
-      isOffline,
-      firstLoading,
-      txConfirm,
-      currencyRates,
-    } = this.props
-    const { currencyObject, minimumConfirmations } = settings
-    return (
-      <View style={styles.container}>
-        <Balance
-          balance={balance}
-          rates={currencyRates.rates}
-          currency={currencyObject}
-          navigation={navigation}
-        />
-        <SwipeListView
-          data={txs}
-          ListEmptyComponent={
-            <NoTxsView>
-              {(firstLoading && (
-                <EmptyTxListMessage>Loading...</EmptyTxListMessage>
-              )) || (
-                <Text>
-                  Here you will see your transactions, when you've made them!
-                </Text>
-              )}
-            </NoTxsView>
-          }
-          renderItem={(data: { item: Tx }) => (
-            <SwipeRow
-              disableRightSwipe
-              rightOpenValue={-100}
-              disableLeftSwipe={
-                data.item.confirmed || data.item.type === 'TxPosted'
-              }>
-              <View style={styles.cancel}>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={(_) =>
-                    txCancel(
-                      data.item.id,
-                      data.item.slateId,
-                      !data.item.storedTx,
-                    )
-                  }>
-                  <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
-                </TouchableOpacity>
-              </View>
-              <View>
-                <TouchableHighlight
-                  onPress={(_) => {
-                    if (data.item.confirmed) {
-                      navigation.navigate('TxDetails', {
-                        txId: data.item.id,
-                      })
-                    } else if (
-                      data.item.type === 'TxFinalized' ||
-                      data.item.type === 'TxPosted'
-                    ) {
-                      txConfirm(data.item.slateId)
-                    } else if (data.item.type === 'TxReceived') {
-                      navigation.navigate('TxIncompleteReceive', {
-                        tx: data.item,
-                      })
-                    } else if (data.item.type === 'TxSent') {
-                      navigation.navigate('TxIncompleteSend', {
-                        tx: data.item,
-                      })
-                    }
-                  }}
-                  style={styles.listItem}
-                  underlayColor={'#FBFBFB'}>
-                  <TxListItem
-                    currency={currencyObject}
-                    rates={currencyRates.rates}
-                    tx={data.item}
-                    minimumConfirmations={minimumConfirmations}
-                  />
-                </TouchableHighlight>
-              </View>
-            </SwipeRow>
-          )}
-          style={styles.txList}
-          keyExtractor={(item) => `${item.id}`}
-          ListFooterComponent={<Footer />}
-          ListHeaderComponent={
-            (isOffline && (
-              <Text style={styles.offlineWarningText}>
-                Grin node is not reachable
+  const { currencyObject, minimumConfirmations } = settings
+  return (
+    <View style={styles.container}>
+      <Balance
+        balance={balance}
+        rates={currencyRates.rates}
+        currency={currencyObject}
+      />
+      <SwipeListView
+        data={txs}
+        ListEmptyComponent={
+          <NoTxsView>
+            {(firstLoading && (
+              <EmptyTxListMessage>Loading...</EmptyTxListMessage>
+            )) || (
+              <Text>
+                Here you will see your transactions, when you've made them!
               </Text>
-            )) ||
-            null
-          }
-          refreshControl={
-            <RefreshControl
-              refreshing={txListRefreshInProgress}
-              onRefresh={() => {
-                txsGet(true, true)
-              }}
-            />
-          }
-        />
-      </View>
-    )
-  }
+            )}
+          </NoTxsView>
+        }
+        renderItem={(data: { item: Tx }) => (
+          <SwipeRow
+            disableRightSwipe
+            rightOpenValue={-100}
+            disableLeftSwipe={
+              data.item.confirmed || data.item.type === 'TxPosted'
+            }>
+            <View style={styles.cancel}>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={(_) =>
+                  txCancel(data.item.id, data.item.slateId, !data.item.storedTx)
+                }>
+                <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
+              </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableHighlight
+                onPress={(_) => {
+                  if (data.item.confirmed) {
+                    navigation.navigate('TxDetails', {
+                      txId: data.item.id,
+                    })
+                  } else if (
+                    data.item.type === 'TxFinalized' ||
+                    data.item.type === 'TxPosted'
+                  ) {
+                    txConfirm(data.item.slateId)
+                  } else if (data.item.type === 'TxReceived') {
+                    navigation.navigate('TxIncompleteReceive', {
+                      tx: data.item,
+                    })
+                  } else if (data.item.type === 'TxSent') {
+                    navigation.navigate('TxIncompleteSend', {
+                      tx: data.item,
+                    })
+                  }
+                }}
+                style={styles.listItem}
+                underlayColor={'#FBFBFB'}>
+                <TxListItem
+                  currency={currencyObject}
+                  rates={currencyRates.rates}
+                  tx={data.item}
+                  minimumConfirmations={minimumConfirmations}
+                />
+              </TouchableHighlight>
+            </View>
+          </SwipeRow>
+        )}
+        style={styles.txList}
+        keyExtractor={(item) => `${item.id}`}
+        ListFooterComponent={<Footer />}
+        ListHeaderComponent={
+          (isOffline && (
+            <Text style={styles.offlineWarningText}>
+              Grin node is not reachable
+            </Text>
+          )) ||
+          null
+        }
+        refreshControl={
+          <RefreshControl
+            refreshing={txListRefreshInProgress}
+            onRefresh={() => {
+              txsGet(true, true)
+            }}
+          />
+        }
+      />
+    </View>
+  )
 }
 
 const mapStateToProps = (state: GlobalState) => {

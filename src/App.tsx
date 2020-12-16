@@ -15,6 +15,7 @@
  */
 
 import React, { Component } from 'react'
+import BackgroundTimer from 'react-native-background-timer'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 // @ts-ignore
 import {
@@ -46,6 +47,7 @@ import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+import sleep from 'sleep-promise'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -97,6 +99,7 @@ type State = {
 
 class RealApp extends React.Component<Props, State> {
   navigation: any
+  lockTimeout: any
 
   constructor(props: Props) {
     super(props)
@@ -203,23 +206,32 @@ class RealApp extends React.Component<Props, State> {
     })
   }
 
-  _handleAppStateChange = (nextAppState: AppStateStatus) => {
+  _handleAppStateChange = async (nextAppState: AppStateStatus) => {
     const { sharingInProgress } = this.props
-
+    if (nextAppState === 'active' && this.lockTimeout) {
+      BackgroundTimer.clearTimeout(this.lockTimeout)
+      this.lockTimeout = null
+    }
     if (nextAppState === 'background' && !sharingInProgress) {
       WalletBridge.isWalletCreated().then(async (exists) => {
         if (exists) {
-          store.dispatch({
-            type: 'CLEAR_PASSWORD',
-          })
+          if (isAndroid) {
+            this.lockTimeout = BackgroundTimer.setTimeout(() => {
+              this.lockApp()
+            }, 5000)
+          } else {
+            this.lockApp()
+          }
         }
       })
     }
   }
 
-  // shouldCloseApp(currentRoute: Route<NavigationState['type']>) {
-  // return ['Overview', 'Landing', 'Password'].indexOf(currentRoute.name) !== -1
-  // }
+  lockApp = () => {
+    store.dispatch({
+      type: 'CLEAR_PASSWORD',
+    })
+  }
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.toastMessage.text !== this.props.toastMessage.text) {

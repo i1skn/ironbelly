@@ -138,8 +138,8 @@ android {
         applicationId project.env.get("APP_ID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 34 
-        versionName "4.1.2"
+        versionCode 35 
+        versionName "4.2.0"
 	    multiDexEnabled true
         resValue "string", "app_name", project.env.get("APP_DISPLAY_NAME")
         ndk {
