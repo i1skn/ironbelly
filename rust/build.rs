@@ -24,10 +24,8 @@ fn main() {
         .with_crate(crate_dir)
         .with_language(cbindgen::Language::C)
         .with_autogen_warning(
-            r#"
-typedef struct api_server {} api_server;
-typedef struct wallet {} wallet;
-        "#,
+            r#"typedef struct api_server {} api_server;
+typedef struct wallet {} wallet;"#,
         )
         .rename_item("ApiServer", "api_server")
         .rename_item("Wallet", "wallet")

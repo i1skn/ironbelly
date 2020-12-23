@@ -44,6 +44,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
         self.moduleRegistryAdapter = UMModuleRegistryAdapter(moduleRegistryProvider: UMModuleRegistryProvider())
         
         initializeFlipper(with: application)
+        c_init_mainnet()
+        c_set_logger()
         
         let bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
         let rootView = RCTRootView(bridge: bridge!, moduleName: "Ironbelly", initialProperties: nil)

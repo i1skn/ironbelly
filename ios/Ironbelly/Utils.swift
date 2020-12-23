@@ -19,6 +19,16 @@ func returnToReact(error: UInt8, cResult: UnsafePointer<Int8>, resolve: RCTPromi
     cstr_free(UnsafeMutablePointer(mutating: cResult))
 }
 
+func checkOpenedWallet(_ wallet: UInt?, _ reject: RCTPromiseRejectBlock) -> UInt? {
+
+    if let w = wallet {
+        return w
+    } else {
+        reject(nil, "Wallet was not opened", nil)
+        return nil
+    }
+}
+
 extension NSPointerArray {
     func addObject(_ object: AnyObject?) {
         guard let strongObject = object else { return }

@@ -22,19 +22,19 @@ use self::jni::JNIEnv;
 use super::*;
 
 macro_rules! unwrap_to_jni (
-        ($env:expr, $func:expr) => (
-            match $func {
-                Ok(res) => {
-                    $env.new_string(res).unwrap().into_inner()
-                }
-                Err(e) => {
-                    let result = $env.new_string("").unwrap().into_inner();
-                    $env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
-                    result
-                }
+    ($env:expr, $func:expr) => (
+        match $func {
+            Ok(res) => {
+                $env.new_string(res).unwrap().into_inner()
             }
-        )
-    );
+            Err(e) => {
+                let result = $env.new_string("").unwrap().into_inner();
+                $env.throw(serde_json::to_string(&format!("{}",e)).unwrap()).unwrap();
+                result
+            }
+        }
+    )
+);
 
 #[no_mangle]
 pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_setLogger(
