@@ -58,7 +58,7 @@ const Wrapper = styled.View`
 type Props = {
   tx: Tx
   currency: Currency
-  rates: object
+  rates: Record<string, number>
   minimumConfirmations: number
 }
 

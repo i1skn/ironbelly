@@ -23,12 +23,16 @@ import {
   tap,
   mapTo,
 } from 'rxjs/operators'
-import { interval } from 'rxjs'
 import RNFS from 'react-native-fs'
-import { Action, Slate, State as RootState } from 'src/common/types'
+import {
+  Action,
+  Slate,
+  slateLoadSuccessAction,
+  State as RootState,
+} from 'src/common/types'
 import { getNavigation } from 'src/modules/navigation'
-import { getStateForRust, isResponseSlate } from 'src/common'
-import { of, partition, merge } from 'rxjs'
+import { isResponseSlate } from 'src/common'
+import { of, merge, interval, partition } from 'rxjs'
 import { log } from 'src/common/logger'
 import WalletBridge from 'src/bridges/wallet'
 
@@ -85,7 +89,6 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
         'utf8',
       )
       const slate: Slate = await WalletBridge.slatepackDecode(
-        getStateForRust(state$.value),
         slatepack,
       ).then((json: string) => JSON.parse(json))
       return {
@@ -111,9 +114,8 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
 ) => {
   const [response$, request$] = partition(
     action$.pipe(
-      filter(({ type }) => type === 'SLATE_LOAD_SUCCESS'),
+      ofType<Action, slateLoadSuccessAction>('SLATE_LOAD_SUCCESS'),
       mergeMap(async (action) => {
-        // @ts-ignore
         const { slate } = action
         const isResponse = await isResponseSlate(slate)
         return { ...action, isResponse }
@@ -121,9 +123,8 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
     ),
     ({ isResponse }) => isResponse,
   )
-  const combined$ = merge(
+  return merge(
     request$.pipe(
-      // @ts-ignore
       tap(async ({ slatepack }) => {
         const navigation = await getNavigation()
         navigation?.navigate('TxIncompleteReceive', { slatepack })
@@ -131,7 +132,6 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
       ignoreElements(),
     ),
     response$.pipe(
-      // @ts-ignore
       tap(async ({ slate, slatepack }) => {
         const navigation = await getNavigation()
         const tx = state$.value.tx.list.data.find(
@@ -142,8 +142,6 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
       ignoreElements(),
     ),
   )
-
-  return combined$
 }
 
 const checkBiometryEpic: Epic<Action, Action, RootState> = () => {

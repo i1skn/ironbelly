@@ -380,6 +380,7 @@ export type walletScanOutputsFalureAction = {
 }
 export type walletPhraseRequestAction = {
   type: 'WALLET_PHRASE_REQUEST'
+  password: string
 }
 export type walletPhraseSuccessAction = {
   type: 'WALLET_PHRASE_SUCCESS'
@@ -465,7 +466,7 @@ export type currencyRatesRequestAction = {
 }
 export type currencyRatesSuccessAction = {
   type: 'CURRENCY_RATES_SUCCESS'
-  rates: { [x: string]: object }
+  rates: { [x: string]: Record<string, number> }
 }
 
 export type currencyRatesToggleAction = {
@@ -604,8 +605,8 @@ export type Action =
   | walletExistsRequestAction
   | walletExistsSuccessAction
   | walletExistsFalureAction
-  | TorActions
-  | TxReceiveActions
+
+export type ToolkitActions = TorActions | TxReceiveActions
 
 export type Currency = {
   code: string
@@ -621,20 +622,10 @@ export type State = {
   wallet: WalletState
 }
 export type GetState = () => State
-export type Dispatch = (action: Action) => any
+export type Dispatch = (action: Action) => void
 export type Store = {
   dispatch: Dispatch
   getState: () => State
-}
-export type Navigation = {
-  navigate: (screen: string, params?: any) => void
-  replace: (screen: string, params?: any) => void
-  setParams: any
-  dispatch: (action: any) => void
-  goBack: (key?: string | null) => void
-  state: {
-    params: any
-  }
 }
 export type OutputStrategy = {
   selectionStrategyIsUseAll: boolean
@@ -662,6 +653,7 @@ export type Slate = {
   amount: number
   fee: number
   participant_data: Array<SlateParticipantData>
+  sta: 'S1' | 'S2' | 'S3'
 }
 export type Tx = {
   id: number
@@ -669,19 +661,11 @@ export type Tx = {
   amount: number
   confirmed: boolean
   fee: number
-  creationTime: any
+  creationTime: string
   slateId: string
   storedTx: string
 } // Rust structures
 
-export type RustState = {
-  wallet_dir: string
-  check_node_api_http_addr: string
-  chain: string
-  account?: string
-  password?: string
-  minimum_confirmations: number
-}
 export type RustBalance = {
   amount_awaiting_confirmation: number
   amount_currently_spendable: number
@@ -715,10 +699,14 @@ export type RustOutputStrategy = {
 export type RustPmmrRange = Array<number> // Redux
 
 export type Error = {
-  code: number
+  code?: number
   message: string
 }
-export type UrlQuery = object
+export type UrlQuery = {
+  amount: string
+  destination: string
+  message: string
+}
 
 export interface NavigationProps<Screen extends keyof RootStackParamList> {
   navigation: StackNavigationProp<RootStackParamList, Screen>

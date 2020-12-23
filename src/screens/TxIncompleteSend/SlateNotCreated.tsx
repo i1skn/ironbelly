@@ -41,8 +41,6 @@ import { currencySelector, currencyRatesSelector } from 'src/modules/settings'
 import FormTextInput from 'src/components/FormTextInput'
 import { useNavigation } from '@react-navigation/native'
 
-type Props = {}
-
 const ScanQRCode = styled.TouchableOpacity`
   margin-top: -46px;
   margin-bottom: 40px;
@@ -79,8 +77,7 @@ const Option = styled.TouchableOpacity`
   flex-direction: row;
   padding: 0 0 16px 0;
 `
-const OptioIcon = styled(FeatherIcon).attrs((props) => ({
-  // @ts-ignore
+const OptioIcon = styled(FeatherIcon).attrs((props: { active: boolean }) => ({
   name: props.active ? 'check-circle' : 'circle',
   size: 16,
 }))<{ active: boolean }>`

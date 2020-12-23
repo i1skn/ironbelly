@@ -16,17 +16,20 @@
 
 import React, { Component } from 'react'
 import { Alert } from 'react-native'
-import { isIphoneX } from 'react-native-iphone-x-helper'
 import { connect } from 'react-redux'
 import FormTextInput from 'src/components/FormTextInput'
-// @ts-ignore
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import { State as ReduxState, Error, Navigation } from 'src/common/types'
+import {
+  State as ReduxState,
+  Error,
+  NavigationProps,
+  Dispatch,
+} from 'src/common/types'
 import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'src/common'
 import { Button, Text } from 'src/components/CustomFont'
-type Props = {
-  error: Error
-  navigation: Navigation
+
+type Props = NavigationProps<'NewPassword'> & {
+  error: Error | undefined | null
   setPassword: (password: string) => void
   password: string
   setConfirmPassword: (confirmPassword: string) => void
@@ -34,19 +37,18 @@ type Props = {
   newWallet: boolean
   setIsNew: (value: boolean) => void
 }
-type State = {}
 
-class NewPassword extends Component<Props, State> {
+class NewPassword extends Component<Props> {
   UNSAFE_componentWillMount() {
-    const { navigation, route, setIsNew } = this.props
+    const { route, setIsNew } = this.props
 
     if (route?.params) {
-      setIsNew(route.params.isNew)
+      setIsNew(route.params?.isNew ?? false)
     }
   }
 
   _confirmPassword = null
-  _scrollView = null
+  _scrollView: KeyboardAwareScrollView | null = null
 
   render() {
     const {
@@ -63,12 +65,10 @@ class NewPassword extends Component<Props, State> {
           style={{
             flexGrow: 1,
           }}
-          keyboardVerticalOffset={isIphoneX() ? 88 : 64}
           keyboardShouldPersistTaps="handled"
           keyboardOpeningTime={0}
-          getTextInputRefs={() => [this._confirmPassword]}
-          innerRef={(view) => {
-            this._scrollView = view
+          innerRef={(sv) => {
+            this._scrollView = (sv as unknown) as KeyboardAwareScrollView
           }}>
           <Wrapper>
             <UnderHeaderBlock>
@@ -81,11 +81,6 @@ class NewPassword extends Component<Props, State> {
               autoFocus={true}
               secureTextEntry={true}
               onChange={setPassword}
-              onSubmitEditing={() => {
-                if (this._confirmPassword) {
-                  this._confirmPassword.focus()
-                }
-              }}
               value={password}
               title="Password"
             />
@@ -95,11 +90,8 @@ class NewPassword extends Component<Props, State> {
               returnKeyType={'done'}
               autoFocus={false}
               secureTextEntry={true}
-              getRef={(input) => {
-                this._confirmPassword = input
-              }}
               onChange={setConfirmPassword}
-              onFocus={(e) => {
+              onFocus={() => {
                 if (this._scrollView) {
                   setTimeout(() => {
                     if (this._scrollView) {
@@ -164,20 +156,20 @@ const mapStateToProps = (state: ReduxState) => ({
   confirmPassword: state.wallet.walletInit.confirmPassword,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  setPassword: (password) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setPassword: (password: string) => {
     dispatch({
       type: 'WALLET_INIT_SET_PASSWORD',
       password,
     })
   },
-  setConfirmPassword: (confirmPassword) => {
+  setConfirmPassword: (confirmPassword: string) => {
     dispatch({
       type: 'WALLET_INIT_SET_CONFIRM_PASSWORD',
       confirmPassword,
     })
   },
-  setIsNew: (value) => {
+  setIsNew: (value: boolean) => {
     dispatch({
       type: 'WALLET_INIT_SET_IS_NEW',
       value,

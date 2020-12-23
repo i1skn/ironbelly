@@ -15,16 +15,12 @@
  */
 
 import React, { useState } from 'react'
+import { StyleSheet } from 'react-native'
 import styled from 'styled-components/native'
-// @ts-ignore
 import CheckBox from 'react-native-check-box'
 import { Wrapper, Spacer } from 'src/common'
 import { Text, Link, Button } from 'src/components/CustomFont'
-import {
-  Dispatch,
-  State as GlobalState,
-  NavigationProps,
-} from 'src/common/types'
+import { Dispatch, NavigationProps } from 'src/common/types'
 import { connect } from 'react-redux'
 
 interface OwnProps {
@@ -56,14 +52,14 @@ const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
   return (
     <Wrapper>
       <Main>
-        <Text fontSize={20}>Ironbelly - mobile wallet for </Text>
-        <Link fontSize={20} url={grinUrl} title={'Grin'} />
-        <Text fontSize={20}>. </Text>
-        <Text fontSize={'20'}>
+        <Text style={styles.text}>Ironbelly - mobile wallet for </Text>
+        <Link style={styles.text} url={grinUrl} title={'Grin'} />
+        <Text style={styles.text}>. </Text>
+        <Text style={styles.text}>
           Please, if you are not familiar with the blockchain technology, learn
           it first. It is important, that you know what you are doing!
         </Text>
-        <Text fontSize={20}>
+        <Text style={styles.text}>
           Then read carefully Terms of Use and Privacy Policy and only then
           start using the app.
         </Text>
@@ -98,7 +94,14 @@ const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
     </Wrapper>
   )
 }
-const mapStateToProps = (state: GlobalState) => {
+
+const styles = StyleSheet.create({
+  text: {
+    fontSize: 20,
+  },
+})
+
+const mapStateToProps = () => {
   return {}
 }
 

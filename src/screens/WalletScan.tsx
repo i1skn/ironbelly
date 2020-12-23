@@ -20,15 +20,14 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Spacer, LoaderView } from 'src/common'
 import colors from 'src/common/colors'
-import { State as ReduxState, Navigation } from 'src/common/types'
-import { Text, Button } from 'src/components/CustomFont'
+import { State as ReduxState } from 'src/common/types'
+import { Text } from 'src/components/CustomFont'
 import { WalletScanState } from 'src/modules/wallet'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import KeepAwake from 'react-native-keep-awake'
 import { Dispatch } from 'src/common/types'
 
 type Props = WalletScanState & {
-  navigation: Navigation
   startScanOutputs: () => void
   resetScan: () => void
 }
@@ -43,7 +42,7 @@ const Wrapper = styled(LoaderView)`
   background-color: #fff;
 `
 
-class WalletScan extends Component<Props, {}> {
+class WalletScan extends Component<Props> {
   static navigationOptions = {
     header: null,
   }

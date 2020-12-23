@@ -1,0 +1,38 @@
+diff --git a/node_modules/react-native-easy-toast/index.d.ts b/node_modules/react-native-easy-toast/index.d.ts
+index 2aa8dba..1e86f4d 100644
+--- a/node_modules/react-native-easy-toast/index.d.ts
++++ b/node_modules/react-native-easy-toast/index.d.ts
+@@ -1,16 +1,25 @@
+-import { Component, ReactNode } from "react";
++import { Component, ReactNode } from 'react'
+ 
+-declare module "react-native-easy-toast" {
++declare module 'react-native-easy-toast' {
+   export interface DURATION {
+-    LENGTH_SHORT: number;
+-    FOREVER: number;
++    LENGTH_SHORT: number
++    FOREVER: number
+   }
+-  export default class Toast extends Component {
++  type Props = {
++    position: 'top' | 'center' | 'bottom'
++    positionValue: number
++  }
++  export default class Toast extends Component<Props> {
+     show: (
+       text: string | ReactNode,
+       duration?: number,
+-      callback?: (() => void)
+-    ) => void;
+-    close: (duration?: number) => void;
++      callback?: () => void,
++    ) => void
++    timer: number
++    state: {
++      isShow: boolean
++      text: string
++    }
++    close: (duration?: number) => void
+   }
+ }

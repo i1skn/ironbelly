@@ -17,6 +17,7 @@
 import { MAINNET_DEFAULT_NODE, MAINNET_API_SECRET } from 'src/modules/settings'
 import { store } from 'src/common/redux'
 export const migrations = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   0: (state: any) => {
     return {
       ...state,
@@ -30,6 +31,7 @@ export const migrations = {
       },
     }
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   1: (state: any) => {
     const unsafeNode =
       state.settings.checkNodeApiHttpAddr === 'http://grinnode.cycle42.com:3413'

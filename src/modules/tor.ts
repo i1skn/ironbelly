@@ -23,6 +23,7 @@ import { Action, valueof } from 'src/common/types'
 import { NativeEventEmitter } from 'react-native'
 import WalletBridge from 'src/bridges/wallet'
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const torBridgeEmitter = new NativeEventEmitter(WalletBridge as any)
 
 export const TOR_CONNECTED = 'connected'
@@ -70,10 +71,7 @@ export const startTorEpic: Epic<Action, Action, RootState> = (
     ignoreElements(),
   )
 
-export const stopTorEpic: Epic<Action, Action, RootState> = (
-  action$,
-  _state$,
-) =>
+export const stopTorEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
     ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     tap(() => {

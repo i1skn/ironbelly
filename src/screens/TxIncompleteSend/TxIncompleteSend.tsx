@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import colors from 'src/common/colors'
 import { StyleSheet, View } from 'react-native'

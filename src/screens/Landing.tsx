@@ -24,7 +24,12 @@ import { State as SettingsState } from 'src/modules/settings'
 import { FlexGrow, Spacer } from 'src/common'
 import colors from 'src/common/colors'
 import { Text, Button } from 'src/components/CustomFont'
-import { State as ReduxState, Error, Navigation } from 'src/common/types'
+import {
+  State as ReduxState,
+  Error,
+  Dispatch,
+  NavigationProps,
+} from 'src/common/types'
 
 const Wrapper = styled(View)`
   padding: 16px;
@@ -54,16 +59,14 @@ type Props = {
   walletInit: () => void
   switchToMainnet: () => void
   switchToFloonet: () => void
-  error: Error
+  error: Error | undefined | null
   walletCreated: boolean
-  navigation: Navigation
   isFloonet: boolean
   settings: SettingsState
   legalAccepted: boolean
-}
-type State = {}
+} & NavigationProps<'Landing'>
 
-class Landing extends Component<Props, State> {
+class Landing extends Component<Props> {
   _onVersionClick = () => {
     if (!this.props.isFloonet) {
       return Alert.alert(
@@ -88,16 +91,19 @@ class Landing extends Component<Props, State> {
   }
   _onNewWallet = (isNew: boolean) => {
     return () => {
-      const nextScreen = {
-        name: 'NewPassword',
-        params: {
-          isNew,
-        },
+      const nextScreenName = 'NewPassword'
+      const nextScreenParams = {
+        isNew,
       }
       if (this.props.legalAccepted) {
-        this.props.navigation.navigate(nextScreen.name, nextScreen.params)
+        this.props.navigation.navigate(nextScreenName, nextScreenParams)
       } else {
-        this.props.navigation.navigate('LegalDisclaimer', { nextScreen })
+        this.props.navigation.navigate('LegalDisclaimer', {
+          nextScreen: {
+            name: nextScreenName,
+            params: nextScreenParams,
+          },
+        })
       }
     }
   }
@@ -166,7 +172,7 @@ const mapStateToProps = (state: ReduxState) => ({
   legalAccepted: state.app.legalAccepted,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
+const mapDispatchToProps = (dispatch: Dispatch) => ({
   switchToMainnet: () => {
     dispatch({
       type: 'SWITCH_TO_MAINNET',

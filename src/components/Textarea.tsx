@@ -16,12 +16,12 @@
 
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
-import { TextInputProps, View, ViewProps } from 'react-native'
+import ReactNative, { TextInputProps, View, ViewProps } from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
 import colors from 'src/common/colors'
 type Props = TextInputProps & {
   title?: string
-  getRef?: (a: any) => void
+  getRef?: (instance: ReactNative.TextInput | null) => void
   containerStyle?: ViewProps['style']
 }
 const StyledInput = styled(TextInput)`

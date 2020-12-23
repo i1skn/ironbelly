@@ -28,7 +28,9 @@ function OpenFileButton({ callback }: { callback: (uri: string) => void }) {
         type: [DocumentPicker.types.allFiles],
       })
       callback(uri)
-    } catch (e) {}
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return (

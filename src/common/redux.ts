@@ -117,6 +117,9 @@ const sideEffects = {
   ...settingsEffects,
   ...currencyRatesEffects,
 }
+// This would be soon remove in favor of rxjs
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
 const sideEffectsMiddleware = createMiddleware(sideEffects)
 const epicMiddleware = createEpicMiddleware<Action, Action, State>()
 
@@ -135,6 +138,7 @@ const persistConfig = {
 const enhancers = [applyMiddleware(sideEffectsMiddleware, epicMiddleware)]
 
 const composeEnhancers =
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 
 const persistedReducer = persistReducer<RootState, Action>(

@@ -18,7 +18,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components/native'
 import { Text, TextInput } from 'src/components/CustomFont'
 import colors from 'src/common/colors'
-import { Platform } from 'react-native'
+import { StyleProp, TextStyle } from 'react-native'
 type Props = {
   units?: string
   placeholder?: string
@@ -26,9 +26,8 @@ type Props = {
   value: string
   onChange: (value: string) => void
   autoFocus: boolean
-  style?: any
+  style?: StyleProp<TextStyle>
 }
-type State = {}
 const Layout = styled.View`
   flex-direction: row;
   justify-content: flex-start;
@@ -56,7 +55,7 @@ const StyledInput = styled(TextInput)`
   height: 68;
   text-align-vertical: center;
 `
-export default class NumericInput extends Component<Props, State> {
+export default class NumericInput extends Component<Props> {
   render() {
     const {
       units,

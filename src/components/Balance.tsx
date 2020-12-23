@@ -26,7 +26,7 @@ import { StyleSheet, View } from 'react-native'
 type Props = {
   balance: Balance
   currency: Currency
-  rates: object
+  rates: Record<string, number>
 }
 
 const BalanceComponent = ({ balance, currency, rates }: Props) => {

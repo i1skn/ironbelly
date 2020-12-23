@@ -17,14 +17,18 @@
 import * as React from 'react'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
-import { Linking } from 'react-native'
+import ReactNative, { Linking, StyleProp, TextStyle } from 'react-native'
 export const monoSpaceFont = 'Menlo'
-export const Text = styled.Text`
-  font-size: ${(props) => (props.fontSize ? props.fontSize : '16px')};
+export const Text = styled.Text<{ fontSize?: string }>`
+  font-size: ${(props) => props.fontSize ?? '16px'};
   font-weight: normal;
   color: ${() => colors.black};
 `
-export const Link = (props: { url: string; title: string }) => {
+export const Link = (props: {
+  url: string
+  title: string
+  style?: StyleProp<TextStyle>
+}) => {
   const { url, title } = props
   return (
     <Text
@@ -41,7 +45,7 @@ export const TextInput = styled.TextInput`
   font-weight: normal;
 `
 
-function getBackgroundColor(props: any) {
+function getBackgroundColor(props: StyledButtonProps) {
   return props.inverted
     ? 'white'
     : props.danger
@@ -49,21 +53,25 @@ function getBackgroundColor(props: any) {
     : colors.primary
 }
 
-const StyledButton = styled.TouchableOpacity`
+type StyledButtonProps = { inverted?: boolean; danger?: boolean }
+const StyledButton = styled.TouchableOpacity<StyledButtonProps>`
   padding: 10px 15px;
   background-color: ${(props) => getBackgroundColor(props)};
   border-radius: 8;
   border-width: ${(props) => (props.inverted ? '1' : '0')};
   opacity: ${(props) => (props.disabled ? '0.3' : '1')};
 `
-const ButtonTitle = styled(Text)`
+const ButtonTitle = styled(Text)<StyledButtonProps>`
   font-size: 21;
   font-weight: 500;
   width: auto;
   text-align: center;
   color: ${(props) => (props.danger ? '#FFF' : colors.onPrimary)};
 `
-export const Button = (props: any) => {
+
+type ButtonProps = { title: string | JSX.Element } & StyledButtonProps &
+  ReactNative.TouchableOpacityProps
+export const Button = (props: ButtonProps) => {
   const isTitleString = typeof props.title === 'string'
   return (
     <StyledButton {...props}>

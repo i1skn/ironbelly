@@ -57,8 +57,7 @@ type Props = {
   leftAction?: () => void
   title?: string
 }
-type State = {}
-export default class Header extends Component<Props, State> {
+export default class Header extends Component<Props> {
   render() {
     const { leftIcon, leftText, leftAction, title } = this.props
     return (

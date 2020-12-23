@@ -19,9 +19,7 @@ import { StyleSheet, ScrollView } from 'react-native'
 import { Text } from 'src/components/CustomFont'
 import { NavigationProps } from 'src/common/types'
 
-interface OwnProps {}
-
-type Props = NavigationProps<'License'> & OwnProps
+type Props = NavigationProps<'License'>
 
 const License = ({ route }: Props) => {
   const { licenseText } = route?.params

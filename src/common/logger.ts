@@ -17,7 +17,7 @@
 import { store } from 'src/common/redux'
 export const log = (
   e: Error | { message: string },
-  showToUser: boolean = false,
+  showToUser = false,
 ) => {
   if (!(e instanceof Error) && e.message) {
     e = new Error(e.message)

@@ -17,10 +17,9 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
 import colors from 'src/common/colors'
-import { State as GlobalState, NavigationProps } from 'src/common/types'
+import { NavigationProps } from 'src/common/types'
 import CardTitle from 'src/components/CardTitle'
 import { BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner'
-import { Button } from 'src/components/CustomFont'
 
 type Props = NavigationProps<'ScanQRCode'>
 

@@ -27,7 +27,7 @@ export const mockRustTransaction = (
   tx_type: type, // 'TxReceived',
 })
 
-export const mockedRustTransactions: { [key: string]: any } = {
+export const mockedRustTransactions: { [key: string]: unknown } = {
   slateId1: mockRustTransaction(
     0,
     'TxReceived',

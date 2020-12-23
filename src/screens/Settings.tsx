@@ -20,14 +20,7 @@ import {
   State as GlobalState,
   NavigationProps,
 } from 'src/common/types'
-import {
-  FlatList,
-  Alert,
-  Linking,
-  StyleSheet,
-  ScrollView,
-  SectionList,
-} from 'react-native'
+import { Alert, Linking, StyleSheet, SectionList } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
@@ -62,9 +55,7 @@ interface DispatchProps {
 }
 type Props = NavigationProps<'Settings'> & StateProps & DispatchProps
 
-type State = {}
-
-class Settings extends Component<Props, State> {
+class Settings extends Component<Props> {
   state = {}
 
   _onMigrateToMainnet = () => {
@@ -114,7 +105,7 @@ class Settings extends Component<Props, State> {
     this.props.navigation.navigate('SettingsCurrency')
   }
   _onRepairWallet = () => {
-    let title = 'Repair this wallet'
+    const title = 'Repair this wallet'
     let desc =
       "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
     NetInfo.fetch().then(({ type }) => {
@@ -125,7 +116,6 @@ class Settings extends Component<Props, State> {
           [
             {
               text: 'Ok',
-              onPress: () => {},
             },
           ],
         )
@@ -320,6 +310,8 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   getPhrase: () => {
     dispatch({
       type: 'WALLET_PHRASE_REQUEST',
+      // TODO: Imlement PIN lock here
+      password: '',
     })
   },
   destroyWallet: () => {
@@ -349,7 +341,12 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   },
 })
 
-export default connect<StateProps, DispatchProps, {}, GlobalState>(
+export default connect<
+  StateProps,
+  DispatchProps,
+  Record<string, never>,
+  GlobalState
+>(
   mapStateToProps,
   mapDispatchToProps,
 )(Settings)

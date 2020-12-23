@@ -17,7 +17,6 @@
 import React, { Component } from 'react'
 import BackgroundTimer from 'react-native-background-timer'
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
-// @ts-ignore
 import {
   Linking,
   AppState,
@@ -36,7 +35,6 @@ import {
 import urlParser from 'url'
 import Modal from 'react-native-modal'
 import { PersistGate } from 'redux-persist/integration/react'
-// @ts-ignore
 import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import RNFS from 'react-native-fs'
@@ -47,7 +45,6 @@ import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import sleep from 'sleep-promise'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -98,13 +95,9 @@ type State = {
 }
 
 class RealApp extends React.Component<Props, State> {
-  navigation: any
-  lockTimeout: any
-
-  constructor(props: Props) {
-    super(props)
-    this.navigation = React.createRef()
-  }
+  lockTimeout: number | null = null
+  navigation = React.createRef()
+  toast = React.createRef<Toast>()
 
   async componentDidMount() {
     StatusBar.setBarStyle('dark-content')
@@ -112,7 +105,6 @@ class RealApp extends React.Component<Props, State> {
       StatusBar.setBackgroundColor('rgba(0,0,0,0)')
       StatusBar.setTranslucent(true)
     }
-    WalletBridge.setLogger().then(console.log).catch(console.log)
     const { slateUrl } = this.props
 
     if (slateUrl) {
@@ -236,10 +228,8 @@ class RealApp extends React.Component<Props, State> {
   componentDidUpdate(prevProps: Props) {
     if (prevProps.toastMessage.text !== this.props.toastMessage.text) {
       if (this.props.toastMessage.text) {
-        // @ts-ignore
-        this.refs.toast.timer && clearTimeout(this.refs.toast.timer)
-        // @ts-ignore
-        this.refs.toast.show(
+        this.toast.current?.timer && clearTimeout(this.toast.current?.timer)
+        this.toast.current?.show(
           this.props.toastMessage.text,
           this.props.toastMessage.duration,
           () => {
@@ -247,10 +237,8 @@ class RealApp extends React.Component<Props, State> {
           },
         )
       } else {
-        // @ts-ignore
-        if (this.refs.toast.state.isShow) {
-          // @ts-ignore
-          this.refs.toast.setState({
+        if (this.toast.current?.state.isShow) {
+          this.toast.current?.setState({
             isShow: false,
           })
         }
@@ -294,8 +282,7 @@ class RealApp extends React.Component<Props, State> {
           />
         </NavigationContainer>
         <Toast
-          ref="toast"
-          //  @ts-ignore
+          ref={this.toast}
           position={'top'}
           positionValue={isIphoneX() ? 75 : 55}
         />
@@ -317,49 +304,50 @@ const mapStateToProps = (state: GlobalState): StateProps => {
   }
 }
 
-const RealAppConnected = connect<StateProps, DispatchProps, {}, GlobalState>(
-  mapStateToProps,
-  (dispatch) => ({
-    requestWalletExists: () =>
-      dispatch({
-        type: 'WALLET_EXISTS_REQUEST',
-      }),
-    closeTxPostModal: () =>
-      dispatch({
-        type: 'TX_POST_CLOSE',
-      }),
-    setApiSecret: (apiSecret: string) => {
-      dispatch({
-        type: 'SET_API_SECRET',
-        apiSecret,
-      })
-    },
-    clearToast: () =>
-      dispatch({
-        type: 'TOAST_CLEAR',
-      }),
-    dispatch,
-    setFromLink: (amount, message, url) =>
-      dispatch({
-        type: 'TX_FORM_SET_FROM_LINK',
-        amount,
-        textAmount: amount.toString(),
-        message,
-        url,
-      }),
-    requestCurrencyRates: () =>
-      dispatch({
-        type: 'CURRENCY_RATES_REQUEST',
-      }),
-  }),
-)(RealApp)
-
-export default class App extends Component<
-  {
-    url: string
+const RealAppConnected = connect<
+  StateProps,
+  DispatchProps,
+  { slateUrl: string },
+  GlobalState
+>(mapStateToProps, (dispatch) => ({
+  requestWalletExists: () =>
+    dispatch({
+      type: 'WALLET_EXISTS_REQUEST',
+    }),
+  closeTxPostModal: () =>
+    dispatch({
+      type: 'TX_POST_CLOSE',
+    }),
+  setApiSecret: (apiSecret: string) => {
+    dispatch({
+      type: 'SET_API_SECRET',
+      apiSecret,
+    })
   },
-  {}
-> {
+  clearToast: () =>
+    dispatch({
+      type: 'TOAST_CLEAR',
+    }),
+  dispatch,
+  setFromLink: (amount, message, url) =>
+    dispatch({
+      type: 'TX_FORM_SET_FROM_LINK',
+      amount,
+      textAmount: amount.toString(),
+      message,
+      url,
+    }),
+  requestCurrencyRates: () =>
+    dispatch({
+      type: 'CURRENCY_RATES_REQUEST',
+    }),
+}))(RealApp)
+
+type AppProps = {
+  url: string
+}
+
+export default class App extends Component<AppProps> {
   render() {
     return (
       <Provider store={store}>

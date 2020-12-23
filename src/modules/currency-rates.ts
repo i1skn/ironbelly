@@ -17,7 +17,7 @@
 import { Action, Store, currencyRatesRequestAction } from 'src/common/types'
 import { currencyList } from 'src/common'
 export type State = {
-  rates: object
+  rates: Record<string, number>
   inProgress: boolean
   lastUpdated: number
   disabled: boolean

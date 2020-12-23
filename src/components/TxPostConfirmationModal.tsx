@@ -16,11 +16,11 @@
 
 import React, { Component } from 'react'
 import { Button, Text } from 'src/components/CustomFont'
-import styled from 'styled-components'
+import styled from 'styled-components/native'
 import { FlexGrow, hrGrin, LoaderView } from 'src/common'
 import colors from 'src/common/colors'
 import { connect } from 'react-redux'
-import { State as ReduxState, Tx } from 'src/common/types'
+import { Dispatch, State as ReduxState, Tx } from 'src/common/types'
 import { ActivityIndicator } from 'react-native'
 const Wrapper = styled.View`
   background: white;
@@ -65,65 +65,67 @@ const Success = styled.View`
   justify-content: center;
 `
 type Props = {
-  amount: number
-  dest: string
-  txSlateId: string
+  // amount: number
+  // dest: string
+  txSlateId: string | undefined | null
   txGet: (txSlateId: string) => void
   txPost: (txSlateId: string) => void
   close: () => void
-  tx: Tx
+  tx: Tx | undefined | null
   inProgress: boolean
   posted: boolean
 }
-type State = {}
 
-class TxPostConfirmationModal extends Component<Props, State> {
+class TxPostConfirmationModal extends Component<Props> {
   constructor(props: Props) {
     super(props)
   }
 
   componentDidMount() {
-    this.props.txGet(this.props.txSlateId)
+    if (this.props.txSlateId) {
+      this.props.txGet(this.props.txSlateId)
+    }
   }
 
   render() {
     const { tx, close, txSlateId, txPost, inProgress, posted } = this.props
     return (
       <Wrapper>
-        {((inProgress || !tx.id) && (
+        {((inProgress || !tx) && (
           <LoaderView>
             <ActivityIndicator size="large" color={colors.primary} />
           </LoaderView>
-        )) || (
-          <React.Fragment>
-            <Header>
-              <HeaderText>
-                {tx.type === 'TxPosted' ? 'Re-send' : 'Confirm'} transaction
-              </HeaderText>
-            </Header>
-            {(posted && (
-              <Success>
-                <SuccessText>
-                  Transaction has been posted successfully!
-                </SuccessText>
-              </Success>
-            )) || (
-              <Body>
-                <AmountText>Send {hrGrin(-tx.amount)} </AmountText>
-                <FeeText>Fee: {hrGrin(tx.fee)} </FeeText>
-                <FlexGrow />
-                <Button
-                  style={{
-                    marginBottom: 8,
-                  }}
-                  title="Confirm"
-                  onPress={() => txPost(txSlateId)}
-                />
-                <Button inverted title="Decline" onPress={() => close()} />
-              </Body>
-            )}
-          </React.Fragment>
-        )}
+        )) ||
+          (txSlateId && tx && (
+            <React.Fragment>
+              <Header>
+                <HeaderText>
+                  {tx.type === 'TxPosted' ? 'Re-send' : 'Confirm'} transaction
+                </HeaderText>
+              </Header>
+              {(posted && (
+                <Success>
+                  <SuccessText>
+                    Transaction has been posted successfully!
+                  </SuccessText>
+                </Success>
+              )) || (
+                <Body>
+                  <AmountText>Send {hrGrin(-tx.amount)} </AmountText>
+                  <FeeText>Fee: {hrGrin(tx.fee)} </FeeText>
+                  <FlexGrow />
+                  <Button
+                    style={{
+                      marginBottom: 8,
+                    }}
+                    title="Confirm"
+                    onPress={() => txPost(txSlateId)}
+                  />
+                  <Button inverted title="Decline" onPress={() => close()} />
+                </Body>
+              )}
+            </React.Fragment>
+          ))}
       </Wrapper>
     )
   }
@@ -131,19 +133,19 @@ class TxPostConfirmationModal extends Component<Props, State> {
 
 const mapStateToProps = (state: ReduxState) => ({
   txSlateId: state.tx.txPost.txSlateId,
-  tx: state.tx.txGet.data || {},
+  tx: state.tx.txGet.data,
   inProgress: state.tx.txGet.inProgress || state.tx.txPost.inProgress,
   posted: state.tx.txPost.posted,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  txGet: (txSlateId) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  txGet: (txSlateId: string) => {
     dispatch({
       type: 'TX_GET_REQUEST',
       txSlateId,
     })
   },
-  txPost: (txSlateId) => {
+  txPost: (txSlateId: string) => {
     dispatch({
       type: 'TX_POST_REQUEST',
       txSlateId,

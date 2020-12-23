@@ -17,18 +17,23 @@
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
 import { monoSpaceFont, TextInput, Text } from 'src/components/CustomFont'
-import { ReturnKeyTypeOptions } from 'react-native'
+import ReactNative, {
+  NativeSyntheticEvent,
+  ReturnKeyTypeOptions,
+  TextInputSubmitEditingEventData,
+} from 'react-native'
 type Props = {
   testID?: string
   value: string
   returnKeyType?: ReturnKeyTypeOptions
   number: number
   onChange: (value: string) => void
-  getRef: (a: any) => void
-  onSubmitEditing: (a: any) => void
+  getRef?: (instance: ReactNative.TextInput | null) => void
+  onSubmitEditing: (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+  ) => void
   autoFocus: boolean
 }
-type State = {}
 const Layout = styled.View`
   flex-direction: row;
   justify-content: flex-start;
@@ -50,7 +55,7 @@ const WordNumber = styled(Text)`
   font-size: 24px;
   font-family: ${monoSpaceFont};
 `
-export default class FormTextInput extends Component<Props, State> {
+export default class FormTextInput extends Component<Props> {
   render() {
     const {
       onChange,

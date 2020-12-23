@@ -31,12 +31,11 @@ import { BIOMETRY_STATUS } from 'src/modules/settings'
 import { isAndroid, getBiometryTitle } from 'src/common'
 import { KeyboardAvoidingWrapper } from 'src/common'
 import { Button } from 'src/components/CustomFont'
-import { State as ReduxState, Navigation } from 'src/common/types'
+import { State as ReduxState } from 'src/common/types'
 import * as Keychain from 'react-native-keychain'
 import { Dispatch } from 'src/common/types'
 import colors from 'src/common/colors'
 type Props = {
-  navigation: Navigation
   setPassword: (password: string) => void
   checkPassword: (password: string) => void
   isPasswordValid: boolean
@@ -52,7 +51,6 @@ type Props = {
   checkPasswordFromBiometry: (password: string) => void
   scanInProgress: boolean
 }
-type State = {}
 const Submit = styled(Button)``
 const ForgotButton = styled.TouchableOpacity`
   margin-top: -46px;
@@ -60,7 +58,7 @@ const ForgotButton = styled.TouchableOpacity`
   align-self: flex-end;
 `
 
-class Password extends Component<Props, State> {
+class Password extends Component<Props> {
   static navigationOptions = {
     header: null,
   }

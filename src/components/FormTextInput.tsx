@@ -16,12 +16,13 @@
 
 import React, { Component } from 'react'
 import styled from 'styled-components/native'
-import {
+import ReactNative, {
   KeyboardTypeOptions,
   ReturnKeyTypeOptions,
   TextInputIOSProps,
   NativeSyntheticEvent,
   TextInputFocusEventData,
+  TextInputSubmitEditingEventData,
 } from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
 type Props = {
@@ -39,13 +40,14 @@ type Props = {
   textContentType?: TextInputIOSProps['textContentType']
   keyboardType?: KeyboardTypeOptions
   autoCorrect?: boolean
-  getRef?: (a: any) => void
+  getRef?: (instance: ReactNative.TextInput | null) => void
   returnKeyType?: ReturnKeyTypeOptions
-  onSubmitEditing?: (a: any) => void
+  onSubmitEditing?: (
+    e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+  ) => void
   multiline?: boolean
   readonly?: boolean
 }
-type State = {}
 const Layout = styled.View`
   flex-direction: row;
   justify-content: flex-start;
@@ -66,7 +68,7 @@ const Title = styled(Text)`
   font-size: 16;
   margin-bottom: 4;
 `
-export default class FormTextInput extends Component<Props, State> {
+export default class FormTextInput extends Component<Props> {
   render() {
     const {
       maxLength,

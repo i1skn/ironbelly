@@ -15,7 +15,7 @@
  */
 
 import * as React from 'react'
-import { Switch } from 'react-native'
+import { StyleProp, Switch, TextStyle, Platform } from 'react-native'
 import { Text } from 'src/components/CustomFont'
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
@@ -60,7 +60,7 @@ const StyledSwitch = styled(Switch)`
 export type Props = {
   title: string
   value?: string | boolean
-  titleStyle?: any
+  titleStyle?: StyleProp<TextStyle>
   hideChevron?: boolean
   isLink?: boolean
   onPress?: () => void
@@ -88,10 +88,11 @@ const SettingsListItem = ({
         {isSwitch && (
           <StyledSwitch
             trackColor={{
-              true: Platform.select({
-                android: colors.secondaryUltraLight,
-                ios: colors.secondary,
-              }),
+              true:
+                Platform.select({
+                  android: colors.secondaryUltraLight,
+                  ios: colors.secondary,
+                }) ?? '',
               false: colors.grey[100],
             }}
             thumbColor={Platform.select({

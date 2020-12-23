@@ -32,6 +32,7 @@ import TxListItem from 'src/components/TxListItem'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import {
   Balance as BalanceType,
+  Dispatch,
   State as GlobalState,
   Tx,
 } from 'src/common/types'
@@ -130,7 +131,7 @@ function Overview({
             <View style={styles.cancel}>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={(_) =>
+                onPress={() =>
                   txCancel(data.item.id, data.item.slateId, !data.item.storedTx)
                 }>
                 <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
@@ -138,7 +139,7 @@ function Overview({
             </View>
             <View>
               <TouchableHighlight
-                onPress={(_) => {
+                onPress={() => {
                   if (data.item.confirmed) {
                     navigation.navigate('TxDetails', {
                       txId: data.item.id,
@@ -208,8 +209,8 @@ const mapStateToProps = (state: GlobalState) => {
   }
 }
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  txCancel: (id: number, slateId, isResponse: boolean) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  txCancel: (id: number, slateId: string, isResponse: boolean) => {
     dispatch({
       type: 'TX_CANCEL_REQUEST',
       id,
@@ -217,14 +218,14 @@ const mapDispatchToProps = (dispatch, ownProps) => ({
       isResponse,
     })
   },
-  txsGet: (showLoader, refreshFromNode) => {
+  txsGet: (showLoader: boolean, refreshFromNode: boolean) => {
     dispatch({
       type: 'TX_LIST_REQUEST',
       showLoader,
       refreshFromNode,
     })
   },
-  txConfirm: (txSlateId) => {
+  txConfirm: (txSlateId: string) => {
     dispatch({
       type: 'TX_POST_SHOW',
       txSlateId,

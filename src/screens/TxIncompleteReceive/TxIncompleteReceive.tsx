@@ -17,16 +17,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import DocumentPicker from 'react-native-document-picker'
 import colors from 'src/common/colors'
 import GrinAddress from 'src/screens/TxIncompleteReceive/GrinAddress'
-import {
-  ActivityIndicator,
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Platform,
-} from 'react-native'
+import { ActivityIndicator, StyleSheet, View, Platform } from 'react-native'
 import CopyHeader from 'src/components/CopyHeader'
 import InputContentRow from 'src/components/InputContentRow'
 import { useDispatch } from 'react-redux'
@@ -61,10 +54,10 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
       })
   }
 
-  let [slatepack, setSlatepack] = useState(loadedSlatepack)
-  let [isLoadingSlatepack, setIsLoadingSlatepack] = useState(false)
-  let [receiveSlatepack, setReceiveSlatepack] = useState('')
-  let refScrollView = useRef<KeyboardAwareScrollView>()
+  const [slatepack, setSlatepack] = useState(loadedSlatepack)
+  const [isLoadingSlatepack, setIsLoadingSlatepack] = useState(false)
+  const [receiveSlatepack, setReceiveSlatepack] = useState('')
+  const refScrollView = useRef<KeyboardAwareScrollView>()
   const title = tx ? `Receiving ${hrGrin(Math.abs(tx.amount))}` : `Receive`
 
   const setWithValidation = (s: string) => {
@@ -154,8 +147,8 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
             <>
               {(tx && (
                 <>
-                  <CopyHeader content={tx!.slateId} label={'Transaction ID'} />
-                  <Text style={styles.txId}>{tx!.slateId}</Text>
+                  <CopyHeader content={tx.slateId} label={'Transaction ID'} />
+                  <Text style={styles.txId}>{tx.slateId}</Text>
                   {(isLoadingSlatepack && (
                     <View style={styles.slatepackLoading}>
                       <ActivityIndicator
@@ -181,7 +174,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                         <ShareRow
                           content={slatepack}
                           label="Slatepack"
-                          onShareFile={slatepackShare(tx!)}
+                          onShareFile={slatepackShare(tx)}
                         />
                       </>
                     )) ||

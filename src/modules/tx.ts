@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-// @ts-ignore
 import Share from 'react-native-share'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
@@ -24,7 +23,7 @@ import { persistReducer } from 'redux-persist'
 import {
   HTTP_TRANSPORT_METHOD,
   ADDRESS_TRANSPORT_METHOD,
-  getStateForRust,
+  getConfigForRust,
   mapRustTx,
   mapRustOutputStrategy,
   getSlatePath,
@@ -51,6 +50,7 @@ import {
   txGetRequestAction,
   txFormOutputStrategiesRequestAction,
   OutputStrategy,
+  Error as AppError,
 } from 'src/common/types'
 import { getNavigation } from './navigation'
 import { RootState } from 'src/common/redux'
@@ -63,49 +63,49 @@ export type ListState = {
   refreshFromNode: boolean
   showLoader: boolean
   lastUpdated: moment.Moment | undefined | null
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxCreateState = {
   data: Tx | undefined | null
   created: boolean
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxSendState = {
   data: Tx | undefined | null
   sent: boolean
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxPostState = {
   txSlateId: string | undefined | null
   showModal: boolean
   posted: boolean
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxGetState = {
   data: Tx | undefined | null
   isRefreshed: boolean
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxReceiveState = {
   data: Tx | undefined | null
   received: boolean
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxFinalizeState = {
   data: Tx | undefined | null
   finalized: boolean
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxCancelState = {
   data: Tx | undefined | null
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type TxForm = {
   amount: number
@@ -123,7 +123,7 @@ export type SlateShareState = {
 export type SlateState = {
   data: Slate | undefined | null
   inProgress: boolean
-  error: Error | undefined | null
+  error: AppError | undefined | null
 }
 export type State = Readonly<{
   list: ListState
@@ -214,31 +214,33 @@ function twoStringArrayEqual<T>(a: T[], b: T[]) {
   return (a || []).join('') === (b || []).join('')
 }
 
+async function getArrayFromStorage(key: string) {
+  const raw = await AsyncStorage.getItem(key)
+  if (!raw) {
+    return []
+  }
+  return JSON.parse(raw)
+}
+
+// Catching received transaction
+function filterReceivedUnconfirmed(tx: Tx) {
+  return !tx.confirmed && tx.type === 'TxReceived'
+}
+
 export const sideEffects = {
   ['TX_LIST_REQUEST']: async (action: txListRequestAction, store: Store) => {
     try {
-      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(
-        JSON.parse,
-      )
-      if (!finalized) {
-        finalized = []
-      }
-      const newFinalized: String[] = []
+      const finalized = await getArrayFromStorage('@finalizedTxs')
+      const newFinalized: string[] = []
 
-      let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
-      if (!posted) {
-        posted = []
-      }
-      const newPosted: String[] = []
+      const posted = await getArrayFromStorage('@postedTxs')
+      const newPosted: string[] = []
 
-      let received = await AsyncStorage.getItem('@receivedTxs').then(JSON.parse)
-      if (!received) {
-        received = []
-      }
-      const newReceived: String[] = []
+      const received = await getArrayFromStorage('@receivedTxs')
+      const newReceived: string[] = []
 
       const data = await WalletBridge.txsGet(
-        getStateForRust(store.getState()),
+        getConfigForRust(store.getState()).minimum_confirmations,
         action.refreshFromNode,
       ).then(JSON.parse)
       let mappedData = data[1]
@@ -276,17 +278,14 @@ export const sideEffects = {
         })
       // TODO: This horrible parody of atomic changes should be rewritten in a proper way
       if (
-        twoStringArrayEqual(
-          received,
-          await AsyncStorage.getItem('@receivedTxs').then(JSON.parse),
-        )
+        twoStringArrayEqual(received, await getArrayFromStorage('@receivedTxs'))
       ) {
         await AsyncStorage.setItem('@receivedTxs', JSON.stringify(newReceived))
       }
       if (
         twoStringArrayEqual(
           finalized,
-          await AsyncStorage.getItem('@finalizedTxs').then(JSON.parse),
+          await getArrayFromStorage('@finalizedTxs'),
         )
       ) {
         await AsyncStorage.setItem(
@@ -295,20 +294,12 @@ export const sideEffects = {
         )
       }
       if (
-        twoStringArrayEqual(
-          posted,
-          await AsyncStorage.getItem('@postedTxs').then(JSON.parse),
-        )
+        twoStringArrayEqual(posted, await getArrayFromStorage('@postedTxs'))
       ) {
         await AsyncStorage.setItem('@postedTxs', JSON.stringify(newPosted))
       }
 
       mappedData = mappedData.map(mapRustTx)
-
-      // Catching received transaction
-      function filterReceivedUnconfirmed(tx: Tx) {
-        return !tx.confirmed && tx.type === 'TxReceived'
-      }
 
       if (
         mappedData.filter(filterReceivedUnconfirmed).length >
@@ -336,8 +327,8 @@ export const sideEffects = {
     }
   },
   ['TX_CANCEL_REQUEST']: (action: txCancelRequestAction, store: Store) => {
-    return WalletBridge.txCancel(getStateForRust(store.getState()), action.id)
-      .then((list) => {
+    return WalletBridge.txCancel(action.id)
+      .then(() => {
         store.dispatch({
           type: 'TX_CANCEL_SUCCESS',
         })
@@ -363,11 +354,7 @@ export const sideEffects = {
       })
   },
   ['TX_GET_REQUEST']: async (action: txGetRequestAction, store: Store) => {
-    return WalletBridge.txGet(
-      getStateForRust(store.getState()),
-      true,
-      action.txSlateId,
-    )
+    return WalletBridge.txGet(true, action.txSlateId)
       .then((json: string) => JSON.parse(json))
       .then((result) => {
         store.dispatch({
@@ -392,7 +379,7 @@ export const sideEffects = {
   ) => {
     try {
       const jsonResponse = await WalletBridge.txCreate(
-        getStateForRust(store.getState()),
+        getConfigForRust(store.getState()).minimum_confirmations,
         action.amount,
         action.selectionStrategyIsUseAll,
       )
@@ -434,17 +421,10 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(
-        JSON.parse,
-      )
-
-      if (!finalized) {
-        finalized = []
-      }
-
+      const finalized = await getArrayFromStorage('@finalizedTxs')
       const slateId = await WalletBridge.txSendHttps(
-        getStateForRust(store.getState()),
         action.amount,
+        getConfigForRust(store.getState()).minimum_confirmations,
         action.selectionStrategyIsUseAll,
         action.url,
       ).then(JSON.parse)
@@ -473,17 +453,10 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(
-        JSON.parse,
-      )
-
-      if (!finalized) {
-        finalized = []
-      }
-
+      const finalized = await getArrayFromStorage('@finalizedTxs')
       const slateId = await WalletBridge.txSendAddress(
-        getStateForRust(store.getState()),
         action.amount,
+        getConfigForRust(store.getState()).minimum_confirmations,
         action.selectionStrategyIsUseAll,
         action.address,
       ).then(JSON.parse)
@@ -517,26 +490,11 @@ export const sideEffects = {
   },
   ['TX_POST_REQUEST']: async (action: txPostRequestAction, store: Store) => {
     try {
-      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(
-        JSON.parse,
-      )
-
-      if (!finalized) {
-        finalized = []
-      }
-
-      let posted = await AsyncStorage.getItem('@postedTxs').then(JSON.parse)
-
-      if (!posted) {
-        posted = []
-      }
-
-      await WalletBridge.txPost(
-        getStateForRust(store.getState()),
-        action.txSlateId,
-      )
+      const finalized = await getArrayFromStorage('@finalizedTxs')
+      const posted = await getArrayFromStorage('@postedTxs')
+      await WalletBridge.txPost(action.txSlateId)
       posted.push(action.txSlateId)
-      let pos = finalized.indexOf(action.txSlateId)
+      const pos = finalized.indexOf(action.txSlateId)
 
       if (pos !== -1) {
         finalized.splice(pos, 1)
@@ -572,13 +530,9 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      let received = await AsyncStorage.getItem('@receivedTxs').then(JSON.parse)
-      if (!received) {
-        received = []
-      }
-
+      const received = await getArrayFromStorage('@receivedTxs')
       const [[rustTx], slatepack] = await WalletBridge.txReceive(
-        getStateForRust(store.getState()),
+        getConfigForRust(store.getState()).account,
         action.slatepack,
       ).then((json: string) => JSON.parse(json))
       const tx = mapRustTx(rustTx)
@@ -616,19 +570,12 @@ export const sideEffects = {
     store: Store,
   ) => {
     try {
-      let finalized = await AsyncStorage.getItem('@finalizedTxs').then(
-        JSON.parse,
-      )
-
-      if (!finalized) {
-        finalized = []
-      }
+      const finalized = await getArrayFromStorage('@finalizedTxs')
 
       try {
-        const [rustTx] = await WalletBridge.txFinalize(
-          getStateForRust(store.getState()),
-          action.slatepack,
-        ).then(JSON.parse)
+        const [rustTx] = await WalletBridge.txFinalize(action.slatepack).then(
+          JSON.parse,
+        )
         // this hack is needed until TxFinalized is not natively supported
         const tx = mapRustTx({ ...rustTx, tx_type: 'TxFinalized' })
         store.dispatch({
@@ -674,7 +621,7 @@ export const sideEffects = {
   ['SLATE_SET_REQUEST']: (action: slateSetRequestAction, store: Store) => {
     const path = getSlatePath(action.id, action.isResponse)
     return RNFS.writeFile(path, action.slatepack, 'utf8')
-      .then((success) => {
+      .then(() => {
         store.dispatch({
           type: 'SLATE_SET_SUCCESS',
         })
@@ -696,7 +643,7 @@ export const sideEffects = {
 
     if (await RNFS.exists(path)) {
       return RNFS.unlink(path)
-        .then((success) => {
+        .then(() => {
           store.dispatch({
             type: 'SLATE_REMOVE_SUCCESS',
           })
@@ -722,7 +669,7 @@ export const sideEffects = {
       type: 'application/json',
       showAppsToView: true,
     })
-      .then((success) => {
+      .then(() => {
         store.dispatch({
           type: 'SLATE_SHARE_SUCCESS',
         })
@@ -740,8 +687,8 @@ export const sideEffects = {
     store: Store,
   ) => {
     return WalletBridge.txStrategies(
-      getStateForRust(store.getState()),
       action.amount,
+      getConfigForRust(store.getState()).minimum_confirmations,
     )
       .then((json: string) => JSON.parse(json))
       .then((outputStrategies) => {
@@ -765,7 +712,7 @@ export const sideEffects = {
 
 const list = function (
   state: ListState = initialState.list,
-  action,
+  action: Action,
 ): ListState {
   switch (action.type) {
     case 'TX_LIST_CLEAR':
@@ -780,8 +727,8 @@ const list = function (
         error: null,
       }
 
-    case 'TX_LIST_SUCCESS':
-      var txs: Tx[] = action.data.slice(0)
+    case 'TX_LIST_SUCCESS': {
+      const txs: Tx[] = action.data.slice(0)
       txs.sort(function (a, b) {
         return (
           new Date(b.creationTime).getTime() -
@@ -797,6 +744,7 @@ const list = function (
         lastUpdated: moment(),
         inProgress: false,
       }
+    }
 
     case 'TX_LIST_FAILURE':
       return {
@@ -819,7 +767,7 @@ const list = function (
 
 const txCreate = function (
   state: TxCreateState = initialState.txCreate,
-  action,
+  action: Action,
 ): TxCreateState {
   switch (action.type) {
     case 'TX_CREATE_REQUEST':
@@ -849,7 +797,7 @@ const txCreate = function (
 
 const txSend = function (
   state: TxSendState = initialState.txSend,
-  action,
+  action: Action,
 ): TxSendState {
   switch (action.type) {
     case 'TX_SEND_HTTPS_REQUEST':
@@ -882,7 +830,7 @@ const txSend = function (
 
 const txPost = function (
   state: TxPostState = initialState.txPost,
-  action,
+  action: Action,
 ): TxPostState {
   switch (action.type) {
     case 'TX_POST_SHOW':
@@ -920,7 +868,7 @@ const txPost = function (
 
 const txGet = function (
   state: TxGetState = initialState.txGet,
-  action,
+  action: Action,
 ): TxGetState {
   switch (action.type) {
     case 'TX_GET_REQUEST':
@@ -957,7 +905,7 @@ const txGet = function (
 
 const txCancel = function (
   state: TxCancelState = initialState.txCancel,
-  action,
+  action: Action,
 ): TxCancelState {
   switch (action.type) {
     case 'TX_CANCEL_REQUEST':
@@ -983,10 +931,9 @@ const txCancel = function (
 
 const txReceive = function (
   state: TxReceiveState = initialState.txReceive,
-  action,
+  action: Action,
 ): TxReceiveState {
   switch (action.type) {
-    case 'SLATE_GET_SUCCESS':
     case 'SLATE_LOAD_SUCCESS':
       return { ...state, inProgress: false, received: false, error: null }
 
@@ -1014,10 +961,9 @@ const txReceive = function (
 
 const txFinalize = function (
   state: TxFinalizeState = initialState.txFinalize,
-  action,
+  action: Action,
 ): TxFinalizeState {
   switch (action.type) {
-    case 'SLATE_GET_SUCCESS':
     case 'SLATE_LOAD_SUCCESS':
       return { ...state, inProgress: false, finalized: false, error: null }
 
@@ -1084,7 +1030,7 @@ const txForm = function (
         outputStrategy: null,
       }
 
-    case 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS':
+    case 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS': {
       const strategies =
         action.outputStrategies.length == 2 &&
         action.outputStrategies[0].fee === action.outputStrategies[1].fee &&
@@ -1093,7 +1039,7 @@ const txForm = function (
           : action.outputStrategies
       const outputStrategies = strategies
         .map(mapRustOutputStrategy)
-        .sort((a, b) => {
+        .sort((a: OutputStrategy, b: OutputStrategy) => {
           return a.fee - b.fee
         })
       return {
@@ -1103,6 +1049,7 @@ const txForm = function (
         outputStrategies_inProgress: false,
         outputStrategies_error: '',
       }
+    }
 
     case 'TX_FORM_SET_MESSAGE':
       return { ...state, message: action.message }
@@ -1117,18 +1064,15 @@ const txForm = function (
 
 const slate = function (
   state: SlateState = initialState.slate,
-  action,
+  action: Action,
 ): SlateState {
   switch (action.type) {
-    case 'SLATE_GET_REQUEST':
     case 'SLATE_LOAD_REQUEST':
       return { ...state, inProgress: true, error: null }
 
-    case 'SLATE_GET_SUCCESS':
     case 'SLATE_LOAD_SUCCESS':
       return { ...state, data: action.slate, inProgress: false }
 
-    case 'SLATE_GET_FAILURE':
     case 'SLATE_LOAD_FAILURE':
       return {
         ...state,
@@ -1146,7 +1090,7 @@ const slate = function (
 
 const slateShare = function (
   state: SlateShareState = initialState.slateShare,
-  action,
+  action: Action,
 ): SlateShareState {
   switch (action.type) {
     case 'SLATE_SHARE_REQUEST':

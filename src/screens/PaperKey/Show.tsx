@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Notice, Spacer } from 'src/common'
 import { monoSpaceFont, Button } from 'src/components/CustomFont'
-import { State as ReduxState } from 'src/common/types'
+import { State as ReduxState, Dispatch } from 'src/common/types'
 import { NavigationProps } from 'src/common/types'
 
 interface OwnProps {
@@ -60,7 +60,7 @@ class Show extends Component<Props, State> {
   constructor(props: Props) {
     super(props)
     this.state = {
-      fromSettings: props.route?.params?.fromSettings,
+      fromSettings: props.route?.params?.fromSettings ?? false,
     }
   }
 
@@ -107,6 +107,7 @@ class Show extends Component<Props, State> {
               onPress={() => {
                 navigation.navigate('VerifyPaperKey', {
                   title: 'Verify Paper key ',
+                  wordsCount: 24,
                 })
               }}
             />
@@ -123,8 +124,8 @@ const mapStateToProps = (state: ReduxState) => ({
   phrase: state.wallet.walletPhrase.phrase,
 }) //
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  generateSeed: (length) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  generateSeed: (length: number) => {
     dispatch({
       type: 'SEED_NEW_REQUEST',
       length,

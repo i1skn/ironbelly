@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-import { Store, Action } from 'src/common/types'
+import { Store, Action, Dispatch } from 'src/common/types'
 
+type ProbablyAction = Action | null | undefined
+type Effect = (a: Action, s: Store) => ProbablyAction | Promise<ProbablyAction>
 type Effects = {
-  [x: string]: (a: any, s: Store) => any
+  [x: string]: Effect
 }
 
-const isAction = (o: any): boolean => {
+const isAction = (o: ProbablyAction): boolean => {
   return !!o?.type
 }
 
 export const createMiddleware = (effects: Effects) => (store: Store) => (
-  next: any,
+  next: Dispatch,
 ) => (action: Action) => {
-  const initAction = next(action)
   const effect = effects[action.type]
-
   if (effect) {
     const result = effect(action, store)
 
-    if (isAction(result)) {
+    if (result instanceof Promise) {
+      result.then((res) => res && isAction(res) && store.dispatch(res))
+    } else if (result && isAction(result)) {
       store.dispatch(result)
-    } else if (result instanceof Promise) {
-      result.then((res) => isAction(res) && store.dispatch(res))
     }
   }
 
-  return initAction
+  return next(action)
 }

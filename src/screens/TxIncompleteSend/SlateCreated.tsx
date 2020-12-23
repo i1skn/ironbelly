@@ -67,9 +67,9 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
     })
   }
 
-  let [slatepack, setSlatepack] = useState<null | string>(null)
-  let [recipientSlatepack, setRecipientSlatepack] = useState('')
-  let refScrollView = useRef<KeyboardAwareScrollView>()
+  const [slatepack, setSlatepack] = useState<null | string>(null)
+  const [recipientSlatepack, setRecipientSlatepack] = useState('')
+  const refScrollView = useRef<KeyboardAwareScrollView>()
 
   const setWithValidation = (s: string) => {
     if (!isValidSlatepack(s)) {

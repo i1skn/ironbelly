@@ -29,9 +29,9 @@ import {
   RustBalance,
   Balance,
   State,
-  RustState,
   UrlQuery,
   Currency,
+  Slate,
 } from 'src/common/types'
 import colors from 'src/common/colors'
 import styled from 'styled-components/native'
@@ -62,7 +62,7 @@ export const hrFiat = (amount: number, currency: Currency): string => {
 export const convertToFiat = (
   amount: number,
   currency: Currency,
-  rates: object,
+  rates: Record<string, number>,
 ): number => {
   const multiplier = rates[currency.code.toLowerCase()]
   return (amount / 1000000000) * (multiplier || 0)
@@ -75,22 +75,19 @@ export const mapRustTx = (rTx: RustTx): Tx => {
     type: rTx.tx_type,
     confirmed: rTx.confirmed,
     creationTime: rTx.creation_ts,
-    amount:
-      parseInt(rTx.amount_credited || '0', 10) -
-      parseInt(rTx.amount_debited || '0', 10) +
-      parseInt(rTx.fee || '0', 10),
-    fee: parseInt(rTx.fee || '0', 10),
+    amount: rTx.amount_credited - rTx.amount_debited + rTx.fee,
+    fee: rTx.fee,
   }
 }
 export const mapRustBalance = (rB: RustBalance): Balance => {
   return {
-    amountAwaitingConfirmation: parseInt(rB.amount_awaiting_confirmation, 10),
-    amountCurrentlySpendable: parseInt(rB.amount_currently_spendable, 10),
-    amountImmature: parseInt(rB.amount_immature, 10),
-    amountLocked: parseInt(rB.amount_locked, 10),
-    lastConfirmedHeight: parseInt(rB.last_confirmed_height, 10),
-    minimumConfirmations: parseInt(rB.minimum_confirmations, 10),
-    total: parseInt(rB.total, 10),
+    amountAwaitingConfirmation: rB.amount_awaiting_confirmation,
+    amountCurrentlySpendable: rB.amount_currently_spendable,
+    amountImmature: rB.amount_immature,
+    amountLocked: rB.amount_locked,
+    lastConfirmedHeight: rB.last_confirmed_height,
+    minimumConfirmations: rB.minimum_confirmations,
+    total: rB.total,
   }
 }
 export const mapRustOutputStrategy = (
@@ -108,17 +105,16 @@ export const mapPmmrRange = (pR: RustPmmrRange): PmmrRange => {
     highestIndex: pR[1],
   }
 }
-export const getStateForRust = (state: State): string => {
-  const result: RustState = {
+export const getConfigForRust = (state: State) => {
+  return {
     wallet_dir: APPLICATION_SUPPORT_DIRECTORY,
     check_node_api_http_addr: state.settings.checkNodeApiHttpAddr,
     chain: state.settings.chain,
     account: 'default',
-    password: state.wallet.password.value,
     minimum_confirmations: state.settings.minimumConfirmations,
   }
-  return JSON.stringify(result)
 }
+
 export const SLATES_DIRECTORY = RNFS.DocumentDirectoryPath + '/slates'
 export const APPLICATION_SUPPORT_DIRECTORY = isAndroid
   ? RNFS.DocumentDirectoryPath
@@ -151,24 +147,21 @@ export const checkApplicationSupportDirectory = () => {
     }
   })
 }
-export const checkWalletDataDirectory = () => {
-  return RNFS.exists(WALLET_DATA_DIRECTORY).then((exists) => {
-    if (!exists) {
-      return RNFS.mkdir(WALLET_DATA_DIRECTORY, {
-        NSURLIsExcludedFromBackupKey: true,
-      }).then(() => {
-        console.log(`${WALLET_DATA_DIRECTORY} was created`)
-      })
-    }
-
-    return
-  })
+export const checkWalletDataDirectory = async () => {
+  const exists = await RNFS.exists(WALLET_DATA_DIRECTORY)
+  if (!exists) {
+    await RNFS.mkdir(WALLET_DATA_DIRECTORY, {
+      NSURLIsExcludedFromBackupKey: true,
+    })
+    console.log(`${WALLET_DATA_DIRECTORY} was created`)
+  }
 }
-export const Spacer = styled.View`
-  height: ${({ height }) => (height ? height : isIphoneX() ? '24px' : '16px')};
+
+export const Spacer = styled.View<{ height?: string }>`
+  height: ${({ height }) => (height ?? isIphoneX() ? '24px' : '16px')};
   width: 100%;
 `
-export const isResponseSlate = async (slate: any) => {
+export const isResponseSlate = async (slate: Slate) => {
   try {
     return slate.sta === 'S2'
   } catch (e) {

@@ -15,7 +15,7 @@
  */
 
 import React, { Component, Fragment } from 'react'
-import { Alert } from 'react-native'
+import ReactNative, { Alert } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
 import styled from 'styled-components/native'
@@ -23,15 +23,21 @@ import MnemonicWordTextInput from 'src/components/MnemonicWordTextInput'
 import NetInfo from '@react-native-community/netinfo'
 import { UnderHeaderBlock, Spacer } from 'src/common'
 import { Text, Button } from 'src/components/CustomFont'
-import { State as ReduxState, Navigation } from 'src/common/types'
-import { WalletScanState, WalletInitState } from 'src/modules/wallet'
-type Props = WalletScanState & {
-  isNew: boolean
-  password: string
-  mnemonic: string
-  navigation: Navigation
-  createWallet: (password: string, mnemonic: string, isNew: boolean) => void
-}
+import {
+  State as ReduxState,
+  NavigationProps,
+  Dispatch,
+} from 'src/common/types'
+import { WalletScanState } from 'src/modules/wallet'
+
+type Props = NavigationProps<'VerifyPaperKey'> &
+  WalletScanState & {
+    isNew: boolean
+    password: string
+    mnemonic: string
+    createWallet: (password: string, mnemonic: string, isNew: boolean) => void
+  }
+
 type State = {
   inputValue: string
   amount: number
@@ -47,13 +53,13 @@ const Wrapper = styled.View`
 `
 
 class Verify extends Component<Props, State> {
-  _scrollView = null
+  _scrollView: KeyboardAwareScrollView | null = null
   _underHeaderBlock = null
-  _inputs = []
+  _inputs: ReactNative.TextInput[] = []
 
   constructor(props: Props) {
     super(props)
-    const wordsCount = props.route.params?.wordsCount ?? 24
+    const wordsCount = props.route.params.wordsCount
     this.state = {
       wordsCount,
       inputValue: '',
@@ -63,20 +69,22 @@ class Verify extends Component<Props, State> {
     }
   }
 
-  // componentDidMount() {
-  // const { isNew } = this.props
-  // if (isNew) {
-  // this.setState({
-  // mnemonicWords: this.props.mnemonic.split(' '),
-  // })
-  // } else {
-  // this.setState({
-  // mnemonicWords: ''.split(' '),
-  // })
-  // }
-  // }
+  componentDidMount() {
+    const { isNew } = this.props
+    if (isNew) {
+      this.setState({
+        mnemonicWords: this.props.mnemonic.split(' '),
+      })
+    } else {
+      this.setState({
+        mnemonicWords: 'confirm test profit tree unaware sense slice inform oak worry order furnace flower remove monitor alarm demand subject control plate distance admit hood glove'.split(
+          ' ',
+        ),
+      })
+    }
+  }
 
-  _onContinuePress = (currentUserPhrase) => {
+  _onContinuePress = (currentUserPhrase: string) => {
     return () => {
       const { isNew, password, createWallet } = this.props
 
@@ -89,7 +97,6 @@ class Verify extends Component<Props, State> {
               [
                 {
                   text: 'Ok',
-                  onPress: () => {},
                 },
               ],
             )
@@ -100,7 +107,6 @@ class Verify extends Component<Props, State> {
               [
                 {
                   text: 'Cancel',
-                  onPress: () => {},
                 },
                 {
                   text: 'Continue',
@@ -136,7 +142,9 @@ class Verify extends Component<Props, State> {
         {(wordsCount && (
           <Fragment>
             <KeyboardAwareScrollView
-              innerRef={(sv) => (this._scrollView = sv)}
+              innerRef={(sv) =>
+                (this._scrollView = (sv as unknown) as KeyboardAwareScrollView)
+              }
               style={{
                 paddingLeft: 16,
                 paddingRight: 16,
@@ -153,12 +161,14 @@ class Verify extends Component<Props, State> {
                 </Text>
               </UnderHeaderBlock>
               <Words>
-                {mnemonicWords.map((word: string, i: number) => {
+                {mnemonicWords.map((_, i: number) => {
                   return (
                     <MnemonicWordTextInput
                       key={i}
                       getRef={(input) => {
-                        this._inputs[i] = input
+                        if (input) {
+                          this._inputs[i] = input
+                        }
                       }}
                       testID={`VerifyWord${i + 1}`}
                       number={i}
@@ -214,8 +224,8 @@ const mapStateToProps = (state: ReduxState) => ({
   mnemonic: state.wallet.walletInit.mnemonic,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  createWallet: (password, phrase, isNew) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  createWallet: (password: string, phrase: string, isNew: boolean) => {
     dispatch({
       type: 'WALLET_INIT_REQUEST',
       password,

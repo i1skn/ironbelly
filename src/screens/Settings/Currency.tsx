@@ -20,17 +20,25 @@ import { FlatList, StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Text } from 'src/components/CustomFont'
 import styled from 'styled-components/native'
-import { State as ReduxState, Currency } from 'src/common/types'
+import {
+  State as ReduxState,
+  Currency,
+  Dispatch,
+  NavigationProps,
+} from 'src/common/types'
 import { currencyList } from 'src/common'
 import colors from 'src/common/colors'
 import { SearchBar } from 'react-native-elements'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-type Props = {
+type DispatchProps = {
   currency: Currency
   requestCurrencyRates: () => void
   setCurrency: (currency: Currency) => void
   currencyRates: CurrencyRatesState
 }
+
+type Props = NavigationProps<'SettingsCurrency'> & DispatchProps
+
 type State = {
   searchText: string
   filteredList: Array<Currency>
@@ -46,7 +54,8 @@ const Value = styled(Text)`
   color: ${colors.grey[900]};
 `
 
-const ListItem = ({ checked, value, onPress }) => {
+type ListItemProps = { checked: boolean; value: string; onPress: () => void }
+const ListItem = ({ checked, value, onPress }: ListItemProps) => {
   return (
     <View style={styles.listItem}>
       <ListItemTouchable onPress={onPress}>
@@ -169,8 +178,8 @@ const mapStateToProps = (state: ReduxState) => ({
   currencyRates: state.currencyRates,
 })
 
-const mapDispatchToProps = (dispatch, ownProps) => ({
-  setCurrency: (currencyObject) => {
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  setCurrency: (currencyObject: Currency) => {
     dispatch({
       type: 'SET_SETTINGS',
       newSettings: {

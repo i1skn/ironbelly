@@ -21,56 +21,56 @@ import RNFS from 'react-native-fs'
 import { mockedRustTransactions } from 'src/mocks'
 
 interface IGrinBridge {
-  setLogger: () => Promise<string>
-  slatepackDecode: (state: string, slatepack: string) => Promise<string>
-  startListenWithHttp: (state: string) => Promise<string>
-  stopListenWithHttp: () => Promise<string>
   seedNew: (length: number) => Promise<string>
+  isWalletCreated: () => Promise<boolean>
   walletInit: (
-    state: string,
+    config: string,
     phrase: string,
     password: string,
   ) => Promise<string>
-  isWalletCreated: () => Promise<boolean>
-  openWallet: (state: string, password: string) => Promise<string>
+  openWallet: (config: string, password: string) => Promise<string>
   closeWallet: () => Promise<string>
-  walletPmmrRange: (state: string) => Promise<string>
-  walletScanOutputs: (
-    state: string,
-    lastRetrievedIndex: number,
-    highestIndex: number,
-  ) => Promise<string>
-  walletPhrase: (state: string) => Promise<string>
   startTor: () => Promise<string>
   stopTor: () => Promise<string>
-  txsGet: (state: string, refreshFromNode: boolean) => Promise<string>
-  txCancel: (state: string, id: number) => Promise<string>
-  txGet: (
-    state: string,
+  walletPmmrRange: () => Promise<string>
+  txsGet: (
+    minimumConfirmations: number,
     refreshFromNode: boolean,
-    slateId: string,
+  ) => Promise<string>
+  txGet: (refreshFromNode: boolean, slateId: string) => Promise<string>
+  txPost: (slateId: string) => Promise<string>
+  txCreate: (
+    amount: number,
+    minimumConfirmations: number,
+    selectionStrategyIsUseAll: boolean,
   ) => Promise<string>
   txSendHttps: (
-    state: string,
     amount: number,
+    minimumConfirmations: number,
     selectionStrategyIsUseAll: boolean,
     url: string,
   ) => Promise<string>
   txSendAddress: (
-    state: string,
     amount: number,
+    minimumConfirmations: number,
     selectionStrategyIsUseAll: boolean,
     address: string,
   ) => Promise<string>
-  txCreate: (
-    state: string,
+  txStrategies: (
     amount: number,
-    selectionStrategyIsUseAll: boolean,
+    minimumConfirmations: number,
   ) => Promise<string>
-  txPost: (state: string, slateId: string) => Promise<string>
-  txReceive: (state: string, slatepack: string) => Promise<string>
-  txFinalize: (state: string, slatepack: string) => Promise<string>
-  txStrategies: (state: string, amount: number) => Promise<string>
+  txCancel: (id: number) => Promise<string>
+  txReceive: (account: string, slatepack: string) => Promise<string>
+  txFinalize: (slatepack: string) => Promise<string>
+  walletPhrase: (walletDir: string, password: string) => Promise<string>
+  walletScanOutputs: (
+    lastRetrievedIndex: number,
+    highestIndex: number,
+  ) => Promise<string>
+  slatepackDecode: (slatepack: string) => Promise<string>
+  startListenWithHttp: (apiListenAddress: string) => Promise<string>
+  stopListenWithHttp: () => Promise<string>
 }
 
 declare module 'react-native' {
@@ -85,8 +85,6 @@ let WalletBridge: IGrinBridge
 if (Config.DEMO_MODE) {
   WalletBridge = {
     ...GrinBridge,
-    // Logger
-    setLogger: () => Promise.resolve(''),
     // Wallet
     openWallet: () => Promise.resolve(''),
     closeWallet: () => Promise.resolve(''),

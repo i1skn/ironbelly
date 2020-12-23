@@ -16,23 +16,12 @@
 
 import React from 'react'
 import colors from 'src/common/colors'
-import {
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Platform,
-  Image,
-  Dimensions,
-} from 'react-native'
-import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
-import { Text } from 'src/components/CustomFont'
+import { View, StyleSheet, Dimensions } from 'react-native'
 import QRCode from 'react-native-qrcode-svg'
 import { NavigationProps } from 'src/common/types'
 import CardTitle from 'src/components/CardTitle'
 
-interface OwnProps {}
-
-type Props = NavigationProps<'ShowQRCode'> & OwnProps
+type Props = NavigationProps<'ShowQRCode'>
 
 function ScanQRCode({ route, navigation }: Props) {
   const { label, content } = route.params

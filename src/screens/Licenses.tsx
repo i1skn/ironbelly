@@ -17,14 +17,13 @@
 import colors from 'src/common/colors'
 import React from 'react'
 import IonicIcon from 'react-native-vector-icons/Ionicons'
-import { Wrapper } from 'src/common'
 import { Text } from 'src/components/CustomFont'
-import { NavigationProps } from 'src/common/types'
 import licenses from '../../licenses.json'
 import { FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 
-type Props = NavigationProps<'Licenses'>
+// import { NavigationProps } from 'src/common/types'
+// type Props = NavigationProps<'Licenses'>
 
 type ItemProps = { title: string; licenceId: number }
 
@@ -49,8 +48,8 @@ function renderItem({ item }: { item: string }) {
   return <Item title={item} licenceId={licenceId} />
 }
 
-const Licenses = (_props: Props) => {
-  let packages = Object.keys(licenses.packages)
+const Licenses = () => {
+  const packages = Object.keys(licenses.packages)
   packages.sort()
   return (
     <FlatList

@@ -25,13 +25,17 @@ import {
 } from 'react-native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import { isAndroid } from 'src/common'
-import { useFocusEffect } from '@react-navigation/native'
+import {
+  useFocusEffect,
+  NavigationProp,
+  ParamListBase,
+} from '@react-navigation/native'
 import colors from 'src/common/colors'
 
 type Props = {
   title: string
   subTitle?: string
-  navigation: any
+  navigation: NavigationProp<ParamListBase>
   style?: ViewProps['style']
 }
 

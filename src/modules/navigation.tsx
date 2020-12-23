@@ -71,9 +71,14 @@ const defaultScreenOptions = {
 export type RootStackParamList = {
   Landing: undefined
   LegalDisclaimer: {
-    nextScreen: { name: keyof RootStackParamList; params: any }
+    nextScreen: {
+      name: keyof RootStackParamList
+      params: Record<string, unknown>
+    }
   }
-  NewPassword: undefined
+  NewPassword: {
+    isNew: boolean
+  }
   ShowPaperKey: undefined
   WalletScan: undefined
   Main: undefined
@@ -95,7 +100,7 @@ export type RootStackParamList = {
   }
   SettingsCurrency: undefined
   ViewPaperKey: undefined | { fromSettings: boolean }
-  VerifyPaperKey: { title: string }
+  VerifyPaperKey: { title: string; wordsCount: number }
   TxDetails: { txId: number }
   TxIncompleteSend:
     | undefined
@@ -386,7 +391,8 @@ const Created = () => (
         isAndroid
           ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
-              headerTitle: TxIncompleteSendAndroidHeaderTitle(route?.params),
+              headerTitle: () =>
+                TxIncompleteSendAndroidHeaderTitle(route?.params),
             })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
@@ -410,9 +416,10 @@ const Created = () => (
         isAndroid
           ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
-              headerTitle: TxIncompleteSendAndroidHeaderTitle({
-                title: route?.params?.label,
-              }),
+              headerTitle: () =>
+                TxIncompleteSendAndroidHeaderTitle({
+                  title: route?.params?.label,
+                }),
             })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }
@@ -424,9 +431,10 @@ const Created = () => (
         isAndroid
           ? ({ route }) => ({
               ...TransitionPresets.DefaultTransition,
-              headerTitle: TxIncompleteSendAndroidHeaderTitle({
-                title: route?.params?.label,
-              }),
+              headerTitle: () =>
+                TxIncompleteSendAndroidHeaderTitle({
+                  title: route?.params?.label,
+                }),
             })
           : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
       }

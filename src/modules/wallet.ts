@@ -35,14 +35,13 @@ import {
   walletScanPmmrRangeSuccessAction,
   walletScanOutputsSuccessAction,
   walletScanFailureAction,
-  clearPasswordAction,
 } from 'src/common/types'
 import { log } from 'src/common/logger'
 import { combineReducers } from 'redux'
 import {
   mapPmmrRange,
-  getStateForRust,
   checkWalletDataDirectory,
+  getConfigForRust,
 } from 'src/common'
 import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY, TOR_DIRECTORY } from 'src/common'
@@ -215,7 +214,7 @@ const walletScan = function (
     case 'WALLET_SCAN_OUTPUTS_REQUEST':
       return { ...state, error: initialState.walletScan.error }
 
-    case 'WALLET_SCAN_OUTPUTS_SUCCESS':
+    case 'WALLET_SCAN_OUTPUTS_SUCCESS': {
       if (!state.highestIndex || !state.lowestIndex) {
         return state
       }
@@ -232,6 +231,7 @@ const walletScan = function (
         progress: percentageComplete,
         lastRetrievedIndex: action.lastRetrievedIndex,
       }
+    }
 
     case 'WALLET_SCAN_OUTPUTS_FAILURE':
       return { ...state, retryCount: state.retryCount + 1 }
@@ -388,7 +388,7 @@ export const sideEffects = {
     const { password, phrase, isNew } = action
     await checkWalletDataDirectory()
     return WalletBridge.walletInit(
-      getStateForRust(store.getState()),
+      JSON.stringify(getConfigForRust(store.getState())),
       phrase,
       password,
     )
@@ -427,7 +427,7 @@ export const sideEffects = {
   ['WALLET_SCAN_FAILURE']: async (action: walletScanFailureAction) => {
     log(action, true)
   },
-  ['CLEAR_PASSWORD']: async (_action: clearPasswordAction) => {
+  ['CLEAR_PASSWORD']: async () => {
     try {
       await WalletBridge.closeWallet()
     } catch (error) {
@@ -442,9 +442,7 @@ export const sideEffects = {
 
     try {
       const range = mapPmmrRange(
-        JSON.parse(
-          await WalletBridge.walletPmmrRange(getStateForRust(store.getState())),
-        ),
+        JSON.parse(await WalletBridge.walletPmmrRange()),
       )
       store.dispatch({
         type: 'WALLET_SCAN_PMMR_RANGE_SUCCESS',
@@ -511,7 +509,6 @@ export const sideEffects = {
     try {
       const newlastRetrievedIndex = JSON.parse(
         await WalletBridge.walletScanOutputs(
-          getStateForRust(store.getState()),
           lastRetrievedIndex ?? 0,
           highestIndex,
         ),
@@ -582,7 +579,7 @@ export const sideEffects = {
   },
   ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
     return WalletBridge.openWallet(
-      getStateForRust(store.getState()),
+      JSON.stringify(getConfigForRust(store.getState())),
       action.password,
     )
       .then(() => {
@@ -603,7 +600,7 @@ export const sideEffects = {
     store: Store,
   ) => {
     return WalletBridge.openWallet(
-      getStateForRust(store.getState()),
+      JSON.stringify(getConfigForRust(store.getState())),
       action.password,
     )
       .then(() => {
@@ -628,11 +625,14 @@ export const sideEffects = {
     })
   },
   ['WALLET_PHRASE_REQUEST']: (
-    _action: walletPhraseRequestAction,
+    action: walletPhraseRequestAction,
     store: Store,
   ) => {
-    // return GrinBridge.walletPhrase(getStateForRust(store.getState()), 'her')
-    return WalletBridge.walletPhrase(getStateForRust(store.getState()))
+    return WalletBridge.walletPhrase(
+      getConfigForRust(store.getState()).wallet_dir,
+      // TODO: Add password here
+      action.password,
+    )
       .then((phrase: string) => {
         store.dispatch({
           type: 'WALLET_PHRASE_SUCCESS',

@@ -18,8 +18,6 @@ import {
   Action,
   Store,
   Currency,
-  switchToFloonetAction,
-  switchToMainnetAction,
   setApiSecretAction,
   enableBiometryRequestAction,
   checkBiometryRequestAction,
@@ -30,13 +28,12 @@ import RNFS from 'react-native-fs'
 import { APPLICATION_SUPPORT_DIRECTORY } from 'src/common'
 import * as Keychain from 'react-native-keychain'
 import { log } from 'src/common/logger'
-import { getBiometryTitle } from 'src/common'
 import { isAndroid, currencyList } from 'src/common'
 import { State as RootState } from 'src/common/types'
-export const BIOMETRY_STATUS = {
-  unknown: 'unknown',
-  disabled: 'disabled',
-  enabled: 'enabled',
+export enum BIOMETRY_STATUS {
+  unknown = 'unknown',
+  disabled = 'disabled',
+  enabled = 'enabled',
 }
 export type State = {
   currencyObject: Currency
@@ -102,19 +99,13 @@ export const reducer = (state: State = initialState, action: Action): State => {
 }
 export const apiSecretFilePath = APPLICATION_SUPPORT_DIRECTORY + '/.api_secret'
 export const sideEffects = {
-  ['SWITCH_TO_FLOONET']: async (
-    action: switchToFloonetAction,
-    store: Store,
-  ) => {
+  ['SWITCH_TO_FLOONET']: async () => {
     await RNFS.writeFile(apiSecretFilePath, FLOONET_API_SECRET)
   },
-  ['SWITCH_TO_MAINNET']: async (
-    action: switchToMainnetAction,
-    store: Store,
-  ) => {
+  ['SWITCH_TO_MAINNET']: async () => {
     await RNFS.writeFile(apiSecretFilePath, MAINNET_API_SECRET)
   },
-  ['SET_API_SECRET']: async (action: setApiSecretAction, store: Store) => {
+  ['SET_API_SECRET']: async (action: setApiSecretAction) => {
     if (action.apiSecret) {
       await RNFS.writeFile(apiSecretFilePath, action.apiSecret)
     } else {
@@ -122,7 +113,7 @@ export const sideEffects = {
     }
   },
   ['CHECK_BIOMETRY_REQUEST']: async (
-    action: checkBiometryRequestAction,
+    _action: checkBiometryRequestAction,
     store: Store,
   ) => {
     try {
@@ -140,7 +131,7 @@ export const sideEffects = {
     }
   },
   ['ENABLE_BIOMETRY_REQUEST']: async (
-    action: enableBiometryRequestAction,
+    _action: enableBiometryRequestAction,
     store: Store,
   ) => {
     const { value: password } = store.getState().wallet.password
@@ -170,7 +161,7 @@ export const sideEffects = {
     }
   },
   ['DISABLE_BIOMETRY_REQUEST']: async (
-    action: disableBiometryRequestAction,
+    _action: disableBiometryRequestAction,
     store: Store,
   ) => {
     try {
@@ -187,7 +178,7 @@ export const sideEffects = {
     }
   },
   ['RESET_BIOMETRY_REQUEST']: async (
-    action: resetBiometryRequestAction,
+    _action: resetBiometryRequestAction,
     store: Store,
   ) => {
     try {

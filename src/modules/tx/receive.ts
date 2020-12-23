@@ -20,7 +20,6 @@ import { from, EMPTY } from 'rxjs'
 import { RootState } from 'src/common/redux'
 import { Epic, combineEpics, ofType } from 'redux-observable'
 import { Action, valueof } from 'src/common/types'
-import { getStateForRust } from 'src/common'
 import WalletBridge from 'src/bridges/wallet'
 
 export type State = {
@@ -44,19 +43,14 @@ export const txReceiveReducer = txReceiveSlice.reducer
 export const txReceiveActions = txReceiveSlice.actions
 export type TxReceiveActions = valueof<typeof txReceiveActions>
 
-export const startHttpListenEpic: Epic<Action, Action, RootState> = (
-  action$,
-  state$,
-) =>
+export const startHttpListenEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
     ofType('VALID_PASSWORD'),
     mergeMap(() =>
-      from(
-        WalletBridge.startListenWithHttp(
-          getStateForRust(state$.value),
-        ) as Promise<string>,
-      ).pipe(
-        map((address) => txReceiveActions.setAddress(address) as Action),
+      from(WalletBridge.startListenWithHttp('127.0.0.1:3415')).pipe(
+        map(
+          (address: string) => txReceiveActions.setAddress(address) as Action,
+        ),
         catchError((error) => {
           console.log(error)
           return EMPTY
@@ -65,10 +59,7 @@ export const startHttpListenEpic: Epic<Action, Action, RootState> = (
     ),
   )
 
-export const stopHttpListenEpic: Epic<Action, Action, RootState> = (
-  action$,
-  _state$,
-) =>
+export const stopHttpListenEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
     ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
     mergeMap(async () => {
