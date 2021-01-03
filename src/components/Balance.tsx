@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import BigNumber from 'bignumber.js'
 import * as React from 'react'
 import HeaderSpan from 'src/components/HeaderSpan'
 import LinearGradient from 'react-native-linear-gradient'
@@ -39,7 +40,7 @@ const BalanceComponent = ({ balance, currency, rates }: Props) => {
         colors={[colors.yellow['400'], colors.yellow['600']]}>
         <HeaderSpan bgColor={'transparent'} />
         <Text style={styles.amountGrin}>
-          {hrGrin(balance.total + balance.amountLocked)}
+          {hrGrin(new BigNumber(balance.total).plus(balance.amountLocked))}
         </Text>
         <View style={styles.nextToBalance}>
           <Text style={styles.nextToBalanceRow}>is your total balance</Text>
@@ -47,7 +48,7 @@ const BalanceComponent = ({ balance, currency, rates }: Props) => {
             equivalent to{' '}
             {hrFiat(
               convertToFiat(
-                balance.total + balance.amountLocked,
+                new BigNumber(balance.total).plus(balance.amountLocked),
                 currency,
                 rates,
               ),

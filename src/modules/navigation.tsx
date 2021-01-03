@@ -68,6 +68,13 @@ const defaultScreenOptions = {
   cardOverlayEnabled: true,
 }
 
+export enum passwordScreenMode {
+  APP_LOCK = 'app_lock', // open wallet
+  PAPER_KEY = 'paper_key', // get mnemonic
+  ENABLE_BIOMETRY = 'enable_biometry',
+  PROTECT_SCREEN = 'protect_screen', // just protect screen with PIN
+}
+
 export type RootStackParamList = {
   Landing: undefined
   LegalDisclaimer: {
@@ -79,7 +86,6 @@ export type RootStackParamList = {
   NewPassword: {
     isNew: boolean
   }
-  ShowPaperKey: undefined
   WalletScan: undefined
   Main: undefined
   Overview: { slatePath: string }
@@ -99,8 +105,13 @@ export type RootStackParamList = {
     nextScreen: keyof RootStackParamList
   }
   SettingsCurrency: undefined
-  ViewPaperKey: undefined | { fromSettings: boolean }
-  VerifyPaperKey: { title: string; wordsCount: number }
+  ViewPaperKey: { fromSettings: boolean; mnemonic: string; password?: string }
+  VerifyPaperKey: {
+    title: string
+    wordsCount: number
+    password: string
+    mnemonic?: string
+  }
   TxDetails: { txId: number }
   TxIncompleteSend:
     | undefined
@@ -115,7 +126,7 @@ export type RootStackParamList = {
     | undefined
     | { slatepack?: string; tx?: Tx; title?: string; qrContent?: string }
   Receive: { slatePath: string; slate: string }
-  Password: undefined
+  Password: { mode: passwordScreenMode }
   Created: undefined
   NotCreated: undefined
   HomeTabs: undefined
@@ -149,7 +160,8 @@ const NotCreated = () => (
       }}
     />
     <Stack.Screen
-      name="ShowPaperKey"
+      name="ViewPaperKey"
+      initialParams={{ fromSettings: false }}
       component={ShowPaperKeyScreen}
       options={{
         title: 'Paper Key',
@@ -256,6 +268,7 @@ const SettingsStack = () => {
         component={LicensesScreen}
       />
       <Stack.Screen name="License" component={LicenseScreen} />
+      <Stack.Screen name="Password" component={PasswordScreen} />
     </Stack.Navigator>
   )
 }
@@ -449,11 +462,11 @@ const Created = () => (
 
 export function RootStack({
   walletCreated,
-  isPasswordValid,
+  isWalletOpened,
   scanInProgress,
 }: {
   walletCreated: boolean
-  isPasswordValid: boolean
+  isWalletOpened: boolean
   scanInProgress: boolean
 }) {
   return (
@@ -465,7 +478,7 @@ export function RootStack({
         cardStyle: { backgroundColor: 'black' },
       }}>
       {walletCreated ? (
-        isPasswordValid ? (
+        isWalletOpened ? (
           scanInProgress ? (
             <Stack.Screen name="WalletScan" component={WalletScanScreen} />
           ) : (
@@ -475,6 +488,7 @@ export function RootStack({
           <Stack.Screen
             name="Password"
             component={PasswordScreen}
+            initialParams={{ mode: passwordScreenMode.APP_LOCK }}
             options={{
               headerShown: false,
             }}

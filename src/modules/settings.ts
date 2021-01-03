@@ -19,7 +19,6 @@ import {
   Store,
   Currency,
   setApiSecretAction,
-  enableBiometryRequestAction,
   checkBiometryRequestAction,
   disableBiometryRequestAction,
   resetBiometryRequestAction,
@@ -28,8 +27,9 @@ import RNFS from 'react-native-fs'
 import { APPLICATION_SUPPORT_DIRECTORY } from 'src/common'
 import * as Keychain from 'react-native-keychain'
 import { log } from 'src/common/logger'
-import { isAndroid, currencyList } from 'src/common'
+import { currencyList } from 'src/common'
 import { State as RootState } from 'src/common/types'
+import { getNavigation, passwordScreenMode } from './navigation'
 export enum BIOMETRY_STATUS {
   unknown = 'unknown',
   disabled = 'disabled',
@@ -130,35 +130,11 @@ export const sideEffects = {
       log(error, true)
     }
   },
-  ['ENABLE_BIOMETRY_REQUEST']: async (
-    _action: enableBiometryRequestAction,
-    store: Store,
-  ) => {
-    const { value: password } = store.getState().wallet.password
-
-    try {
-      if (
-        isAndroid ||
-        (await Keychain.canImplyAuthentication({
-          authenticationType: Keychain.AUTHENTICATION_TYPE.BIOMETRICS,
-        }))
-      ) {
-        await Keychain.setGenericPassword('user', password, {
-          accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
-          accessible: Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
-          storage: Keychain.STORAGE_TYPE.AES,
-        })
-        store.dispatch({
-          type: 'ENABLE_BIOMETRY_SUCCESS',
-        })
-      }
-    } catch (error) {
-      store.dispatch({
-        type: 'ENABLE_BIOMETRY_FAILURE',
-        message: error.message,
-      })
-      log(error, false)
-    }
+  ['ENABLE_BIOMETRY_REQUEST']: async () => {
+    const navigation = await getNavigation()
+    navigation?.navigate('Password', {
+      mode: passwordScreenMode.ENABLE_BIOMETRY,
+    })
   },
   ['DISABLE_BIOMETRY_REQUEST']: async (
     _action: disableBiometryRequestAction,

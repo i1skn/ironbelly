@@ -30,6 +30,7 @@ import { RouteProp } from '@react-navigation/native'
 
 import { TxReceiveActions } from 'src/modules/tx/receive'
 import { TorActions } from 'src/modules/tor'
+import { RootState } from './redux'
 
 export type txListRequestAction = {
   type: 'TX_LIST_REQUEST'
@@ -194,30 +195,16 @@ export type checkBiometryFalureAction = {
   code?: number
   message: string
 }
-export type setPasswordAction = {
-  type: 'SET_PASSWORD'
-  password: string
-}
 export type setApiSecretAction = {
   type: 'SET_API_SECRET'
   apiSecret: string
 }
-export type checkPasswordAction = {
-  type: 'CHECK_PASSWORD'
-  password: string
+
+export type setWalletOpenction = {
+  type: 'SET_WALLET_OPEN'
 }
-export type checkPasswordFromBiometryAction = {
-  type: 'CHECK_PASSWORD_FROM_BIOMETRY'
-  password: string
-}
-export type validPasswordAction = {
-  type: 'VALID_PASSWORD'
-}
-export type invalidPasswordAction = {
-  type: 'INVALID_PASSWORD'
-}
-export type clearPasswordAction = {
-  type: 'CLEAR_PASSWORD'
+export type closeWalletAction = {
+  type: 'CLOSE_WALLET'
 }
 export type slateLoadRequestAction = {
   type: 'SLATE_LOAD_REQUEST'
@@ -301,19 +288,6 @@ export type slateShareFalureAction = {
 export type walletClear = {
   type: 'WALLET_CLEAR'
 }
-export type seedNewRequestAction = {
-  type: 'SEED_NEW_REQUEST'
-  length: number
-}
-export type seedNewSuccessAction = {
-  type: 'SEED_NEW_SUCCESS'
-  mnemonic: string
-}
-export type seedNewFalureAction = {
-  type: 'SEED_NEW_FAILURE'
-  code?: number
-  message: string
-}
 export type walletInitRequestAction = {
   type: 'WALLET_INIT_REQUEST'
   password: string
@@ -328,17 +302,9 @@ export type walletInitFalureAction = {
   code?: number
   message: string
 }
-export type walletInitSetPasswordAction = {
-  type: 'WALLET_INIT_SET_PASSWORD'
-  password: string
-}
 export type walletInitSetIsNewAction = {
   type: 'WALLET_INIT_SET_IS_NEW'
   value: boolean
-}
-export type walletInitSetConfirmPasswordAction = {
-  type: 'WALLET_INIT_SET_CONFIRM_PASSWORD'
-  confirmPassword: string
 }
 export type walletScanStartAction = {
   type: 'WALLET_SCAN_START'
@@ -533,13 +499,9 @@ export type Action =
   | checkBiometryRequestAction
   | checkBiometrySuccessAction
   | checkBiometryFalureAction
-  | setPasswordAction
   | setApiSecretAction
-  | checkPasswordAction
-  | checkPasswordFromBiometryAction
-  | validPasswordAction
-  | invalidPasswordAction
-  | clearPasswordAction
+  | setWalletOpenction
+  | closeWalletAction
   | slateSetRequestAction
   | slateSetSuccessAction
   | slateSetFalureAction
@@ -570,15 +532,10 @@ export type Action =
   | txFormOutputStrategiesSuccessAction
   | txFormOutputStrategiesFalureAction
   | walletClear
-  | seedNewRequestAction
-  | seedNewSuccessAction
-  | seedNewFalureAction
   | walletInitRequestAction
   | walletInitSuccessAction
   | walletInitFalureAction
   | walletInitSetIsNewAction
-  | walletInitSetPasswordAction
-  | walletInitSetConfirmPasswordAction
   | walletScanResetAction
   | walletScanFailureAction
   | walletScanDoneAction
@@ -625,25 +582,25 @@ export type GetState = () => State
 export type Dispatch = (action: Action) => void
 export type Store = {
   dispatch: Dispatch
-  getState: () => State
+  getState: () => RootState
 }
 export type OutputStrategy = {
   selectionStrategyIsUseAll: boolean
-  total: number
-  fee: number
+  total: string
+  fee: string
 }
 export type PmmrRange = {
   lastRetrievedIndex: number
   highestIndex: number
 }
 export type Balance = {
-  amountAwaitingConfirmation: number
-  amountCurrentlySpendable: number
-  amountImmature: number
-  amountLocked: number
-  lastConfirmedHeight: number
-  minimumConfirmations: number
-  total: number
+  amountAwaitingConfirmation: string
+  amountCurrentlySpendable: string
+  amountImmature: string
+  amountLocked: string
+  lastConfirmedHeight: string
+  minimumConfirmations: string
+  total: string
 }
 type SlateParticipantData = {
   message: string
@@ -658,43 +615,50 @@ export type Slate = {
 export type Tx = {
   id: number
   type: string
-  amount: number
+  amount: string
   confirmed: boolean
-  fee: number
+  fee: string
   creationTime: string
-  slateId: string
-  storedTx: string
-} // Rust structures
+  slateId: string | null
+  storedTx: string | null
+  kernelExcess: string | null
+}
+
+// Rust structures
 
 export type RustBalance = {
-  amount_awaiting_confirmation: number
-  amount_currently_spendable: number
-  amount_immature: number
-  amount_locked: number
-  last_confirmed_height: number
-  minimum_confirmations: number
-  total: number
+  amount_awaiting_confirmation: string
+  amount_currently_spendable: string
+  amount_immature: string
+  amount_locked: string
+  last_confirmed_height: string
+  minimum_confirmations: string
+  total: string
 }
 export type RustTx = {
-  amount_credited: number
-  amount_debited: number
-  confirmation_ts: number
+  amount_credited: string
+  amount_debited: string
+  confirmation_ts: string | null
   confirmed: boolean
   creation_ts: string
-  fee: number
+  fee: string | null
   id: number
+  kernel_excess: string | null
+  kernel_lookup_min_height: string | null
   num_inputs: number
   num_outputs: number
   parent_key_id: string
-  tx_hex: string
-  tx_slate_id: string
-  tx_type: string
-  stored_tx: string
+  payment_proof: string | null
+  reverted_after: string | null
+  stored_tx: string | null
+  ttl_cutoff_height: string | null
+  tx_slate_id: string | null
+  tx_type: string // TxReceived ...
 }
 export type RustOutputStrategy = {
   selection_strategy_is_use_all: boolean
-  total: number
-  fee: number
+  total: string
+  fee: string
 }
 export type RustPmmrRange = Array<number> // Redux
 

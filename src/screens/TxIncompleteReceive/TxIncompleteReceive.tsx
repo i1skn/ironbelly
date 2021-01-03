@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import BigNumber from 'bignumber.js'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -58,7 +59,9 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
   const [isLoadingSlatepack, setIsLoadingSlatepack] = useState(false)
   const [receiveSlatepack, setReceiveSlatepack] = useState('')
   const refScrollView = useRef<KeyboardAwareScrollView>()
-  const title = tx ? `Receiving ${hrGrin(Math.abs(tx.amount))}` : `Receive`
+  const title = tx
+    ? `Receiving ${hrGrin(new BigNumber(tx.amount).abs())}`
+    : `Receive`
 
   const setWithValidation = (s: string) => {
     if (!isValidSlatepack(s)) {
@@ -91,7 +94,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
   }, [loadedSlatepack])
 
   useEffect(() => {
-    if (tx) {
+    if (tx?.slateId) {
       setIsLoadingSlatepack(true)
       const path = getSlatePath(tx.slateId, true /** response **/)
       RNFS.readFile(path, 'utf8')
@@ -145,7 +148,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
           keyboardDismissMode={'on-drag'}>
           <SafeAreaView edges={['bottom']}>
             <>
-              {(tx && (
+              {(tx?.slateId && (
                 <>
                   <CopyHeader content={tx.slateId} label={'Transaction ID'} />
                   <Text style={styles.txId}>{tx.slateId}</Text>

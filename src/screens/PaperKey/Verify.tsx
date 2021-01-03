@@ -33,8 +33,6 @@ import { WalletScanState } from 'src/modules/wallet'
 type Props = NavigationProps<'VerifyPaperKey'> &
   WalletScanState & {
     isNew: boolean
-    password: string
-    mnemonic: string
     createWallet: (password: string, mnemonic: string, isNew: boolean) => void
   }
 
@@ -69,24 +67,22 @@ class Verify extends Component<Props, State> {
     }
   }
 
-  componentDidMount() {
-    const { isNew } = this.props
-    if (isNew) {
-      this.setState({
-        mnemonicWords: this.props.mnemonic.split(' '),
-      })
-    } else {
-      this.setState({
-        mnemonicWords: 'confirm test profit tree unaware sense slice inform oak worry order furnace flower remove monitor alarm demand subject control plate distance admit hood glove'.split(
-          ' ',
-        ),
-      })
-    }
-  }
+  // componentDidMount() {
+  // const { isNew, route } = this.props
+  // if (isNew) {
+  // this.setState({
+  // mnemonicWords: (route.params?.mnemonic ?? '').split(' '),
+  // })
+  // } else {
+  // this.setState({
+  // mnemonicWords: ''.split(' '),
+  // })
+  // }
+  // }
 
   _onContinuePress = (currentUserPhrase: string) => {
     return () => {
-      const { isNew, password, createWallet } = this.props
+      const { isNew, route, createWallet } = this.props
 
       if (!isNew) {
         NetInfo.fetch().then(({ type }) => {
@@ -112,29 +108,33 @@ class Verify extends Component<Props, State> {
                   text: 'Continue',
                   style: 'destructive',
                   onPress: () => {
-                    createWallet(password, currentUserPhrase, isNew)
+                    createWallet(
+                      route.params.password,
+                      currentUserPhrase,
+                      isNew,
+                    )
                   },
                 },
               ],
             )
           } else {
-            createWallet(password, currentUserPhrase, isNew)
+            createWallet(route.params.password, currentUserPhrase, isNew)
           }
         })
       } else {
-        createWallet(password, currentUserPhrase, isNew)
+        createWallet(route.params.password, currentUserPhrase, isNew)
       }
     }
   }
 
   render() {
-    const { mnemonic, isNew } = this.props
+    const { route, isNew } = this.props
     const { mnemonicWords, wordsCount } = this.state
     const currentUserPhrase = mnemonicWords
       .map((w) => w.toLowerCase())
       .join(' ')
     const verified = isNew
-      ? mnemonic === currentUserPhrase
+      ? route.params.mnemonic === currentUserPhrase
       : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) ===
         wordsCount
     return (
@@ -220,8 +220,6 @@ class Verify extends Component<Props, State> {
 const mapStateToProps = (state: ReduxState) => ({
   ...state.wallet.walletScan,
   isNew: state.wallet.walletInit.isNew,
-  password: state.wallet.walletInit.password,
-  mnemonic: state.wallet.walletInit.mnemonic,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

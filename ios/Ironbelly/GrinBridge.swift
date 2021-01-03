@@ -28,7 +28,7 @@ class GrinBridge: RCTEventEmitter {
     @objc override static func requiresMainQueueSetup() -> Bool {
         return false
     }
-
+    
     @objc func walletInit(_ config:String, phrase: String, password: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         var error: UInt8 = 0
         let cResult = c_wallet_init(config, phrase, password, &error)

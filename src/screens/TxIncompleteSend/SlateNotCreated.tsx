@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
@@ -105,6 +106,10 @@ function SendLoader() {
       color={colors.grey[700]}
     />
   )
+}
+
+function isZero(v: string) {
+  return new BigNumber(v).isZero()
 }
 
 const SlateNotCreated = () => {
@@ -202,20 +207,19 @@ const SlateNotCreated = () => {
   }, [amount])
 
   let noticeText
-
-  if (balance.amountCurrentlySpendable) {
+  if (!isZero(balance.amountCurrentlySpendable)) {
     noticeText = `You can send up to ${hrGrin(
       balance.amountCurrentlySpendable,
     )}`
   } else {
     noticeText = `You don't have any funds available`
   }
-  if (balance.amountLocked) {
+  if (!isZero(balance.amountLocked)) {
     noticeText += ` because ${hrGrin(
       balance.amountLocked,
     )} is locked for unconfirmed transactions`
   }
-  if (balance.amountAwaitingConfirmation) {
+  if (!isZero(balance.amountAwaitingConfirmation)) {
     noticeText +=
       (balance.amountLocked ? ' and' : ' because') +
       ` ${hrGrin(
@@ -266,9 +270,6 @@ const SlateNotCreated = () => {
         </View>
       )}
       <View style={styles.feeStatus}>
-        {false && (
-          <Text style={styles.available}>{`Available: ${hrGrin(amount)}`}</Text>
-        )}
         {(!!outputStrategies_error && (
           <Text style={styles.networkFee}>{outputStrategies_error}</Text>
         )) ||

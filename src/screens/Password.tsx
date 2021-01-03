@@ -14,65 +14,137 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as LocalAuthentication from 'expo-local-authentication'
 import {
   View,
   TouchableWithoutFeedback,
-  Alert,
   Keyboard,
   StyleSheet,
 } from 'react-native'
-import { Text } from 'src/components/CustomFont'
 import FormTextInput from 'src/components/FormTextInput'
-import { connect } from 'react-redux'
-import styled from 'styled-components/native'
 import { BIOMETRY_STATUS } from 'src/modules/settings'
-import { isAndroid, getBiometryTitle } from 'src/common'
+import { isAndroid, getBiometryTitle, getConfigForRust } from 'src/common'
 import { KeyboardAvoidingWrapper } from 'src/common'
 import { Button } from 'src/components/CustomFont'
-import { State as ReduxState } from 'src/common/types'
+import { NavigationProps } from 'src/common/types'
 import * as Keychain from 'react-native-keychain'
-import { Dispatch } from 'src/common/types'
 import colors from 'src/common/colors'
+import { passwordScreenMode } from 'src/modules/navigation'
+import { useSelector } from 'src/common/redux'
+import WalletBridge from 'src/bridges/wallet'
+import sleep from 'sleep-promise'
+import { useDispatch } from 'react-redux'
+
 type Props = {
-  setPassword: (password: string) => void
-  checkPassword: (password: string) => void
-  isPasswordValid: boolean
-  error: {
-    message: string
-  }
-  password: string
-  inProgress: boolean
-  destroyWallet: () => void
-  clearToast: () => void
+  submit: (password: string) => void
   biometryEnabled: boolean
   biometryType: string | undefined | null
-  checkPasswordFromBiometry: (password: string) => void
-  scanInProgress: boolean
-}
-const Submit = styled(Button)``
-const ForgotButton = styled.TouchableOpacity`
-  margin-top: -46px;
-  margin-bottom: 40px;
-  align-self: flex-end;
-`
+} & NavigationProps<'Password'>
 
-class Password extends Component<Props> {
-  static navigationOptions = {
-    header: null,
+function Password({ navigation, route }: Props) {
+  const dispatch = useDispatch()
+  const [password, setPassword] = useState('')
+  const [inProgress, setInProgress] = useState(false)
+
+  const biometryType = useSelector((state) => state.settings.biometryType)
+  const biometryEnabled = useSelector(
+    (state) => state.settings.biometryStatus === BIOMETRY_STATUS.enabled,
+  )
+  const configForWalletRust = useSelector(getConfigForRust)
+
+  const handleWrongPassword = async () => {
+    await sleep(1000)
+    setInProgress(false)
+    setPassword('')
+    dispatch({
+      type: 'TOAST_SHOW',
+      text: 'Wrong password',
+    })
+    await sleep(3000)
+    dispatch({
+      type: 'TOAST_CLEAR',
+    })
   }
 
-  componentDidMount() {
-    const { biometryEnabled, biometryType } = this.props
+  const { mode } = route.params
 
+  useEffect(() => {
     if (biometryEnabled && biometryType !== Keychain.BIOMETRY_TYPE.FACE_ID) {
-      setTimeout(() => this._getPasswordFromBiometry(), 250)
+      setTimeout(() => getPasswordFromBiometry(), 250)
+    }
+  }, [])
+
+  const submit = async (password: string) => {
+    switch (mode) {
+      case passwordScreenMode.APP_LOCK: {
+        try {
+          setInProgress(true)
+          await WalletBridge.openWallet(
+            JSON.stringify(configForWalletRust),
+            password,
+          )
+          dispatch({
+            type: 'SET_WALLET_OPEN',
+          })
+        } catch (e) {
+          handleWrongPassword()
+        }
+        break
+      }
+      case passwordScreenMode.PAPER_KEY: {
+        try {
+          setInProgress(true)
+          const mnemonic = await WalletBridge.walletPhrase(
+            configForWalletRust.wallet_dir,
+            password,
+          )
+          navigation.replace('ViewPaperKey', {
+            mnemonic,
+            fromSettings: true,
+          })
+        } catch (e) {
+          handleWrongPassword()
+        }
+        break
+      }
+      case passwordScreenMode.ENABLE_BIOMETRY: {
+        try {
+          setInProgress(true)
+          await WalletBridge.walletPhrase(
+            configForWalletRust.wallet_dir,
+            password,
+          )
+          if (
+            isAndroid ||
+            (await Keychain.canImplyAuthentication({
+              authenticationType: Keychain.AUTHENTICATION_TYPE.BIOMETRICS,
+            }))
+          ) {
+            await Keychain.setGenericPassword('user', password, {
+              accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_CURRENT_SET,
+              accessible:
+                Keychain.ACCESSIBLE.WHEN_PASSCODE_SET_THIS_DEVICE_ONLY,
+              storage: Keychain.STORAGE_TYPE.AES,
+            })
+            dispatch({
+              type: 'ENABLE_BIOMETRY_SUCCESS',
+            })
+          }
+          navigation.goBack()
+        } catch (e) {
+          handleWrongPassword()
+        }
+        break
+      }
+      case passwordScreenMode.PROTECT_SCREEN: {
+        console.log('')
+        break
+      }
     }
   }
 
-  async _getPasswordFromBiometry() {
-    const { checkPasswordFromBiometry, biometryType } = this.props
+  const getPasswordFromBiometry = async () => {
     const authenticationPrompt = {
       title:
         biometryType === Keychain.BIOMETRY_TYPE.FACE_ID
@@ -97,62 +169,15 @@ class Password extends Component<Props> {
         authenticationPrompt,
       })
       if (creds && creds.password) {
-        checkPasswordFromBiometry(creds.password)
+        submit(creds.password)
       }
     } catch (e) {
       console.log(e)
     }
   }
 
-  _onForgot = () => {
-    Alert.alert(
-      'Forgot password',
-      'There is no way to restore the password. You can destroy the wallet and restore it if you have recovery passphrase backed up. Then you can provide a new password.',
-      [
-        {
-          text: 'Back',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Destroy the wallet',
-          style: 'destructive',
-          onPress: this._onDestroy,
-        },
-      ],
-    )
-  }
-  _onDestroy = () => {
-    Alert.alert(
-      'Destroy the wallet',
-      'This action would remove all of your data!',
-      [
-        {
-          text: 'Cancel',
-          onPress: () => console.log('Cancel Pressed'),
-          style: 'cancel',
-        },
-        {
-          text: 'Destroy',
-          style: 'destructive',
-          onPress: () => {
-            this.props.destroyWallet()
-          },
-        },
-      ],
-    )
-  }
-
-  render() {
-    const {
-      biometryEnabled,
-      biometryType,
-      password,
-      setPassword,
-      checkPassword,
-      inProgress,
-    } = this.props
-    return (
+  return (
+    <>
       <KeyboardAvoidingWrapper
         behavior={isAndroid ? undefined : 'padding'}
         style={styles.container}>
@@ -166,16 +191,12 @@ class Password extends Component<Props> {
             <FormTextInput
               autoFocus={false}
               secureTextEntry={true}
-              onChange={(password) => {
-                setPassword(password)
-              }}
+              onChange={setPassword}
               value={password}
               placeholder="Enter password"
             />
-            <ForgotButton disabled={false} onPress={this._onForgot}>
-              <Text style={styles.forgot}>Forgot?</Text>
-            </ForgotButton>
-            <Submit
+            <Button
+              style={styles.submit}
               title={`Unlock${
                 biometryEnabled && !password
                   ? ' with ' + getBiometryTitle(biometryType)
@@ -184,9 +205,9 @@ class Password extends Component<Props> {
               disabled={inProgress}
               onPress={() => {
                 if (biometryEnabled && !password) {
-                  this._getPasswordFromBiometry()
+                  getPasswordFromBiometry()
                 } else {
-                  checkPassword(password)
+                  submit(password)
                 }
               }}
               testID="UnlockBtn"
@@ -195,8 +216,8 @@ class Password extends Component<Props> {
           </View>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingWrapper>
-    )
-  }
+    </>
+  )
 }
 
 const styles = StyleSheet.create({
@@ -221,46 +242,14 @@ const styles = StyleSheet.create({
     lineHeight: 27,
     color: colors.onSurface,
   },
+  submit: {
+    marginTop: 16,
+  },
 })
 
-const mapStateToProps = (state: ReduxState) => ({
-  isPasswordValid: state.wallet.password.valid,
-  error: state.wallet.password.error,
-  password: state.wallet.password.value,
-  inProgress: state.wallet.password.inProgress,
-  biometryEnabled: state.settings.biometryStatus === BIOMETRY_STATUS.enabled,
-  biometryType: state.settings.biometryType,
-  scanInProgress: state.wallet.walletScan.inProgress,
-})
+// const mapStateToProps = (state: ReduxState) => ({
+// biometryEnabled: state.settings.biometryStatus === BIOMETRY_STATUS.enabled,
+// biometryType: state.settings.biometryType,
+// })
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  setPassword: (password: string) => {
-    dispatch({
-      type: 'SET_PASSWORD',
-      password,
-    })
-  },
-  checkPasswordFromBiometry: (password: string) => {
-    dispatch({
-      type: 'CHECK_PASSWORD_FROM_BIOMETRY',
-      password,
-    })
-  },
-  checkPassword: (password: string) => {
-    dispatch({
-      type: 'CHECK_PASSWORD',
-      password,
-    })
-  },
-  destroyWallet: () => {
-    dispatch({
-      type: 'WALLET_DESTROY_REQUEST',
-    })
-  },
-  clearToast: () =>
-    dispatch({
-      type: 'TOAST_CLEAR',
-    }),
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Password)
+export default Password

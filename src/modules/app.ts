@@ -41,10 +41,12 @@ const REFRESH_TXS_INTERVAL = 10 * 1000 // 10 sec
 export type State = {
   unopenedSlatePath: string
   legalAccepted: boolean
+  protectedScreenUnlocked: boolean
 }
 export const initialState: State = {
   unopenedSlatePath: '',
   legalAccepted: false,
+  protectedScreenUnlocked: false,
 }
 
 export const appReducer = (
@@ -77,11 +79,10 @@ export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
   state$,
 ) =>
   action$.pipe(
-    ofType('VALID_PASSWORD', 'SLATE_LOAD_REQUEST'),
+    ofType('SET_WALLET_OPEN', 'SLATE_LOAD_REQUEST'),
     filter(
       () =>
-        !!state$.value.app.unopenedSlatePath &&
-        state$.value.wallet.password.valid,
+        !!state$.value.app.unopenedSlatePath && state$.value.wallet.isOpened,
     ),
     mergeMap(async () => {
       const slatepack: string = await RNFS.readFile(
@@ -144,24 +145,24 @@ export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
   )
 }
 
-const checkBiometryEpic: Epic<Action, Action, RootState> = () => {
-  return of({
-    type: 'CHECK_BIOMETRY_REQUEST',
-  })
-}
-
 const refreshTxsPeriodicallyEpic: Epic<Action, Action, RootState> = (
   _,
   state$,
 ) =>
   interval(REFRESH_TXS_INTERVAL).pipe(
-    filter(() => state$.value.wallet.password.valid),
+    filter(() => state$.value.wallet.isOpened),
     mapTo({
       type: 'TX_LIST_REQUEST',
       showLoader: false,
       refreshFromNode: true,
     }),
   )
+
+const checkBiometryEpic: Epic<Action, Action, RootState> = () => {
+  return of({
+    type: 'CHECK_BIOMETRY_REQUEST',
+  })
+}
 
 export const appEpic: Epic<Action, Action, RootState> = combineEpics(
   checkBiometryEpic,

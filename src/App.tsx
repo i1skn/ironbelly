@@ -71,7 +71,7 @@ interface StateProps {
   currencyRates: CurrencyRatesState
   sharingInProgress: boolean
   walletCreated: boolean | null
-  isPasswordValid: boolean
+  isWalletOpened: boolean
 }
 
 interface DispatchProps {
@@ -208,6 +208,7 @@ class RealApp extends React.Component<Props, State> {
       WalletBridge.isWalletCreated().then(async (exists) => {
         if (exists) {
           if (isAndroid) {
+            // TODO: make this configurabel for both platforms
             this.lockTimeout = BackgroundTimer.setTimeout(() => {
               this.lockApp()
             }, 5000)
@@ -221,7 +222,7 @@ class RealApp extends React.Component<Props, State> {
 
   lockApp = () => {
     store.dispatch({
-      type: 'CLEAR_PASSWORD',
+      type: 'CLOSE_WALLET',
     })
   }
 
@@ -262,7 +263,7 @@ class RealApp extends React.Component<Props, State> {
       walletCreated,
       scanInProgress,
       closeTxPostModal,
-      isPasswordValid,
+      isWalletOpened,
     } = this.props
     if (walletCreated === null) {
       return null
@@ -276,7 +277,7 @@ class RealApp extends React.Component<Props, State> {
         </Modal>
         <NavigationContainer ref={navigationRef} theme={appTheme}>
           <RootStack
-            isPasswordValid={isPasswordValid}
+            isWalletOpened={isWalletOpened}
             walletCreated={walletCreated}
             scanInProgress={scanInProgress}
           />
@@ -297,7 +298,7 @@ const mapStateToProps = (state: GlobalState): StateProps => {
     showTxConfirmationModal: state.tx.txPost.showModal,
     chain: state.settings.chain,
     scanInProgress: state.wallet.walletScan.inProgress,
-    isPasswordValid: state.wallet.password.valid,
+    isWalletOpened: state.wallet.isOpened,
     currencyRates: state.currencyRates,
     sharingInProgress: state.tx.slateShare.inProgress,
     walletCreated: state.wallet.isCreated,

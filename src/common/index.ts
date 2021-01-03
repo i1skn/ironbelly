@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+import BigNumber from 'bignumber.js'
 import moment from 'moment'
 import 'intl'
 import 'intl/locale-data/jsonp/en'
@@ -28,7 +28,6 @@ import {
   PmmrRange,
   RustBalance,
   Balance,
-  State,
   UrlQuery,
   Currency,
   Slate,
@@ -39,35 +38,46 @@ import { Text } from 'src/components/CustomFont'
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import { BIOMETRY_TYPE } from 'react-native-keychain'
 import { decode as atob } from 'base-64'
+import { RootState } from './redux'
 export const isAndroid = Platform.OS === 'android'
 console.log(isAndroid ? RNFS.DocumentDirectoryPath : RNFS.LibraryDirectoryPath)
-export const hrGrin = (amount: number): string => {
+export const hrGrin = (amount: BigNumber.Value): string => {
   return (
     new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
       minimumFractionDigits: 3,
     })
-      .format(amount / 1000000000)
+      // TODO: avoid converstion `toNumber` here
+      .format(new BigNumber(amount).dividedBy(1000000000).toNumber())
       .replace(/\$/, '') + 'ツ'
   )
 }
-export const hrFiat = (amount: number, currency: Currency): string => {
+export const hrFiat = (amount: BigNumber.Value, currency: Currency): string => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: currency.code,
     minimumFractionDigits: currency.fractionDigits,
-  }).format(amount)
+    // TODO: avoid converstion `toNumber` here
+  }).format(new BigNumber(amount).toNumber())
 }
 export const convertToFiat = (
-  amount: number,
+  amount: BigNumber.Value,
   currency: Currency,
   rates: Record<string, number>,
-): number => {
+): string => {
   const multiplier = rates[currency.code.toLowerCase()]
-  return (amount / 1000000000) * (multiplier || 0)
+  return new BigNumber(amount)
+    .dividedBy(1000000000)
+    .multipliedBy(multiplier || 0)
+    .toFixed()
 }
 export const mapRustTx = (rTx: RustTx): Tx => {
+  const fee = new BigNumber(rTx.fee ?? 0).toFixed()
+  const amount = new BigNumber(rTx.amount_credited)
+    .minus(rTx.amount_debited)
+    .plus(fee)
+    .toFixed()
   return {
     id: rTx.id,
     slateId: rTx.tx_slate_id,
@@ -75,8 +85,9 @@ export const mapRustTx = (rTx: RustTx): Tx => {
     type: rTx.tx_type,
     confirmed: rTx.confirmed,
     creationTime: rTx.creation_ts,
-    amount: rTx.amount_credited - rTx.amount_debited + rTx.fee,
-    fee: rTx.fee,
+    kernelExcess: rTx.kernel_excess,
+    amount,
+    fee,
   }
 }
 export const mapRustBalance = (rB: RustBalance): Balance => {
@@ -105,7 +116,7 @@ export const mapPmmrRange = (pR: RustPmmrRange): PmmrRange => {
     highestIndex: pR[1],
   }
 }
-export const getConfigForRust = (state: State) => {
+export const getConfigForRust = (state: RootState) => {
   return {
     wallet_dir: APPLICATION_SUPPORT_DIRECTORY,
     check_node_api_http_addr: state.settings.checkNodeApiHttpAddr,

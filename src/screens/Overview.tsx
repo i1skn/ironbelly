@@ -126,14 +126,22 @@ function Overview({
             disableRightSwipe
             rightOpenValue={-100}
             disableLeftSwipe={
-              data.item.confirmed || data.item.type === 'TxPosted'
+              data.item.confirmed ||
+              data.item.type === 'TxPosted' ||
+              !data.item.slateId
             }>
             <View style={styles.cancel}>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={() =>
-                  txCancel(data.item.id, data.item.slateId, !data.item.storedTx)
-                }>
+                onPress={() => {
+                  if (data.item.slateId) {
+                    txCancel(
+                      data.item.id,
+                      data.item.slateId,
+                      !data.item.storedTx,
+                    )
+                  }
+                }}>
                 <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
               </TouchableOpacity>
             </View>
@@ -145,8 +153,9 @@ function Overview({
                       txId: data.item.id,
                     })
                   } else if (
-                    data.item.type === 'TxFinalized' ||
-                    data.item.type === 'TxPosted'
+                    (data.item.type === 'TxFinalized' ||
+                      data.item.type === 'TxPosted') &&
+                    data.item.slateId
                   ) {
                     txConfirm(data.item.slateId)
                   } else if (data.item.type === 'TxReceived') {

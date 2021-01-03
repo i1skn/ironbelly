@@ -19,15 +19,11 @@ import { persistReducer } from 'redux-persist'
 import {
   Action,
   walletInitRequestAction,
-  seedNewRequestAction,
   walletPhraseRequestAction,
-  invalidPasswordAction,
   walletDestroyRequestAction,
   walletDestroySuccessAction,
   walletMigrateToMainnetRequestAction,
   walletScanOutputsRequestAction,
-  checkPasswordAction,
-  checkPasswordFromBiometryAction,
   Store,
   walletScanPmmrRangeFalureAction,
   walletScanPmmrRangeRequestAction,
@@ -51,9 +47,6 @@ export const RECOVERY_LIMIT = 1000
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
 
 export type WalletInitState = {
-  mnemonic: string
-  password: string
-  confirmPassword: string
   isNew: boolean
   error: {
     message: string
@@ -75,32 +68,15 @@ export type WalletScanState = {
     code?: number
   }
 }
-export type WalletPhraseState = {
-  inProgress: boolean
-  phrase: string
-}
-export type PasswordState = {
-  value: string
-  valid: boolean
-  error: {
-    message: string
-    code?: number
-  }
-  inProgress: boolean
-}
 export type State = {
   walletInit: WalletInitState
-  walletPhrase: WalletPhraseState
   walletScan: WalletScanState
-  password: PasswordState
   isCreated: boolean | null
+  isOpened: boolean
 }
 
 const initialState: State = {
   walletInit: {
-    password: '',
-    confirmPassword: '',
-    mnemonic: '',
     isNew: true,
     error: {
       message: '',
@@ -119,20 +95,8 @@ const initialState: State = {
       code: 0,
     },
   },
-  walletPhrase: {
-    inProgress: false,
-    phrase: '',
-  },
-  password: {
-    valid: false,
-    value: '',
-    error: {
-      message: '',
-      code: 0,
-    },
-    inProgress: false,
-  },
   isCreated: null,
+  isOpened: false,
 }
 
 const walletInit = function (
@@ -147,7 +111,6 @@ const walletInit = function (
     case 'WALLET_INIT_REQUEST':
       return {
         ...state,
-        mnemonic: '',
         error: {
           message: '',
           code: 0,
@@ -156,15 +119,6 @@ const walletInit = function (
 
     case 'WALLET_INIT_SET_IS_NEW':
       return { ...initialState.walletInit, isNew: action.value }
-
-    case 'WALLET_INIT_SET_PASSWORD':
-      return { ...state, password: action.password }
-
-    case 'WALLET_INIT_SET_CONFIRM_PASSWORD':
-      return { ...state, confirmPassword: action.confirmPassword }
-
-    case 'SEED_NEW_SUCCESS':
-      return { ...state, mnemonic: action.mnemonic }
 
     case 'WALLET_INIT_FAILURE':
       return {
@@ -251,77 +205,6 @@ const walletScan = function (
   }
 }
 
-const walletPhrase = function (
-  state: WalletPhraseState = initialState.walletPhrase,
-  action: Action,
-): WalletPhraseState {
-  switch (action.type) {
-    case 'WALLET_PHRASE_REQUEST':
-      return { ...state, inProgress: true }
-
-    case 'WALLET_PHRASE_SUCCESS':
-      return { ...state, inProgress: false, phrase: action.phrase }
-
-    case 'WALLET_PHRASE_FAILURE':
-      return { ...state, inProgress: false }
-
-    default:
-      return state
-  }
-}
-
-const password = function (
-  state: PasswordState = initialState.password,
-  action: Action,
-): PasswordState {
-  switch (action.type) {
-    case 'SET_PASSWORD':
-      return {
-        valid: false,
-        value: action.password,
-        error: initialState.password.error,
-        inProgress: state.inProgress,
-      }
-
-    case 'CHECK_PASSWORD':
-      return {
-        valid: false,
-        value: state.value,
-        error: initialState.password.error,
-        inProgress: true,
-      }
-
-    case 'VALID_PASSWORD':
-      return {
-        value: state.value,
-        valid: true,
-        error: initialState.password.error,
-        inProgress: false,
-      }
-
-    case 'INVALID_PASSWORD':
-      return {
-        value: '',
-        valid: false,
-        error: {
-          message: 'Wrong password',
-        },
-        inProgress: false,
-      }
-
-    case 'CLEAR_PASSWORD':
-      return {
-        valid: false,
-        error: initialState.password.error,
-        value: '',
-        inProgress: false,
-      }
-
-    default:
-      return state
-  }
-}
-
 export const reducer = combineReducers({
   isCreated: function (
     state: State['isCreated'] = initialState.isCreated,
@@ -338,7 +221,19 @@ export const reducer = combineReducers({
         return state
     }
   },
-  password,
+  isOpened: function (
+    state: State['isOpened'] = initialState.isOpened,
+    action: Action,
+  ): boolean | null {
+    switch (action.type) {
+      case 'SET_WALLET_OPEN':
+        return true
+      case 'CLOSE_WALLET':
+        return false
+      default:
+        return state
+    }
+  },
   walletInit: persistReducer(
     {
       key: 'walletInit',
@@ -362,72 +257,55 @@ export const reducer = combineReducers({
     },
     walletScan,
   ) as typeof walletScan,
-  walletPhrase,
 })
 export const sideEffects = {
-  ['SEED_NEW_REQUEST']: (action: seedNewRequestAction, store: Store) => {
-    return WalletBridge.seedNew(action.length)
-      .then((mnemonic: string) => {
-        store.dispatch({
-          type: 'SEED_NEW_SUCCESS',
-          mnemonic,
-        })
-      })
-      .catch((error: Error) => {
-        store.dispatch({
-          type: 'SEED_NEW_FAILURE',
-          message: error.message,
-        })
-        log(error, true)
-      })
-  },
   ['WALLET_INIT_REQUEST']: async (
     action: walletInitRequestAction,
     store: Store,
   ) => {
     const { password, phrase, isNew } = action
+    const configForWalletRust = getConfigForRust(store.getState())
     await checkWalletDataDirectory()
-    return WalletBridge.walletInit(
-      JSON.stringify(getConfigForRust(store.getState())),
-      phrase,
-      password,
-    )
-      .then(() => {
-        store.dispatch({
-          type: 'SET_PASSWORD',
-          password,
-        })
-        store.dispatch({
-          type: 'CHECK_PASSWORD',
-          password,
-        })
-        if (isNew) {
-          store.dispatch({
-            type: 'WALLET_SCAN_DONE',
-          })
-        } else {
-          store.dispatch({
-            type: 'WALLET_SCAN_START',
-          })
-        }
-        setTimeout(() => {
-          store.dispatch({
-            type: 'WALLET_INIT_SUCCESS',
-          })
-        }, 250)
+    try {
+      await WalletBridge.walletInit(
+        JSON.stringify(configForWalletRust),
+        phrase,
+        password,
+      )
+      await WalletBridge.openWallet(
+        JSON.stringify(configForWalletRust),
+        password,
+      )
+      store.dispatch({
+        type: 'SET_WALLET_OPEN',
       })
-      .catch((error: Error) => {
+      if (isNew) {
         store.dispatch({
-          type: 'WALLET_INIT_FAILURE',
-          message: error.message,
+          type: 'WALLET_SCAN_DONE',
         })
-        log(error, true)
+      } else {
+        store.dispatch({
+          type: 'WALLET_SCAN_START',
+        })
+      }
+      setTimeout(() => {
+        store.dispatch({
+          type: 'WALLET_INIT_SUCCESS',
+        })
+      }, 250)
+    } catch (error) {
+      store.dispatch({
+        type: 'WALLET_INIT_FAILURE',
+        message: error.message,
       })
+      log(error, true)
+      return
+    }
   },
   ['WALLET_SCAN_FAILURE']: async (action: walletScanFailureAction) => {
     log(action, true)
   },
-  ['CLEAR_PASSWORD']: async () => {
+  ['CLOSE_WALLET']: async () => {
     try {
       await WalletBridge.closeWallet()
     } catch (error) {
@@ -467,12 +345,6 @@ export const sideEffects = {
     action: walletScanPmmrRangeFalureAction,
     store: Store,
   ) => {
-    const isPasswordSet = !!store.getState().wallet.password.value
-
-    if (!isPasswordSet) {
-      return
-    }
-
     const { message } = action
     const { retryCount } = store.getState().wallet.walletScan
 
@@ -547,9 +419,11 @@ export const sideEffects = {
           type: 'WALLET_SCAN_DONE',
         })
       } else {
-        store.dispatch({
-          type: 'WALLET_SCAN_OUTPUTS_REQUEST',
-        })
+        if (store.getState().wallet.isOpened) {
+          store.dispatch({
+            type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+          })
+        }
       }
     }
   },
@@ -557,15 +431,13 @@ export const sideEffects = {
     action: walletScanOutputsFalureAction,
     store: Store,
   ) => {
-    const isPasswordSet = !!store.getState().wallet.password.value
-
-    if (!isPasswordSet) {
-      return
-    }
-
     const { message } = action
     const { retryCount } = store.getState().wallet.walletScan
 
+    if (store.getState().wallet.isOpened) {
+      // we ignore these errors, if wallet is closed
+      return
+    }
     if (retryCount < MAX_RETRIES) {
       store.dispatch({
         type: 'WALLET_SCAN_OUTPUTS_REQUEST',
@@ -576,53 +448,6 @@ export const sideEffects = {
         message,
       })
     }
-  },
-  ['CHECK_PASSWORD']: (action: checkPasswordAction, store: Store) => {
-    return WalletBridge.openWallet(
-      JSON.stringify(getConfigForRust(store.getState())),
-      action.password,
-    )
-      .then(() => {
-        store.dispatch({
-          type: 'VALID_PASSWORD',
-        })
-      })
-      .catch(() => {
-        setTimeout(() => {
-          store.dispatch({
-            type: 'INVALID_PASSWORD',
-          })
-        }, 1000) // Time-out to prevent a bruteforce attack)
-      })
-  },
-  ['CHECK_PASSWORD_FROM_BIOMETRY']: (
-    action: checkPasswordFromBiometryAction,
-    store: Store,
-  ) => {
-    return WalletBridge.openWallet(
-      JSON.stringify(getConfigForRust(store.getState())),
-      action.password,
-    )
-      .then(() => {
-        store.dispatch({
-          type: 'SET_PASSWORD',
-          password: action.password,
-        })
-        store.dispatch({
-          type: 'VALID_PASSWORD',
-        })
-      })
-      .catch(() => {
-        store.dispatch({
-          type: 'DISABLE_BIOMETRY_REQUEST',
-        })
-      })
-  },
-  ['INVALID_PASSWORD']: (_action: invalidPasswordAction, store: Store) => {
-    store.dispatch({
-      type: 'TOAST_SHOW',
-      text: 'Wrong password',
-    })
   },
   ['WALLET_PHRASE_REQUEST']: (
     action: walletPhraseRequestAction,

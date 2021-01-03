@@ -34,17 +34,25 @@ public class GrinBridge extends ReactContextBaseJavaModule {
         return "GrinBridge";
     }
 
+    private boolean checkOpenedWallet(Promise promise) {
+        if (openedWallet == null) {
+            promise.resolve("Wallet is not open");
+            return false;
+        }
+        return true;
+    }
+
     public GrinBridge(ReactApplicationContext reactContext) {
         super(reactContext);
     }
 
     @ReactMethod
-    public void openWallet(String state, String password, Promise promise) {
+    public void openWallet(String config, String password, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    openedWallet = openWallet(state, password);
+                    openedWallet = openWallet(config, password);
                     promise.resolve("Opened wallet successfully");
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
@@ -58,7 +66,7 @@ public class GrinBridge extends ReactContextBaseJavaModule {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                if (openedWallet != null) {
+                if (checkOpenedWallet(promise)) {
                     try {
                         String result = closeWallet(openedWallet);
                         openedWallet = null;
@@ -66,23 +74,6 @@ public class GrinBridge extends ReactContextBaseJavaModule {
                     } catch (Exception e) {
                         promise.reject("", e.getMessage());
                     }
-                } else {
-                    promise.resolve("Wallet is not open");
-                }
-            }
-        });
-    }
-
-
-    @ReactMethod
-    public void balance(String state, Boolean refreshFromNode, Promise promise) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(balance(state, refreshFromNode));
-                } catch (Exception e) {
-                    promise.reject("", e.getMessage());
                 }
             }
         });
@@ -117,12 +108,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void walletInit(String state, String phrase, String password, Promise promise) {
+    public void walletInit(String config, String phrase, String password, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(walletInit(state, phrase, password));
+                    promise.resolve(walletInit(config, phrase, password));
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -131,12 +122,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txGet(String state, Boolean refreshFromNode, String txSlateId, Promise promise) {
+    public void txGet(Boolean refreshFromNode, String txSlateId, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txGet(state, refreshFromNode, txSlateId));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txGet(openedWallet, refreshFromNode, txSlateId));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -145,12 +138,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txsGet(String state, Boolean refreshFromNode, Promise promise) {
+    public void txsGet(double minimumConfirmations, Boolean refreshFromNode, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txsGet(state, refreshFromNode));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txsGet(openedWallet, (long) minimumConfirmations, refreshFromNode));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -159,12 +154,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void walletPmmrRange(String state, Promise promise) {
+    public void walletPmmrRange(Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(walletPmmrRange(state));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(walletPmmrRange(openedWallet));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -173,14 +170,16 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void walletScanOutputs(String state, double lastRetrievedIndex, double highestIndex,
+    public void walletScanOutputs(double lastRetrievedIndex, double highestIndex,
             Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(walletScanOutputs(state, (long) lastRetrievedIndex,
-                            (long) highestIndex));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(walletScanOutputs(openedWallet, (long) lastRetrievedIndex,
+                                (long) highestIndex));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -189,12 +188,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void walletPhrase(String state, Promise promise) {
+    public void walletPhrase(String walletDir, String password, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(walletPhrase(state));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(walletPhrase(walletDir, password));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -203,12 +204,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txStrategies(String state, double amount, Promise promise) {
+    public void txStrategies(double amount, double minimumConfirmations, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txStrategies(state, (long) amount));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txStrategies(openedWallet, (long) amount, (long) minimumConfirmations));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -217,13 +220,15 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txCreate(String state, double amount, Boolean selectionStrategyIsUseAll,
+    public void txCreate(double amount, double minimumConfirmations, Boolean selectionStrategyIsUseAll,
             Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txCreate(state, (long) amount, selectionStrategyIsUseAll));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txCreate(openedWallet, (long) amount, (long) minimumConfirmations, selectionStrategyIsUseAll));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -232,12 +237,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txCancel(String state, double id, Promise promise) {
+    public void txCancel(double id, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txCancel(state, (long) id));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txCancel(openedWallet, (long) id));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -246,12 +253,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txReceive(String state, String slatepack, Promise promise) {
+    public void txReceive(String account, String slatepack, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txReceive(state, slatepack));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txReceive(openedWallet, account, slatepack));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -260,12 +269,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txFinalize(String state, String slatepack, Promise promise) {
+    public void txFinalize(String slatepack, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txFinalize(state, slatepack));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txFinalize(openedWallet, slatepack));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -274,14 +285,16 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txSendHttps(String state, double amount, Boolean selectionStrategyIsUseAll,
+    public void txSendHttps(double amount, double minimumConfirmations, Boolean selectionStrategyIsUseAll,
             String url, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(
-                            txSendHttps(state, (long) amount, selectionStrategyIsUseAll, url));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(
+                                txSendHttps(openedWallet, (long) amount, (long) minimumConfirmations, selectionStrategyIsUseAll, url));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -290,14 +303,16 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txSendAddress(String state, double amount, Boolean selectionStrategyIsUseAll,
+    public void txSendAddress(double amount, double minimumConfirmations, Boolean selectionStrategyIsUseAll,
                             String address, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(
-                            txSendAddress(state, (long) amount, selectionStrategyIsUseAll, address));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(
+                                txSendAddress(openedWallet, (long) amount, (long) minimumConfirmations, selectionStrategyIsUseAll, address));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -306,12 +321,14 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txPost(String state, String txSlateId, Promise promise) {
+    public void txPost(String txSlateId, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(txPost(state, txSlateId));
+                    if (checkOpenedWallet(promise)) {
+                        promise.resolve(txPost(openedWallet, txSlateId));
+                    }
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -320,12 +337,12 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void slatepackDecode(String state, String slatepack, Promise promise) {
+    public void slatepackDecode(String slatepack, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 try {
-                    promise.resolve(slatepackDecode(state, slatepack));
+                    promise.resolve(slatepackDecode(slatepack));
                 } catch (Exception e) {
                     promise.reject("", e.getMessage());
                 }
@@ -334,28 +351,16 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void getGrinAddress(String state, Promise promise) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    promise.resolve(getGrinAddress(state));
-                } catch (Exception e) {
-                    promise.reject("", e.getMessage());
-                }
-            }
-        });
-    }
-
-    @ReactMethod
-    public void startListenWithHttp(String state, Promise promise) {
+    public void startListenWithHttp(String apiListenAddress, Promise promise) {
         AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
                 if (httpListenerApi == null) {
                     try {
-                        httpListenerApi = startListenWithHttp(state);
-                        promise.resolve(getGrinAddress(state));
+                        if (checkOpenedWallet(promise)) {
+                            httpListenerApi = startListenWithHttp(openedWallet, apiListenAddress);
+                            promise.resolve(getGrinAddress(openedWallet));
+                        }
                     } catch (Exception e) {
                         promise.reject("", e.getMessage());
                     }
@@ -454,51 +459,53 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
     private static native String setLogger();
 
+    public static native String initMainnet();
+
+    public static native String initTestnet();
+
     private static native String balance(String state, boolean refreshFromNode);
 
-    private static native String txGet(String state, boolean refreshFromNode, String txSlateId);
+    private static native String txGet(long openedWallet, boolean refreshFromNode, String txSlateId);
 
-    private static native String txsGet(String state, boolean refreshFromNode);
+    private static native String txsGet(long openedWallet, long minimumConfirmations, boolean refreshFromNode);
 
     private static native String seedNew(long seedLength);
 
-    private static native String walletInit(String state, String phrase, String password);
+    private static native String walletInit(String config, String phrase, String password);
 
-    private static native long openWallet(String state, String password);
+    private static native long openWallet(String config, String password);
 
     private static native String closeWallet(long openedWallet);
 
-    private static native String walletScanOutputs(String state, long lastRetrievedIndex,
+    private static native String walletScanOutputs(long openedWallet, long lastRetrievedIndex,
             long highestIndex);
 
-    private static native String walletPmmrRange(String state);
+    private static native String walletPmmrRange(long openedWallet);
 
-    private static native String txStrategies(String state, long amount);
+    private static native String txStrategies(long openedWallet, long amount, long minimumConfirmations);
 
-    private static native String walletPhrase(String state);
+    private static native String walletPhrase(String walletDir, String password);
 
-    private static native String txCreate(String state, long amount,
+    private static native String txCreate(long openedWallet, long amount, long minimumConfirmations,
             boolean selectionStrategyIsUseAll);
 
-    private static native String txCancel(String state, long id);
+    private static native String txCancel(long openedWallet, long id);
 
-    private static native String txReceive(String state, String slatepack);
+    private static native String txReceive(long openedWallet, String account, String slatepack);
 
-    private static native String txFinalize(String state, String slatepack);
+    private static native String txFinalize(long openedWallet, String slatepack);
 
-    private static native String txSendHttps(String state, long amount,
-            boolean selectionStrategyIsUseAll, String url);
+    private static native String txSendHttps(long openedWallet, long amount, long minimumConfirmations, boolean selectionStrategyIsUseAll, String url);
 
-    private static native String txSendAddress(String state, long amount,
-            boolean selectionStrategyIsUseAll, String address);
+    private static native String txSendAddress(long openedWallet, long amount, long minimumConfirmations, boolean selectionStrategyIsUseAll, String address);
 
-    private static native String txPost(String state, String txSlateId);
+    private static native String txPost(long openedWallet, String txSlateId);
 
-    private static native String slatepackDecode(String state, String slatepack);
+    private static native String slatepackDecode(String slatepack);
 
-    private static native String getGrinAddress(String state);
+    private static native String getGrinAddress(long openedWallet);
 
-    private static native long startListenWithHttp(String state);
+    private static native long startListenWithHttp(long openedWallet, String apiListenAddr);
 
     private static native String stopListenWithHttp(long apiServer);
 

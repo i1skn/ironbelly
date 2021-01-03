@@ -18,13 +18,13 @@ import { mapRustBalance } from 'src/common'
 import { Action, Balance } from 'src/common/types'
 export type State = Balance
 const initialState: State = {
-  amountAwaitingConfirmation: 0,
-  amountCurrentlySpendable: 0,
-  amountImmature: 0,
-  amountLocked: 0,
-  lastConfirmedHeight: 0,
-  minimumConfirmations: 0,
-  total: 0,
+  amountAwaitingConfirmation: '0',
+  amountCurrentlySpendable: '0',
+  amountImmature: '0',
+  amountLocked: '0',
+  lastConfirmedHeight: '0',
+  minimumConfirmations: '0',
+  total: '0',
 }
 export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {

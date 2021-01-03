@@ -15,7 +15,7 @@
  */
 
 import React, { useEffect } from 'react'
-
+import BigNumber from 'bignumber.js'
 import colors from 'src/common/colors'
 import { StyleSheet, View } from 'react-native'
 import { Text } from 'src/components/CustomFont'
@@ -36,7 +36,9 @@ type Props = NavigationProps<'TxIncompleteSend'> & OwnProps
 const TxIncompleteSend = ({ navigation, route }: Props) => {
   const dispatch = useDispatch()
   const tx = route?.params?.tx
-  const title = tx ? `Sending ${hrGrin(Math.abs(tx.amount))}` : `Send`
+  const title = tx
+    ? `Sending ${hrGrin(new BigNumber(tx.amount).abs())}`
+    : `Send`
   const subTitle = tx && `fee: ${hrGrin(tx.fee)}`
 
   useEffect(() => {

@@ -49,7 +49,7 @@ extern crate log;
 #[cfg(target_os = "android")]
 #[allow(non_snake_case)]
 mod android;
-// #[cfg(target_os = "ios")]
+#[cfg(target_os = "ios")]
 mod ios;
 
 mod errors;

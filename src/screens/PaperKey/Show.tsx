@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { ScrollView } from 'react-native'
-import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Notice, Spacer } from 'src/common'
 import { monoSpaceFont, Button } from 'src/components/CustomFont'
-import { State as ReduxState, Dispatch } from 'src/common/types'
 import { NavigationProps } from 'src/common/types'
 
 interface OwnProps {
@@ -31,9 +29,6 @@ interface OwnProps {
 
 type Props = NavigationProps<'ViewPaperKey'> & OwnProps
 
-type State = {
-  fromSettings: boolean
-}
 const Wrapper = styled.View`
   flex: 1;
 `
@@ -56,81 +51,55 @@ const WordNumber = styled.Text`
   font-family: ${monoSpaceFont};
 `
 
-class Show extends Component<Props, State> {
-  constructor(props: Props) {
-    super(props)
-    this.state = {
-      fromSettings: props.route?.params?.fromSettings ?? false,
-    }
-  }
-
-  componentDidMount() {
-    if (!this.props.mnemonic && !this.state.fromSettings) {
-      this.props.generateSeed(32)
-    }
-  }
-
-  render() {
-    const { navigation, mnemonic, phrase } = this.props
-    const mnemonicArr = (mnemonic || phrase).split(' ')
-    const { fromSettings } = this.state
-    return (
-      <Wrapper>
-        <ScrollView
-          style={{
-            paddingLeft: 16,
-            paddingRight: 16,
-          }}
-          testID="ShowPaperKeyScrollView"
-          showsVerticalScrollIndicator={true}>
-          <Notice>
-            Your paper key is the only way to restore your Grin wallet if your
-            phone is lost, stolen, broken, or upgraded.
-            {!fromSettings &&
-              ' It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
-          </Notice>
-          <Words>
-            {mnemonicArr.map((word: string, i: number) => {
-              return (
-                <Word key={i}>
-                  <WordNumber>{i + 1}</WordNumber>
-                  <WordText testID={`Word${i + 1}`}>{word}</WordText>
-                </Word>
-              )
-            })}
-          </Words>
-          {!fromSettings && (
-            <Button
-              testID="ShowPaperKeyContinueButton"
-              title="Continue"
-              disabled={false}
-              onPress={() => {
+function Show({ route, navigation }: Props) {
+  const { fromSettings, mnemonic } = route.params
+  const mnemonicArr = mnemonic.split(' ')
+  return (
+    <Wrapper>
+      <ScrollView
+        style={{
+          paddingLeft: 16,
+          paddingRight: 16,
+        }}
+        testID="ShowPaperKeyScrollView"
+        showsVerticalScrollIndicator={true}>
+        <Notice>
+          Your paper key is the only way to restore your Grin wallet if your
+          phone is lost, stolen, broken, or upgraded.
+          {!fromSettings &&
+            ' It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
+        </Notice>
+        <Words>
+          {mnemonicArr.map((word: string, i: number) => {
+            return (
+              <Word key={i}>
+                <WordNumber>{i + 1}</WordNumber>
+                <WordText testID={`Word${i + 1}`}>{word}</WordText>
+              </Word>
+            )
+          })}
+        </Words>
+        {!fromSettings && (
+          <Button
+            testID="ShowPaperKeyContinueButton"
+            title="Continue"
+            disabled={false}
+            onPress={() => {
+              if (route.params.password) {
                 navigation.navigate('VerifyPaperKey', {
-                  title: 'Verify Paper key ',
+                  title: 'Verify Paper key',
                   wordsCount: 24,
+                  mnemonic,
+                  password: route.params.password,
                 })
-              }}
-            />
-          )}
-          <Spacer />
-        </ScrollView>
-      </Wrapper>
-    )
-  }
+              }
+            }}
+          />
+        )}
+        <Spacer />
+      </ScrollView>
+    </Wrapper>
+  )
 }
 
-const mapStateToProps = (state: ReduxState) => ({
-  mnemonic: state.wallet.walletInit.mnemonic,
-  phrase: state.wallet.walletPhrase.phrase,
-}) //
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  generateSeed: (length: number) => {
-    dispatch({
-      type: 'SEED_NEW_REQUEST',
-      length,
-    })
-  },
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Show)
+export default Show

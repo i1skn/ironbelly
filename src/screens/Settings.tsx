@@ -33,6 +33,7 @@ import { State as SettingsState, BIOMETRY_STATUS } from 'src/modules/settings'
 import { getBiometryTitle } from 'src/common'
 import { Text } from 'src/components/CustomFont'
 import { termsUrl, privacyUrl } from 'src/screens/LegalDisclaimer'
+import { passwordScreenMode } from 'src/modules/navigation'
 const VersionText = styled(Text)`
   text-align: center;
   padding-vertical: 16px;
@@ -49,7 +50,6 @@ interface DispatchProps {
   walletScan: () => void
   setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void
   setChain: (chain: GlobalState['settings']['chain']) => void
-  getPhrase: () => void
   destroyWallet: () => void
   migrateToMainnet: () => void
 }
@@ -145,7 +145,7 @@ class Settings extends Component<Props> {
   }
 
   render() {
-    const { settings, navigation, getPhrase, isFloonet } = this.props
+    const { settings, navigation, isFloonet } = this.props
     const mainListData: Array<SettingsListItemProps> = [
       {
         title: 'Grin node',
@@ -162,8 +162,9 @@ class Settings extends Component<Props> {
       {
         title: 'Paper key',
         onPress: () => {
-          getPhrase()
-          navigation.navigate('ViewPaperKey')
+          navigation.navigate('Password', {
+            mode: passwordScreenMode.PAPER_KEY,
+          })
         },
       },
     ]
@@ -305,13 +306,6 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
       newSettings: {
         chain,
       },
-    })
-  },
-  getPhrase: () => {
-    dispatch({
-      type: 'WALLET_PHRASE_REQUEST',
-      // TODO: Imlement PIN lock here
-      password: '',
     })
   },
   destroyWallet: () => {

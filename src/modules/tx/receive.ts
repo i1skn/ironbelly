@@ -45,7 +45,7 @@ export type TxReceiveActions = valueof<typeof txReceiveActions>
 
 export const startHttpListenEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
-    ofType('VALID_PASSWORD'),
+    ofType('SET_WALLET_OPEN'),
     mergeMap(() =>
       from(WalletBridge.startListenWithHttp('127.0.0.1:3415')).pipe(
         map(
@@ -61,7 +61,7 @@ export const startHttpListenEpic: Epic<Action, Action, RootState> = (action$) =>
 
 export const stopHttpListenEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
-    ofType('CLEAR_PASSWORD', 'WALLET_DESTROY_SUCCESS'),
+    ofType('CLOSE_WALLET', 'WALLET_DESTROY_SUCCESS'),
     mergeMap(async () => {
       await WalletBridge.stopListenWithHttp()
       return txReceiveActions.setAddress(undefined) as Action

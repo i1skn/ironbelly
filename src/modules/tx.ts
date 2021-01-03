@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import BigNumber from 'bignumber.js'
 import Share from 'react-native-share'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
@@ -251,7 +252,7 @@ export const sideEffects = {
           if (pos !== -1) {
             if (tx.confirmed) {
               return tx
-            } else {
+            } else if (tx.tx_slate_id) {
               newFinalized.push(tx.tx_slate_id)
               return { ...tx, tx_type: 'TxFinalized' }
             }
@@ -262,7 +263,7 @@ export const sideEffects = {
           if (pos !== -1) {
             if (tx.confirmed) {
               return tx
-            } else {
+            } else if (tx.tx_slate_id) {
               newPosted.push(tx.tx_slate_id)
               return { ...tx, tx_type: 'TxPosted' }
             }
@@ -270,7 +271,7 @@ export const sideEffects = {
 
           pos = received.indexOf(tx.tx_slate_id)
 
-          if (pos !== -1 && !tx.confirmed) {
+          if (pos !== -1 && !tx.confirmed && tx.tx_slate_id) {
             newReceived.push(tx.tx_slate_id)
           }
 
@@ -310,8 +311,6 @@ export const sideEffects = {
           text: 'Transaction has been received',
         })
       }
-      // ------------------------------
-
       store.dispatch({
         type: 'TX_LIST_SUCCESS',
         data: mappedData,
@@ -388,12 +387,14 @@ export const sideEffects = {
       store.dispatch({
         type: 'TX_CREATE_SUCCESS',
       })
-      store.dispatch({
-        type: 'SLATE_SET_REQUEST',
-        id: tx.slateId,
-        slatepack,
-        isResponse: false,
-      })
+      if (tx.slateId) {
+        store.dispatch({
+          type: 'SLATE_SET_REQUEST',
+          id: tx.slateId,
+          slatepack,
+          isResponse: false,
+        })
+      }
 
       const navigation = await getNavigation()
       navigation?.navigate('TxIncompleteSend', { tx })
@@ -542,12 +543,14 @@ export const sideEffects = {
       store.dispatch({
         type: 'TX_RECEIVE_SUCCESS',
       })
-      store.dispatch({
-        type: 'SLATE_SET_REQUEST',
-        id: tx.slateId,
-        slatepack,
-        isResponse: true,
-      })
+      if (tx.slateId) {
+        store.dispatch({
+          type: 'SLATE_SET_REQUEST',
+          id: tx.slateId,
+          slatepack,
+          isResponse: true,
+        })
+      }
 
       const navigation = await getNavigation()
       navigation?.navigate('TxIncompleteReceive', { tx })
@@ -588,10 +591,12 @@ export const sideEffects = {
         const navigation = await getNavigation()
         navigation?.navigate('Overview')
 
-        store.dispatch({
-          type: 'TX_POST_SHOW',
-          txSlateId: tx.slateId,
-        })
+        if (tx.slateId) {
+          store.dispatch({
+            type: 'TX_POST_SHOW',
+            txSlateId: tx.slateId,
+          })
+        }
       } catch (e) {
         console.log(e.message)
         if (
@@ -1040,7 +1045,7 @@ const txForm = function (
       const outputStrategies = strategies
         .map(mapRustOutputStrategy)
         .sort((a: OutputStrategy, b: OutputStrategy) => {
-          return a.fee - b.fee
+          return new BigNumber(a.fee).minus(b.fee).toNumber()
         })
       return {
         ...state,
