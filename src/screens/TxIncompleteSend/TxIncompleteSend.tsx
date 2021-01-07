@@ -86,13 +86,12 @@ const TxIncompleteSend = ({ navigation, route }: Props) => {
 export function androidHeaderTitle(
   params: NavigationProps<'TxIncompleteSend'>['route']['params'],
 ) {
-  if (!params?.subTitle) {
-    return params?.title
-  }
   return (
     <View>
       <Text style={styles.androidHeaderTitle}>{params?.title}</Text>
-      <Text style={styles.androidHeaderSubTitle}>{params?.subTitle}</Text>
+      {params?.subTitle && (
+        <Text style={styles.androidHeaderSubTitle}>{params?.subTitle}</Text>
+      )}
     </View>
   )
 }

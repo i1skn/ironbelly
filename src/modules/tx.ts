@@ -378,8 +378,8 @@ export const sideEffects = {
   ) => {
     try {
       const jsonResponse = await WalletBridge.txCreate(
-        getConfigForRust(store.getState()).minimum_confirmations,
         action.amount,
+        getConfigForRust(store.getState()).minimum_confirmations,
         action.selectionStrategyIsUseAll,
       )
       const [[rustTx], slatepack] = JSON.parse(jsonResponse)
@@ -405,16 +405,11 @@ export const sideEffects = {
         refreshFromNode: false,
       })
     } catch (error) {
-      try {
-        const e = JSON.parse(error.message)
-        store.dispatch({
-          type: 'TX_CREATE_FAILURE',
-          ...e,
-        })
-        log(e, true)
-      } catch (e) {
-        console.log(error)
-      }
+      store.dispatch({
+        type: 'TX_CREATE_FAILURE',
+        message: error.message,
+      })
+      log(error, true)
     }
   },
   ['TX_SEND_HTTPS_REQUEST']: async (

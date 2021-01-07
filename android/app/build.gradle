@@ -138,7 +138,7 @@ android {
         applicationId project.env.get("APP_ID")
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 36 
+        versionCode 37 
         versionName "4.3.0"
 	    multiDexEnabled true
         resValue "string", "app_name", project.env.get("APP_DISPLAY_NAME")
