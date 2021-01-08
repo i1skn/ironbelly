@@ -16,23 +16,22 @@
 import BigNumber from 'bignumber.js'
 import React from 'react'
 import FeatherIcons from 'react-native-vector-icons/Feather'
-import colors from 'src/common/colors'
 import CopyHeader from 'src/components/CopyHeader'
-import {
-  TouchableOpacity,
-  StyleSheet,
-  View,
-  Platform,
-  Linking,
-} from 'react-native'
+import { View, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { formatTime } from 'src/common'
 import moment from 'moment'
 import { hrGrin } from 'src/common'
-import { Text } from 'src/components/CustomFont'
+import { Link, Text } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
 import { State as ReduxState, Tx } from 'src/common/types'
 import { NavigationProps } from 'src/common/types'
+import {
+  useTheme,
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
 interface OwnProps {
   tx: Tx
@@ -41,9 +40,9 @@ interface OwnProps {
 type Props = NavigationProps<'TxDetails'> & OwnProps
 
 const TxDetails = ({ tx, navigation }: Props) => {
-  const seeKernelOnGrinScan = (kernelExcess: string) => () =>
-    Linking.openURL(`https://grinscan.net/kernel/${kernelExcess}`)
+  const [styles] = useThemedStyles(themedStyles)
 
+  const [theme] = useTheme()
   return (
     <>
       <CardTitle title="Transaction Details" navigation={navigation} />
@@ -68,20 +67,22 @@ const TxDetails = ({ tx, navigation }: Props) => {
             <View style={styles.field}>
               <CopyHeader content={tx.kernelExcess} label={'Kernel Excess'} />
               <Text style={styles.fieldValue}>{tx.kernelExcess}</Text>
-              <TouchableOpacity
-                style={styles.grinScanButton}
-                onPress={seeKernelOnGrinScan(tx.kernelExcess)}>
-                <Text style={styles.grinScanButtonText}>
-                  See on GrinScan{' '}
-                  <FeatherIcons
-                    name="external-link"
-                    size={18}
-                    style={{
-                      color: colors.link,
-                    }}
-                  />
-                </Text>
-              </TouchableOpacity>
+              <Link
+                url={`https://grinscan.net/kernel/${tx.kernelExcess}`}
+                style={styles.grinScanButtonText}
+                title={
+                  <>
+                    <Text>See on GrinScan </Text>
+                    <FeatherIcons
+                      name="external-link"
+                      size={18}
+                      style={{
+                        color: theme.link,
+                      }}
+                    />
+                  </>
+                }
+              />
             </View>
           )}
 
@@ -100,9 +101,10 @@ const mapStateToProps = (state: ReduxState, ownProps: Props) => () => {
   }
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     padding: 16,
+    flex: 1,
   },
   cardTitle: {
     paddingHorizontal: 10,
@@ -114,26 +116,26 @@ const styles = StyleSheet.create({
     fontWeight: Platform.select({ android: '700', ios: '500' }),
     marginTop: 16,
     marginBottom: 8,
+    color: slightlyTransparent(theme.onBackground),
   },
   fieldValue: {
-    color: colors.grey[700],
+    color: theme.onBackground,
   },
   amount: {
     fontSize: 32,
+    color: theme.onBackground,
   },
   date: {
-    color: colors.grey[700],
+    color: theme.onBackground,
   },
   field: {
     marginTop: 16,
   },
-  grinScanButton: {},
   grinScanButtonText: {
     textAlign: 'center',
     fontSize: 16,
     paddingTop: 16,
-    color: colors.link,
   },
-})
+}))
 
 export default connect(mapStateToProps, null)(TxDetails)

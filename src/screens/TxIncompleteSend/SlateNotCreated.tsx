@@ -41,6 +41,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { currencySelector, currencyRatesSelector } from 'src/modules/settings'
 import FormTextInput from 'src/components/FormTextInput'
 import { useNavigation } from '@react-navigation/native'
+import { slightlyTransparent } from 'src/themes'
 
 const ScanQRCode = styled.TouchableOpacity`
   margin-top: -46px;
@@ -407,7 +408,7 @@ const SlateNotCreated = () => {
 
 const styles = StyleSheet.create({
   alternativeAmount: {
-    color: colors.onBackgroundLight,
+    color: slightlyTransparent(colors.onBackground),
     fontSize: 18,
     fontWeight: '300',
     textAlign: 'right',

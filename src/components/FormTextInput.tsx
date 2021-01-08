@@ -25,6 +25,7 @@ import ReactNative, {
   TextInputSubmitEditingEventData,
 } from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
+import colors from 'src/common/colors'
 type Props = {
   units?: string
   placeholder?: string
@@ -58,7 +59,8 @@ const StyledInput = styled(TextInput)`
   margin-left: -20;
   padding: 20px;
   margin-right: -20;
-  background-color: #fbfbfb;
+  background-color: ${colors.surface};
+  color: ${colors.onSurface};
   font-size: 18;
   font-weight: 400;
   flex-grow: 1;

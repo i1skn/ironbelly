@@ -15,16 +15,8 @@
  */
 
 import React, { useCallback, useEffect } from 'react'
-import {
-  TouchableHighlight,
-  TouchableOpacity,
-  RefreshControl,
-  View,
-  Platform,
-  StyleSheet,
-} from 'react-native'
+import { TouchableOpacity, RefreshControl, View, Platform } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
-import styled from 'styled-components/native'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text } from 'src/components/CustomFont'
 import Balance from 'src/components/Balance'
@@ -36,11 +28,11 @@ import {
   State as GlobalState,
   Tx,
 } from 'src/common/types'
-import colors from 'src/common/colors'
 import { WalletInitState } from 'src/modules/wallet'
 import { State as SettingsState } from 'src/modules/settings'
 import { NavigationProps } from 'src/common/types'
 import { useFocusEffect, useNavigation } from '@react-navigation/native'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 interface OwnProps {
   balance: BalanceType
@@ -59,19 +51,6 @@ interface OwnProps {
 }
 
 type Props = NavigationProps<'Overview'> & OwnProps
-
-const Footer = styled.View`
-  height: 24px;
-`
-const NoTxsView = styled.View`
-  padding: 16px;
-`
-const EmptyTxListMessage = styled(Text)`
-  font-size: 18;
-  text-align: center;
-  color: ${() => colors.blueGrey[800]};
-  margin-bottom: 20;
-`
 
 function Overview({
   txListRefreshInProgress,
@@ -100,6 +79,8 @@ function Overview({
     }, []),
   )
 
+  const [styles] = useThemedStyles(themedStyles)
+
   const { currencyObject, minimumConfirmations } = settings
   return (
     <View style={styles.container}>
@@ -111,15 +92,15 @@ function Overview({
       <SwipeListView
         data={txs}
         ListEmptyComponent={
-          <NoTxsView>
+          <View style={styles.noTxs}>
             {(firstLoading && (
-              <EmptyTxListMessage>Loading...</EmptyTxListMessage>
+              <View style={styles.emptyLog}>Loading...</View>
             )) || (
               <Text>
                 Here you will see your transactions, when you've made them!
               </Text>
             )}
-          </NoTxsView>
+          </View>
         }
         renderItem={(data: { item: Tx }) => (
           <SwipeRow
@@ -146,43 +127,41 @@ function Overview({
               </TouchableOpacity>
             </View>
             <View>
-              <TouchableHighlight
-                onPress={() => {
-                  if (data.item.confirmed) {
-                    navigation.navigate('TxDetails', {
-                      txId: data.item.id,
-                    })
-                  } else if (
-                    (data.item.type === 'TxFinalized' ||
-                      data.item.type === 'TxPosted') &&
-                    data.item.slateId
-                  ) {
-                    txConfirm(data.item.slateId)
-                  } else if (data.item.type === 'TxReceived') {
-                    navigation.navigate('TxIncompleteReceive', {
-                      tx: data.item,
-                    })
-                  } else if (data.item.type === 'TxSent') {
-                    navigation.navigate('TxIncompleteSend', {
-                      tx: data.item,
-                    })
-                  }
-                }}
-                style={styles.listItem}
-                underlayColor={'#FBFBFB'}>
+              <View style={styles.listItem}>
                 <TxListItem
                   currency={currencyObject}
                   rates={currencyRates.rates}
                   tx={data.item}
                   minimumConfirmations={minimumConfirmations}
+                  onPress={() => {
+                    if (data.item.confirmed) {
+                      navigation.navigate('TxDetails', {
+                        txId: data.item.id,
+                      })
+                    } else if (
+                      (data.item.type === 'TxFinalized' ||
+                        data.item.type === 'TxPosted') &&
+                      data.item.slateId
+                    ) {
+                      txConfirm(data.item.slateId)
+                    } else if (data.item.type === 'TxReceived') {
+                      navigation.navigate('TxIncompleteReceive', {
+                        tx: data.item,
+                      })
+                    } else if (data.item.type === 'TxSent') {
+                      navigation.navigate('TxIncompleteSend', {
+                        tx: data.item,
+                      })
+                    }
+                  }}
                 />
-              </TouchableHighlight>
+              </View>
             </View>
           </SwipeRow>
         )}
         style={styles.txList}
         keyExtractor={(item) => `${item.id}`}
-        ListFooterComponent={<Footer />}
+        ListFooterComponent={<View style={styles.footer} />}
         ListHeaderComponent={
           (isOffline && (
             <Text style={styles.offlineWarningText}>
@@ -252,20 +231,16 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
 })
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     height: '100%',
-    backgroundColor: colors.background,
   },
   txList: {
     paddingTop: 12,
   },
   cancel: {
     alignItems: 'center',
-    backgroundColor: Platform.select({
-      ios: colors.warning,
-      android: colors.grey[300],
-    }),
+    backgroundColor: theme.warning,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -280,8 +255,8 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     width: 100,
     color: Platform.select({
-      ios: colors.background,
-      android: colors.warning,
+      ios: theme.background,
+      android: theme.warning,
     }),
     textAlign: 'center',
   },
@@ -289,7 +264,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     position: 'relative',
     zIndex: 0,
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
     marginVertical: 4,
     marginHorizontal: 16,
     flex: 1,
@@ -300,11 +275,22 @@ const styles = StyleSheet.create({
   offlineWarningText: {
     fontWeight: '600',
     fontSize: 16,
-    color: colors.warning,
-    backgroundColor: colors.background,
+    color: theme.warning,
+    backgroundColor: theme.background,
     textAlign: 'center',
     paddingBottom: 8,
   },
-})
+  emptyLog: {
+    fontSize: 18,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  footer: {
+    height: 24,
+  },
+  noTxs: {
+    padding: 16,
+  },
+}))
 
 export default connect(mapStateToProps, mapDispatchToProps)(Overview)

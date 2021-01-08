@@ -31,6 +31,7 @@ import {
   ParamListBase,
 } from '@react-navigation/native'
 import colors from 'src/common/colors'
+import { slightlyTransparent } from 'src/themes'
 
 type Props = {
   title: string
@@ -44,6 +45,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     justifyContent: 'center',
     flexDirection: 'row',
+    backgroundColor: colors.background,
   },
   container: {
     flexDirection: 'column',
@@ -58,11 +60,12 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     fontWeight: '500',
+    color: colors.onBackground,
   },
   subTitle: {
     fontSize: 14,
     textAlign: 'center',
-    color: colors.grey[700],
+    color: slightlyTransparent(colors.onBackground),
   },
 })
 
@@ -89,7 +92,11 @@ export default ({ title, subTitle, navigation, style }: Props) => {
           onPress={() => {
             navigation.goBack()
           }}>
-          <FeatherIcon name="chevron-down" size={24} />
+          <FeatherIcon
+            name="chevron-down"
+            color={colors.onBackground}
+            size={24}
+          />
         </TouchableOpacity>
         <View style={styles.container}>
           <Text style={styles.title}>{title}</Text>

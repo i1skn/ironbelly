@@ -20,11 +20,16 @@ import {
   State as GlobalState,
   NavigationProps,
 } from 'src/common/types'
-import { Alert, Linking, StyleSheet, SectionList } from 'react-native'
+import {
+  Alert,
+  Linking,
+  StyleSheet,
+  SectionList,
+  ColorSchemeName,
+} from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
-import styled from 'styled-components/native'
 import SettingsListItem, {
   Props as SettingsListItemProps,
 } from 'src/components/SettingsListItem'
@@ -34,16 +39,14 @@ import { getBiometryTitle } from 'src/common'
 import { Text } from 'src/components/CustomFont'
 import { termsUrl, privacyUrl } from 'src/screens/LegalDisclaimer'
 import { passwordScreenMode } from 'src/modules/navigation'
-const VersionText = styled(Text)`
-  text-align: center;
-  padding-vertical: 16px;
-  color: ${colors.onBackgroundLight};
-`
+import { slightlyTransparent } from 'src/themes'
+
 interface StateProps {
   settings: SettingsState
   isCreated: boolean
   isFloonet: boolean
 }
+
 interface DispatchProps {
   enableBiometry: () => void
   disableBiometry: () => void
@@ -52,6 +55,7 @@ interface DispatchProps {
   setChain: (chain: GlobalState['settings']['chain']) => void
   destroyWallet: () => void
   migrateToMainnet: () => void
+  setTheme: (theme: ColorSchemeName) => void
 }
 type Props = NavigationProps<'Settings'> & StateProps & DispatchProps
 
@@ -104,6 +108,10 @@ class Settings extends Component<Props> {
   _onCurrency = () => {
     this.props.navigation.navigate('SettingsCurrency')
   }
+  _onDarkMode = () => {
+    this.props.setTheme(this.props.settings.theme === 'dark' ? 'light' : 'dark')
+  }
+
   _onRepairWallet = () => {
     const title = 'Repair this wallet'
     let desc =
@@ -155,6 +163,12 @@ class Settings extends Component<Props> {
         title: 'Base Currency',
         value: settings.currencyObject.code.toUpperCase(),
         onPress: this._onCurrency,
+      },
+      {
+        title: 'Dark Theme',
+        value: settings.theme === 'dark',
+        hideChevron: true,
+        onValueChange: this._onDarkMode,
       },
     ]
 
@@ -260,10 +274,10 @@ class Settings extends Component<Props> {
           <Text style={styles.sectionTitle}>{section.title}</Text>
         )}
         ListFooterComponent={
-          <VersionText>
+          <Text style={styles.versionText}>
             Version: {DeviceInfo.getVersion()} build{' '}
             {DeviceInfo.getBuildNumber()}
-          </VersionText>
+          </Text>
         }
         stickySectionHeadersEnabled={false}
       />
@@ -280,8 +294,13 @@ const styles = StyleSheet.create({
     paddingTop: 28,
     paddingBottom: 8,
     paddingHorizontal: 16,
-    color: colors.onBackgroundLight,
+    color: slightlyTransparent(colors.onBackground),
     fontWeight: '600',
+  },
+  versionText: {
+    textAlign: 'center',
+    paddingVertical: 16,
+    color: slightlyTransparent(colors.onBackground),
   },
 })
 
@@ -300,6 +319,15 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
       },
     })
   },
+  setTheme: (theme: ColorSchemeName) => {
+    dispatch({
+      type: 'SET_SETTINGS',
+      newSettings: {
+        theme,
+      },
+    })
+  },
+
   setChain: (chain: GlobalState['settings']['chain']) => {
     dispatch({
       type: 'SET_SETTINGS',

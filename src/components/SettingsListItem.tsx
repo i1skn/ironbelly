@@ -22,6 +22,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
 import { FlexGrow } from 'src/common'
+import { slightlyTransparent } from 'src/themes'
 
 const Wrapper = styled.View`
   flex: 1;
@@ -45,7 +46,7 @@ const Value = styled(Text)`
   color: ${colors.secondary};
 `
 const ChevronIcon = styled(IonicIcon)`
-  color: ${colors.onBackgroundLight};
+  color: ${slightlyTransparent(colors.onBackground)};
   line-height: 30;
   padding-right: 16px;
 `

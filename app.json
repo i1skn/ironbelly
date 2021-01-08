@@ -1,4 +1,5 @@
 {
   "name": "Ironbelly",
-  "displayName": "Ironbelly"
+  "displayName": "Ironbelly",
+  "ios": { "userInterfaceStyle": "automatic" }
 }

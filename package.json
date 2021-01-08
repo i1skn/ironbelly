@@ -99,11 +99,12 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.0.1",
     "eslint-plugin-react": "^7.12.4",
-    "jest": "^25.4.0",
+    "jest": "^26.6.3",
     "jest-serializer": "^25.2.6",
     "license-checker": "^25.0.1",
     "metro-react-native-babel-preset": "^0.63.0",
     "prettier": "^2.0.5",
+    "react-native-themed-styles": "^0.0.4",
     "react-test-renderer": "16.11.0",
     "typescript": "^4.1.3"
   },

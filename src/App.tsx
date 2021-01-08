@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 import BackgroundTimer from 'react-native-background-timer'
-import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
+
+import {
+  NavigationContainer,
+  Theme as RNNavigationTheme,
+} from '@react-navigation/native'
 import {
   Linking,
   AppState,
@@ -24,6 +28,7 @@ import {
   PermissionsAndroid,
   AppStateStatus,
   LogBox,
+  ColorSchemeName,
 } from 'react-native'
 import WalletBridge from 'src/bridges/wallet'
 import { Provider, connect } from 'react-redux'
@@ -45,6 +50,7 @@ import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+import { getCurrentThemeName, Theme, useTheme } from './themes'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -54,14 +60,6 @@ LogBox.ignoreLogs([
   'useNativeDriver',
   'currentlyFocusedField',
 ])
-
-const appTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: '#fff',
-  },
-}
 
 interface StateProps {
   toastMessage: ToasterState
@@ -88,7 +86,11 @@ interface OwnProps {
   slateUrl: string | undefined | null
 }
 
-type Props = StateProps & DispatchProps & OwnProps
+type Props = StateProps &
+  DispatchProps &
+  OwnProps & {
+    theme: RNNavigationTheme
+  }
 
 type State = {
   walletCreated?: boolean
@@ -100,7 +102,9 @@ class RealApp extends React.Component<Props, State> {
   toast = React.createRef<Toast>()
 
   async componentDidMount() {
-    StatusBar.setBarStyle('dark-content')
+    StatusBar.setBarStyle(
+      getCurrentThemeName() === 'light' ? 'dark-content' : 'light-content',
+    )
     if (isAndroid) {
       StatusBar.setBackgroundColor('rgba(0,0,0,0)')
       StatusBar.setTranslucent(true)
@@ -264,6 +268,7 @@ class RealApp extends React.Component<Props, State> {
       scanInProgress,
       closeTxPostModal,
       isWalletOpened,
+      theme,
     } = this.props
     if (walletCreated === null) {
       return null
@@ -275,7 +280,7 @@ class RealApp extends React.Component<Props, State> {
           onBackdropPress={closeTxPostModal}>
           <TxPostConfirmationModal />
         </Modal>
-        <NavigationContainer ref={navigationRef} theme={appTheme}>
+        <NavigationContainer ref={navigationRef} theme={theme}>
           <RootStack
             isWalletOpened={isWalletOpened}
             walletCreated={walletCreated}
@@ -348,17 +353,37 @@ type AppProps = {
   url: string
 }
 
-export default class App extends Component<AppProps> {
-  render() {
-    return (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <RealAppConnected
-            slateUrl={this.props.url}
-            dispatch={store.dispatch}
-          />
-        </PersistGate>
-      </Provider>
-    )
+function getNavigationTheme(
+  theme: Theme,
+  themeName: ColorSchemeName,
+): RNNavigationTheme {
+  return {
+    dark: themeName === 'dark',
+    colors: {
+      primary: theme.primary,
+      background: theme.background,
+      card: theme.surface,
+      text: theme.onBackground,
+      border: theme.onBackground,
+      notification: theme.warning,
+    },
   }
 }
+
+const App = (props: AppProps) => {
+  const [theme, themeName] = useTheme()
+
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RealAppConnected
+          slateUrl={props.url}
+          dispatch={store.dispatch}
+          theme={getNavigationTheme(theme, themeName)}
+        />
+      </PersistGate>
+    </Provider>
+  )
+}
+
+export default App

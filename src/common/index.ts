@@ -18,6 +18,7 @@ import moment from 'moment'
 import 'intl'
 import 'intl/locale-data/jsonp/en'
 import RNFS from 'react-native-fs'
+import { slightlyTransparent } from 'src/themes'
 import { Platform, KeyboardAvoidingView } from 'react-native'
 import {
   RustTx,
@@ -231,7 +232,7 @@ export const UnderHeaderBlock = styled.View`
 `
 
 export const Notice = styled.Text`
-  color: ${colors.onBackgroundLight};
+  color: ${slightlyTransparent(colors.onBackground)};
   font-size: 16;
   line-height: 24;
   text-align: center;
@@ -271,6 +272,7 @@ export const isValidSlatepack = (s: string) => {
 export const formatDate = (date: moment.Moment) => date.format('DD MMMM YYYY')
 export const formatTime = (time: moment.Moment) =>
   time.format('dddd, DD MMMM YYYY, HH:mm')
+
 export const currencyList = [
   {
     code: 'btc',

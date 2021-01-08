@@ -21,6 +21,7 @@ import { Text } from 'src/components/CustomFont'
 import licenses from '../../licenses.json'
 import { FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
+import { slightlyTransparent } from 'src/themes'
 
 // import { NavigationProps } from 'src/common/types'
 // type Props = NavigationProps<'Licenses'>
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chevron: {
-    color: colors.onBackgroundLight,
+    color: slightlyTransparent(colors.onBackground),
     lineHeight: 30,
   },
   itemTitle: {

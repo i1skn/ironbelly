@@ -20,7 +20,13 @@ import sleep from 'sleep-promise'
 import { isAndroid } from 'src/common'
 import { State as ReduxState, Tx } from 'src/common/types'
 import React from 'react'
-import { Text, Animated, TouchableOpacity } from 'react-native'
+import {
+  Text,
+  Animated,
+  StyleSheet,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import {
   TransitionPresets,
@@ -55,6 +61,7 @@ import {
   MAINNET_API_SECRET,
   FLOONET_API_SECRET,
 } from 'src/modules/settings'
+import { slightlyTransparent, useTheme } from 'src/themes'
 
 const defaultScreenOptions = {
   headerTintColor: colors.onBackground,
@@ -280,7 +287,7 @@ const HomeTabs = () => (
     initialRouteName="Overview"
     tabBarOptions={{
       activeTintColor: colors.secondary,
-      inactiveTintColor: colors.onSurfaceLight,
+      inactiveTintColor: slightlyTransparent(colors.onSurface),
     }}>
     <Tab.Screen
       name="Overview"
@@ -291,16 +298,15 @@ const HomeTabs = () => (
         },
         tabBarButton: ({ children }) => {
           return (
-            <TouchableOpacity
+            <TouchableWithoutFeedback
               testID="OverviewTab"
-              style={{ flex: 1 }}
               onPress={() => {
                 getNavigation().then((navigation) => {
                   navigation.navigate('Overview')
                 })
               }}>
-              {children}
-            </TouchableOpacity>
+              <View style={styles.tabButton}>{children}</View>
+            </TouchableWithoutFeedback>
           )
         },
       }}
@@ -316,16 +322,15 @@ const HomeTabs = () => (
         },
         tabBarButton: ({ children }) => {
           return (
-            <TouchableOpacity
+            <TouchableWithoutFeedback
               testID="SendTab"
-              style={{ flex: 1 }}
               onPress={() => {
                 getNavigation().then((navigation) => {
                   navigation.navigate('TxIncompleteSend')
                 })
               }}>
-              {children}
-            </TouchableOpacity>
+              <View style={styles.tabButton}>{children}</View>
+            </TouchableWithoutFeedback>
           )
         },
       }}
@@ -341,16 +346,15 @@ const HomeTabs = () => (
         },
         tabBarButton: ({ children }) => {
           return (
-            <TouchableOpacity
+            <TouchableWithoutFeedback
               testID="ReceiveTab"
-              style={{ flex: 1 }}
               onPress={() => {
                 getNavigation().then((navigation) => {
                   navigation.navigate('TxIncompleteReceive')
                 })
               }}>
-              {children}
-            </TouchableOpacity>
+              <View style={styles.tabButton}>{children}</View>
+            </TouchableWithoutFeedback>
           )
         },
       }}
@@ -364,16 +368,15 @@ const HomeTabs = () => (
         },
         tabBarButton: ({ children }) => {
           return (
-            <TouchableOpacity
+            <TouchableWithoutFeedback
               testID="SettingsTab"
-              style={{ flex: 1 }}
               onPress={() => {
                 getNavigation().then((navigation) => {
                   navigation.navigate('Settings')
                 })
               }}>
-              {children}
-            </TouchableOpacity>
+              <View style={styles.tabButton}>{children}</View>
+            </TouchableWithoutFeedback>
           )
         },
       }}
@@ -469,13 +472,14 @@ export function RootStack({
   isWalletOpened: boolean
   scanInProgress: boolean
 }) {
+  const [theme] = useTheme()
   return (
     <Stack.Navigator
       headerMode="none"
       screenOptions={{
         cardStyleInterpolator: forFade,
         headerShown: false,
-        cardStyle: { backgroundColor: 'black' },
+        cardStyle: { backgroundColor: theme.background },
       }}>
       {walletCreated ? (
         isWalletOpened ? (
@@ -514,3 +518,11 @@ export const getNavigation = async (): Promise<NavigationContainerRef> => {
   }
   return navigationRef.current
 }
+
+const styles = StyleSheet.create({
+  tabButton: {
+    flex: 1,
+    flexDirection: 'column',
+    backgroundColor: colors.surface,
+  },
+})

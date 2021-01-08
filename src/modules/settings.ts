@@ -23,6 +23,8 @@ import {
   disableBiometryRequestAction,
   resetBiometryRequestAction,
 } from 'src/common/types'
+import { ColorSchemeName } from 'react-native'
+
 import RNFS from 'react-native-fs'
 import { APPLICATION_SUPPORT_DIRECTORY } from 'src/common'
 import * as Keychain from 'react-native-keychain'
@@ -42,6 +44,7 @@ export type State = {
   minimumConfirmations: number
   biometryStatus: 'unknown' | 'disabled' | 'enabled'
   biometryType: string | undefined | null
+  theme: ColorSchemeName
 }
 export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = ''
@@ -56,6 +59,7 @@ export const initialState: State = {
   minimumConfirmations: 10,
   biometryStatus: 'unknown',
   biometryType: null,
+  theme: undefined,
 }
 export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {

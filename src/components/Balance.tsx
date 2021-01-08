@@ -20,9 +20,14 @@ import HeaderSpan from 'src/components/HeaderSpan'
 import LinearGradient from 'react-native-linear-gradient'
 import { Text } from 'src/components/CustomFont'
 import { hrGrin, hrFiat, convertToFiat } from 'src/common'
-import colors from 'src/common/colors'
 import { Balance, Currency } from 'src/common/types'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
+import {
+  slightlyTransparent,
+  useTheme,
+  useThemedStyles,
+  styleSheetFactory,
+} from 'src/themes'
 
 type Props = {
   balance: Balance
@@ -31,13 +36,15 @@ type Props = {
 }
 
 const BalanceComponent = ({ balance, currency, rates }: Props) => {
+  const [styles] = useThemedStyles(themedStyles)
+  const [theme] = useTheme()
   return (
     <View style={styles.container}>
       <LinearGradient
         start={{ x: 0, y: 0 }}
         end={{ x: 0.75, y: 1 }}
         style={styles.gradient}
-        colors={[colors.yellow['400'], colors.yellow['600']]}>
+        colors={[theme.heroGradientStart, theme.heroGradientEnd]}>
         <HeaderSpan bgColor={'transparent'} />
         <Text style={styles.amountGrin}>
           {hrGrin(new BigNumber(balance.total).plus(balance.amountLocked))}
@@ -61,15 +68,14 @@ const BalanceComponent = ({ balance, currency, rates }: Props) => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   gradient: {
     paddingHorizontal: 16,
     paddingBottom: 48,
     paddingTop: 80,
-    backgroundColor: colors.primaryLight,
   },
   container: {
-    shadowColor: colors.black,
+    shadowColor: theme.black,
     shadowOffset: {
       width: 0,
       height: 1,
@@ -80,7 +86,7 @@ const styles = StyleSheet.create({
     elevation: 3,
     zIndex: 1,
     position: 'relative',
-    backgroundColor: 'white', // only need to be for elevation to work
+    backgroundColor: theme.background, // only need to be for elevation to work
   },
   menuButton: {
     flexDirection: 'row',
@@ -91,14 +97,14 @@ const styles = StyleSheet.create({
   amountGrin: {
     fontSize: 54,
     fontWeight: '300',
-    color: colors.onPrimary,
+    color: theme.onHero,
   },
   nextToBalance: {},
   nextToBalanceRow: {
     fontSize: 16,
     fontWeight: '400',
-    color: colors.onPrimaryLight,
+    color: slightlyTransparent(theme.onHero),
   },
-})
+}))
 
 export default BalanceComponent

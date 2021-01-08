@@ -29,7 +29,6 @@ import { KeyboardAvoidingWrapper } from 'src/common'
 import { Button } from 'src/components/CustomFont'
 import { NavigationProps } from 'src/common/types'
 import * as Keychain from 'react-native-keychain'
-import colors from 'src/common/colors'
 import { passwordScreenMode } from 'src/modules/navigation'
 import { useSelector } from 'src/common/redux'
 import WalletBridge from 'src/bridges/wallet'
@@ -223,7 +222,6 @@ function Password({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
   },
   wrapper: {
     flex: 1,
@@ -238,18 +236,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
     flexBasis: 16,
   },
-  forgot: {
-    lineHeight: 27,
-    color: colors.onSurface,
-  },
   submit: {
     marginTop: 16,
   },
 })
-
-// const mapStateToProps = (state: ReduxState) => ({
-// biometryEnabled: state.settings.biometryStatus === BIOMETRY_STATUS.enabled,
-// biometryType: state.settings.biometryType,
-// })
 
 export default Password

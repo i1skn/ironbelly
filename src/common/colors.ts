@@ -319,8 +319,8 @@ export const amber = {
   A700: '#ffab00',
 }
 
-export const black = '#000'
-export const white = '#fff'
+export const black = '#000000'
+export const white = '#ffffff'
 
 const primary = yellow
 const secondary = blue
@@ -331,27 +331,28 @@ export default {
   primaryDark: primary[800],
   primaryUltraDark: primary[900],
 
+  onPrimary: blueGrey[900],
+
   secondaryUltraLight: secondary[200],
   secondaryLight: secondary[300],
   secondary: secondary[500],
   secondaryDark: secondary[800],
   secondaryUltraDark: secondary[900],
 
-  onPrimary: blueGrey[900],
-  onPrimaryLight: blueGrey[900] + 'aa',
-
   background: grey[100],
   onBackground: blueGrey[900],
-  onBackgroundLight: blueGrey[900] + 'aa',
 
   surface: white,
   onSurface: blueGrey[900],
-  onSurfaceLight: blueGrey[900] + 'aa',
 
-  warning: deepOrange['500'],
-  warningLight: deepOrange['300'],
+  warning: deepOrange[500],
+  warningLight: deepOrange[300],
   success: green.A700,
-  link: blue['500'],
+  link: blue[500],
+
+  heroGradientStart: yellow[400],
+  heroGradientEnd: yellow[600],
+  onHero: grey[900],
 
   red,
   green,

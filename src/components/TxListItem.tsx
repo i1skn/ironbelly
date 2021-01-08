@@ -23,9 +23,11 @@ import { hrGrin, hrFiat, convertToFiat, formatDate } from 'src/common'
 import { Tx, Currency } from 'src/common/types'
 import colors from 'src/common/colors'
 import { FlexGrow } from 'src/common'
+import { slightlyTransparent } from 'src/themes'
+
 const Time = styled(Text)`
   font-size: 14;
-  color: ${() => colors.onSurfaceLight};
+  color: ${() => slightlyTransparent(colors.onSurface)};
 `
 const UnconfirmedGuide = styled(Text)`
   font-size: 14;
@@ -43,9 +45,9 @@ const AmountFiat = styled(Text)`
 const Title = styled(Text)`
   font-weight: 500;
   font-size: 18;
-  color: #000;
+  color: ${() => colors.onSurface};
 `
-const Wrapper = styled.View`
+const Wrapper = styled.TouchableOpacity`
   flex-direction: row;
   flex-grow: 1;
   justify-content: flex-start;
@@ -60,6 +62,7 @@ type Props = {
   currency: Currency
   rates: Record<string, number>
   minimumConfirmations: number
+  onPress: () => void
 }
 
 const TxListItem = (props: Props) => {
@@ -74,7 +77,7 @@ const TxListItem = (props: Props) => {
       ? formatDate(momentCreationTime)
       : momentCreationTime.fromNow()
   return (
-    <Wrapper>
+    <Wrapper onPress={props.onPress}>
       <FlexGrow>
         <View
           style={{

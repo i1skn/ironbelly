@@ -25,6 +25,7 @@ import {
   NavigationProps,
   Dispatch,
 } from 'src/common/types'
+
 import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'src/common'
 import { Button, Text } from 'src/components/CustomFont'
 import WalletBridge from 'src/bridges/wallet'

@@ -26,16 +26,19 @@ export const Text = styled.Text<{ fontSize?: string }>`
 `
 export const Link = (props: {
   url: string
-  title: string
+  title: string | React.ReactElement
   style?: StyleProp<TextStyle>
 }) => {
   const { url, title } = props
   return (
     <Text
       {...props}
-      style={{
-        color: colors.link,
-      }}
+      style={[
+        {
+          color: colors.link,
+        },
+        props.style,
+      ]}
       onPress={() => Linking.openURL(url)}>
       {title}
     </Text>
