@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+// Been used previously for sharing files and not in use right now.
+// Can be used for sharing Slatepack messages if Copy/QR would not be enough
 import React from 'react'
 import colors from 'src/common/colors'
 import { TouchableOpacity, StyleSheet, Platform } from 'react-native'

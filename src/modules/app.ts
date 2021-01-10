@@ -14,39 +14,19 @@
  * limitations under the License.
  */
 
-import { Epic, combineEpics, ofType } from 'redux-observable'
-import {
-  filter,
-  ignoreElements,
-  catchError,
-  mergeMap,
-  tap,
-  mapTo,
-} from 'rxjs/operators'
-import RNFS from 'react-native-fs'
-import {
-  Action,
-  Slate,
-  slateLoadSuccessAction,
-  State as RootState,
-} from 'src/common/types'
-import { getNavigation } from 'src/modules/navigation'
-import { isResponseSlate } from 'src/common'
-import { of, merge, interval, partition } from 'rxjs'
-import { log } from 'src/common/logger'
-import WalletBridge from 'src/bridges/wallet'
+import { Epic, combineEpics } from 'redux-observable'
+import { filter, mapTo } from 'rxjs/operators'
+import { Action } from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { of, interval } from 'rxjs'
 
 const REFRESH_TXS_INTERVAL = 10 * 1000 // 10 sec
 
 export type State = {
-  unopenedSlatePath: string
   legalAccepted: boolean
-  protectedScreenUnlocked: boolean
 }
 export const initialState: State = {
-  unopenedSlatePath: '',
   legalAccepted: false,
-  protectedScreenUnlocked: false,
 }
 
 export const appReducer = (
@@ -54,16 +34,6 @@ export const appReducer = (
   action: Action,
 ): State => {
   switch (action.type) {
-    case 'SLATE_LOAD_REQUEST':
-      return {
-        ...state,
-        unopenedSlatePath: action.slatePath,
-      }
-    case 'SLATE_LOAD_SUCCESS':
-      return {
-        ...state,
-        unopenedSlatePath: '',
-      }
     case 'ACCEPT_LEGAL':
       return {
         ...state,
@@ -72,77 +42,6 @@ export const appReducer = (
     default:
       return state
   }
-}
-
-export const handleOpenSlateEpic: Epic<Action, Action, RootState> = (
-  action$,
-  state$,
-) =>
-  action$.pipe(
-    ofType('SET_WALLET_OPEN', 'SLATE_LOAD_REQUEST'),
-    filter(
-      () =>
-        !!state$.value.app.unopenedSlatePath && state$.value.wallet.isOpened,
-    ),
-    mergeMap(async () => {
-      const slatepack: string = await RNFS.readFile(
-        state$.value.app.unopenedSlatePath,
-        'utf8',
-      )
-      const slate: Slate = await WalletBridge.slatepackDecode(
-        slatepack,
-      ).then((json: string) => JSON.parse(json))
-      return {
-        type: 'SLATE_LOAD_SUCCESS',
-        slatepack,
-        slate,
-        slatePath: state$.value.app.unopenedSlatePath,
-      } as Action
-    }),
-    catchError((error) => {
-      log(error, true)
-      return of({
-        type: 'SLATE_SET_FAILURE',
-        code: 1,
-        message: error.message,
-      } as Action)
-    }),
-  )
-
-export const handleOpenedSlateEpic: Epic<Action, Action, RootState> = (
-  action$,
-  state$,
-) => {
-  const [response$, request$] = partition(
-    action$.pipe(
-      ofType<Action, slateLoadSuccessAction>('SLATE_LOAD_SUCCESS'),
-      mergeMap(async (action) => {
-        const { slate } = action
-        const isResponse = await isResponseSlate(slate)
-        return { ...action, isResponse }
-      }),
-    ),
-    ({ isResponse }) => isResponse,
-  )
-  return merge(
-    request$.pipe(
-      tap(async ({ slatepack }) => {
-        const navigation = await getNavigation()
-        navigation?.navigate('TxIncompleteReceive', { slatepack })
-      }),
-      ignoreElements(),
-    ),
-    response$.pipe(
-      tap(async ({ slate, slatepack }) => {
-        const navigation = await getNavigation()
-        const tx = state$.value.tx.list.data.find(
-          (tx) => tx.slateId === slate.id,
-        )
-        navigation?.navigate('TxIncompleteSend', { tx, slatepack })
-      }),
-      ignoreElements(),
-    ),
-  )
 }
 
 const refreshTxsPeriodicallyEpic: Epic<Action, Action, RootState> = (
@@ -166,7 +65,5 @@ const checkBiometryEpic: Epic<Action, Action, RootState> = () => {
 
 export const appEpic: Epic<Action, Action, RootState> = combineEpics(
   checkBiometryEpic,
-  handleOpenSlateEpic,
-  handleOpenedSlateEpic,
   refreshTxsPeriodicallyEpic,
 )

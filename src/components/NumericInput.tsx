@@ -42,7 +42,7 @@ const Spacer = styled(Text)`
 `
 
 const HiddenSpacer = styled(Text)`
-  color: ${colors.surface};
+  color: ${colors.background};
   font-size: 36;
   height: 58;
   line-height: 58;

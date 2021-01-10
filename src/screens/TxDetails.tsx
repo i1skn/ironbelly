@@ -24,8 +24,8 @@ import moment from 'moment'
 import { hrGrin } from 'src/common'
 import { Link, Text } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
-import { State as ReduxState, Tx } from 'src/common/types'
-import { NavigationProps } from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { Tx, NavigationProps } from 'src/common/types'
 import {
   useTheme,
   slightlyTransparent,
@@ -94,7 +94,7 @@ const TxDetails = ({ tx, navigation }: Props) => {
   )
 }
 
-const mapStateToProps = (state: ReduxState, ownProps: Props) => () => {
+const mapStateToProps = (state: RootState, ownProps: Props) => () => {
   return {
     settings: state.settings,
     tx: state.tx.list.data.find((tx) => tx.id === ownProps.route.params.txId),

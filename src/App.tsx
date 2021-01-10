@@ -22,10 +22,8 @@ import {
   Theme as RNNavigationTheme,
 } from '@react-navigation/native'
 import {
-  Linking,
   AppState,
   StatusBar,
-  PermissionsAndroid,
   AppStateStatus,
   LogBox,
   ColorSchemeName,
@@ -33,17 +31,15 @@ import {
 import WalletBridge from 'src/bridges/wallet'
 import { Provider, connect } from 'react-redux'
 import {
-  SLATES_DIRECTORY,
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
 } from 'src/common'
-import urlParser from 'url'
 import Modal from 'react-native-modal'
 import { PersistGate } from 'redux-persist/integration/react'
 import Toast from 'react-native-easy-toast'
 import { isIphoneX } from 'react-native-iphone-x-helper'
-import RNFS from 'react-native-fs'
-import { Dispatch, State as GlobalState } from 'src/common/types'
+import { Dispatch } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import { store, persistor } from 'src/common/redux'
 import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
 import { RootStack, navigationRef } from 'src/modules/navigation'
@@ -67,7 +63,6 @@ interface StateProps {
   chain: string
   scanInProgress: boolean
   currencyRates: CurrencyRatesState
-  sharingInProgress: boolean
   walletCreated: boolean | null
   isWalletOpened: boolean
 }
@@ -83,7 +78,6 @@ interface DispatchProps {
 
 interface OwnProps {
   dispatch: Dispatch
-  slateUrl: string | undefined | null
 }
 
 type Props = StateProps &
@@ -109,110 +103,25 @@ class RealApp extends React.Component<Props, State> {
       StatusBar.setBackgroundColor('rgba(0,0,0,0)')
       StatusBar.setTranslucent(true)
     }
-    const { slateUrl } = this.props
 
-    if (slateUrl) {
-      this._handleOpenURL({
-        url: slateUrl,
-      })
-    } else {
-      Linking.getInitialURL()
-        .then((url) => {
-          if (url) {
-            this._handleOpenURL({
-              url,
-            })
-          }
-        })
-        .catch((err) => console.error('An error occurred', err))
-    }
-
-    Linking.addEventListener('url', this._handleOpenURL)
     AppState.addEventListener('change', this._handleAppStateChange)
-    // this.backHandler = BackHandler.addEventListener('hardwareBackPress', this._handleBackPress)
     this.props.requestWalletExists()
   }
 
   componentWillUnmount() {
-    Linking.removeEventListener('url', this._handleOpenURL)
     AppState.removeEventListener('change', this._handleAppStateChange)
-    // this.backHandler.remove()
-  }
-
-  _handleOpenURL = (event: { url: string }) => {
-    // const { setFromLink } = this.props
-    WalletBridge.isWalletCreated().then(async (exists) => {
-      if (exists) {
-        if (isAndroid) {
-          try {
-            const granted = await PermissionsAndroid.request(
-              PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
-              {
-                title: 'Storage access',
-                message: 'Ironbelly needs to save and open slate files.',
-                buttonNegative: 'Decline',
-                buttonPositive: 'Accept',
-              },
-            )
-
-            if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-              return
-            }
-          } catch (err) {
-            console.warn(err)
-            return
-          }
-        }
-
-        const link = urlParser.parse(event.url, true)
-
-        if (link.protocol === 'grin:') {
-          // if (link.host === 'send') {
-          // const { amount, destination, message } = parseSendLink(link.query)
-          // if (!isNaN(amount) && destination) {
-          // setFromLink(amount, message, destination)
-          // }
-          // }
-        } else if (
-          link.protocol &&
-          ['file:'].indexOf(link.protocol) !== -1 &&
-          link.path
-        ) {
-          const path = isAndroid ? decodeURIComponent(link.path) : link.path
-          store.dispatch({
-            type: 'SLATE_LOAD_REQUEST',
-            slatePath: path,
-          })
-        } else if (
-          link.protocol &&
-          ['content:'].indexOf(link.protocol) !== -1
-        ) {
-          // Copy the file, because we can not operate on content://
-          // from inside rust code
-          const url = event.url
-          const fileName = url.split('/').pop()?.split('%2F').pop()
-          const destPath = `${SLATES_DIRECTORY}/${fileName}`
-          await RNFS.copyFile(url, destPath)
-          store.dispatch({
-            type: 'SLATE_LOAD_REQUEST',
-            slatePath: destPath,
-          })
-        }
-      }
-    })
   }
 
   _handleAppStateChange = async (nextAppState: AppStateStatus) => {
-    const { sharingInProgress } = this.props
     if (nextAppState === 'active' && this.lockTimeout) {
       BackgroundTimer.clearTimeout(this.lockTimeout)
       this.lockTimeout = null
     }
-    if (nextAppState === 'background' && !sharingInProgress) {
+    if (nextAppState === 'background') {
       WalletBridge.isWalletCreated().then(async (exists) => {
         if (exists) {
           if (isAndroid) {
-            // TODO: make this configurabel for both platforms
+            // TODO: make this configurable for both platforms
             this.lockTimeout = BackgroundTimer.setTimeout(() => {
               this.lockApp()
             }, 5000)
@@ -297,7 +206,7 @@ class RealApp extends React.Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: GlobalState): StateProps => {
+const mapStateToProps = (state: RootState): StateProps => {
   return {
     toastMessage: state.toaster,
     showTxConfirmationModal: state.tx.txPost.showModal,
@@ -305,7 +214,6 @@ const mapStateToProps = (state: GlobalState): StateProps => {
     scanInProgress: state.wallet.walletScan.inProgress,
     isWalletOpened: state.wallet.isOpened,
     currencyRates: state.currencyRates,
-    sharingInProgress: state.tx.slateShare.inProgress,
     walletCreated: state.wallet.isCreated,
   }
 }
@@ -313,8 +221,8 @@ const mapStateToProps = (state: GlobalState): StateProps => {
 const RealAppConnected = connect<
   StateProps,
   DispatchProps,
-  { slateUrl: string },
-  GlobalState
+  OwnProps,
+  RootState
 >(mapStateToProps, (dispatch) => ({
   requestWalletExists: () =>
     dispatch({
@@ -349,10 +257,6 @@ const RealAppConnected = connect<
     }),
 }))(RealApp)
 
-type AppProps = {
-  url: string
-}
-
 function getNavigationTheme(
   theme: Theme,
   themeName: ColorSchemeName,
@@ -370,14 +274,13 @@ function getNavigationTheme(
   }
 }
 
-const App = (props: AppProps) => {
+const App = () => {
   const [theme, themeName] = useTheme()
 
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <RealAppConnected
-          slateUrl={props.url}
           dispatch={store.dispatch}
           theme={getNavigationTheme(theme, themeName)}
         />

@@ -17,7 +17,6 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import PasteButton, { SetFunction } from 'src/components/PasteButton'
-import OpenFileButton from 'src/components/OpenFileButton'
 import ScanQRCodeButton from 'src/components/ScanQRCodeButton'
 import { RootStackParamList } from 'src/modules/navigation'
 
@@ -25,20 +24,13 @@ type Props = {
   nextScreen: RootStackParamList['ScanQRCode']['nextScreen']
   label: string
   setFunction: SetFunction
-  openFileCallback: (uri: string) => void
 }
 
-function InputContentRow({
-  openFileCallback,
-  setFunction,
-  nextScreen,
-  label,
-}: Props) {
+function InputContentRow({ setFunction, nextScreen, label }: Props) {
   return (
     <View style={styles.content}>
       <PasteButton setFunction={setFunction} />
       <ScanQRCodeButton nextScreen={nextScreen} label={label} />
-      <OpenFileButton callback={openFileCallback} />
     </View>
   )
 }

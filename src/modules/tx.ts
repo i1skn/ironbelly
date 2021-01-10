@@ -15,7 +15,6 @@
  */
 
 import BigNumber from 'bignumber.js'
-import Share from 'react-native-share'
 import AsyncStorage from '@react-native-community/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
@@ -47,7 +46,6 @@ import {
   slateSetRequestAction,
   slateRemoveRequestAction,
   txPostCloseAction,
-  slateShareRequestAction,
   txGetRequestAction,
   txFormOutputStrategiesRequestAction,
   OutputStrategy,
@@ -662,26 +660,6 @@ export const sideEffects = {
       })
     }
   },
-  ['SLATE_SHARE_REQUEST']: (action: slateShareRequestAction, store: Store) => {
-    const path = getSlatePath(action.id, action.isResponse)
-    return Share.open({
-      url: `file://${path}`,
-      type: 'application/json',
-      showAppsToView: true,
-    })
-      .then(() => {
-        store.dispatch({
-          type: 'SLATE_SHARE_SUCCESS',
-        })
-      })
-      .catch((error) => {
-        store.dispatch({
-          type: 'SLATE_SHARE_FAILURE',
-          code: 1,
-          message: error.message,
-        })
-      })
-  },
   ['TX_FORM_OUTPUT_STRATEGIES_REQUEST']: (
     action: txFormOutputStrategiesRequestAction,
     store: Store,
@@ -934,9 +912,6 @@ const txReceive = function (
   action: Action,
 ): TxReceiveState {
   switch (action.type) {
-    case 'SLATE_LOAD_SUCCESS':
-      return { ...state, inProgress: false, received: false, error: null }
-
     case 'TX_RECEIVE_REQUEST':
       return { ...state, inProgress: true, received: false, error: null }
 
@@ -964,9 +939,6 @@ const txFinalize = function (
   action: Action,
 ): TxFinalizeState {
   switch (action.type) {
-    case 'SLATE_LOAD_SUCCESS':
-      return { ...state, inProgress: false, finalized: false, error: null }
-
     case 'TX_FINALIZE_REQUEST':
       return { ...state, inProgress: true, finalized: false, error: null }
 
@@ -1062,51 +1034,6 @@ const txForm = function (
   }
 }
 
-const slate = function (
-  state: SlateState = initialState.slate,
-  action: Action,
-): SlateState {
-  switch (action.type) {
-    case 'SLATE_LOAD_REQUEST':
-      return { ...state, inProgress: true, error: null }
-
-    case 'SLATE_LOAD_SUCCESS':
-      return { ...state, data: action.slate, inProgress: false }
-
-    case 'SLATE_LOAD_FAILURE':
-      return {
-        ...state,
-        error: {
-          code: action.code,
-          message: action.message,
-        },
-        inProgress: false,
-      }
-
-    default:
-      return state
-  }
-}
-
-const slateShare = function (
-  state: SlateShareState = initialState.slateShare,
-  action: Action,
-): SlateShareState {
-  switch (action.type) {
-    case 'SLATE_SHARE_REQUEST':
-      return { ...state, inProgress: true }
-
-    case 'SLATE_SHARE_SUCCESS':
-      return { ...state, inProgress: false }
-
-    case 'SLATE_SHARE_FAILURE':
-      return { ...state, inProgress: false }
-
-    default:
-      return state
-  }
-}
-
 const listPersistConfig = {
   key: 'list',
   storage: AsyncStorage,
@@ -1138,8 +1065,6 @@ export const reducer = combineReducers({
   txReceive,
   txFinalize,
   txForm,
-  slate,
-  slateShare,
 })
 
 export const txListSelector = (state: RootState) => state.tx.list.data

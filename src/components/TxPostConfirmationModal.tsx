@@ -20,7 +20,8 @@ import styled from 'styled-components/native'
 import { FlexGrow, hrGrin, LoaderView } from 'src/common'
 import colors from 'src/common/colors'
 import { connect } from 'react-redux'
-import { Dispatch, State as ReduxState, Tx } from 'src/common/types'
+import { Dispatch, Tx } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import { ActivityIndicator } from 'react-native'
 const Wrapper = styled.View`
   background: white;
@@ -131,7 +132,7 @@ class TxPostConfirmationModal extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: RootState) => ({
   txSlateId: state.tx.txPost.txSlateId,
   tx: state.tx.txGet.data,
   inProgress: state.tx.txGet.inProgress || state.tx.txPost.inProgress,

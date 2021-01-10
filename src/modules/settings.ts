@@ -30,7 +30,7 @@ import { APPLICATION_SUPPORT_DIRECTORY } from 'src/common'
 import * as Keychain from 'react-native-keychain'
 import { log } from 'src/common/logger'
 import { currencyList } from 'src/common'
-import { State as RootState } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import { getNavigation, passwordScreenMode } from './navigation'
 export enum BIOMETRY_STATUS {
   unknown = 'unknown',

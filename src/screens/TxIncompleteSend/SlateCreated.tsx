@@ -15,7 +15,6 @@
  */
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import DocumentPicker from 'react-native-document-picker'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
@@ -41,24 +40,6 @@ type SlateCreateProps = {
 const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
-
-  const slatepackShare = () => {
-    dispatch({
-      type: 'SLATE_SHARE_REQUEST',
-      id: slateId,
-      isResponse: false,
-    })
-  }
-
-  const openFile = async () => {
-    const { uri } = await DocumentPicker.pick({
-      type: [DocumentPicker.types.allFiles],
-    })
-    dispatch({
-      type: 'SLATE_LOAD_REQUEST',
-      slatePath: uri,
-    })
-  }
 
   const txFinalize = () => {
     dispatch({
@@ -174,11 +155,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
                 returnKeyType={'done'}>
                 {slatepack}
               </Textarea>
-              <ShareRow
-                content={slatepack}
-                label="Slatepack"
-                onShareFile={slatepackShare}
-              />
+              <ShareRow content={slatepack} label="Slatepack" />
               <Text style={styles.info}>
                 If you have received recipient's part of the transaction, please
                 enter it below.
@@ -194,7 +171,6 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
                 {recipientSlatepack}
               </Textarea>
               <InputContentRow
-                openFileCallback={openFile}
                 setFunction={setWithValidation}
                 nextScreen={'TxIncompleteSend'}
                 label="Slatepack"

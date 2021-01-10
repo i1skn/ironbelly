@@ -19,12 +19,8 @@ import { Alert } from 'react-native'
 import { connect } from 'react-redux'
 import FormTextInput from 'src/components/FormTextInput'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {
-  State as ReduxState,
-  Error,
-  NavigationProps,
-  Dispatch,
-} from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { Error, NavigationProps, Dispatch } from 'src/common/types'
 
 import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'src/common'
 import { Button, Text } from 'src/components/CustomFont'
@@ -132,7 +128,7 @@ function NewPassword({ route, setIsNew, navigation, newWallet }: Props) {
   )
 }
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: RootState) => ({
   error: state.wallet.walletInit.error,
   newWallet: state.wallet.walletInit.isNew,
 })

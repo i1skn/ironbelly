@@ -211,7 +211,7 @@ const SlateNotCreated = () => {
   if (!isZero(balance.amountCurrentlySpendable)) {
     noticeText = `You can send up to ${hrGrin(
       balance.amountCurrentlySpendable,
-    )}`
+    )} including fee`
   } else {
     noticeText = `You don't have any funds available`
   }

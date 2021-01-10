@@ -18,7 +18,8 @@ import styled from 'styled-components/native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import sleep from 'sleep-promise'
 import { isAndroid } from 'src/common'
-import { State as ReduxState, Tx } from 'src/common/types'
+import { Tx } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import React from 'react'
 import {
   Text,
@@ -224,7 +225,7 @@ const SettingsStack = () => {
             headerRight: () => (
               <ResetButton
                 onPress={() => {
-                  const state = store.getState() as ReduxState
+                  const state = store.getState() as RootState
 
                   switch (state.settings.chain) {
                     case MAINNET_CHAIN:

@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-import { State as AppState } from 'src/modules/app'
-import { State as BalanceState } from 'src/modules/balance'
-import { State as TxState } from 'src/modules/tx'
 import { State as SettingsState } from 'src/modules/settings'
-import { State as ToastedState } from 'src/modules/toaster'
-import { State as WalletState } from 'src/modules/wallet'
-import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-
 import { RootStackParamList } from 'src/modules/navigation'
 import { StackNavigationProp } from '@react-navigation/stack'
 import { RouteProp } from '@react-navigation/native'
@@ -206,21 +199,6 @@ export type setWalletOpenction = {
 export type closeWalletAction = {
   type: 'CLOSE_WALLET'
 }
-export type slateLoadRequestAction = {
-  type: 'SLATE_LOAD_REQUEST'
-  slatePath: string
-}
-export type slateLoadSuccessAction = {
-  type: 'SLATE_LOAD_SUCCESS'
-  slatepack: string
-  slate: Slate
-  slatePath: string
-}
-export type slateLoadFalureAction = {
-  type: 'SLATE_LOAD_FAILURE'
-  code?: number
-  message: string
-}
 export type slateSetRequestAction = {
   type: 'SLATE_SET_REQUEST'
   id: string
@@ -269,19 +247,6 @@ export type txFinalizeSuccessAction = {
 }
 export type txFinalizeFalureAction = {
   type: 'TX_FINALIZE_FAILURE'
-  code?: number
-  message: string
-}
-export type slateShareRequestAction = {
-  type: 'SLATE_SHARE_REQUEST'
-  id: string
-  isResponse: boolean
-}
-export type slateShareSuccessAction = {
-  type: 'SLATE_SHARE_SUCCESS'
-}
-export type slateShareFalureAction = {
-  type: 'SLATE_SHARE_FAILURE'
   code?: number
   message: string
 }
@@ -514,12 +479,6 @@ export type Action =
   | txFinalizeRequestAction
   | txFinalizeSuccessAction
   | txFinalizeFalureAction
-  | slateLoadRequestAction
-  | slateLoadSuccessAction
-  | slateLoadFalureAction
-  | slateShareRequestAction
-  | slateShareSuccessAction
-  | slateShareFalureAction
   | toastShowAction
   | toastClearAction
   | txFormSetFromLinkAction
@@ -569,16 +528,6 @@ export type Currency = {
   code: string
   fractionDigits: number
 }
-export type State = {
-  app: AppState
-  balance: BalanceState
-  tx: TxState
-  currencyRates: CurrencyRatesState
-  settings: SettingsState
-  toaster: ToastedState
-  wallet: WalletState
-}
-export type GetState = () => State
 export type Dispatch = (action: Action) => void
 export type Store = {
   dispatch: Dispatch

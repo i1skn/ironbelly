@@ -17,16 +17,14 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 import CopyButton from 'src/components/CopyButton'
-import ShareButton from 'src/components/ShareButton'
 import ShowQRCodeButton from 'src/components/ShowQRCodeButton'
 
 type Props = {
   content?: string
   label: string
-  onShareFile?: () => void
 }
 
-function ShareRow({ content, label, onShareFile }: Props) {
+function ShareRow({ content, label }: Props) {
   if (!content) {
     return null
   }
@@ -34,7 +32,6 @@ function ShareRow({ content, label, onShareFile }: Props) {
     <View style={styles.content}>
       <CopyButton content={content} subject={label} />
       <ShowQRCodeButton content={content} label={label} />
-      {onShareFile && <ShareButton onClick={onShareFile} />}
     </View>
   )
 }

@@ -15,11 +15,8 @@
  */
 
 import React, { Component } from 'react'
-import {
-  Dispatch,
-  State as GlobalState,
-  NavigationProps,
-} from 'src/common/types'
+import { Dispatch, NavigationProps } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import {
   Alert,
   Linking,
@@ -52,7 +49,7 @@ interface DispatchProps {
   disableBiometry: () => void
   walletScan: () => void
   setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void
-  setChain: (chain: GlobalState['settings']['chain']) => void
+  setChain: (chain: RootState['settings']['chain']) => void
   destroyWallet: () => void
   migrateToMainnet: () => void
   setTheme: (theme: ColorSchemeName) => void
@@ -304,7 +301,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const mapStateToProps = (state: GlobalState): StateProps => ({
+const mapStateToProps = (state: RootState): StateProps => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
   isFloonet: state.settings.chain === 'floonet',
@@ -328,7 +325,7 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
     })
   },
 
-  setChain: (chain: GlobalState['settings']['chain']) => {
+  setChain: (chain: RootState['settings']['chain']) => {
     dispatch({
       type: 'SET_SETTINGS',
       newSettings: {
@@ -367,7 +364,7 @@ export default connect<
   StateProps,
   DispatchProps,
   Record<string, never>,
-  GlobalState
+  RootState
 >(
   mapStateToProps,
   mapDispatchToProps,

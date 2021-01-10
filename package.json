@@ -41,7 +41,6 @@
     "react-native-circular-progress": "^1.1.0",
     "react-native-config": "^1.4.1",
     "react-native-device-info": "^6.0.4",
-    "react-native-document-picker": "^4.1.0",
     "react-native-easy-toast": "^1.2.0",
     "react-native-elements": "^1.1.0",
     "react-native-fs": "^2.13.3",
@@ -70,8 +69,7 @@
     "rxjs": "^6.6.3",
     "rxjs-compat": "^6.6.3",
     "sleep-promise": "^8.0.1",
-    "styled-components": "^5.1.0",
-    "url": "^0.11.0"
+    "styled-components": "^5.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

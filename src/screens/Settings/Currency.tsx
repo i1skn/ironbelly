@@ -20,12 +20,8 @@ import { FlatList, StyleSheet, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Text } from 'src/components/CustomFont'
 import styled from 'styled-components/native'
-import {
-  State as ReduxState,
-  Currency,
-  Dispatch,
-  NavigationProps,
-} from 'src/common/types'
+import { Currency, Dispatch, NavigationProps } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import { currencyList } from 'src/common'
 import colors from 'src/common/colors'
 import { SearchBar } from 'react-native-elements'
@@ -173,7 +169,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: RootState) => ({
   currency: state.settings.currencyObject,
   currencyRates: state.currencyRates,
 })

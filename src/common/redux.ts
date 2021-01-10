@@ -47,7 +47,7 @@ import {
   sideEffects as walletEffects,
 } from 'src/modules/wallet'
 import { torReducer, torEpic } from 'src/modules/tor'
-import { State, Action } from 'src/common/types'
+import { Action } from 'src/common/types'
 import { createStore, applyMiddleware } from 'redux'
 import { createMigrate, persistStore, persistReducer } from 'redux-persist'
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2'
@@ -94,7 +94,7 @@ export const rootReducer = combineReducers({
 
 export type RootState = ReturnType<typeof rootReducer>
 
-export const rootEpic: Epic<Action, Action, State> = (
+export const rootEpic: Epic<Action, Action, RootState> = (
   action$,
   store$,
   dependencies,
@@ -121,7 +121,7 @@ const sideEffects = {
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const sideEffectsMiddleware = createMiddleware(sideEffects)
-const epicMiddleware = createEpicMiddleware<Action, Action, State>()
+const epicMiddleware = createEpicMiddleware<Action, Action, RootState>()
 
 const persistConfig = {
   key: 'root',

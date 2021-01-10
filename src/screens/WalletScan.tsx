@@ -20,7 +20,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components/native'
 import { Spacer, LoaderView } from 'src/common'
 import colors from 'src/common/colors'
-import { State as ReduxState } from 'src/common/types'
+import { RootState } from 'src/common/redux'
 import { Text } from 'src/components/CustomFont'
 import { WalletScanState } from 'src/modules/wallet'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
@@ -101,7 +101,7 @@ class WalletScan extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({ ...state.wallet.walletScan })
+const mapStateToProps = (state: RootState) => ({ ...state.wallet.walletScan })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   startScanOutputs: () => {

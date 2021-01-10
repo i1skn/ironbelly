@@ -22,12 +22,8 @@ import { Text } from 'src/components/CustomFont'
 import Balance from 'src/components/Balance'
 import TxListItem from 'src/components/TxListItem'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import {
-  Balance as BalanceType,
-  Dispatch,
-  State as GlobalState,
-  Tx,
-} from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { Balance as BalanceType, Dispatch, Tx } from 'src/common/types'
 import { WalletInitState } from 'src/modules/wallet'
 import { State as SettingsState } from 'src/modules/settings'
 import { NavigationProps } from 'src/common/types'
@@ -183,7 +179,7 @@ function Overview({
   )
 }
 
-const mapStateToProps = (state: GlobalState) => {
+const mapStateToProps = (state: RootState) => {
   return {
     balance: state.balance,
     txListRefreshInProgress: state.tx.list.showLoader,

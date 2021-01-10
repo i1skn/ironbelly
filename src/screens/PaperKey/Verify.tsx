@@ -23,11 +23,8 @@ import MnemonicWordTextInput from 'src/components/MnemonicWordTextInput'
 import NetInfo from '@react-native-community/netinfo'
 import { UnderHeaderBlock, Spacer } from 'src/common'
 import { Text, Button } from 'src/components/CustomFont'
-import {
-  State as ReduxState,
-  NavigationProps,
-  Dispatch,
-} from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { NavigationProps, Dispatch } from 'src/common/types'
 import { WalletScanState } from 'src/modules/wallet'
 
 type Props = NavigationProps<'VerifyPaperKey'> &
@@ -217,7 +214,7 @@ class Verify extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: RootState) => ({
   ...state.wallet.walletScan,
   isNew: state.wallet.walletInit.isNew,
 })

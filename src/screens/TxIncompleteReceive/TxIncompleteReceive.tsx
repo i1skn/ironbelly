@@ -46,15 +46,6 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
   const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
 
-  const slatepackShare = (tx: Tx) => {
-    return () =>
-      dispatch({
-        type: 'SLATE_SHARE_REQUEST',
-        id: tx.slateId,
-        isResponse: true,
-      })
-  }
-
   const [slatepack, setSlatepack] = useState(loadedSlatepack)
   const [isLoadingSlatepack, setIsLoadingSlatepack] = useState(false)
   const [receiveSlatepack, setReceiveSlatepack] = useState('')
@@ -119,13 +110,6 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
     })
   }
 
-  const openFile = (uri: string) => {
-    dispatch({
-      type: 'SLATE_LOAD_REQUEST',
-      slatePath: uri,
-    })
-  }
-
   return (
     <>
       <CardTitle title={title} navigation={navigation} />
@@ -174,11 +158,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                           returnKeyType={'done'}>
                           {slatepack}
                         </Textarea>
-                        <ShareRow
-                          content={slatepack}
-                          label="Slatepack"
-                          onShareFile={slatepackShare(tx)}
-                        />
+                        <ShareRow content={slatepack} label="Slatepack" />
                       </>
                     )) ||
                     null}
@@ -208,7 +188,6 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                     {receiveSlatepack}
                   </Textarea>
                   <InputContentRow
-                    openFileCallback={openFile}
                     setFunction={setWithValidation}
                     nextScreen={'TxIncompleteReceive'}
                     label="Grin Address"

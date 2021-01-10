@@ -24,12 +24,8 @@ import { State as SettingsState } from 'src/modules/settings'
 import { FlexGrow, Spacer } from 'src/common'
 import colors from 'src/common/colors'
 import { Text, Button } from 'src/components/CustomFont'
-import {
-  State as ReduxState,
-  Error,
-  Dispatch,
-  NavigationProps,
-} from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { Error, Dispatch, NavigationProps } from 'src/common/types'
 
 const Wrapper = styled(View)`
   padding: 16px;
@@ -164,7 +160,7 @@ class Landing extends Component<Props> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: RootState) => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,

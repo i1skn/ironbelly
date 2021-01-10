@@ -18,7 +18,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { KeyboardAvoidingWrapper, Spacer } from 'src/common'
 import FormTextInput from 'src/components/FormTextInput'
-import { State as ReduxState, Dispatch } from 'src/common/types'
+import { RootState } from 'src/common/redux'
+import { Dispatch } from 'src/common/types'
 import { apiSecretFilePath } from 'src/modules/settings'
 import RNFS from 'react-native-fs'
 import { store } from 'src/common/redux'
@@ -114,7 +115,7 @@ class GrinNode extends Component<Props, State> {
   }
 }
 
-const mapStateToProps = (state: ReduxState) => ({
+const mapStateToProps = (state: RootState) => ({
   nodeUrl: state.settings.checkNodeApiHttpAddr,
 })
 
