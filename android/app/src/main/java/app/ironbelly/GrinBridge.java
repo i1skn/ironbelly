@@ -285,24 +285,6 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    public void txSendHttps(double amount, double minimumConfirmations, Boolean selectionStrategyIsUseAll,
-            String url, Promise promise) {
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if (checkOpenedWallet(promise)) {
-                        promise.resolve(
-                                txSendHttps(openedWallet, (long) amount, (long) minimumConfirmations, selectionStrategyIsUseAll, url));
-                    }
-                } catch (Exception e) {
-                    promise.reject("", e.getMessage());
-                }
-            }
-        });
-    }
-
-    @ReactMethod
     public void txSendAddress(double amount, double minimumConfirmations, Boolean selectionStrategyIsUseAll,
                             String address, Promise promise) {
         AsyncTask.execute(new Runnable() {
@@ -494,8 +476,6 @@ public class GrinBridge extends ReactContextBaseJavaModule {
     private static native String txReceive(long openedWallet, String account, String slatepack);
 
     private static native String txFinalize(long openedWallet, String slatepack);
-
-    private static native String txSendHttps(long openedWallet, long amount, long minimumConfirmations, boolean selectionStrategyIsUseAll, String url);
 
     private static native String txSendAddress(long openedWallet, long amount, long minimumConfirmations, boolean selectionStrategyIsUseAll, String address);
 

@@ -117,14 +117,6 @@ class GrinBridge: RCTEventEmitter {
             returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
         }
     }
-
-    @objc func txSendHttps(_ amount: UInt64, minimumConfirmations: UInt64, selectionStrategyIsUseAll: Bool, url: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
-        if let wallet = checkOpenedWallet(openedWallet, reject) {
-            var error: UInt8 = 0
-            let cResult = c_tx_send_https(wallet, amount, minimumConfirmations, selectionStrategyIsUseAll, url, &error)
-            returnToReact(error:error, cResult:cResult!, resolve: resolve, reject: reject)
-        }
-    }
     
     @objc func txSendAddress(_ amount: UInt64, minimumConfirmations: UInt64, selectionStrategyIsUseAll: Bool, address: String, resolve: RCTPromiseResolveBlock, reject: RCTPromiseRejectBlock) -> Void {
         if let wallet = checkOpenedWallet(openedWallet, reject) {

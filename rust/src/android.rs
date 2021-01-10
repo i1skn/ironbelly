@@ -290,30 +290,6 @@ pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txFinalize(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txSendHttps(
-    env: JNIEnv,
-    _: JClass,
-    wallet_ptr: jlong,
-    amount: jlong,
-    minimum_confirmations: jlong,
-    selection_strategy_is_use_all: bool,
-    url: JString,
-) -> jstring {
-    ensure_wallet!(wallet_ptr, wallet, env);
-    get_string_from_jni!(url, env);
-    unwrap_to_jni!(
-        env,
-        tx_send_https(
-            &wallet,
-            &url,
-            amount as u64,
-            minimum_confirmations as u64,
-            selection_strategy_is_use_all
-        )
-    )
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_txSendAddress(
     env: JNIEnv,
     _: JClass,

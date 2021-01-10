@@ -38,7 +38,7 @@ function InputContentRow({ setFunction, nextScreen, label }: Props) {
 const styles = StyleSheet.create({
   content: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     marginVertical: 16,
     marginHorizontal: 16,
   },

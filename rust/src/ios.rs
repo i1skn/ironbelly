@@ -264,28 +264,6 @@ pub unsafe extern "C" fn c_tx_finalize(
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn c_tx_send_https(
-    wallet_ptr: usize,
-    amount: u64,
-    minimum_confirmations: u64,
-    selection_strategy_is_use_all: bool,
-    url: *const c_char,
-    error: *mut u8,
-) -> *const c_char {
-    ensure_wallet!(wallet_ptr, wallet, error);
-    unwrap_string_to_c!(
-        tx_send_https(
-            &wallet,
-            &cstr_to_rust(url),
-            amount,
-            minimum_confirmations,
-            selection_strategy_is_use_all,
-        ),
-        error
-    )
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn c_tx_send_address(
     wallet_ptr: usize,
     amount: u64,

@@ -44,12 +44,6 @@ interface IGrinBridge {
     minimumConfirmations: number,
     selectionStrategyIsUseAll: boolean,
   ) => Promise<string>
-  txSendHttps: (
-    amount: number,
-    minimumConfirmations: number,
-    selectionStrategyIsUseAll: boolean,
-    url: string,
-  ) => Promise<string>
   txSendAddress: (
     amount: number,
     minimumConfirmations: number,

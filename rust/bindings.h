@@ -59,13 +59,6 @@ const char *c_tx_send_address(uintptr_t wallet_ptr,
                               const char *address,
                               uint8_t *error);
 
-const char *c_tx_send_https(uintptr_t wallet_ptr,
-                            uint64_t amount,
-                            uint64_t minimum_confirmations,
-                            bool selection_strategy_is_use_all,
-                            const char *url,
-                            uint8_t *error);
-
 const char *c_tx_strategies(uintptr_t wallet_ptr,
                             uint64_t amount,
                             uint64_t minimum_confirmations,

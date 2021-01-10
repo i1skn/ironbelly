@@ -38,8 +38,6 @@ RCT_EXTERN_METHOD(txPost:(NSString*)txSlateId resolve:(RCTPromiseResolveBlock)re
 
 RCT_EXTERN_METHOD(txCreate:(int64_t)amount minimumConfirmations:(int64_t)minimumConfirmations selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
-RCT_EXTERN_METHOD(txSendHttps:(int64_t)amount minimumConfirmations:(int64_t)minimumConfirmations selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll url:(NSString*)url resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
-
 RCT_EXTERN_METHOD(txSendAddress:(int64_t)amount minimumConfirmations:(int64_t)minimumConfirmations selectionStrategyIsUseAll:(BOOL)selectionStrategyIsUseAll address:(NSString*)address resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(txStrategies:(int64_t)amount minimumConfirmations:(int64_t)minimumConfirmations resolve:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject)

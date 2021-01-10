@@ -21,7 +21,6 @@ import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'
 import { persistReducer } from 'redux-persist'
 import {
-  HTTP_TRANSPORT_METHOD,
   ADDRESS_TRANSPORT_METHOD,
   getConfigForRust,
   mapRustTx,
@@ -38,7 +37,6 @@ import {
   txCancelRequestAction,
   txListRequestAction,
   txCreateRequestAction,
-  txSendHttpsRequestAction,
   txSendAddressRequestAction,
   txPostRequestAction,
   txReceiveRequestAction,
@@ -410,38 +408,6 @@ export const sideEffects = {
       log(error, true)
     }
   },
-  ['TX_SEND_HTTPS_REQUEST']: async (
-    action: txSendHttpsRequestAction,
-    store: Store,
-  ) => {
-    try {
-      const finalized = await getArrayFromStorage('@finalizedTxs')
-      const slateId = await WalletBridge.txSendHttps(
-        action.amount,
-        getConfigForRust(store.getState()).minimum_confirmations,
-        action.selectionStrategyIsUseAll,
-        action.url,
-      ).then(JSON.parse)
-      finalized.push(slateId)
-      await AsyncStorage.setItem('@finalizedTxs', JSON.stringify(finalized))
-      store.dispatch({
-        type: 'TX_SEND_HTTPS_SUCCESS',
-      })
-      const navigation = await getNavigation()
-      navigation?.goBack()
-
-      store.dispatch({
-        type: 'TX_POST_SHOW',
-        txSlateId: slateId,
-      })
-    } catch (e) {
-      store.dispatch({
-        type: 'TX_SEND_HTTPS_FAILURE',
-        message: e.message,
-      })
-      log(e, true)
-    }
-  },
   ['TX_SEND_ADDRESS_REQUEST']: async (
     action: txSendAddressRequestAction,
     store: Store,
@@ -778,15 +744,12 @@ const txSend = function (
   action: Action,
 ): TxSendState {
   switch (action.type) {
-    case 'TX_SEND_HTTPS_REQUEST':
     case 'TX_SEND_ADDRESS_REQUEST':
       return { ...state, inProgress: true, sent: false, error: null }
 
-    case 'TX_SEND_HTTPS_SUCCESS':
     case 'TX_SEND_ADDRESS_SUCCESS':
       return { ...state, sent: true, inProgress: false }
 
-    case 'TX_SEND_HTTPS_FAILURE':
     case 'TX_SEND_ADDRESS_FAILURE':
       return {
         ...state,
@@ -1045,8 +1008,6 @@ export const isTxFormInvalid = (txForm: TxForm, transferMethod: string) => {
   if (
     !amount ||
     !outputStrategy ||
-    (transferMethod === HTTP_TRANSPORT_METHOD &&
-      address.toLowerCase().indexOf('http') === -1) ||
     (transferMethod === ADDRESS_TRANSPORT_METHOD &&
       address.toLowerCase().indexOf('grin') === -1)
   ) {

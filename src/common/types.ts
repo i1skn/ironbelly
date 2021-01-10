@@ -85,20 +85,6 @@ export type txCreateFalureAction = {
   code?: number
   message: string
 }
-export type txSendHttpsRequestAction = {
-  type: 'TX_SEND_HTTPS_REQUEST'
-  amount: number
-  selectionStrategyIsUseAll: boolean
-  url: string
-}
-export type txSendHttpsSuccessAction = {
-  type: 'TX_SEND_HTTPS_SUCCESS'
-}
-export type txSendHttpsFalureAction = {
-  type: 'TX_SEND_HTTPS_FAILURE'
-  code?: number
-  message: string
-}
 export type txSendAddressRequestAction = {
   type: 'TX_SEND_ADDRESS_REQUEST'
   amount: number
@@ -438,12 +424,9 @@ export type Action =
   | txCreateRequestAction
   | txCreateSuccessAction
   | txCreateFalureAction
-  | txSendHttpsRequestAction
   | txSendAddressRequestAction
   | txSendAddressSuccessAction
   | txSendAddressFalureAction
-  | txSendHttpsSuccessAction
-  | txSendHttpsFalureAction
   | txPostShowAction
   | txPostCloseAction
   | txPostRequestAction

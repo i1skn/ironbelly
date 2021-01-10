@@ -29,7 +29,6 @@ import NumericInput from 'src/components/NumericInput'
 import {
   FILE_TRANSPORT_METHOD,
   ADDRESS_TRANSPORT_METHOD,
-  HTTP_TRANSPORT_METHOD,
   hrGrin,
   hrFiat,
   convertToFiat,
@@ -63,14 +62,6 @@ const Title = styled.Text`
   color: ${colors.grey[700]};
   font-size: 16;
   font-weight: 600;
-`
-
-const DeprecationWarning = styled.Text`
-  color: ${colors.warning};
-  font-size: 16;
-  font-weight: 500;
-  padding-bottom: 8;
-  padding-top: 8;
 `
 
 const Option = styled.TouchableOpacity`
@@ -147,22 +138,13 @@ const SlateNotCreated = () => {
     if (outputStrategy) {
       const { selectionStrategyIsUseAll } = outputStrategy
 
-      if (address) {
-        if (transportMethod === ADDRESS_TRANSPORT_METHOD) {
-          dispatch({
-            type: 'TX_SEND_ADDRESS_REQUEST',
-            amount,
-            address,
-            selectionStrategyIsUseAll,
-          })
-        } else if (transportMethod === HTTP_TRANSPORT_METHOD) {
-          dispatch({
-            type: 'TX_SEND_HTTPS_REQUEST',
-            amount,
-            url: address,
-            selectionStrategyIsUseAll,
-          })
-        }
+      if (address && transportMethod === ADDRESS_TRANSPORT_METHOD) {
+        dispatch({
+          type: 'TX_SEND_ADDRESS_REQUEST',
+          amount,
+          address,
+          selectionStrategyIsUseAll,
+        })
       } else {
         dispatch({
           type: 'TX_CREATE_REQUEST',
@@ -244,7 +226,7 @@ const SlateNotCreated = () => {
         ios: 88,
       })}>
       <Notice>{noticeText}</Notice>
-      {!!balance.amountCurrentlySpendable && (
+      {!isZero(balance.amountCurrentlySpendable) && (
         <View style={styles.amount}>
           <NumericInput
             autoFocus={!amount}
@@ -336,18 +318,6 @@ const SlateNotCreated = () => {
                 Manual
               </TransportMethodTitle>
             </TransportMethod>
-            <TransportMethod
-              style={styles.transportMethod}
-              onPress={() => {
-                setAddress('')
-                setTransportMethod(HTTP_TRANSPORT_METHOD)
-              }}>
-              <OptioIcon active={transportMethod === HTTP_TRANSPORT_METHOD} />
-              <TransportMethodTitle
-                active={transportMethod === HTTP_TRANSPORT_METHOD}>
-                HTTP(S)
-              </TransportMethodTitle>
-            </TransportMethod>
           </View>
           {transportMethod === ADDRESS_TRANSPORT_METHOD && (
             <>
@@ -368,24 +338,6 @@ const SlateNotCreated = () => {
                   <MaterialCommunityIcons name="qrcode-scan" size={26} />
                 </ScanQRCode>
               )}
-              <Spacer />
-            </>
-          )}
-          {transportMethod === HTTP_TRANSPORT_METHOD && (
-            <>
-              <DeprecationWarning>
-                Will be deprecated in version 5.x
-              </DeprecationWarning>
-              <FormTextInput
-                autoFocus={false}
-                onChange={(url) => setAddress(url)}
-                value={address}
-                placeholder="http(s)://"
-                textContentType={'URL'}
-                keyboardType={'url'}
-                autoCorrect={false}
-                multiline={true}
-              />
               <Spacer />
             </>
           )}
