@@ -98,8 +98,8 @@ fn create_wallet_config(config: Config) -> Result<WalletConfig, Error> {
 
     let api_secret_path = config.wallet_dir.clone() + "/.api_secret";
     Ok(WalletConfig {
+        accept_fee_base: Some(500000),
         chain_type: Some(chain_type),
-        api_listen_interface: "127.0.0.1".to_string(),
         api_listen_port: 3415,
         api_secret_path: None,
         node_api_secret_path: if Path::new(&api_secret_path).exists() {
