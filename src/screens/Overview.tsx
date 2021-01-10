@@ -90,7 +90,7 @@ function Overview({
         ListEmptyComponent={
           <View style={styles.noTxs}>
             {(firstLoading && (
-              <View style={styles.emptyLog}>Loading...</View>
+              <Text style={styles.emptyLog}>Loading...</Text>
             )) || (
               <Text>
                 Here you will see your transactions, when you've made them!

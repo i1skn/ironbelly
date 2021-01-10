@@ -18,7 +18,6 @@ import React, { useCallback } from 'react'
 import {
   TouchableOpacity,
   StatusBar,
-  StyleSheet,
   Text,
   View,
   ViewProps,
@@ -30,8 +29,12 @@ import {
   NavigationProp,
   ParamListBase,
 } from '@react-navigation/native'
-import colors from 'src/common/colors'
-import { slightlyTransparent } from 'src/themes'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useTheme,
+  useThemedStyles,
+} from 'src/themes'
 
 type Props = {
   title: string
@@ -40,12 +43,12 @@ type Props = {
   style?: ViewProps['style']
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   cardTitle: {
     paddingVertical: 16,
     justifyContent: 'center',
     flexDirection: 'row',
-    backgroundColor: colors.background,
+    backgroundColor: theme.surface,
   },
   container: {
     flexDirection: 'column',
@@ -60,25 +63,31 @@ const styles = StyleSheet.create({
     fontSize: 18,
     textAlign: 'center',
     fontWeight: '500',
-    color: colors.onBackground,
+    color: theme.onBackground,
   },
   subTitle: {
     fontSize: 14,
     textAlign: 'center',
-    color: slightlyTransparent(colors.onBackground),
+    color: slightlyTransparent(theme.onBackground),
   },
-})
+}))
 
 export default ({ title, subTitle, navigation, style }: Props) => {
   if (isAndroid) {
     return null
   }
+  const [styles] = useThemedStyles(themedStyles)
+  const [theme, themeName] = useTheme()
 
   useFocusEffect(
     useCallback(() => {
-      StatusBar.setBarStyle('light-content')
+      if (themeName === 'light') {
+        StatusBar.setBarStyle('light-content')
+      }
       return () => {
-        StatusBar.setBarStyle('dark-content')
+        if (themeName === 'light') {
+          StatusBar.setBarStyle('dark-content')
+        }
       }
     }, []),
   )
@@ -94,7 +103,7 @@ export default ({ title, subTitle, navigation, style }: Props) => {
           }}>
           <FeatherIcon
             name="chevron-down"
-            color={colors.onBackground}
+            color={theme.onBackground}
             size={24}
           />
         </TouchableOpacity>

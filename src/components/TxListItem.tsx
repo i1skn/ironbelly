@@ -15,48 +15,53 @@
  */
 
 import * as React from 'react'
-import { View } from 'react-native'
+import { TouchableOpacity, View } from 'react-native'
 import moment from 'moment'
 import { Text } from 'src/components/CustomFont'
-import styled from 'styled-components/native'
 import { hrGrin, hrFiat, convertToFiat, formatDate } from 'src/common'
 import { Tx, Currency } from 'src/common/types'
-import colors from 'src/common/colors'
 import { FlexGrow } from 'src/common'
-import { slightlyTransparent } from 'src/themes'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
-const Time = styled(Text)`
-  font-size: 14;
-  color: ${() => slightlyTransparent(colors.onSurface)};
-`
-const UnconfirmedGuide = styled(Text)`
-  font-size: 14;
-  color: ${() => colors.secondary};
-`
-const AmountGrin = styled(Text)`
-  font-size: 21;
-  color: ${() => colors.onSurface};
-`
-const AmountFiat = styled(Text)`
-  font-size: 12;
-  padding-top: 4px;
-  color: ${() => colors.onSurface};
-`
-const Title = styled(Text)`
-  font-weight: 500;
-  font-size: 18;
-  color: ${() => colors.onSurface};
-`
-const Wrapper = styled.TouchableOpacity`
-  flex-direction: row;
-  flex-grow: 1;
-  justify-content: flex-start;
-  align-items: center;
-  margin-left: 16;
-  padding-right: 16;
-  margin-top: 12;
-  padding-bottom: 12;
-`
+const themedStyles = styleSheetFactory((theme) => ({
+  time: {
+    fontSize: 14,
+    color: slightlyTransparent(theme.onSurface),
+  },
+  unconfirmedGuide: {
+    fontSize: 14,
+    color: theme.secondary,
+  },
+  amountGrin: {
+    fontSize: 21,
+    color: theme.onSurface,
+  },
+  amountFiat: {
+    fontSize: 12,
+    paddingTop: 4,
+    color: theme.onSurface,
+  },
+  title: {
+    fontWeight: '500',
+    fontSize: 18,
+    color: theme.onSurface,
+  },
+  wrapper: {
+    flexDirection: 'row',
+    flexGrow: 1,
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    marginLeft: 16,
+    paddingRight: 16,
+    marginTop: 12,
+    paddingBottom: 12,
+  },
+}))
+
 type Props = {
   tx: Tx
   currency: Currency
@@ -66,6 +71,7 @@ type Props = {
 }
 
 const TxListItem = (props: Props) => {
+  const [styles] = useThemedStyles(themedStyles)
   const { currency, rates } = props
   const { type, confirmed, creationTime, amount } = props.tx
   const momentCreationTime = moment(creationTime)
@@ -77,14 +83,14 @@ const TxListItem = (props: Props) => {
       ? formatDate(momentCreationTime)
       : momentCreationTime.fromNow()
   return (
-    <Wrapper onPress={props.onPress}>
+    <TouchableOpacity style={styles.wrapper} onPress={props.onPress}>
       <FlexGrow>
         <View
           style={{
             flexDirection: 'row',
             paddingBottom: 4,
           }}>
-          <Title>
+          <Text style={styles.title}>
             {confirmed
               ? isSent
                 ? 'Sent'
@@ -92,12 +98,12 @@ const TxListItem = (props: Props) => {
               : isSent
               ? 'Sending...'
               : 'Receiving...'}
-          </Title>
+          </Text>
         </View>
         {confirmed ? (
-          <Time>{dateField}</Time>
+          <Text style={styles.time}>{dateField}</Text>
         ) : (
-          <UnconfirmedGuide>
+          <Text style={styles.unconfirmedGuide}>
             {isPosted
               ? 'Awaiting confirmation...'
               : isFinalized
@@ -105,19 +111,19 @@ const TxListItem = (props: Props) => {
               : isSent
               ? 'Action required'
               : 'Sender needs to finish transaction'}
-          </UnconfirmedGuide>
+          </Text>
         )}
       </FlexGrow>
       <View
         style={{
           alignItems: 'flex-end',
         }}>
-        <AmountGrin>{hrGrin(amount)}</AmountGrin>
-        <AmountFiat>
+        <Text style={styles.amountGrin}>{hrGrin(amount)}</Text>
+        <Text style={styles.amountFiat}>
           {hrFiat(convertToFiat(amount, currency, rates), currency)}
-        </AmountFiat>
+        </Text>
       </View>
-    </Wrapper>
+    </TouchableOpacity>
   )
 }
 

@@ -96,9 +96,6 @@ class RealApp extends React.Component<Props, State> {
   toast = React.createRef<Toast>()
 
   async componentDidMount() {
-    StatusBar.setBarStyle(
-      getCurrentThemeName() === 'light' ? 'dark-content' : 'light-content',
-    )
     if (isAndroid) {
       StatusBar.setBackgroundColor('rgba(0,0,0,0)')
       StatusBar.setTranslucent(true)
@@ -276,6 +273,9 @@ function getNavigationTheme(
 
 const App = () => {
   const [theme, themeName] = useTheme()
+  StatusBar.setBarStyle(
+    themeName === 'light' ? 'dark-content' : 'light-content',
+  )
 
   return (
     <Provider store={store}>

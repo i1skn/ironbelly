@@ -21,13 +21,7 @@ import { isAndroid } from 'src/common'
 import { Tx } from 'src/common/types'
 import { RootState } from 'src/common/redux'
 import React from 'react'
-import {
-  Text,
-  Animated,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native'
+import { Text, Animated, TouchableWithoutFeedback, View } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import {
   TransitionPresets,
@@ -54,7 +48,6 @@ import LicensesScreen from 'src/screens/Licenses'
 import LicenseScreen from 'src/screens/License'
 import ShowQRCodeScreen from 'src/screens/ShowQRCode'
 import ScanQRCodeScreen from 'src/screens/ScanQRCode'
-import colors from 'src/common/colors'
 import { store } from 'src/common/redux'
 import {
   MAINNET_CHAIN,
@@ -62,19 +55,25 @@ import {
   MAINNET_API_SECRET,
   FLOONET_API_SECRET,
 } from 'src/modules/settings'
-import { slightlyTransparent, useTheme } from 'src/themes'
+import {
+  useTheme,
+  Theme,
+  styleSheetFactory,
+  useThemedStyles,
+  slightlyTransparent,
+} from 'src/themes'
 
-const defaultScreenOptions = {
-  headerTintColor: colors.onBackground,
+const defaultScreenOptions = (theme: Theme) => ({
+  headerTintColor: theme.onBackground,
   headerTitleStyle: {
-    color: colors.onBackground,
+    color: theme.onBackground,
   },
   headerStyle: {},
   headerBackTitleStyle: {
-    color: colors.onBackground,
+    color: theme.onBackground,
   },
   cardOverlayEnabled: true,
-}
+})
 
 export enum passwordScreenMode {
   APP_LOCK = 'app_lock', // open wallet
@@ -142,49 +141,52 @@ export type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>()
 
-const NotCreated = () => (
-  <Stack.Navigator
-    initialRouteName="Landing"
-    screenOptions={defaultScreenOptions}>
-    <Stack.Screen
-      name="Landing"
-      component={LandingScreen}
-      options={{ headerShown: false }}
-    />
-    <Stack.Screen
-      name="LegalDisclaimer"
-      component={LegalDisclaimerScreen}
-      options={{
-        title: 'Welcome',
-        headerBackTitle: '',
-      }}
-    />
-    <Stack.Screen
-      name="NewPassword"
-      component={NewPasswordScreen}
-      options={{
-        title: 'Password',
-        headerBackTitle: '',
-      }}
-    />
-    <Stack.Screen
-      name="ViewPaperKey"
-      initialParams={{ fromSettings: false }}
-      component={ShowPaperKeyScreen}
-      options={{
-        title: 'Paper Key',
-        headerBackTitle: '',
-      }}
-    />
-    <Stack.Screen
-      name="VerifyPaperKey"
-      component={VerifyPaperKeyScreen}
-      options={({ route }) => ({
-        title: route.params?.title,
-      })}
-    />
-  </Stack.Navigator>
-)
+const NotCreated = () => {
+  const [theme] = useTheme()
+  return (
+    <Stack.Navigator
+      initialRouteName="Landing"
+      screenOptions={defaultScreenOptions(theme)}>
+      <Stack.Screen
+        name="Landing"
+        component={LandingScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="LegalDisclaimer"
+        component={LegalDisclaimerScreen}
+        options={{
+          title: 'Welcome',
+          headerBackTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name="NewPassword"
+        component={NewPasswordScreen}
+        options={{
+          title: 'Password',
+          headerBackTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name="ViewPaperKey"
+        initialParams={{ fromSettings: false }}
+        component={ShowPaperKeyScreen}
+        options={{
+          title: 'Paper Key',
+          headerBackTitle: '',
+        }}
+      />
+      <Stack.Screen
+        name="VerifyPaperKey"
+        component={VerifyPaperKeyScreen}
+        options={({ route }) => ({
+          title: route.params?.title,
+        })}
+      />
+    </Stack.Navigator>
+  )
+}
 
 const forFade = ({
   current,
@@ -205,10 +207,11 @@ const ResetButtonText = styled(Text)`
 `
 
 const SettingsStack = () => {
+  const [theme] = useTheme()
   return (
     <Stack.Navigator
       initialRouteName="Settings"
-      screenOptions={{ ...defaultScreenOptions, headerBackTitle: '' }}>
+      screenOptions={{ ...defaultScreenOptions(theme), headerBackTitle: '' }}>
       <Stack.Screen
         name="Settings"
         component={SettingsScreen}
@@ -283,186 +286,198 @@ const SettingsStack = () => {
 
 const Tab = createBottomTabNavigator()
 
-const HomeTabs = () => (
-  <Tab.Navigator
-    initialRouteName="Overview"
-    tabBarOptions={{
-      activeTintColor: colors.secondary,
-      inactiveTintColor: slightlyTransparent(colors.onSurface),
-    }}>
-    <Tab.Screen
-      name="Overview"
-      component={OverviewScreen}
-      options={{
-        tabBarIcon: ({ color, size }) => {
-          return <FeatherIcon name="list" size={size + 4} color={color} />
-        },
-        tabBarButton: ({ children }) => {
-          return (
-            <TouchableWithoutFeedback
-              testID="OverviewTab"
-              onPress={() => {
-                getNavigation().then((navigation) => {
-                  navigation.navigate('Overview')
-                })
-              }}>
-              <View style={styles.tabButton}>{children}</View>
-            </TouchableWithoutFeedback>
-          )
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Send"
-      component={TxIncompleteSendScreen}
-      options={{
-        tabBarIcon: ({ color, size }) => {
-          return (
-            <FeatherIcon name="arrow-up-circle" size={size} color={color} />
-          )
-        },
-        tabBarButton: ({ children }) => {
-          return (
-            <TouchableWithoutFeedback
-              testID="SendTab"
-              onPress={() => {
-                getNavigation().then((navigation) => {
-                  navigation.navigate('TxIncompleteSend')
-                })
-              }}>
-              <View style={styles.tabButton}>{children}</View>
-            </TouchableWithoutFeedback>
-          )
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Receive"
-      component={TxIncompleteReceiveScreen}
-      options={{
-        tabBarIcon: ({ color, size }) => {
-          return (
-            <FeatherIcon name="arrow-down-circle" size={size} color={color} />
-          )
-        },
-        tabBarButton: ({ children }) => {
-          return (
-            <TouchableWithoutFeedback
-              testID="ReceiveTab"
-              onPress={() => {
-                getNavigation().then((navigation) => {
-                  navigation.navigate('TxIncompleteReceive')
-                })
-              }}>
-              <View style={styles.tabButton}>{children}</View>
-            </TouchableWithoutFeedback>
-          )
-        },
-      }}
-    />
-    <Tab.Screen
-      name="Settings"
-      component={SettingsStack}
-      options={{
-        tabBarIcon: ({ color, size }) => {
-          return <FeatherIcon name="settings" size={size} color={color} />
-        },
-        tabBarButton: ({ children }) => {
-          return (
-            <TouchableWithoutFeedback
-              testID="SettingsTab"
-              onPress={() => {
-                getNavigation().then((navigation) => {
-                  navigation.navigate('Settings')
-                })
-              }}>
-              <View style={styles.tabButton}>{children}</View>
-            </TouchableWithoutFeedback>
-          )
-        },
-      }}
-    />
-  </Tab.Navigator>
-)
+const HomeTabs = () => {
+  const [styles] = useThemedStyles(themedStyles)
+  const [theme] = useTheme()
 
-const Created = () => (
-  <Stack.Navigator
-    initialRouteName="HomeTabs"
-    screenOptions={defaultScreenOptions}>
-    <Stack.Screen
-      name="TxDetails"
-      component={TxDetailsScreen}
-      options={
-        isAndroid
-          ? {
-              ...TransitionPresets.DefaultTransition,
-              title: 'Transaction Details',
-            }
-          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
-      }
-    />
-    <Stack.Screen
-      name="TxIncompleteSend"
-      component={TxIncompleteSendScreen}
-      options={
-        isAndroid
-          ? ({ route }) => ({
-              ...TransitionPresets.DefaultTransition,
-              headerTitle: () =>
-                TxIncompleteSendAndroidHeaderTitle(route?.params),
-            })
-          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
-      }
-    />
-    <Stack.Screen
-      name="TxIncompleteReceive"
-      component={TxIncompleteReceiveScreen}
-      options={
-        isAndroid
-          ? ({ route }) => ({
-              ...TransitionPresets.DefaultTransition,
-              title: route?.params?.title,
-            })
-          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
-      }
-    />
-    <Stack.Screen
-      name="ShowQRCode"
-      component={ShowQRCodeScreen}
-      options={
-        isAndroid
-          ? ({ route }) => ({
-              ...TransitionPresets.DefaultTransition,
-              headerTitle: () =>
-                TxIncompleteSendAndroidHeaderTitle({
-                  title: route?.params?.label,
-                }),
-            })
-          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
-      }
-    />
-    <Stack.Screen
-      name="ScanQRCode"
-      component={ScanQRCodeScreen}
-      options={
-        isAndroid
-          ? ({ route }) => ({
-              ...TransitionPresets.DefaultTransition,
-              headerTitle: () =>
-                TxIncompleteSendAndroidHeaderTitle({
-                  title: route?.params?.label,
-                }),
-            })
-          : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
-      }
-    />
-    <Stack.Screen
-      name="HomeTabs"
-      component={HomeTabs}
-      options={{ headerShown: false }}
-    />
-  </Stack.Navigator>
-)
+  return (
+    <Tab.Navigator
+      initialRouteName="Overview"
+      tabBarOptions={{
+        activeTintColor: theme.secondary,
+        keyboardHidesTabBar: true,
+        style: {
+          backgroundColor: theme.surface,
+          borderTopColor: slightlyTransparent(theme.onSurface),
+        },
+      }}>
+      <Tab.Screen
+        name="Overview"
+        component={OverviewScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return <FeatherIcon name="list" size={size + 4} color={color} />
+          },
+          tabBarButton: ({ children }) => {
+            return (
+              <TouchableWithoutFeedback
+                testID="OverviewTab"
+                onPress={() => {
+                  getNavigation().then((navigation) => {
+                    navigation.navigate('Overview')
+                  })
+                }}>
+                <View style={styles.tabButton}>{children}</View>
+              </TouchableWithoutFeedback>
+            )
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Send"
+        component={TxIncompleteSendScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <FeatherIcon name="arrow-up-circle" size={size} color={color} />
+            )
+          },
+          tabBarButton: ({ children }) => {
+            return (
+              <TouchableWithoutFeedback
+                testID="SendTab"
+                onPress={() => {
+                  getNavigation().then((navigation) => {
+                    navigation.navigate('TxIncompleteSend')
+                  })
+                }}>
+                <View style={styles.tabButton}>{children}</View>
+              </TouchableWithoutFeedback>
+            )
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Receive"
+        component={TxIncompleteReceiveScreen}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <FeatherIcon name="arrow-down-circle" size={size} color={color} />
+            )
+          },
+          tabBarButton: ({ children }) => {
+            return (
+              <TouchableWithoutFeedback
+                testID="ReceiveTab"
+                onPress={() => {
+                  getNavigation().then((navigation) => {
+                    navigation.navigate('TxIncompleteReceive')
+                  })
+                }}>
+                <View style={styles.tabButton}>{children}</View>
+              </TouchableWithoutFeedback>
+            )
+          },
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={SettingsStack}
+        options={{
+          tabBarIcon: ({ color, size }) => {
+            return <FeatherIcon name="settings" size={size} color={color} />
+          },
+          tabBarButton: ({ children }) => {
+            return (
+              <TouchableWithoutFeedback
+                testID="SettingsTab"
+                onPress={() => {
+                  getNavigation().then((navigation) => {
+                    navigation.navigate('Settings')
+                  })
+                }}>
+                <View style={styles.tabButton}>{children}</View>
+              </TouchableWithoutFeedback>
+            )
+          },
+        }}
+      />
+    </Tab.Navigator>
+  )
+}
+
+const Created = () => {
+  const [theme] = useTheme()
+  return (
+    <Stack.Navigator
+      initialRouteName="HomeTabs"
+      screenOptions={defaultScreenOptions(theme)}>
+      <Stack.Screen
+        name="TxDetails"
+        component={TxDetailsScreen}
+        options={
+          isAndroid
+            ? {
+                ...TransitionPresets.DefaultTransition,
+                title: 'Transaction Details',
+              }
+            : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+        }
+      />
+      <Stack.Screen
+        name="TxIncompleteSend"
+        component={TxIncompleteSendScreen}
+        options={
+          isAndroid
+            ? ({ route }) => ({
+                ...TransitionPresets.DefaultTransition,
+                headerTitle: () =>
+                  TxIncompleteSendAndroidHeaderTitle(route?.params),
+              })
+            : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+        }
+      />
+      <Stack.Screen
+        name="TxIncompleteReceive"
+        component={TxIncompleteReceiveScreen}
+        options={
+          isAndroid
+            ? ({ route }) => ({
+                ...TransitionPresets.DefaultTransition,
+                title: route?.params?.title,
+              })
+            : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+        }
+      />
+      <Stack.Screen
+        name="ShowQRCode"
+        component={ShowQRCodeScreen}
+        options={
+          isAndroid
+            ? ({ route }) => ({
+                ...TransitionPresets.DefaultTransition,
+                headerTitle: () =>
+                  TxIncompleteSendAndroidHeaderTitle({
+                    title: route?.params?.label,
+                  }),
+              })
+            : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+        }
+      />
+      <Stack.Screen
+        name="ScanQRCode"
+        component={ScanQRCodeScreen}
+        options={
+          isAndroid
+            ? ({ route }) => ({
+                ...TransitionPresets.DefaultTransition,
+                headerTitle: () =>
+                  TxIncompleteSendAndroidHeaderTitle({
+                    title: route?.params?.label,
+                  }),
+              })
+            : { ...TransitionPresets.ModalPresentationIOS, headerShown: false }
+        }
+      />
+      <Stack.Screen
+        name="HomeTabs"
+        component={HomeTabs}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  )
+}
 
 export function RootStack({
   walletCreated,
@@ -520,10 +535,10 @@ export const getNavigation = async (): Promise<NavigationContainerRef> => {
   return navigationRef.current
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   tabButton: {
     flex: 1,
     flexDirection: 'column',
-    backgroundColor: colors.surface,
+    backgroundColor: theme.surface,
   },
-})
+}))
