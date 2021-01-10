@@ -60,16 +60,6 @@ macro_rules! ensure_wallet (
     )
 );
 
-#[no_mangle]
-pub unsafe extern "C" fn c_init_mainnet() {
-    init(ChainTypes::Mainnet)
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn c_init_testnet() {
-    init(ChainTypes::Testnet)
-}
-
 fn cstr_to_rust(s: *const c_char) -> String {
     unsafe { CStr::from_ptr(s).to_string_lossy().into_owned() }
 }

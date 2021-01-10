@@ -51,7 +51,7 @@ export const MAINNET_API_SECRET = ''
 export const MAINNET_DEFAULT_NODE = 'https://node.ironbelly.app'
 export const FLOONET_CHAIN = 'floonet'
 export const FLOONET_API_SECRET = ''
-export const FLOONET_DEFAULT_NODE = 'http://testnode.ironbelly.app:13413'
+export const FLOONET_DEFAULT_NODE = 'http://testnet-node.ironbelly.app'
 export const initialState: State = {
   currencyObject: currencyList[8], // USD
   checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,

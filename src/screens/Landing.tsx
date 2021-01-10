@@ -66,8 +66,8 @@ class Landing extends Component<Props> {
   _onVersionClick = () => {
     if (!this.props.isFloonet) {
       return Alert.alert(
-        'Switch to floonet',
-        'Are you sure you want to switch to floonet?',
+        'Switch to Testnet',
+        'Are you sure you want to switch to Testnet?',
         [
           {
             text: 'Cancel',

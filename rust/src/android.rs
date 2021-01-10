@@ -53,28 +53,6 @@ macro_rules! get_string_from_jni (
 );
 
 #[no_mangle]
-pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_initMainnet(
-    env: JNIEnv,
-    _: JClass,
-) -> jstring {
-    init(ChainTypes::Mainnet);
-    env.new_string("Init mainnet successfully!")
-        .unwrap()
-        .into_inner()
-}
-
-#[no_mangle]
-pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_initTestnet(
-    env: JNIEnv,
-    _: JClass,
-) -> jstring {
-    init(ChainTypes::Testnet);
-    env.new_string("Init testnet successfully!")
-        .unwrap()
-        .into_inner()
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn Java_app_ironbelly_GrinBridge_setLogger(
     env: JNIEnv,
     _: JClass,

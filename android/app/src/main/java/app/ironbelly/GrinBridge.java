@@ -441,10 +441,6 @@ public class GrinBridge extends ReactContextBaseJavaModule {
 
     private static native String setLogger();
 
-    public static native String initMainnet();
-
-    public static native String initTestnet();
-
     private static native String balance(String state, boolean refreshFromNode);
 
     private static native String txGet(long openedWallet, boolean refreshFromNode, String txSlateId);

@@ -12,10 +12,6 @@ const char *c_create_tor_config(uintptr_t wallet, const char *listen_addr, uint8
 
 const char *c_get_grin_address(uintptr_t wallet_ptr, uint8_t *error);
 
-void c_init_mainnet(void);
-
-void c_init_testnet(void);
-
 uintptr_t c_open_wallet(const char *config_str, const char *password, uint8_t *error);
 
 const char *c_seed_new(uint8_t seed_length, uint8_t *error);

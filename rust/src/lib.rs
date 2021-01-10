@@ -83,10 +83,6 @@ impl Config {
     }
 }
 
-fn init(chain_type: ChainTypes) {
-    global::init_global_chain_type(chain_type)
-}
-
 fn create_wallet_config(config: Config) -> Result<WalletConfig, Error> {
     let chain_type = match config.chain.as_ref() {
         "mainnet" => ChainTypes::Mainnet,
@@ -138,7 +134,15 @@ where
 
 fn get_wallet(config: &Config) -> Result<Wallet, Error> {
     let wallet_config = create_wallet_config(config.clone())?;
+    let target_chaintype = wallet_config.chain_type.unwrap_or(ChainTypes::Mainnet);
+    if !global::GLOBAL_CHAIN_TYPE.is_init() {
+        global::init_global_chain_type(target_chaintype)
+    };
+    if global::get_chain_type() != target_chaintype {
+        global::set_local_chain_type(target_chaintype);
+    };
 
+    warn!("Chaintype: {:?}", global::get_chain_type());
     let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
 
     let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
