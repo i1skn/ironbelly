@@ -285,6 +285,7 @@ export type walletScanPmmrRangeFalureAction = {
 }
 export type walletScanOutputsRequestAction = {
   type: 'WALLET_SCAN_OUTPUTS_REQUEST'
+  lastRetrievedIndex: number
 }
 export type walletScanOutputsSuccessAction = {
   type: 'WALLET_SCAN_OUTPUTS_SUCCESS'

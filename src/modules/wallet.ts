@@ -43,7 +43,7 @@ import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY, TOR_DIRECTORY } from 'src/common'
 import WalletBridge from 'src/bridges/wallet'
 const MAX_RETRIES = 10
-export const RECOVERY_LIMIT = 1000
+export const RECOVERY_LIMIT = 100
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
 
 export type WalletInitState = {
@@ -334,12 +334,16 @@ export const sideEffects = {
     }
   },
   ['WALLET_SCAN_PMMR_RANGE_SUCCESS']: async (
-    _action: walletScanPmmrRangeSuccessAction,
+    action: walletScanPmmrRangeSuccessAction,
     store: Store,
   ) => {
-    store.dispatch({
-      type: 'WALLET_SCAN_OUTPUTS_REQUEST',
-    })
+    const { lastRetrievedIndex } = store.getState().wallet.walletScan
+    if (lastRetrievedIndex) {
+      store.dispatch({
+        type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+        lastRetrievedIndex: lastRetrievedIndex,
+      })
+    }
   },
   ['WALLET_SCAN_PMMR_RANGE_FAILURE']: async (
     action: walletScanPmmrRangeFalureAction,
@@ -360,14 +364,11 @@ export const sideEffects = {
     }
   },
   ['WALLET_SCAN_OUTPUTS_REQUEST']: async (
-    _action: walletScanOutputsRequestAction,
+    action: walletScanOutputsRequestAction,
     store: Store,
   ) => {
-    const {
-      lastRetrievedIndex,
-      highestIndex,
-      lowestIndex,
-    } = store.getState().wallet.walletScan
+    const { lastRetrievedIndex } = action
+    const { highestIndex, lowestIndex } = store.getState().wallet.walletScan
 
     if (!lowestIndex || !highestIndex) {
       store.dispatch({
@@ -397,7 +398,7 @@ export const sideEffects = {
     }
   },
   ['WALLET_SCAN_OUTPUTS_SUCCESS']: async (
-    _action: walletScanOutputsSuccessAction,
+    action: walletScanOutputsSuccessAction,
     store: Store,
   ) => {
     const {
@@ -422,6 +423,7 @@ export const sideEffects = {
         if (store.getState().wallet.isOpened) {
           store.dispatch({
             type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+            lastRetrievedIndex: action.lastRetrievedIndex,
           })
         }
       }
@@ -432,15 +434,19 @@ export const sideEffects = {
     store: Store,
   ) => {
     const { message } = action
-    const { retryCount } = store.getState().wallet.walletScan
+    const {
+      retryCount,
+      lastRetrievedIndex,
+    } = store.getState().wallet.walletScan
 
     if (store.getState().wallet.isOpened) {
       // we ignore these errors, if wallet is closed
       return
     }
-    if (retryCount < MAX_RETRIES) {
+    if (retryCount < MAX_RETRIES && lastRetrievedIndex) {
       store.dispatch({
         type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+        lastRetrievedIndex,
       })
     } else {
       store.dispatch({

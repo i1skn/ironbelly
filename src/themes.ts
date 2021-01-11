@@ -77,7 +77,7 @@ const dark: Theme = {
   background: black,
   onBackground: blueGrey[100],
 
-  surface: grey[900],
+  surface: '#111111',
   onSurface: blueGrey[100],
 
   warning: red[500],

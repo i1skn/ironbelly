@@ -49,7 +49,11 @@ const refreshTxsPeriodicallyEpic: Epic<Action, Action, RootState> = (
   state$,
 ) =>
   interval(REFRESH_TXS_INTERVAL).pipe(
-    filter(() => state$.value.wallet.isOpened),
+    filter(
+      () =>
+        state$.value.wallet.isOpened &&
+        !state$.value.wallet.walletScan.inProgress,
+    ),
     mapTo({
       type: 'TX_LIST_REQUEST',
       showLoader: false,
