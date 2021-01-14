@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React from 'react'
 import { Dispatch, NavigationProps } from 'src/common/types'
 import { RootState } from 'src/common/redux'
-import {
-  Alert,
-  Linking,
-  StyleSheet,
-  SectionList,
-  ColorSchemeName,
-} from 'react-native'
+import { Alert, Linking, SectionList, ColorSchemeName } from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import NetInfo from '@react-native-community/netinfo'
 import { connect } from 'react-redux'
 import SettingsListItem, {
   Props as SettingsListItemProps,
 } from 'src/components/SettingsListItem'
-import colors from 'src/common/colors'
 import { State as SettingsState, BIOMETRY_STATUS } from 'src/modules/settings'
 import { getBiometryTitle } from 'src/common'
 import { Text } from 'src/components/CustomFont'
 import { termsUrl, privacyUrl } from 'src/screens/LegalDisclaimer'
 import { passwordScreenMode } from 'src/modules/navigation'
-import { slightlyTransparent } from 'src/themes'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
 interface StateProps {
   settings: SettingsState
@@ -56,10 +53,9 @@ interface DispatchProps {
 }
 type Props = NavigationProps<'Settings'> & StateProps & DispatchProps
 
-class Settings extends Component<Props> {
-  state = {}
-
-  _onMigrateToMainnet = () => {
+function Settings(props: Props) {
+  const [styles] = useThemedStyles(themedStyles)
+  const _onMigrateToMainnet = () => {
     return Alert.alert(
       'Switch to Mainnet',
       'This would destroy your floonet wallet!',
@@ -73,13 +69,13 @@ class Settings extends Component<Props> {
           text: 'Switch',
           style: 'destructive',
           onPress: () => {
-            this.props.migrateToMainnet()
+            props.migrateToMainnet()
           },
         },
       ],
     )
   }
-  _onDestroyWallet = () => {
+  const _onDestroyWallet = () => {
     return Alert.alert(
       'Destroy this wallet',
       'This action would remove all of your data! Please back up your recovery phrase before!',
@@ -93,23 +89,23 @@ class Settings extends Component<Props> {
           text: 'Destroy',
           style: 'destructive',
           onPress: () => {
-            this.props.destroyWallet()
+            props.destroyWallet()
           },
         },
       ],
     )
   }
-  _onGrinNode = () => {
-    this.props.navigation.navigate('SettingsGrinNode')
+  const _onGrinNode = () => {
+    props.navigation.navigate('SettingsGrinNode')
   }
-  _onCurrency = () => {
-    this.props.navigation.navigate('SettingsCurrency')
+  const _onCurrency = () => {
+    props.navigation.navigate('SettingsCurrency')
   }
-  _onDarkMode = () => {
-    this.props.setTheme(this.props.settings.theme === 'dark' ? 'light' : 'dark')
+  const _onDarkMode = () => {
+    props.setTheme(props.settings.theme === 'dark' ? 'light' : 'dark')
   }
 
-  _onRepairWallet = () => {
+  const _onRepairWallet = () => {
     const title = 'Repair this wallet'
     let desc =
       "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
@@ -141,165 +137,161 @@ class Settings extends Component<Props> {
           text: 'Continue',
           style: 'default',
           onPress: () => {
-            this.props.walletScan()
-            this.props.navigation.navigate('WalletScan')
+            props.walletScan()
+            props.navigation.navigate('WalletScan')
           },
         },
       ])
     })
   }
 
-  render() {
-    const { settings, navigation, isFloonet } = this.props
-    const mainListData: Array<SettingsListItemProps> = [
-      {
-        title: 'Grin node',
-        onPress: this._onGrinNode,
-      },
-      {
-        title: 'Base Currency',
-        value: settings.currencyObject.code.toUpperCase(),
-        onPress: this._onCurrency,
-      },
-      {
-        title: 'Dark Theme',
-        value: settings.theme === 'dark',
-        hideChevron: true,
-        onValueChange: this._onDarkMode,
-      },
-    ]
+  const { settings, navigation, isFloonet } = props
+  const mainListData: Array<SettingsListItemProps> = [
+    {
+      title: 'Grin node',
+      onPress: _onGrinNode,
+    },
+    {
+      title: 'Base Currency',
+      value: settings.currencyObject.code.toUpperCase(),
+      onPress: _onCurrency,
+    },
+    // TODO: Uncomment once dark mode is ready
+    // {
+    // title: 'Dark Theme',
+    // value: settings.theme === 'dark',
+    // hideChevron: true,
+    // onValueChange: _onDarkMode,
+    // },
+  ]
 
-    const securityListData: Array<SettingsListItemProps> = [
-      {
-        title: 'Paper key',
-        onPress: () => {
-          navigation.navigate('Password', {
-            mode: passwordScreenMode.PAPER_KEY,
-          })
-        },
+  const securityListData: Array<SettingsListItemProps> = [
+    {
+      title: 'Paper key',
+      onPress: () => {
+        navigation.navigate('Password', {
+          mode: passwordScreenMode.PAPER_KEY,
+        })
       },
-    ]
+    },
+  ]
 
-    const resourcesListData: Array<SettingsListItemProps> = [
-      {
-        title: 'Support',
-        hideChevron: true,
-        onPress: () => {
-          Linking.openURL('mailto:support@ironbelly.app')
-        },
+  const resourcesListData: Array<SettingsListItemProps> = [
+    {
+      title: 'Support',
+      hideChevron: true,
+      onPress: () => {
+        Linking.openURL('mailto:support@ironbelly.app')
       },
-      {
-        title: 'Open Source',
-        hideChevron: true,
-        isLink: false,
-        onPress: () => {
-          navigation.navigate('Licenses')
-        },
+    },
+    {
+      title: 'Open Source',
+      hideChevron: true,
+      isLink: false,
+      onPress: () => {
+        navigation.navigate('Licenses')
       },
-      {
-        title: 'Terms of Use',
-        hideChevron: true,
-        isLink: true,
-        onPress: () => {
-          Linking.openURL(termsUrl)
-        },
+    },
+    {
+      title: 'Terms of Use',
+      hideChevron: true,
+      isLink: true,
+      onPress: () => {
+        Linking.openURL(termsUrl)
       },
-      {
-        title: 'Privacy Policy',
-        hideChevron: true,
-        isLink: true,
-        onPress: () => {
-          Linking.openURL(privacyUrl)
-        },
+    },
+    {
+      title: 'Privacy Policy',
+      hideChevron: true,
+      isLink: true,
+      onPress: () => {
+        Linking.openURL(privacyUrl)
       },
-    ]
-    const dangerousListData: Array<SettingsListItemProps> = [
-      {
-        title: 'Repair this wallet',
-        onPress: this._onRepairWallet,
-        hideChevron: true,
-      },
-      {
-        title: 'Destroy this wallet',
-        hideChevron: true,
-        onPress: () => this._onDestroyWallet(),
-      },
-    ]
+    },
+  ]
+  const dangerousListData: Array<SettingsListItemProps> = [
+    {
+      title: 'Repair this wallet',
+      onPress: _onRepairWallet,
+      hideChevron: true,
+    },
+    {
+      title: 'Destroy this wallet',
+      hideChevron: true,
+      onPress: () => _onDestroyWallet(),
+    },
+  ]
 
-    if (settings.biometryType) {
-      securityListData.splice(0, 0, {
-        title: getBiometryTitle(settings.biometryType),
-        hideChevron: true,
-        value: settings.biometryStatus === BIOMETRY_STATUS.enabled,
-        onValueChange: (value: boolean) => {
-          if (value) {
-            this.props.enableBiometry()
-          } else {
-            this.props.disableBiometry()
-          }
-        },
-      })
-    }
-
-    if (isFloonet) {
-      dangerousListData.splice(0, 0, {
-        title: 'Switch to Mainnet',
-        hideChevron: true,
-        onPress: () => this._onMigrateToMainnet(),
-      })
-    }
-
-    const data = [
-      { title: 'Main', data: mainListData },
-      { title: 'Security', data: securityListData },
-      { title: 'Resources', data: resourcesListData },
-      { title: 'Dangerous Zone', data: dangerousListData },
-    ]
-
-    return (
-      <SectionList
-        style={styles.container}
-        sections={data}
-        initialNumToRender={20}
-        keyExtractor={(item: SettingsListItemProps, index) =>
-          item.title + index
+  if (settings.biometryType) {
+    securityListData.splice(0, 0, {
+      title: getBiometryTitle(settings.biometryType),
+      hideChevron: true,
+      value: settings.biometryStatus === BIOMETRY_STATUS.enabled,
+      onValueChange: (value: boolean) => {
+        if (value) {
+          props.enableBiometry()
+        } else {
+          props.disableBiometry()
         }
-        renderItem={({ item }: { item: SettingsListItemProps }) => (
-          <SettingsListItem {...item} />
-        )}
-        renderSectionHeader={({ section }) => (
-          <Text style={styles.sectionTitle}>{section.title}</Text>
-        )}
-        ListFooterComponent={
-          <Text style={styles.versionText}>
-            Version: {DeviceInfo.getVersion()} build{' '}
-            {DeviceInfo.getBuildNumber()}
-          </Text>
-        }
-        stickySectionHeadersEnabled={false}
-      />
-    )
+      },
+    })
   }
+
+  if (isFloonet) {
+    dangerousListData.splice(0, 0, {
+      title: 'Switch to Mainnet',
+      hideChevron: true,
+      onPress: () => _onMigrateToMainnet(),
+    })
+  }
+
+  const data = [
+    { title: 'Main', data: mainListData },
+    { title: 'Security', data: securityListData },
+    { title: 'Resources', data: resourcesListData },
+    { title: 'Dangerous Zone', data: dangerousListData },
+  ]
+
+  return (
+    <SectionList
+      style={styles.container}
+      sections={data}
+      initialNumToRender={20}
+      keyExtractor={(item: SettingsListItemProps, index) => item.title + index}
+      renderItem={({ item }: { item: SettingsListItemProps }) => (
+        <SettingsListItem {...item} />
+      )}
+      renderSectionHeader={({ section }) => (
+        <Text style={styles.sectionTitle}>{section.title}</Text>
+      )}
+      ListFooterComponent={
+        <Text style={styles.versionText}>
+          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
+        </Text>
+      }
+      stickySectionHeadersEnabled={false}
+    />
+  )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     flexGrow: 1,
-    backgroundColor: colors.background,
+    backgroundColor: theme.background,
   },
   sectionTitle: {
     paddingTop: 28,
     paddingBottom: 8,
     paddingHorizontal: 16,
-    color: slightlyTransparent(colors.onBackground),
+    color: slightlyTransparent(theme.onBackground),
     fontWeight: '600',
   },
   versionText: {
     textAlign: 'center',
     paddingVertical: 16,
-    color: slightlyTransparent(colors.onBackground),
+    color: slightlyTransparent(theme.onBackground),
   },
-})
+}))
 
 const mapStateToProps = (state: RootState): StateProps => ({
   settings: state.settings,

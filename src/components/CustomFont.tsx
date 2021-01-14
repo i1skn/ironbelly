@@ -18,6 +18,7 @@ import * as React from 'react'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
 import ReactNative, { Linking, StyleProp, TextStyle } from 'react-native'
+import { slightlyTransparent } from 'src/themes'
 export const monoSpaceFont = 'Menlo'
 export const Text = styled.Text<{ fontSize?: string }>`
   font-size: ${(props) => props.fontSize ?? '16px'};
@@ -44,7 +45,12 @@ export const Link = (props: {
     </Text>
   )
 }
-export const TextInput = styled.TextInput`
+
+export const TextInput = styled.TextInput.attrs((props) => ({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  placeholderTextColor:
+    props.placeholderTextColor || slightlyTransparent(props.theme.placeholder),
+}))`
   font-weight: normal;
 `
 

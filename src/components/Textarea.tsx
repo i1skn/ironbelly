@@ -40,15 +40,15 @@ const Title = styled(Text)`
 
 export default class FormTextInput extends Component<Props> {
   render() {
-    const { title, getRef, containerStyle } = this.props
+    const { title, getRef, containerStyle, ...passProps } = this.props
     return (
       <View style={containerStyle}>
         {title && <Title>{title}</Title>}
         <StyledInput
-          {...this.props}
           multiline={true}
           selectionColor={'#ABABAB'}
           ref={getRef}
+          {...passProps}
         />
       </View>
     )

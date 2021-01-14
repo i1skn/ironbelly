@@ -16,7 +16,7 @@
 
 import React from 'react'
 import BackgroundTimer from 'react-native-background-timer'
-
+import { ThemeProvider } from 'styled-components'
 import {
   NavigationContainer,
   Theme as RNNavigationTheme,
@@ -46,7 +46,7 @@ import { RootStack, navigationRef } from 'src/modules/navigation'
 import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import { getCurrentThemeName, Theme, useTheme } from './themes'
+import { styleSheetFactory, Theme, useThemedStyles } from './themes'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -272,7 +272,8 @@ function getNavigationTheme(
 }
 
 const App = () => {
-  const [theme, themeName] = useTheme()
+  const [, theme, themeName] = useThemedStyles(styleSheetFactory(() => ({})))
+
   StatusBar.setBarStyle(
     themeName === 'light' ? 'dark-content' : 'light-content',
   )
@@ -280,10 +281,12 @@ const App = () => {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <RealAppConnected
-          dispatch={store.dispatch}
-          theme={getNavigationTheme(theme, themeName)}
-        />
+        <ThemeProvider theme={theme}>
+          <RealAppConnected
+            dispatch={store.dispatch}
+            theme={getNavigationTheme(theme, themeName as ColorSchemeName)}
+          />
+        </ThemeProvider>
       </PersistGate>
     </Provider>
   )

@@ -27,7 +27,6 @@ import CardTitle from 'src/components/CardTitle'
 import { RootState } from 'src/common/redux'
 import { Tx, NavigationProps } from 'src/common/types'
 import {
-  useTheme,
   slightlyTransparent,
   styleSheetFactory,
   useThemedStyles,
@@ -40,9 +39,7 @@ interface OwnProps {
 type Props = NavigationProps<'TxDetails'> & OwnProps
 
 const TxDetails = ({ tx, navigation }: Props) => {
-  const [styles] = useThemedStyles(themedStyles)
-
-  const [theme] = useTheme()
+  const [styles, theme] = useThemedStyles(themedStyles)
   return (
     <>
       <CardTitle title="Transaction Details" navigation={navigation} />

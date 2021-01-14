@@ -24,7 +24,6 @@ import { Balance, Currency } from 'src/common/types'
 import { View } from 'react-native'
 import {
   slightlyTransparent,
-  useTheme,
   useThemedStyles,
   styleSheetFactory,
 } from 'src/themes'
@@ -36,8 +35,7 @@ type Props = {
 }
 
 const BalanceComponent = ({ balance, currency, rates }: Props) => {
-  const [styles] = useThemedStyles(themedStyles)
-  const [theme] = useTheme()
+  const [styles, theme] = useThemedStyles(themedStyles)
   return (
     <View style={styles.container}>
       <LinearGradient

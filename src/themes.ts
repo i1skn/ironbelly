@@ -1,4 +1,4 @@
-import { Appearance, ColorSchemeName } from 'react-native'
+import { Appearance } from 'react-native'
 import {
   orange,
   yellow,
@@ -15,7 +15,6 @@ import {
   useTheme as useThemedStyles,
   registerThemes,
 } from 'react-native-themed-styles'
-import { useEffect, useState } from 'react'
 
 export interface Theme {
   black: string
@@ -43,6 +42,7 @@ export interface Theme {
   warningLight: string
   success: string
   link: string
+  placeholder: string
 
   heroGradientStart: string
   heroGradientEnd: string
@@ -84,6 +84,7 @@ const dark: Theme = {
   warningLight: orange[300],
   success: green.A700,
   link: blue[500],
+  placeholder: blueGrey[600],
 
   heroGradientStart: slightlyTransparent(grey[900]),
   heroGradientEnd: black,
@@ -116,6 +117,7 @@ const light: Theme = {
   warningLight: deepOrange[300],
   success: green.A700,
   link: blue[500],
+  placeholder: blueGrey[300],
 
   heroGradientStart: yellow[400],
   heroGradientEnd: yellow[600],
@@ -127,40 +129,18 @@ function slightlyTransparent(color: string) {
 }
 
 function getCurrentThemeName(): ThemeName {
-  return Appearance.getColorScheme() ?? 'light'
-}
-
-function getCurrentTheme(theme: ColorSchemeName): Theme {
-  return theme === 'dark' ? dark : light
-}
-
-function useTheme(): [Theme, ThemeName] {
-  const [themeName, setThemeName] = useState(getCurrentThemeName())
-  useEffect(() => {
-    function listener({ colorScheme }: { colorScheme: ColorSchemeName }) {
-      setThemeName(colorScheme ?? 'light')
-    }
-
-    Appearance.addChangeListener(listener)
-
-    return function cleanup() {
-      Appearance.removeChangeListener(listener)
-    }
-  }, [])
-
-  return [getCurrentTheme(themeName), themeName]
+  // return Appearance.getColorScheme() ?? 'light'
+  return 'light'
 }
 
 const styleSheetFactory = registerThemes({ light, dark }, () =>
   getCurrentThemeName(),
 )
 
-export {
-  styleSheetFactory,
-  getCurrentThemeName,
-  light,
-  dark,
-  slightlyTransparent,
-  useTheme,
-  useThemedStyles,
+export { styleSheetFactory, light, dark, slightlyTransparent, useThemedStyles }
+
+declare module 'styled-components' {
+  export interface DefaultTheme {
+    placeholder: string
+  }
 }

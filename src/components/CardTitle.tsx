@@ -32,7 +32,6 @@ import {
 import {
   slightlyTransparent,
   styleSheetFactory,
-  useTheme,
   useThemedStyles,
 } from 'src/themes'
 
@@ -76,8 +75,7 @@ export default ({ title, subTitle, navigation, style }: Props) => {
   if (isAndroid) {
     return null
   }
-  const [styles] = useThemedStyles(themedStyles)
-  const [theme, themeName] = useTheme()
+  const [styles, theme, themeName] = useThemedStyles(themedStyles)
 
   useFocusEffect(
     useCallback(() => {

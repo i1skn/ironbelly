@@ -23,17 +23,17 @@ Perform this test before hitting release button in stores until we have proper e
 5. iPhone sends 0.05 Grin to Android using copy text
 6. Android receives 0.05 Grin from iPhone paste text
 7. Android shows to iPhone a QR code
-8. iPhone finalizes the transaction with Android. (-0.008)
+8. iPhone finalizes the transaction with Android. (-0.023)
 ...Waiting until Android's transaction from Carol is confirmed 10 times
 
 9. Android sends 0.05 Grin to iPhone via showing a QR code
 10. iPhone receives 0.05 Grin from Android scanning a QR code
 11. iPhone respond to Android with a text
-12. Android finalizes the transaction with Android. (-0.008)
+12. Android finalizes the transaction with Android. (-0.023)
 ...Waiting until iPhone's transaction is confirmed 10 times
 
-13. Android sends 0.085 (+0.007 fee) back to Carol
-14. iPhone sends 0.086 (+0.006 fee) back to Carol
+13. Android sends 0.053 (+0.024 fee) back to Carol
+14. iPhone sends 0.053 (+0.024 fee) back to Carol
 ...Waiting until both transactions are confirmed at least once
 
 15. Android and iPhone remove their accounts

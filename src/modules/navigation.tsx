@@ -55,20 +55,16 @@ import {
   MAINNET_API_SECRET,
   FLOONET_API_SECRET,
 } from 'src/modules/settings'
-import {
-  useTheme,
-  Theme,
-  styleSheetFactory,
-  useThemedStyles,
-  slightlyTransparent,
-} from 'src/themes'
+import { Theme, styleSheetFactory, useThemedStyles } from 'src/themes'
 
 const defaultScreenOptions = (theme: Theme) => ({
   headerTintColor: theme.onBackground,
   headerTitleStyle: {
     color: theme.onBackground,
   },
-  headerStyle: {},
+  headerStyle: {
+    shadowColor: 'transparent',
+  },
   headerBackTitleStyle: {
     color: theme.onBackground,
   },
@@ -142,7 +138,7 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>()
 
 const NotCreated = () => {
-  const [theme] = useTheme()
+  const [, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
       initialRouteName="Landing"
@@ -207,7 +203,7 @@ const ResetButtonText = styled(Text)`
 `
 
 const SettingsStack = () => {
-  const [theme] = useTheme()
+  const [, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
       initialRouteName="Settings"
@@ -287,8 +283,7 @@ const SettingsStack = () => {
 const Tab = createBottomTabNavigator()
 
 const HomeTabs = () => {
-  const [styles] = useThemedStyles(themedStyles)
-  const [theme] = useTheme()
+  const [styles, theme] = useThemedStyles(themedStyles)
 
   return (
     <Tab.Navigator
@@ -298,7 +293,7 @@ const HomeTabs = () => {
         keyboardHidesTabBar: true,
         style: {
           backgroundColor: theme.surface,
-          borderTopColor: slightlyTransparent(theme.onSurface),
+          borderTopWidth: 0,
         },
       }}>
       <Tab.Screen
@@ -398,7 +393,7 @@ const HomeTabs = () => {
 }
 
 const Created = () => {
-  const [theme] = useTheme()
+  const [, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
       initialRouteName="HomeTabs"
@@ -488,7 +483,7 @@ export function RootStack({
   isWalletOpened: boolean
   scanInProgress: boolean
 }) {
-  const [theme] = useTheme()
+  const [, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
       headerMode="none"

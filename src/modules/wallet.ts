@@ -43,7 +43,7 @@ import RNFS from 'react-native-fs'
 import { WALLET_DATA_DIRECTORY, TOR_DIRECTORY } from 'src/common'
 import WalletBridge from 'src/bridges/wallet'
 const MAX_RETRIES = 10
-export const RECOVERY_LIMIT = 100
+export const RECOVERY_LIMIT = 1000
 const PMMR_RANGE_UPDATE_INTERVAL = 60 * 1000 // roughly one block
 
 export type WalletInitState = {
@@ -334,16 +334,14 @@ export const sideEffects = {
     }
   },
   ['WALLET_SCAN_PMMR_RANGE_SUCCESS']: async (
-    action: walletScanPmmrRangeSuccessAction,
+    _action: walletScanPmmrRangeSuccessAction,
     store: Store,
   ) => {
     const { lastRetrievedIndex } = store.getState().wallet.walletScan
-    if (lastRetrievedIndex) {
-      store.dispatch({
-        type: 'WALLET_SCAN_OUTPUTS_REQUEST',
-        lastRetrievedIndex: lastRetrievedIndex,
-      })
-    }
+    store.dispatch({
+      type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+      lastRetrievedIndex: lastRetrievedIndex ?? 0,
+    })
   },
   ['WALLET_SCAN_PMMR_RANGE_FAILURE']: async (
     action: walletScanPmmrRangeFalureAction,

@@ -14,8 +14,7 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
-import styled from 'styled-components/native'
+import React from 'react'
 import ReactNative, {
   KeyboardTypeOptions,
   ReturnKeyTypeOptions,
@@ -23,9 +22,14 @@ import ReactNative, {
   NativeSyntheticEvent,
   TextInputFocusEventData,
   TextInputSubmitEditingEventData,
+  View,
 } from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
-import colors from 'src/common/colors'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 type Props = {
   units?: string
   placeholder?: string
@@ -49,73 +53,63 @@ type Props = {
   multiline?: boolean
   readonly?: boolean
 }
-const Layout = styled.View`
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: center;
-  width: 100%;
-`
-const StyledInput = styled(TextInput)`
-  margin-left: -20;
-  padding: 20px;
-  margin-right: -20;
-  background-color: ${colors.surface};
-  color: ${colors.onSurface};
-  font-size: 18;
-  font-weight: 400;
-  flex-grow: 1;
-`
-const Title = styled(Text)`
-  font-weight: bold;
-  font-size: 16;
-  margin-bottom: 4;
-`
-export default class FormTextInput extends Component<Props> {
-  render() {
-    const {
-      maxLength,
-      onChange,
-      onFocus,
-      onBlur,
-      value,
-      autoFocus,
-      placeholder,
-      title,
-      secureTextEntry,
-      testID,
-      textContentType,
-      autoCorrect,
-      keyboardType,
-      returnKeyType,
-      getRef,
-      onSubmitEditing,
-      multiline,
-    } = this.props
-    return (
-      <React.Fragment>
-        {title && <Title>{title}</Title>}
-        <Layout>
-          <StyledInput
-            selectionColor={'#ABABAB'}
-            secureTextEntry={secureTextEntry}
-            multiline={multiline}
-            autoFocus={autoFocus}
-            onChangeText={onChange}
-            ref={getRef}
-            value={value}
-            maxLength={maxLength}
-            placeholder={placeholder}
-            testID={testID}
-            keyboardType={keyboardType ?? 'default'}
-            textContentType={textContentType ?? 'none'}
-            autoCorrect={autoCorrect}
-            returnKeyType={returnKeyType ?? 'default'}
-            onSubmitEditing={onSubmitEditing}
-            onFocus={onFocus}
-            onBlur={onBlur}
-          />
-        </Layout>
-      </React.Fragment>
-    )
-  }
+
+const themedStyles = styleSheetFactory((theme) => ({
+  input: {
+    marginLeft: -20,
+    padding: 20,
+    marginRight: -20,
+    backgroundColor: theme.surface,
+    color: theme.onSurface,
+    fontSize: 18,
+    fontWeight: '400',
+    flexGrow: 1,
+  },
+  title: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 4,
+    color: theme.onBackground,
+  },
+  layout: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+  },
+}))
+
+function FormTextInput(props: Props) {
+  const [styles, theme] = useThemedStyles(themedStyles)
+  const {
+    onChange,
+    title,
+    textContentType,
+    keyboardType,
+    returnKeyType,
+    getRef,
+    onSubmitEditing,
+    ...passedProps
+  } = props
+  return (
+    <React.Fragment>
+      {title && <Text style={styles.title}>{title}</Text>}
+      <View style={styles.layout}>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor={slightlyTransparent(theme.onSurface)}
+          selectionColor={theme.onSurface}
+          onChangeText={onChange}
+          ref={getRef}
+          keyboardType={keyboardType ?? 'default'}
+          textContentType={textContentType ?? 'none'}
+          returnKeyType={returnKeyType ?? 'default'}
+          onSubmitEditing={onSubmitEditing}
+          {...passedProps}
+        />
+      </View>
+    </React.Fragment>
+  )
 }
+
+export default FormTextInput

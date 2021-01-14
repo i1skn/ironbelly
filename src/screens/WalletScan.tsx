@@ -28,7 +28,7 @@ import KeepAwake from 'react-native-keep-awake'
 import { Dispatch } from 'src/common/types'
 
 type Props = WalletScanState & {
-  startScanOutputs: () => void
+  startScan: () => void
   resetScan: () => void
 }
 const StatusText = styled(Text)`
@@ -51,10 +51,10 @@ class WalletScan extends Component<Props> {
   }
 
   componentDidMount() {
-    const { startScanOutputs, inProgress } = this.props
+    const { startScan, inProgress } = this.props
 
     if (inProgress) {
-      startScanOutputs()
+      startScan()
     }
   }
 
@@ -104,9 +104,9 @@ class WalletScan extends Component<Props> {
 const mapStateToProps = (state: RootState) => ({ ...state.wallet.walletScan })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  startScanOutputs: () => {
+  startScan: () => {
     dispatch({
-      type: 'WALLET_SCAN_OUTPUTS_REQUEST',
+      type: 'WALLET_SCAN_PMMR_RANGE_REQUEST',
     })
   },
   resetScan: () => {

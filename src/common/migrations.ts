@@ -49,4 +49,18 @@ export const migrations = {
       },
     }
   },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  2: (state: any) => {
+    const oldNode =
+      state.settings.checkNodeApiHttpAddr === 'https://node.ironbelly.app'
+    return {
+      ...state,
+      settings: {
+        ...state.settings,
+        checkNodeApiHttpAddr: oldNode
+          ? MAINNET_DEFAULT_NODE
+          : state.settings.checkNodeApiHttpAddr,
+      },
+    }
+  },
 }
