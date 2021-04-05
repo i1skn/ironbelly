@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
+import SplashScreen from 'react-native-splash-screen'
 import BackgroundTimer from 'react-native-background-timer'
 import { ThemeProvider } from 'styled-components'
 import {
@@ -47,6 +48,7 @@ import { isAndroid } from 'src/common'
 import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import { styleSheetFactory, Theme, useThemedStyles } from './themes'
+import changeNavigationBarColor from 'react-native-navigation-bar-color'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -103,6 +105,7 @@ class RealApp extends React.Component<Props, State> {
 
     AppState.addEventListener('change', this._handleAppStateChange)
     this.props.requestWalletExists()
+    SplashScreen.hide()
   }
 
   componentWillUnmount() {
@@ -271,12 +274,17 @@ function getNavigationTheme(
   }
 }
 
-const App = () => {
-  const [, theme, themeName] = useThemedStyles(styleSheetFactory(() => ({})))
+const themedStyles = styleSheetFactory(() => ({}))
 
-  StatusBar.setBarStyle(
-    themeName === 'light' ? 'dark-content' : 'light-content',
-  )
+const App = () => {
+  const [, theme, themeName] = useThemedStyles(themedStyles)
+
+  useEffect(() => {
+    changeNavigationBarColor(theme.surface, themeName === 'light', true)
+    StatusBar.setBarStyle(
+      themeName === 'light' ? 'dark-content' : 'light-content',
+    )
+  }, [themeName, theme])
 
   return (
     <Provider store={store}>

@@ -17,34 +17,31 @@
 // Been used previously for sharing files and not in use right now.
 // Can be used for sharing Slatepack messages if Copy/QR would not be enough
 import React from 'react'
-import colors from 'src/common/colors'
-import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { TouchableOpacity, Platform } from 'react-native'
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import { Text } from 'src/components/CustomFont'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 function ShareButton({ onClick }: { onClick: () => void }) {
+  const [styles] = useThemedStyles(themedStyles)
   return (
     <TouchableOpacity onPress={onClick}>
       <Text style={styles.slatepackHeaderCopy}>
-        Share{' '}
-        <FontAwesome5Icons
-          name="share"
-          size={18}
-          style={{
-            color: colors.link,
-          }}
-        />
+        Share <FontAwesome5Icons name="share" size={18} style={styles.icon} />
       </Text>
     </TouchableOpacity>
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
-    color: colors.link,
+    color: theme.link,
     fontSize: 16,
   },
-})
+  icon: {
+    color: theme.link,
+  },
+}))
 
 export default ShareButton

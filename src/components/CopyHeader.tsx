@@ -15,9 +15,10 @@
  */
 
 import React from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import { View, Platform } from 'react-native'
 import CopyButton from 'src/components/CopyButton'
 import { Text } from 'src/components/CustomFont'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type Props = {
   content?: string
@@ -25,6 +26,7 @@ type Props = {
 }
 
 function CopyHeader({ content, label }: Props) {
+  const [styles] = useThemedStyles(themedStyles)
   return (
     <View style={styles.copyPasteContent}>
       <Text style={styles.copyPasteContentTitle}>{label}</Text>
@@ -33,7 +35,7 @@ function CopyHeader({ content, label }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   copyPasteContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -42,7 +44,8 @@ const styles = StyleSheet.create({
   copyPasteContentTitle: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
     fontSize: 16,
+    color: theme.onBackground,
   },
-})
+}))
 
 export default CopyHeader

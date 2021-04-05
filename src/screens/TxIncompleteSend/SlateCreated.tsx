@@ -18,8 +18,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-import colors from 'src/common/colors'
-import { ActivityIndicator, StyleSheet, View, Platform } from 'react-native'
+import { ActivityIndicator, View, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'src/common/redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
@@ -32,6 +31,7 @@ import ShareRow from 'src/components/ShareRow'
 import SectionTitle from 'src/components/SectionTitle'
 import InputContentRow from 'src/components/InputContentRow'
 import { useFocusEffect } from '@react-navigation/native'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type SlateCreateProps = {
   slateId: string
@@ -40,6 +40,7 @@ type SlateCreateProps = {
 const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
+  const [styles, theme] = useThemedStyles(themedStyles)
 
   const txFinalize = () => {
     dispatch({
@@ -104,7 +105,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   if (finalizeInProgress) {
     return (
       <View style={styles.slatepackLoading}>
-        <ActivityIndicator size="large" color={colors.grey[700]} />
+        <ActivityIndicator size="large" color={theme.onBackground} />
       </View>
     )
   }
@@ -123,6 +124,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
           ios: { paddingBottom: 88 },
         }),
         paddingHorizontal: 16,
+        paddingTop: 16,
       }}
       extraScrollHeight={Platform.select({
         android: 0,
@@ -152,9 +154,9 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
                 style={styles.textarea}
                 editable={false}
                 textAlignVertical={'top'}
-                returnKeyType={'done'}>
-                {slatepack}
-              </Textarea>
+                returnKeyType={'done'}
+                value={slatepack}
+              />
               <ShareRow content={slatepack} label="Slatepack" />
               <Text style={styles.info}>
                 If you have received recipient's part of the transaction, please
@@ -167,9 +169,9 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
                 style={styles.textarea}
                 placeholder={'BEGINSLATEPACK.\n...\n...\n...\nENDSLATEPACK.'}
                 textAlignVertical={'top'}
-                returnKeyType={'done'}>
-                {recipientSlatepack}
-              </Textarea>
+                returnKeyType={'done'}
+                value={recipientSlatepack}
+              />
               <InputContentRow
                 setFunction={setWithValidation}
                 nextScreen={'TxIncompleteSend'}
@@ -183,7 +185,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
             </>
           )) || (
             <View style={styles.slatepackLoading}>
-              <ActivityIndicator size="large" color={colors.grey[700]} />
+              <ActivityIndicator size="large" color={theme.onBackground} />
             </View>
           )}
         </View>
@@ -192,20 +194,21 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   txId: {
     marginTop: 4,
     marginBottom: 24,
     fontFamily: monoSpaceFont,
     textAlign: 'center',
     fontSize: 14,
+    color: theme.onBackground,
   },
   slatepack: {
     marginTop: 8,
     flex: 1,
   },
   info: {
-    color: colors.grey[700],
+    color: theme.onBackground,
     marginBottom: 8,
   },
   textarea: {
@@ -214,13 +217,13 @@ const styles = StyleSheet.create({
     fontFamily: monoSpaceFont,
   },
   textButton: {
-    color: colors.link,
+    color: theme.link,
     fontSize: 18,
   },
   slatepackLoading: {
     justifyContent: 'center',
     flex: 1,
   },
-})
+}))
 
 export default SlateCreated

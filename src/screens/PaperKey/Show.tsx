@@ -15,11 +15,16 @@
  */
 
 import React from 'react'
-import { ScrollView } from 'react-native'
-import styled from 'styled-components/native'
-import { Notice, Spacer } from 'src/common'
+import { ScrollView, Text, View } from 'react-native'
+import { Spacer } from 'src/common'
+import Notice from 'src/components/Notice'
 import { monoSpaceFont, Button } from 'src/components/CustomFont'
 import { NavigationProps } from 'src/common/types'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
 interface OwnProps {
   mnemonic: string
@@ -29,33 +34,12 @@ interface OwnProps {
 
 type Props = NavigationProps<'ViewPaperKey'> & OwnProps
 
-const Wrapper = styled.View`
-  flex: 1;
-`
-const Words = styled.View`
-  margin: 16px 0;
-`
-const Word = styled.View`
-  flex-direction: row;
-  margin: 0 4px;
-`
-const WordText = styled.Text`
-  padding: 8px 0 8px 16px;
-  font-size: 24px;
-  font-family: ${monoSpaceFont};
-`
-const WordNumber = styled.Text`
-  color: #bbbbbb;
-  padding: 8px 0;
-  font-size: 24px;
-  font-family: ${monoSpaceFont};
-`
-
 function Show({ route, navigation }: Props) {
+  const [styles] = useThemedStyles(themedStyles)
   const { fromSettings, mnemonic } = route.params
   const mnemonicArr = mnemonic.split(' ')
   return (
-    <Wrapper>
+    <View style={styles.wrapper}>
       <ScrollView
         style={{
           paddingLeft: 16,
@@ -69,16 +53,18 @@ function Show({ route, navigation }: Props) {
           {!fromSettings &&
             ' It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
         </Notice>
-        <Words>
+        <View style={styles.words}>
           {mnemonicArr.map((word: string, i: number) => {
             return (
-              <Word key={i}>
-                <WordNumber>{i + 1}</WordNumber>
-                <WordText testID={`Word${i + 1}`}>{word}</WordText>
-              </Word>
+              <View style={styles.word} key={i}>
+                <Text style={styles.wordNumber}>{i + 1}</Text>
+                <Text style={styles.wordText} testID={`Word${i + 1}`}>
+                  {word}
+                </Text>
+              </View>
             )
           })}
-        </Words>
+        </View>
         {!fromSettings && (
           <Button
             testID="ShowPaperKeyContinueButton"
@@ -98,8 +84,36 @@ function Show({ route, navigation }: Props) {
         )}
         <Spacer />
       </ScrollView>
-    </Wrapper>
+    </View>
   )
 }
+
+const themedStyles = styleSheetFactory((theme) => ({
+  wrapper: {
+    flex: 1,
+  },
+  words: {
+    marginVertical: 16,
+    marginHorizontal: 0,
+  },
+  word: {
+    flexDirection: 'row',
+    marginTop: 0,
+    marginBottom: 4,
+  },
+  wordText: {
+    paddingVertical: 8,
+    paddingLeft: 16,
+    fontSize: 24,
+    color: theme.onBackground,
+    fontFamily: monoSpaceFont,
+  },
+  wordNumber: {
+    color: slightlyTransparent(theme.onBackground),
+    paddingVertical: 8,
+    fontSize: 24,
+    fontFamily: monoSpaceFont,
+  },
+}))
 
 export default Show

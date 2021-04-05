@@ -17,26 +17,38 @@
 import * as React from 'react'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
-import ReactNative, { Linking, StyleProp, TextStyle } from 'react-native'
-import { slightlyTransparent } from 'src/themes'
+import ReactNative, {
+  Linking,
+  Platform,
+  StyleProp,
+  TextStyle,
+} from 'react-native'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 export const monoSpaceFont = 'Menlo'
 export const Text = styled.Text<{ fontSize?: string }>`
   font-size: ${(props) => props.fontSize ?? '16px'};
   font-weight: normal;
   color: ${() => colors.black};
 `
+const themedStyles = styleSheetFactory(() => ({}))
+
 export const Link = (props: {
   url: string
   title: string | React.ReactElement
   style?: StyleProp<TextStyle>
 }) => {
+  const [, theme] = useThemedStyles(themedStyles)
   const { url, title } = props
   return (
     <Text
       {...props}
       style={[
         {
-          color: colors.link,
+          color: theme.link,
         },
         props.style,
       ]}
@@ -68,7 +80,8 @@ const StyledButton = styled.TouchableOpacity<StyledButtonProps>`
   background-color: ${(props) => getBackgroundColor(props)};
   border-radius: 8;
   border-width: ${(props) => (props.inverted ? '1' : '0')};
-  opacity: ${(props) => (props.disabled ? '0.3' : '1')};
+  opacity: ${(props) =>
+    props.disabled ? Platform.select({ android: '0.6', ios: '0.3' }) : '1'};
 `
 const ButtonTitle = styled(Text)<StyledButtonProps>`
   font-size: 21;

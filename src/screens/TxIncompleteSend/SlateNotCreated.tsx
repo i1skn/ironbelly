@@ -18,9 +18,12 @@ import BigNumber from 'bignumber.js'
 import React, { useEffect, useState } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import styled from 'styled-components/native'
-import colors from 'src/common/colors'
-import { ActivityIndicator, View, Platform, StyleSheet } from 'react-native'
+import {
+  ActivityIndicator,
+  View,
+  Platform,
+  TouchableOpacity,
+} from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'src/common/redux'
 import { Text, Button } from 'src/components/CustomFont'
@@ -33,80 +36,28 @@ import {
   hrFiat,
   convertToFiat,
   Spacer,
-  Notice,
 } from 'src/common'
+import Notice from 'src/components/Notice'
 import { isTxFormInvalid } from 'src/modules/tx'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { currencySelector, currencyRatesSelector } from 'src/modules/settings'
 import FormTextInput from 'src/components/FormTextInput'
 import { useNavigation } from '@react-navigation/native'
-import { slightlyTransparent } from 'src/themes'
-
-const ScanQRCode = styled.TouchableOpacity`
-  margin-top: -46px;
-  margin-bottom: 40px;
-  align-self: flex-end;
-`
-
-const TransportMethod = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-`
-
-const TransportMethodTitle = styled.Text<{ active: boolean }>`
-  font-size: 21;
-  color: ${(props) => (props.active ? colors.black : colors.grey[700])};
-`
-
-const Title = styled.Text`
-  color: ${colors.grey[700]};
-  font-size: 16;
-  font-weight: 600;
-`
-
-const Option = styled.TouchableOpacity`
-  align-items: center;
-  justify-content: flex-start;
-  flex-direction: row;
-  padding: 0 0 16px 0;
-`
-const OptioIcon = styled(FeatherIcon).attrs((props: { active: boolean }) => ({
-  name: props.active ? 'check-circle' : 'circle',
-  size: 16,
-}))<{ active: boolean }>`
-  margin-right: 8px;
-  color: ${(props) => (props.active ? colors.black : colors.grey[700])};
-`
-const Fee = styled.Text<{ active: boolean }>`
-  font-weight: 600;
-  font-size: 24;
-  color: ${(props) => (props.active ? colors.black : colors.grey[700])};
-`
-const Locked = styled.Text`
-  font-size: 13;
-  flex-wrap: wrap;
-  flex: 1;
-  color: ${colors.grey[700]};
-  padding: 0 0 0 8px;
-`
-
-function SendLoader() {
-  return (
-    <ActivityIndicator
-      style={styles.sendLoader}
-      size="small"
-      color={colors.grey[700]}
-    />
-  )
-}
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
 function isZero(v: string) {
   return new BigNumber(v).isZero()
 }
 
 const SlateNotCreated = () => {
+  const [styles, theme] = useThemedStyles(themedStyles)
   const dispatch = useDispatch()
   const navigation = useNavigation()
+
   const setAmount = (amount: number, textAmount: string) => {
     dispatch({
       type: 'TX_FORM_SET_AMOUNT',
@@ -263,61 +214,69 @@ const SlateNotCreated = () => {
                 paddingBottom: 6,
               }}
               size="small"
-              color={colors.grey[700]}
+              color={theme.onBackground}
             />
           ))}
       </View>
       {(outputStrategies.length && (
         <>
-          <Title>Network fee</Title>
-          <Spacer />
+          <Text style={styles.title}>Network fee</Text>
           {outputStrategies.map((os, i) => (
-            <Option
+            <TouchableOpacity
+              style={styles.option}
               key={i}
               onPress={() => {
                 setOutputStrategy(os)
               }}>
-              <OptioIcon active={os === outputStrategy} />
-              <Fee active={os === outputStrategy}>{hrGrin(os.fee)}</Fee>
-              {balance.amountCurrentlySpendable === os.total ? (
-                <Locked>
-                  All the funds would be locked for around{' '}
-                  {minimumConfirmations} min.
-                </Locked>
-              ) : (
-                <Locked>
-                  {hrGrin(os.total)} would be locked for around{' '}
-                  {minimumConfirmations} min.
-                </Locked>
-              )}
-            </Option>
+              <FeatherIcon
+                name={os === outputStrategy ? 'check-circle' : 'circle'}
+                size={16}
+                style={styles.optioIcon}
+              />
+              <Text style={styles.fee}>{hrGrin(os.fee)}</Text>
+              <Text style={styles.locked}>
+                {balance.amountCurrentlySpendable === os.total
+                  ? `All the funds would be locked for around ${minimumConfirmations} min.`
+                  : `${hrGrin(
+                      os.total,
+                    )} would be locked for around ${minimumConfirmations} min.`}
+              </Text>
+            </TouchableOpacity>
           ))}
-          <Title>Send via?</Title>
+          <Text style={styles.title}>Send via?</Text>
           <Spacer />
           <View style={styles.transportMethods}>
-            <TransportMethod
+            <TouchableOpacity
               style={styles.transportMethod}
               onPress={() => {
                 setAddress('')
                 setTransportMethod(ADDRESS_TRANSPORT_METHOD)
               }}>
-              <OptioIcon
-                active={transportMethod === ADDRESS_TRANSPORT_METHOD}
+              <FeatherIcon
+                name={
+                  transportMethod === ADDRESS_TRANSPORT_METHOD
+                    ? 'check-circle'
+                    : 'circle'
+                }
+                size={16}
+                style={styles.optioIcon}
               />
-              <TransportMethodTitle
-                active={transportMethod === ADDRESS_TRANSPORT_METHOD}>
-                Address
-              </TransportMethodTitle>
-            </TransportMethod>
-            <TransportMethod
+              <Text style={styles.transportMethodTitle}>Address</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
               style={styles.transportMethod}
               onPress={() => setTransportMethod(FILE_TRANSPORT_METHOD)}>
-              <OptioIcon active={transportMethod === FILE_TRANSPORT_METHOD} />
-              <TransportMethodTitle
-                active={transportMethod === FILE_TRANSPORT_METHOD}>
-                Manual
-              </TransportMethodTitle>
-            </TransportMethod>
+              <FeatherIcon
+                name={
+                  transportMethod === FILE_TRANSPORT_METHOD
+                    ? 'check-circle'
+                    : 'circle'
+                }
+                size={16}
+                style={styles.optioIcon}
+              />
+              <Text style={styles.transportMethodTitle}>Manual</Text>
+            </TouchableOpacity>
           </View>
           {transportMethod === ADDRESS_TRANSPORT_METHOD && (
             <>
@@ -328,21 +287,36 @@ const SlateNotCreated = () => {
                 placeholder="grin......."
                 autoCorrect={false}></FormTextInput>
               {!address && (
-                <ScanQRCode
+                <TouchableOpacity
+                  style={styles.scanQR}
                   onPress={() =>
                     navigation.navigate('ScanQRCode', {
                       label: 'Grin Address',
                       nextScreen: 'TxIncompleteSend',
                     })
                   }>
-                  <MaterialCommunityIcons name="qrcode-scan" size={26} />
-                </ScanQRCode>
+                  <MaterialCommunityIcons
+                    name="qrcode-scan"
+                    size={26}
+                    color={theme.onSurface}
+                  />
+                </TouchableOpacity>
               )}
               <Spacer />
             </>
           )}
           <Button
-            title={isSending ? <SendLoader /> : 'Send'}
+            title={
+              isSending ? (
+                <ActivityIndicator
+                  style={styles.sendLoader}
+                  size="small"
+                  color={theme.onBackground}
+                />
+              ) : (
+                'Send'
+              )
+            }
             onPress={() => {
               if (outputStrategy) {
                 send(amount, address, outputStrategy)
@@ -358,9 +332,50 @@ const SlateNotCreated = () => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
+  locked: {
+    fontSize: 13,
+    flexWrap: 'wrap',
+    flex: 1,
+    color: theme.onBackground,
+    paddingVertical: 8,
+  },
+  fee: {
+    fontWeight: '600',
+    fontSize: 24,
+    color: theme.onBackground,
+    marginRight: 8,
+  },
+  optioIcon: {
+    marginRight: 8,
+    color: theme.onBackground,
+  },
+  scanQR: {
+    marginTop: -46,
+    marginBottom: 40,
+    alignSelf: 'flex-end',
+  },
+  transportMethod: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  transportMethodTitle: {
+    fontSize: 21,
+    color: theme.onBackground,
+  },
+  title: {
+    color: theme.onBackground,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  option: {
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    paddingRight: 16,
+  },
   alternativeAmount: {
-    color: slightlyTransparent(colors.onBackground),
+    color: slightlyTransparent(theme.onBackground),
     fontSize: 18,
     fontWeight: '300',
     textAlign: 'right',
@@ -370,22 +385,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingBottom: 8,
   },
-  available: {
-    color: colors.grey[500],
-    fontSize: 14,
-    height: 24,
-  },
   networkFee: {
     fontSize: 14,
     lineHeight: 32,
-    color: colors.red[500],
+    color: theme.warning,
   },
   amount: {
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  transportMethod: {
-    flexDirection: 'row',
   },
   transportMethods: {
     flexDirection: 'row',
@@ -395,6 +402,6 @@ const styles = StyleSheet.create({
   sendLoader: {
     height: 25,
   },
-})
+}))
 
 export default SlateNotCreated

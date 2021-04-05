@@ -14,43 +14,27 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
-import { TouchableOpacity, Button as NativeButton, View } from 'react-native'
+import React from 'react'
+import {
+  TouchableOpacity,
+  Button as NativeButton,
+  View,
+  Platform,
+} from 'react-native'
 import DeviceInfo from 'react-native-device-info'
 import { connect } from 'react-redux'
-import styled from 'styled-components/native'
 import { Alert } from 'react-native'
 import { State as SettingsState } from 'src/modules/settings'
 import { FlexGrow, Spacer } from 'src/common'
-import colors from 'src/common/colors'
 import { Text, Button } from 'src/components/CustomFont'
 import { RootState } from 'src/common/redux'
 import { Error, Dispatch, NavigationProps } from 'src/common/types'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
-const Wrapper = styled(View)`
-  padding: 16px;
-  flex-grow: 1;
-  align-items: flex-start;
-  justify-content: center;
-`
-const ActionButton = styled(Button)`
-  margin-bottom: 20;
-  width: 100%;
-`
-export const AppTitle = styled(Text)`
-  font-size: 32;
-  font-weight: 600;
-`
-export const AppSlogan = styled(Text)`
-  font-size: 20;
-  font-weight: 500;
-  margin-bottom: 30;
-  color: ${() => colors.grey[500]};
-`
-export const FloonetDisclaimer = styled.View`
-  width: 100%;
-  align-items: center;
-`
 type Props = {
   walletInit: () => void
   switchToMainnet: () => void
@@ -62,9 +46,10 @@ type Props = {
   legalAccepted: boolean
 } & NavigationProps<'Landing'>
 
-class Landing extends Component<Props> {
-  _onVersionClick = () => {
-    if (!this.props.isFloonet) {
+function Landing(props: Props) {
+  const [styles] = useThemedStyles(themedStyles)
+  const onVersionClick = () => {
+    if (!props.isFloonet) {
       return Alert.alert(
         'Switch to Testnet',
         'Are you sure you want to switch to Testnet?',
@@ -78,23 +63,23 @@ class Landing extends Component<Props> {
             text: 'Switch',
             style: 'destructive',
             onPress: () => {
-              this.props.switchToFloonet()
+              props.switchToFloonet()
             },
           },
         ],
       )
     }
   }
-  _onNewWallet = (isNew: boolean) => {
+  const onNewWallet = (isNew: boolean) => {
     return () => {
       const nextScreenName = 'NewPassword'
       const nextScreenParams = {
         isNew,
       }
-      if (this.props.legalAccepted) {
-        this.props.navigation.navigate(nextScreenName, nextScreenParams)
+      if (props.legalAccepted) {
+        props.navigation.navigate(nextScreenName, nextScreenParams)
       } else {
-        this.props.navigation.navigate('LegalDisclaimer', {
+        props.navigation.navigate('LegalDisclaimer', {
           nextScreen: {
             name: nextScreenName,
             params: nextScreenParams,
@@ -104,61 +89,87 @@ class Landing extends Component<Props> {
     }
   }
 
-  render() {
-    const { isFloonet, switchToMainnet } = this.props
-    return (
-      <Wrapper testID="LandingScreen">
-        <FlexGrow />
-        <View>
-          <AppTitle>Ironbelly</AppTitle>
-          <AppSlogan>Grin wallet you've deserved</AppSlogan>
-        </View>
+  const { isFloonet, switchToMainnet } = props
+  return (
+    <View testID="LandingScreen" style={styles.wrapper}>
+      <FlexGrow />
+      <View>
+        <Text style={styles.appTitle}>Ironbelly</Text>
+        <Text style={styles.appSlogan}>Grin wallet you've deserved</Text>
+      </View>
 
-        <ActionButton
-          title="Create new wallet"
-          testID="NewWalletButton"
-          disabled={false}
-          onPress={this._onNewWallet(true)}
-        />
-        <ActionButton
-          title="Restore from paper key"
-          disabled={false}
-          onPress={this._onNewWallet(false)}
-        />
-        <Spacer />
-        {isFloonet && (
-          <FloonetDisclaimer>
-            <Text
-              style={{
-                textAlign: 'center',
-                width: '100%',
-              }}>
-              This app is configured to use testnet
-            </Text>
-            <NativeButton
-              title="Switch to mainnet"
-              onPress={() => switchToMainnet()}
-            />
-          </FloonetDisclaimer>
-        )}
-        <FlexGrow />
-        <TouchableOpacity
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            width: '100%',
-            paddingBottom: 8,
-          }}
-          onPress={this._onVersionClick}>
-          <Text style={{}}>
-            Version: {DeviceInfo.getVersion()} build{' '}
-            {DeviceInfo.getBuildNumber()}
+      <Button
+        style={styles.actionButton}
+        title="Create new wallet"
+        testID="NewWalletButton"
+        disabled={false}
+        onPress={onNewWallet(true)}
+      />
+      <Button
+        style={styles.actionButton}
+        title="Restore from paper key"
+        disabled={false}
+        onPress={onNewWallet(false)}
+      />
+      <Spacer />
+      {isFloonet && (
+        <View style={styles.testnetDisclaimer}>
+          <Text style={styles.testnetDisclaimerText}>
+            This app is configured to use testnet
           </Text>
-        </TouchableOpacity>
-      </Wrapper>
-    )
-  }
+          <NativeButton
+            title="Switch to mainnet"
+            onPress={() => switchToMainnet()}
+          />
+        </View>
+      )}
+      <FlexGrow />
+      <TouchableOpacity style={styles.version} onPress={onVersionClick}>
+        <Text>
+          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  )
 }
+
+const themedStyles = styleSheetFactory((theme) => ({
+  wrapper: {
+    padding: 16,
+    flexGrow: 1,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  actionButton: {
+    marginBottom: 20,
+    width: '100%',
+  },
+  appTitle: {
+    fontSize: 32,
+    fontWeight: '600',
+    color: theme.onBackground,
+  },
+  appSlogan: {
+    fontSize: 20,
+    fontWeight: '500',
+    marginBottom: 30,
+    color: slightlyTransparent(theme.onBackground),
+  },
+  testnetDisclaimer: {
+    width: '100%',
+    alignItems: 'center',
+  },
+  testnetDisclaimerText: {
+    textAlign: 'center',
+    width: '100%',
+  },
+  version: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    paddingBottom: Platform.select({ ios: 8, android: 40 }),
+  },
+}))
 
 const mapStateToProps = (state: RootState) => ({
   settings: state.settings,

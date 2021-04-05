@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
-import styled from 'styled-components/native'
+import React from 'react'
 import { Text, TextInput } from 'src/components/CustomFont'
-import colors from 'src/common/colors'
-import { StyleProp, TextStyle } from 'react-native'
+import { StyleProp, TextStyle, View } from 'react-native'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 type Props = {
   units?: string
   placeholder?: string
@@ -28,58 +27,60 @@ type Props = {
   autoFocus: boolean
   style?: StyleProp<TextStyle>
 }
-const Layout = styled.View`
-  flex-direction: row;
-  justify-content: flex-start;
-  flex-grow: 1;
-  align-items: center;
-`
-const Spacer = styled(Text)`
-  color: ${colors.black};
-  font-size: 36;
-  height: 58;
-  line-height: 58;
-`
 
-const HiddenSpacer = styled(Text)`
-  color: ${colors.background};
-  font-size: 36;
-  height: 58;
-  line-height: 58;
-`
-
-const StyledInput = styled(TextInput)`
-  font-size: ${(props) => (props.value ? 36 : 36)};
-  font-weight: ${(props) => (props.value ? 400 : 300)};
-  color: ${colors.onSurface} 
-  height: 68;
-  text-align-vertical: center;
-`
-export default class NumericInput extends Component<Props> {
-  render() {
-    const {
-      units,
-      maxLength,
-      style,
-      onChange,
-      value,
-      autoFocus,
-      placeholder,
-    } = this.props
-    return (
-      <Layout style={style}>
-        {units && <HiddenSpacer>{units}</HiddenSpacer>}
-        <StyledInput
-          selectionColor={colors.grey[700]}
-          autoFocus={autoFocus}
-          onChangeText={onChange}
-          value={value}
-          keyboardType="numeric"
-          maxLength={maxLength}
-          placeholder={placeholder}
-        />
-        {units && <Spacer>{units}</Spacer>}
-      </Layout>
-    )
-  }
+function NumericInput(props: Props) {
+  const [styles] = useThemedStyles(themedStyles)
+  const {
+    units,
+    maxLength,
+    style,
+    onChange,
+    value,
+    autoFocus,
+    placeholder,
+  } = props
+  return (
+    <View style={[styles.layout, style]}>
+      {units && <Text style={styles.spacer}>{units}</Text>}
+      <TextInput
+        style={[styles.input, { fontWeight: value ? '400' : '300' }]}
+        autoFocus={autoFocus}
+        onChangeText={onChange}
+        value={value}
+        keyboardType="numeric"
+        maxLength={maxLength}
+        placeholder={placeholder}
+      />
+      {units && <Text style={styles.hiddenSpacer}>{units}</Text>}
+    </View>
+  )
 }
+
+const themedStyles = styleSheetFactory((theme) => ({
+  layout: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    flexGrow: 1,
+    alignItems: 'center',
+  },
+  spacer: {
+    color: theme.onBackground,
+    fontSize: 36,
+    height: 58,
+    lineHeight: 58,
+  },
+  hiddenSpacer: {
+    color: theme.background,
+    fontSize: 36,
+    height: 58,
+    lineHeight: 58,
+  },
+  input: {
+    fontSize: 36,
+    color: theme.onBackground,
+    height: 68,
+    textAlignVertical: 'center',
+  },
+}))
+
+export default NumericInput

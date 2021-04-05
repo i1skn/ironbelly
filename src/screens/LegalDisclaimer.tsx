@@ -15,13 +15,13 @@
  */
 
 import React, { useState } from 'react'
-import { StyleSheet } from 'react-native'
-import styled from 'styled-components/native'
 import CheckBox from 'react-native-check-box'
 import { Wrapper, Spacer } from 'src/common'
 import { Text, Link, Button } from 'src/components/CustomFont'
 import { Dispatch, NavigationProps } from 'src/common/types'
 import { connect } from 'react-redux'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
+import { View } from 'react-native'
 
 interface OwnProps {
   acceptLegal: (value: boolean) => void
@@ -33,25 +33,13 @@ export const termsUrl = 'https://ironbelly.app/terms'
 export const privacyUrl = 'https://ironbelly.app/privacy'
 export const grinUrl = 'https://grin-tech.org/'
 
-const RightText = styled.View`
-  flex-wrap: wrap;
-  flex-direction: row;
-  flex: 1;
-  padding-left: 16px;
-`
-const Main = styled.View`
-  flex-wrap: wrap;
-  flex-direction: row;
-  flex: 1;
-  padding-top: 16px;
-`
-
 const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
   const { nextScreen } = route?.params
   const [checked, setChecked] = useState(false)
+  const [styles, theme] = useThemedStyles(themedStyles)
   return (
     <Wrapper>
-      <Main>
+      <View style={styles.main}>
         <Text style={styles.text}>Ironbelly - mobile wallet for </Text>
         <Link style={styles.text} url={grinUrl} title={'Grin'} />
         <Text style={styles.text}>. </Text>
@@ -63,21 +51,21 @@ const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
           Then read carefully Terms of Use and Privacy Policy and only then
           start using the app.
         </Text>
-      </Main>
+      </View>
       <CheckBox
-        style={{}}
+        checkBoxColor={theme.secondary}
         onClick={() => {
           setChecked(!checked)
         }}
         isChecked={checked}
         rightTextView={
-          <RightText>
-            <Text>I agree to the </Text>
+          <View style={styles.rightText}>
+            <Text style={styles.checkboxText}>I agree to the </Text>
             <Link url={termsUrl} title="Terms of Use" />
-            <Text> and the </Text>
+            <Text style={styles.checkboxText}> and the </Text>
             <Link url={privacyUrl} title="Privacy Policy" />
-            <Text>.</Text>
-          </RightText>
+            <Text style={styles.checkboxText}>.</Text>
+          </View>
         }
       />
       <Spacer />
@@ -95,11 +83,27 @@ const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
+  main: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    flex: 1,
+    paddingTop: 16,
+  },
   text: {
     fontSize: 20,
+    color: theme.onBackground,
   },
-})
+  checkboxText: {
+    color: theme.onBackground,
+  },
+  rightText: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    flex: 1,
+    paddingLeft: 16,
+  },
+}))
 
 const mapStateToProps = () => {
   return {}

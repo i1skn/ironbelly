@@ -56,7 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, RCTBridgeDelegate {
         self.window?.makeKeyAndVisible()
 
         LaunchScreenSnapshot.protect(with: nil, trigger: .didEnterBackground)
-        
+        RNSplashScreen.show()
         return true
     }
 

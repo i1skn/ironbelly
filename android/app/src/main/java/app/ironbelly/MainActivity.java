@@ -10,6 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
+import org.devio.rn.splashscreen.SplashScreen;
 
 public class MainActivity extends ReactActivity {
 
@@ -24,26 +25,10 @@ public class MainActivity extends ReactActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SplashScreen.show(this);
         super.onCreate(savedInstanceState);
         Window window = getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE);
-    }
-
-    @Override
-    protected ReactActivityDelegate createReactActivityDelegate() {
-        return new ReactActivityDelegate(this, getMainComponentName()) {
-
-            @Override
-            protected Bundle getLaunchOptions() {
-                Intent intent = MainActivity.this.getIntent();
-                Bundle bundle = new Bundle();
-                Uri slateUri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-                if (slateUri != null) {
-                    bundle.putString("url", slateUri.toString());
-                }
-                return bundle;
-            }
-        };
     }
 }

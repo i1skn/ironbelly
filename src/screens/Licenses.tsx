@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-import colors from 'src/common/colors'
 import React from 'react'
 import IonicIcon from 'react-native-vector-icons/Ionicons'
 import { Text } from 'src/components/CustomFont'
 import licenses from '../../licenses.json'
 import { FlatList, TouchableOpacity, StyleSheet } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
-import { slightlyTransparent } from 'src/themes'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
 // import { NavigationProps } from 'src/common/types'
 // type Props = NavigationProps<'Licenses'>
@@ -29,6 +32,7 @@ import { slightlyTransparent } from 'src/themes'
 type ItemProps = { title: string; licenceId: number }
 
 const Item = ({ title, licenceId }: ItemProps) => {
+  const [styles] = useThemedStyles(themedStyles)
   const navigation = useNavigation()
   const onPress = (licenceId: number) => {
     const licenseText = (licenses.licenses as Record<number, string>)[licenceId]
@@ -50,6 +54,7 @@ function renderItem({ item }: { item: string }) {
 }
 
 const Licenses = () => {
+  const [styles] = useThemedStyles(themedStyles)
   const packages = Object.keys(licenses.packages)
   packages.sort()
   return (
@@ -64,7 +69,7 @@ const Licenses = () => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     paddingHorizontal: 16,
   },
@@ -74,12 +79,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   chevron: {
-    color: slightlyTransparent(colors.onBackground),
+    color: slightlyTransparent(theme.onBackground),
     lineHeight: 30,
   },
   itemTitle: {
     flex: 1,
+    color: theme.onBackground,
   },
-})
+}))
 
 export default Licenses

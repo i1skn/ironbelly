@@ -14,43 +14,49 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
-import styled from 'styled-components/native'
+import React from 'react'
 import ReactNative, { TextInputProps, View, ViewProps } from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
-import colors from 'src/common/colors'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 type Props = TextInputProps & {
   title?: string
   getRef?: (instance: ReactNative.TextInput | null) => void
   containerStyle?: ViewProps['style']
 }
-const StyledInput = styled(TextInput)`
-  padding: 16px;
-  background-color: ${colors.grey[200]};
-  border-radius: 8;
-  font-size: 18;
-  font-weight: 400;
-  flex: 1;
-`
-const Title = styled(Text)`
-  font-weight: 500;
-  font-size: 16;
-  margin-bottom: 8;
-`
 
-export default class FormTextInput extends Component<Props> {
-  render() {
-    const { title, getRef, containerStyle, ...passProps } = this.props
-    return (
-      <View style={containerStyle}>
-        {title && <Title>{title}</Title>}
-        <StyledInput
-          multiline={true}
-          selectionColor={'#ABABAB'}
-          ref={getRef}
-          {...passProps}
-        />
-      </View>
-    )
-  }
+function FormTextInput(props: Props) {
+  const [styles] = useThemedStyles(themedStyles)
+  const { title, getRef, containerStyle, style, ...passProps } = props
+  return (
+    <View style={containerStyle}>
+      {title && <Text style={styles.title}>{title}</Text>}
+      <TextInput
+        style={[styles.input, style]}
+        multiline={true}
+        ref={getRef}
+        {...passProps}
+      />
+    </View>
+  )
 }
+
+const themedStyles = styleSheetFactory((theme) => ({
+  input: {
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingHorizontal: 16,
+    backgroundColor: theme.surface,
+    color: theme.onSurface,
+    borderRadius: 8,
+    fontSize: 18,
+    fontWeight: '400',
+    flex: 1,
+  },
+  title: {
+    fontWeight: 500,
+    fontSize: 16,
+    marginBottom: 8,
+  },
+}))
+
+export default FormTextInput

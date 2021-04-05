@@ -15,10 +15,9 @@
  */
 
 import React, { Component, Fragment } from 'react'
-import ReactNative, { Alert } from 'react-native'
+import ReactNative, { Alert, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
-import styled from 'styled-components/native'
 import MnemonicWordTextInput from 'src/components/MnemonicWordTextInput'
 import NetInfo from '@react-native-community/netinfo'
 import { UnderHeaderBlock, Spacer } from 'src/common'
@@ -26,6 +25,7 @@ import { Text, Button } from 'src/components/CustomFont'
 import { RootState } from 'src/common/redux'
 import { NavigationProps, Dispatch } from 'src/common/types'
 import { WalletScanState } from 'src/modules/wallet'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type Props = NavigationProps<'VerifyPaperKey'> &
   WalletScanState & {
@@ -40,12 +40,6 @@ type State = {
   mnemonicWords: Array<string>
   wordsCount: number
 }
-const Words = styled.View`
-  margin: 16px 0;
-`
-const Wrapper = styled.View`
-  flex: 1;
-`
 
 class Verify extends Component<Props, State> {
   _scrollView: KeyboardAwareScrollView | null = null
@@ -134,18 +128,16 @@ class Verify extends Component<Props, State> {
       ? route.params.mnemonic === currentUserPhrase
       : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) ===
         wordsCount
+    const [styles] = useThemedStyles(themedStyles)
     return (
-      <Wrapper>
+      <View style={styles.wrapper}>
         {(wordsCount && (
           <Fragment>
             <KeyboardAwareScrollView
               innerRef={(sv) =>
                 (this._scrollView = (sv as unknown) as KeyboardAwareScrollView)
               }
-              style={{
-                paddingLeft: 16,
-                paddingRight: 16,
-              }}
+              style={styles.scrollView}
               keyboardShouldPersistTaps={'handled'}
               extraScrollHeight={8}
               enableResetScrollToCoords={false}
@@ -157,7 +149,7 @@ class Verify extends Component<Props, State> {
                     : 'Enter the paper key to continue.'}
                 </Text>
               </UnderHeaderBlock>
-              <Words>
+              <View style={styles.words}>
                 {mnemonicWords.map((_, i: number) => {
                   return (
                     <MnemonicWordTextInput
@@ -197,7 +189,7 @@ class Verify extends Component<Props, State> {
                     />
                   )
                 })}
-              </Words>
+              </View>
               <Button
                 testID="VerifyPaperKeyContinueButton"
                 title="Continue"
@@ -209,10 +201,23 @@ class Verify extends Component<Props, State> {
           </Fragment>
         )) ||
           null}
-      </Wrapper>
+      </View>
     )
   }
 }
+
+const themedStyles = styleSheetFactory(() => ({
+  wrapper: {
+    marginVertical: 16,
+  },
+  words: {
+    flex: 1,
+  },
+  scrollView: {
+    paddingLeft: 16,
+    paddingRight: 16,
+  },
+}))
 
 const mapStateToProps = (state: RootState) => ({
   ...state.wallet.walletScan,

@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import FeatherIcon from 'react-native-vector-icons/Feather'
-import { FlatList, StyleSheet, View } from 'react-native'
+import { FlatList, TouchableOpacity, View } from 'react-native'
 import { connect } from 'react-redux'
 import { Text } from 'src/components/CustomFont'
-import styled from 'styled-components/native'
 import { Currency, Dispatch, NavigationProps } from 'src/common/types'
 import { RootState } from 'src/common/redux'
 import { currencyList } from 'src/common'
-import colors from 'src/common/colors'
 import { SearchBar } from 'react-native-elements'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 type DispatchProps = {
   currency: Currency
   requestCurrencyRates: () => void
@@ -35,26 +38,13 @@ type DispatchProps = {
 
 type Props = NavigationProps<'SettingsCurrency'> & DispatchProps
 
-type State = {
-  searchText: string
-  filteredList: Array<Currency>
-}
-const ListItemTouchable = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-`
-
-const Value = styled(Text)`
-  padding-right: 16px;
-  line-height: 26px;
-  color: ${colors.grey[900]};
-`
-
 type ListItemProps = { checked: boolean; value: string; onPress: () => void }
+
 const ListItem = ({ checked, value, onPress }: ListItemProps) => {
+  const [styles] = useThemedStyles(themedStyles)
   return (
     <View style={styles.listItem}>
-      <ListItemTouchable onPress={onPress}>
+      <TouchableOpacity style={styles.touchable} onPress={onPress}>
         {checked && (
           <FeatherIcon
             style={styles.checkIcon}
@@ -62,112 +52,72 @@ const ListItem = ({ checked, value, onPress }: ListItemProps) => {
             size={20}
           />
         )}
-        <Value>{value}</Value>
-      </ListItemTouchable>
+        <Text style={styles.value}>{value}</Text>
+      </TouchableOpacity>
     </View>
   )
 }
 
-const CoinGecko = styled(Text)`
-  font-size: 16px;
-  color: ${colors.grey[500]};
-  text-align: center;
-  padding-vertical: 16px;
-  background: ${colors.background};
-`
+function CurrencyList(props: Props) {
+  const [searchText, setSearchText] = useState('')
+  const [filteredList, setFilteredList] = useState(currencyList)
 
-class CurrencyList extends Component<Props, State> {
-  state = {
-    searchText: '',
-    filteredList: currencyList,
-  }
-  onSearch = (searchText: string) => {
-    const filteredList = currencyList.filter((currency) => {
-      return (
-        currency.code.toLowerCase().indexOf(searchText.toLowerCase()) !== -1
-      )
-    })
-    this.setState({
-      searchText,
-      filteredList,
-    })
-  }
-  renderHeader = () => {
-    return (
-      <SearchBar
-        placeholder="Search"
-        platform="ios"
-        containerStyle={{
-          paddingHorizontal: 8,
-        }}
-        inputContainerStyle={{
-          backgroundColor: colors.surface,
-        }}
-        cancelButtonProps={{
-          buttonTextStyle: {
-            color: colors.onBackground,
-            marginRight: 8,
-          },
-        }}
-        round
-        onChangeText={this.onSearch}
-        value={this.state.searchText}
-        autoCorrect={false}
-      />
+  const onSearch = (newSearchText: string) => {
+    setSearchText(newSearchText)
+    setFilteredList(
+      currencyList.filter((currency) => {
+        return (
+          currency.code.toLowerCase().indexOf(newSearchText.toLowerCase()) !==
+          -1
+        )
+      }),
     )
   }
-
-  onChoose = (item: Currency) => {
+  const onChoose = (item: Currency) => {
     return () => {
-      this.props.setCurrency(item)
-      this.props.navigation.goBack()
+      props.setCurrency(item)
+      props.navigation.goBack()
     }
   }
 
-  render() {
-    const { currency, currencyRates } = this.props
-    return (
-      <View style={styles.container}>
-        <FlatList
-          ListHeaderComponent={this.renderHeader}
-          ListFooterComponent={<CoinGecko>Data from CoinGecko</CoinGecko>}
-          contentContainerStyle={{}}
-          data={this.state.filteredList}
-          keyExtractor={(item) => item.code}
-          keyboardShouldPersistTaps={'handled'}
-          onRefresh={() => this.props.requestCurrencyRates()}
-          renderItem={({ item }: { item: Currency }) => (
-            <ListItem
-              checked={currency.code === item.code}
-              value={item.code.toUpperCase()}
-              onPress={this.onChoose(item)}
-            />
-          )}
-          refreshing={currencyRates.inProgress}
-        />
-      </View>
-    )
-  }
+  const { currency, currencyRates } = props
+  const [styles] = useThemedStyles(themedStyles)
+  return (
+    <View style={styles.container}>
+      <FlatList
+        ListHeaderComponent={
+          <SearchBar
+            placeholder="Search"
+            platform="ios"
+            containerStyle={styles.searchBar}
+            inputContainerStyle={styles.searchBarInput}
+            cancelButtonProps={{ buttonTextStyle: styles.cancelButton }}
+            round
+            onChangeText={onSearch}
+            value={searchText}
+            autoCorrect={false}
+          />
+        }
+        initialNumToRender={20}
+        ListFooterComponent={
+          <Text style={styles.coinGecko}>Data from CoinGecko</Text>
+        }
+        data={filteredList}
+        keyExtractor={(item) => item.code}
+        keyboardShouldPersistTaps={'handled'}
+        onRefresh={() => props.requestCurrencyRates()}
+        renderItem={({ item }: { item: Currency }) => (
+          <ListItem
+            checked={currency.code === item.code}
+            value={item.code.toUpperCase()}
+            onPress={onChoose(item)}
+          />
+        )}
+        refreshing={currencyRates.inProgress}
+      />
+    </View>
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    backgroundColor: colors.background,
-  },
-  listItem: {
-    backgroundColor: colors.surface,
-    paddingVertical: 10,
-    paddingLeft: 44,
-    paddingRight: 16,
-  },
-  checkIcon: {
-    color: colors.secondary,
-    paddingRight: 16,
-    marginLeft: -30,
-    width: 30,
-  },
-})
 
 const mapStateToProps = (state: RootState) => ({
   currency: state.settings.currencyObject,
@@ -188,5 +138,50 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       type: 'CURRENCY_RATES_REQUEST',
     }),
 })
+
+const themedStyles = styleSheetFactory((theme) => ({
+  container: {
+    flexGrow: 1,
+    backgroundColor: theme.background,
+  },
+  listItem: {
+    backgroundColor: theme.surface,
+    paddingVertical: 10,
+    paddingLeft: 44,
+    paddingRight: 16,
+  },
+  checkIcon: {
+    color: theme.secondary,
+    paddingRight: 16,
+    marginLeft: -30,
+    width: 30,
+  },
+  touchable: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  value: {
+    paddingRight: 16,
+    lineHeight: 26,
+    color: theme.onBackground,
+  },
+  coinGecko: {
+    fontSize: 16,
+    color: slightlyTransparent(theme.onBackground),
+    textAlign: 'center',
+    paddingVertical: 16,
+  },
+  searchBar: {
+    backgroundColor: theme.surface,
+    paddingHorizontal: 8,
+  },
+  searchBarInput: {
+    backgroundColor: theme.background,
+  },
+  cancelButton: {
+    color: theme.onBackground,
+    marginRight: 8,
+  },
+}))
 
 export default connect(mapStateToProps, mapDispatchToProps)(CurrencyList)

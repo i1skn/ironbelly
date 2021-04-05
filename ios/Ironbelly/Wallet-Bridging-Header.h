@@ -22,4 +22,5 @@
 #import <React/RCTBridgeModule.h>
 #import "bindings.h"
 #import "Tor/Helpers/NetworkTools.h"
+#import "RNSplashScreen.h"
 #endif /* Wallet_Bridging_Header_h */

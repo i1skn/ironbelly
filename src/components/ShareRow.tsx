@@ -15,9 +15,10 @@
  */
 
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import CopyButton from 'src/components/CopyButton'
 import ShowQRCodeButton from 'src/components/ShowQRCodeButton'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type Props = {
   content?: string
@@ -25,6 +26,7 @@ type Props = {
 }
 
 function ShareRow({ content, label }: Props) {
+  const [styles] = useThemedStyles(themedStyles)
   if (!content) {
     return null
   }
@@ -36,12 +38,12 @@ function ShareRow({ content, label }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory(() => ({
   content: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginVertical: 16,
   },
-})
+}))
 
 export default ShareRow

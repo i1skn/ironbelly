@@ -15,13 +15,15 @@
  */
 
 import React from 'react'
-import { StyleSheet, ScrollView } from 'react-native'
+import { ScrollView } from 'react-native'
 import { Text } from 'src/components/CustomFont'
 import { NavigationProps } from 'src/common/types'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type Props = NavigationProps<'License'>
 
 const License = ({ route }: Props) => {
+  const [styles] = useThemedStyles(themedStyles)
   const { licenseText } = route?.params
   return (
     <ScrollView
@@ -33,14 +35,15 @@ const License = ({ route }: Props) => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   scrollView: {
     flexGrow: 1,
     padding: 16,
   },
   licence: {
     paddingBottom: 32,
+    color: theme.onBackground,
   },
-})
+}))
 
 export default License

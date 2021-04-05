@@ -16,8 +16,7 @@
 
 import React, { useEffect } from 'react'
 import BigNumber from 'bignumber.js'
-import colors from 'src/common/colors'
-import { StyleSheet, View } from 'react-native'
+import { View } from 'react-native'
 import { Text } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
 import { Tx } from 'src/common/types'
@@ -26,6 +25,7 @@ import SlateCreated from 'src/screens/TxIncompleteSend/SlateCreated'
 import SlateNotCreated from 'src/screens/TxIncompleteSend/SlateNotCreated'
 import { hrGrin } from 'src/common'
 import { useDispatch } from 'react-redux'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 interface OwnProps {
   tx: Tx
@@ -34,6 +34,7 @@ interface OwnProps {
 type Props = NavigationProps<'TxIncompleteSend'> & OwnProps
 
 const TxIncompleteSend = ({ navigation, route }: Props) => {
+  const [styles] = useThemedStyles(themedStyles)
   const dispatch = useDispatch()
   const tx = route?.params?.tx
   const title = tx
@@ -86,6 +87,7 @@ const TxIncompleteSend = ({ navigation, route }: Props) => {
 export function androidHeaderTitle(
   params: NavigationProps<'TxIncompleteSend'>['route']['params'],
 ) {
+  const [styles] = useThemedStyles(themedStyles)
   return (
     <View>
       <Text style={styles.androidHeaderTitle}>{params?.title}</Text>
@@ -96,17 +98,18 @@ export function androidHeaderTitle(
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   androidHeaderTitle: {
     fontSize: 21,
+    color: theme.onBackground,
   },
   androidHeaderSubTitle: {
-    color: colors.grey[700],
+    color: theme.onBackground,
     fontSize: 12,
   },
   container: {
     flexGrow: 1,
   },
-})
+}))
 
 export default TxIncompleteSend

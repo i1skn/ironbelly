@@ -18,6 +18,15 @@
       android:usesCleartextTraffic="true" 
       android:theme="@style/AppTheme">
       <activity
+	android:name=".SplashActivity"
+	android:theme="@style/SplashTheme"
+	android:label="@string/app_name">
+	<intent-filter>
+	  	<action android:name="android.intent.action.MAIN" />
+		<category android:name="android.intent.category.LAUNCHER" />
+	</intent-filter>
+      </activity>
+      <activity
         android:name=".MainActivity"
         android:label="@string/app_name"
 	android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
@@ -25,83 +34,11 @@
 	android:screenOrientation="portrait"
 	android:fitsSystemWindows="true"
 	android:extractNativeLibs="true"
+	android:exported="true"
         android:windowSoftInputMode="adjustResize">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:host="*"/>
-		<data android:scheme="content" />
-		<data android:scheme="file" />
-		<data android:mimeType="*/*" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.response" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\.response" />
-		<data android:pathPattern=".*\\..*\\..*\\.response" />
-		<data android:pathPattern=".*\\..*\\.response" />
-		<data android:pathPattern=".*\\.response" />
-	</intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:host="*"/>
-		<data android:scheme="content" />
-		<data android:scheme="file" />
-		<data android:mimeType="*/*" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.json" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\.json" />
-		<data android:pathPattern=".*\\..*\\..*\\.json" />
-		<data android:pathPattern=".*\\..*\\.json" />
-		<data android:pathPattern=".*\\.json" />
-	</intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:host="*"/>
-		<data android:scheme="content" />
-		<data android:scheme="file" />
-		<data android:mimeType="*/*" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.slate" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\.slate" />
-		<data android:pathPattern=".*\\..*\\..*\\.slate" />
-		<data android:pathPattern=".*\\..*\\.slate" />
-		<data android:pathPattern=".*\\.slate" />
-	</intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:host="*"/>
-		<data android:scheme="content" />
-		<data android:scheme="file" />
-		<data android:mimeType="*/*" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.tx" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\.tx" />
-		<data android:pathPattern=".*\\..*\\..*\\.tx" />
-		<data android:pathPattern=".*\\..*\\.tx" />
-		<data android:pathPattern=".*\\.tx" />
-	</intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.VIEW"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:host="*"/>
-		<data android:scheme="content" />
-		<data android:scheme="file" />
-		<data android:mimeType="*/*" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.slatepack" />
-		<data android:pathPattern=".*\\..*\\..*\\..*\\.slatepack" />
-		<data android:pathPattern=".*\\..*\\..*\\.slatepack" />
-		<data android:pathPattern=".*\\..*\\.slatepack" />
-		<data android:pathPattern=".*\\.slatepack" />
-	</intent-filter>
-	<intent-filter>
-		<action android:name="android.intent.action.SEND"/>
-		<category android:name="android.intent.category.DEFAULT"/>
-		<data android:mimeType="*/*" />
-	</intent-filter>
-
-
       </activity>
      <provider
             android:name="androidx.core.content.FileProvider"

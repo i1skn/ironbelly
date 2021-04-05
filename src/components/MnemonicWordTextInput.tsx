@@ -22,6 +22,7 @@ import ReactNative, {
   ReturnKeyTypeOptions,
   TextInputSubmitEditingEventData,
 } from 'react-native'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 type Props = {
   testID?: string
   value: string
@@ -55,8 +56,11 @@ const WordNumber = styled(Text)`
   font-size: 24px;
   font-family: ${monoSpaceFont};
 `
+
+const themedStyles = styleSheetFactory(() => ({}))
 export default class FormTextInput extends Component<Props> {
   render() {
+    const [, theme] = useThemedStyles(themedStyles)
     const {
       onChange,
       onSubmitEditing,
@@ -85,6 +89,7 @@ export default class FormTextInput extends Component<Props> {
           keyboardType={'default'}
           autoCorrect={false}
           autoCapitalize={'none'}
+          style={{ color: theme.onBackground }}
         />
       </Layout>
     )

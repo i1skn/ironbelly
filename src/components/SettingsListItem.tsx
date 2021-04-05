@@ -115,7 +115,7 @@ const themedStyles = styleSheetFactory((theme) => ({
     color: theme.onBackground,
   },
   value: {
-    paddingRight: 16,
+    paddingRight: 8,
     lineHeight: 30,
     fontSize: 18,
     color: theme.secondary,

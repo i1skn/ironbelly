@@ -1,6 +1,6 @@
-import { Appearance } from 'react-native'
+import { Appearance, Platform } from 'react-native'
+import Config from 'react-native-config'
 import {
-  orange,
   yellow,
   blue,
   blueGrey,
@@ -18,6 +18,7 @@ import {
 
 export interface Theme {
   black: string
+  white: string
   primaryUltraLight: string
   primaryLight: string
   primary: string
@@ -51,28 +52,26 @@ export interface Theme {
 
 export type ThemeName = 'light' | 'dark'
 
-const primary = yellow
-const secondary = blue
-
 const base = {
   black,
+  white,
 }
 
 const dark: Theme = {
   ...base,
-  primaryUltraLight: primary[200],
-  primaryLight: primary[300],
-  primary: primary[500],
-  primaryDark: primary[800],
-  primaryUltraDark: primary[900],
+  primaryUltraLight: yellow[200],
+  primaryLight: yellow[300],
+  primary: yellow[500],
+  primaryDark: yellow[800],
+  primaryUltraDark: yellow[900],
 
   onPrimary: blueGrey[900],
 
-  secondaryUltraLight: secondary[200],
-  secondaryLight: secondary[300],
-  secondary: secondary[500],
-  secondaryDark: secondary[800],
-  secondaryUltraDark: secondary[900],
+  secondaryUltraLight: yellow[200],
+  secondaryLight: yellow[300],
+  secondary: yellow[500],
+  secondaryDark: yellow[800],
+  secondaryUltraDark: yellow[900],
 
   background: black,
   onBackground: blueGrey[100],
@@ -81,31 +80,31 @@ const dark: Theme = {
   onSurface: blueGrey[100],
 
   warning: red[500],
-  warningLight: orange[300],
+  warningLight: red[300],
   success: green.A700,
-  link: blue[500],
+  link: yellow[600],
   placeholder: blueGrey[600],
 
   heroGradientStart: slightlyTransparent(grey[900]),
   heroGradientEnd: black,
-  onHero: primary[500],
+  onHero: yellow[500],
 }
 
 const light: Theme = {
   ...base,
-  primaryUltraLight: primary[200],
-  primaryLight: primary[300],
-  primary: primary[500],
-  primaryDark: primary[800],
-  primaryUltraDark: primary[900],
+  primaryUltraLight: yellow[200],
+  primaryLight: yellow[300],
+  primary: yellow[500],
+  primaryDark: yellow[800],
+  primaryUltraDark: yellow[900],
 
   onPrimary: blueGrey[900],
 
-  secondaryUltraLight: secondary[200],
-  secondaryLight: secondary[300],
-  secondary: secondary[500],
-  secondaryDark: secondary[800],
-  secondaryUltraDark: secondary[900],
+  secondaryUltraLight: blue[200],
+  secondaryLight: blue[300],
+  secondary: blue[500],
+  secondaryDark: blue[800],
+  secondaryUltraDark: blue[900],
 
   background: grey[100],
   onBackground: blueGrey[900],
@@ -129,8 +128,7 @@ function slightlyTransparent(color: string) {
 }
 
 function getCurrentThemeName(): ThemeName {
-  // return Appearance.getColorScheme() ?? 'light'
-  return 'light'
+  return Config.DEMO_MODE ? 'dark' : Appearance.getColorScheme() ?? 'dark'
 }
 
 const styleSheetFactory = registerThemes({ light, dark }, () =>

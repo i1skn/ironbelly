@@ -18,9 +18,8 @@ import BigNumber from 'bignumber.js'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import RNFS from 'react-native-fs'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import colors from 'src/common/colors'
 import GrinAddress from 'src/screens/TxIncompleteReceive/GrinAddress'
-import { ActivityIndicator, StyleSheet, View, Platform } from 'react-native'
+import { ActivityIndicator, View, Platform } from 'react-native'
 import CopyHeader from 'src/components/CopyHeader'
 import InputContentRow from 'src/components/InputContentRow'
 import { useDispatch } from 'react-redux'
@@ -34,6 +33,11 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import SectionTitle from 'src/components/SectionTitle'
 import { useFocusEffect } from '@react-navigation/native'
 import ShareRow from 'src/components/ShareRow'
+import {
+  slightlyTransparent,
+  styleSheetFactory,
+  useThemedStyles,
+} from 'src/themes'
 
 interface OwnProps {
   tx: Tx
@@ -42,6 +46,8 @@ interface OwnProps {
 type Props = NavigationProps<'TxIncompleteReceive'> & OwnProps
 
 const TxIncompleteReceive = ({ navigation, route }: Props) => {
+  const [styles, theme] = useThemedStyles(themedStyles)
+
   const tx = route?.params?.tx
   const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
@@ -138,10 +144,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                   <Text style={styles.txId}>{tx.slateId}</Text>
                   {(isLoadingSlatepack && (
                     <View style={styles.slatepackLoading}>
-                      <ActivityIndicator
-                        size="large"
-                        color={colors.grey[700]}
-                      />
+                      <ActivityIndicator size="large" color={theme.onSurface} />
                     </View>
                   )) ||
                     (slatepack && (
@@ -155,9 +158,9 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                           containerStyle={styles.slatepack}
                           style={styles.textarea}
                           editable={false}
-                          returnKeyType={'done'}>
-                          {slatepack}
-                        </Textarea>
+                          value={slatepack}
+                          returnKeyType={'done'}
+                        />
                         <ShareRow content={slatepack} label="Slatepack" />
                       </>
                     )) ||
@@ -180,13 +183,13 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
                     containerStyle={styles.slatepack}
                     onChangeText={setReceiveSlatepack}
                     style={styles.textarea}
+                    value={receiveSlatepack}
                     placeholder={
                       'BEGINSLATEPACK.\n...\n...\n...\nENDSLATEPACK.'
                     }
                     textAlignVertical={'top'}
-                    returnKeyType={'done'}>
-                    {receiveSlatepack}
-                  </Textarea>
+                    returnKeyType={'done'}
+                  />
                   <InputContentRow
                     setFunction={setWithValidation}
                     nextScreen={'TxIncompleteReceive'}
@@ -207,9 +210,10 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     flexGrow: 1,
+    paddingTop: 16,
   },
   txId: {
     marginTop: 4,
@@ -217,25 +221,22 @@ const styles = StyleSheet.create({
     fontFamily: monoSpaceFont,
     textAlign: 'center',
     fontSize: 14,
+    color: theme.onBackground,
   },
   slatepack: {
     marginTop: 8,
     flex: 1,
   },
   infoMarginTop: {
-    color: colors.grey[700],
+    color: slightlyTransparent(theme.onSurface),
     marginTop: 16,
     marginBottom: 8,
     fontSize: 17,
   },
   info: {
-    color: colors.grey[700],
+    color: slightlyTransparent(theme.onSurface),
     marginBottom: 8,
     fontSize: 17,
-  },
-  grinAddressButton: {
-    marginTop: 12,
-    marginBottom: 16,
   },
   textarea: {
     maxHeight: 360,
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
     fontFamily: monoSpaceFont,
   },
   textButton: {
-    color: colors.link,
+    color: theme.link,
     fontSize: 18,
   },
   amountRow: {
@@ -251,7 +252,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   alternativeAmount: {
-    color: colors.grey[700],
+    color: theme.onSurface,
     fontSize: 18,
     textAlign: 'right',
     height: 50,
@@ -264,19 +265,19 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
   },
   available: {
-    color: colors.grey[500],
+    color: theme.onSurface,
     fontSize: 14,
     height: 24,
   },
   networkFee: {
     fontSize: 14,
     lineHeight: 32,
-    color: colors.red[500],
+    color: theme.warning,
   },
   slatepackLoading: {
     justifyContent: 'center',
     flex: 1,
   },
-})
+}))
 
 export default TxIncompleteReceive

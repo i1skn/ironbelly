@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-import styled from 'styled-components/native'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import sleep from 'sleep-promise'
 import { isAndroid } from 'src/common'
 import { Tx } from 'src/common/types'
 import { RootState } from 'src/common/redux'
 import React from 'react'
-import { Text, Animated, TouchableWithoutFeedback, View } from 'react-native'
+import {
+  Text,
+  Animated,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
 import {
   TransitionPresets,
@@ -194,16 +199,8 @@ const forFade = ({
   },
 })
 
-const ResetButton = styled.TouchableOpacity`
-  padding-right: 16px;
-`
-const ResetButtonText = styled(Text)`
-  font-size: 18px;
-  font-weight: 500;
-`
-
 const SettingsStack = () => {
-  const [, theme] = useThemedStyles(themedStyles)
+  const [styles, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
       initialRouteName="Settings"
@@ -222,7 +219,8 @@ const SettingsStack = () => {
           return {
             title: 'Grin node',
             headerRight: () => (
-              <ResetButton
+              <TouchableOpacity
+                style={styles.resetButton}
                 onPress={() => {
                   const state = store.getState() as RootState
 
@@ -246,8 +244,8 @@ const SettingsStack = () => {
                       break
                   }
                 }}>
-                <ResetButtonText>Reset</ResetButtonText>
-              </ResetButton>
+                <Text style={styles.resetButtonText}>Reset</Text>
+              </TouchableOpacity>
             ),
           }
         }}
@@ -535,5 +533,13 @@ const themedStyles = styleSheetFactory((theme) => ({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: theme.surface,
+  },
+  resetButtonText: {
+    fontSize: 18,
+    fontWeight: '500',
+    color: theme.onSurface,
+  },
+  resetButton: {
+    paddingRight: 16,
   },
 }))

@@ -92,7 +92,7 @@ function Overview({
             {(firstLoading && (
               <Text style={styles.emptyLog}>Loading...</Text>
             )) || (
-              <Text>
+              <Text style={styles.noTxsText}>
                 Here you will see your transactions, when you've made them!
               </Text>
             )}
@@ -236,7 +236,7 @@ const themedStyles = styleSheetFactory((theme) => ({
   },
   cancel: {
     alignItems: 'center',
-    backgroundColor: theme.warning,
+    backgroundColor: theme.background,
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'flex-end',
@@ -250,10 +250,7 @@ const themedStyles = styleSheetFactory((theme) => ({
   },
   cancelButtonText: {
     width: 100,
-    color: Platform.select({
-      ios: theme.background,
-      android: theme.warning,
-    }),
+    color: theme.warning,
     textAlign: 'center',
   },
   listItem: {
@@ -280,6 +277,11 @@ const themedStyles = styleSheetFactory((theme) => ({
     fontSize: 18,
     textAlign: 'center',
     marginBottom: 20,
+    color: theme.onBackground,
+  },
+  noTxsText: {
+    color: theme.onBackground,
+    textAlign: 'center',
   },
   footer: {
     height: 24,

@@ -69,13 +69,11 @@ const TxDetails = ({ tx, navigation }: Props) => {
                 style={styles.grinScanButtonText}
                 title={
                   <>
-                    <Text>See on GrinScan </Text>
+                    <Text style={styles.kernelLink}>See on GrinScan </Text>
                     <FeatherIcons
                       name="external-link"
                       size={18}
-                      style={{
-                        color: theme.link,
-                      }}
+                      style={styles.kernelLink}
                     />
                   </>
                 }
@@ -132,6 +130,9 @@ const themedStyles = styleSheetFactory((theme) => ({
     textAlign: 'center',
     fontSize: 16,
     paddingTop: 16,
+  },
+  kernelLink: {
+    color: theme.link,
   },
 }))
 

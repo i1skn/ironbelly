@@ -15,12 +15,12 @@
  */
 
 import React from 'react'
-import colors from 'src/common/colors'
-import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { TouchableOpacity, Platform } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { Text } from 'src/components/CustomFont'
 import { useNavigation } from '@react-navigation/native'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 function ShowQRCodeButton({
   label,
@@ -29,6 +29,7 @@ function ShowQRCodeButton({
   label: string
   content: string
 }) {
+  const [styles] = useThemedStyles(themedStyles)
   const navigation = useNavigation()
   const show = (content: string, label: string) => {
     return () => {
@@ -43,24 +44,21 @@ function ShowQRCodeButton({
     <TouchableOpacity onPress={show(content, label)}>
       <Text style={styles.slatepackHeaderCopy}>
         Show QR{' '}
-        <MaterialCommunityIcons
-          name="qrcode"
-          size={18}
-          style={{
-            color: colors.link,
-          }}
-        />
+        <MaterialCommunityIcons name="qrcode" size={18} style={styles.icon} />
       </Text>
     </TouchableOpacity>
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
-    color: colors.link,
+    color: theme.link,
     fontSize: 16,
   },
-})
+  icon: {
+    color: theme.link,
+  },
+}))
 
 export default ShowQRCodeButton

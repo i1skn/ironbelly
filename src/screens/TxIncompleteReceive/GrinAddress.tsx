@@ -18,13 +18,15 @@ import React from 'react'
 import SectionTitle from 'src/components/SectionTitle'
 import ShareRow from 'src/components/ShareRow'
 import { Text, monoSpaceFont } from 'src/components/CustomFont'
-import { ActivityIndicator, StyleSheet, View } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { useSelector } from 'src/common/redux'
 import { torStatusSelector, TOR_FAILED, TOR_IN_PROGRESS } from 'src/modules/tor'
-import colors from 'src/common/colors'
 import { grinAddressSelector } from 'src/modules/tx/receive'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
+import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 
 function GrinAddress() {
+  const [styles] = useThemedStyles(themedStyles)
   const grinAddress = useSelector(grinAddressSelector)
   const torStatus = useSelector(torStatusSelector)
 
@@ -50,6 +52,12 @@ function GrinAddress() {
       <View style={styles.container}>{address}</View>
       <ShareRow content={grinAddress} label="Grin Address" />
       <View style={styles.warning}>
+        <FontAwesome5Icons
+          name="exclamation-triangle"
+          size={18}
+          style={styles.warningIcon}
+        />
+
         <Text style={styles.warningText}>
           Keep the app open to use Grin Address!
         </Text>
@@ -58,14 +66,16 @@ function GrinAddress() {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
+    color: theme.onBackground,
   },
   loadingText: {
     paddingLeft: 4,
+    color: theme.onBackground,
   },
   grinAddress: {
     fontFamily: monoSpaceFont,
@@ -73,23 +83,25 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingHorizontal: 16,
     textAlign: 'center',
+    color: theme.onBackground,
   },
   warning: {
     marginBottom: 8,
     marginTop: 4,
     fontSize: 17,
     flexDirection: 'row',
-    borderLeftColor: colors.warning,
-    borderLeftWidth: 4,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  warningIcon: {
+    color: theme.warningLight,
   },
   warningText: {
-    color: colors.white,
+    color: theme.warningLight,
     fontWeight: 'bold',
-    backgroundColor: colors.warningLight,
     textAlign: 'center',
     padding: 8,
-    flex: 1,
   },
-})
+}))
 
 export default GrinAddress

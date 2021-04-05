@@ -15,14 +15,16 @@
  */
 
 import React from 'react'
-import { StyleSheet, View, Platform } from 'react-native'
+import { View, Platform } from 'react-native'
 import { Text } from 'src/components/CustomFont'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type Props = {
   title: string
 }
 
 function SectionTitle({ title }: Props) {
+  const [styles] = useThemedStyles(themedStyles)
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{title}</Text>
@@ -30,16 +32,17 @@ function SectionTitle({ title }: Props) {
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   container: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginVertical: 8,
   },
   title: {
-    fontWeight: Platform.select({ android: '700', ios: '500' }),
+    fontWeight: Platform.select({ android: '700', ios: '700' }),
     fontSize: 16,
+    color: theme.onBackground,
   },
-})
+}))
 
 export default SectionTitle

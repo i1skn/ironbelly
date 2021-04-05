@@ -17,10 +17,10 @@
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import Clipboard from '@react-native-community/clipboard'
-import colors from 'src/common/colors'
-import { TouchableOpacity, StyleSheet, Platform } from 'react-native'
+import { TouchableOpacity, Platform } from 'react-native'
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import { Text } from 'src/components/CustomFont'
+import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 function CopyButton({
   subject,
@@ -29,6 +29,7 @@ function CopyButton({
   subject: string
   content: string
 }) {
+  const [styles] = useThemedStyles(themedStyles)
   const dispatch = useDispatch()
   const copyToClipboard = (s: string, subject: string) => {
     return () => {
@@ -43,25 +44,21 @@ function CopyButton({
   return (
     <TouchableOpacity onPress={copyToClipboard(content, subject)}>
       <Text style={styles.slatepackHeaderCopy}>
-        Copy{' '}
-        <FontAwesome5Icons
-          name="copy"
-          size={18}
-          style={{
-            color: colors.link,
-          }}
-        />
+        Copy <FontAwesome5Icons name="copy" size={18} style={styles.icon} />
       </Text>
     </TouchableOpacity>
   )
 }
 
-const styles = StyleSheet.create({
+const themedStyles = styleSheetFactory((theme) => ({
   slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
-    color: colors.link,
+    color: theme.link,
     fontSize: 16,
   },
-})
+  icon: {
+    color: theme.link,
+  },
+}))
 
 export default CopyButton

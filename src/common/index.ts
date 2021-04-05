@@ -18,7 +18,6 @@ import moment from 'moment'
 import 'intl'
 import 'intl/locale-data/jsonp/en'
 import RNFS from 'react-native-fs'
-import { slightlyTransparent } from 'src/themes'
 import { Platform, KeyboardAvoidingView } from 'react-native'
 import {
   RustTx,
@@ -41,7 +40,9 @@ import { BIOMETRY_TYPE } from 'react-native-keychain'
 import { decode as atob } from 'base-64'
 import { RootState } from './redux'
 export const isAndroid = Platform.OS === 'android'
+
 console.log(isAndroid ? RNFS.DocumentDirectoryPath : RNFS.LibraryDirectoryPath)
+
 export const hrGrin = (amount: BigNumber.Value): string => {
   return (
     new Intl.NumberFormat('en-US', {
@@ -228,14 +229,6 @@ export const UnderHeaderBlock = styled.View`
   padding: 12px 16px;
   margin-top: 16px;
   border-radius: 8px;
-`
-
-export const Notice = styled.Text`
-  color: ${slightlyTransparent(colors.onBackground)};
-  font-size: 16;
-  line-height: 24;
-  text-align: center;
-  margin-top: 8px;
 `
 
 export const getBiometryTitle = (biometryType?: string | null) => {
