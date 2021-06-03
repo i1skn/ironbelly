@@ -96,8 +96,8 @@ const TxListItem = (props: Props) => {
                 ? 'Sent'
                 : 'Received'
               : isSent
-              ? 'Sending...'
-              : 'Receiving...'}
+                ? 'Sending...'
+                : 'Receiving...'}
           </Text>
         </View>
         {confirmed ? (
@@ -107,10 +107,10 @@ const TxListItem = (props: Props) => {
             {isPosted
               ? 'Awaiting confirmation...'
               : isFinalized
-              ? 'Not sent. Click to retry'
-              : isSent
-              ? 'Action required'
-              : 'Sender needs to finish transaction'}
+                ? 'Not sent. Click to retry'
+                : isSent
+                  ? 'Action required'
+                  : 'Sender needs to finish transaction'}
           </Text>
         )}
       </FlexGrow>
@@ -118,7 +118,7 @@ const TxListItem = (props: Props) => {
         style={{
           alignItems: 'flex-end',
         }}>
-        <Text style={styles.amountGrin}>{hrGrin(amount)}</Text>
+        <Text style={styles.amountGrin}>{hrGrin(amount, 4)}</Text>
         <Text style={styles.amountFiat}>
           {hrFiat(convertToFiat(amount, currency, rates), currency)}
         </Text>

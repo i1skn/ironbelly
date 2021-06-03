@@ -45,7 +45,7 @@ const BalanceComponent = ({ balance, currency, rates }: Props) => {
         colors={[theme.heroGradientStart, theme.heroGradientEnd]}>
         <HeaderSpan bgColor={'transparent'} />
         <Text style={styles.amountGrin}>
-          {hrGrin(new BigNumber(balance.total).plus(balance.amountLocked))}
+          {hrGrin(new BigNumber(balance.total).plus(balance.amountLocked), 4)}
         </Text>
         <View style={styles.nextToBalance}>
           <Text style={styles.nextToBalanceRow}>is your total balance</Text>
