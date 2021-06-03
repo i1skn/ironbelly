@@ -43,12 +43,12 @@ export const isAndroid = Platform.OS === 'android'
 
 console.log(isAndroid ? RNFS.DocumentDirectoryPath : RNFS.LibraryDirectoryPath)
 
-export const hrGrin = (amount: BigNumber.Value): string => {
+export const hrGrin = (amount: BigNumber.Value, minimumFractionDigits = 9): string => {
   return (
     new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 3,
+      minimumFractionDigits,
     })
       // TODO: avoid converstion `toNumber` here
       .format(new BigNumber(amount).dividedBy(1000000000).toNumber())
