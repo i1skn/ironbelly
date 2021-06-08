@@ -19,7 +19,7 @@
     "@react-navigation/bottom-tabs": "^5.9.2",
     "@react-navigation/native": "^5.7.4",
     "@react-navigation/stack": "^5.9.1",
-    "@reduxjs/toolkit": "^1.4.0",
+    "@reduxjs/toolkit": "^1.6.0",
     "apsl-react-native-button": "^3.1.1",
     "base-64": "^0.1.0",
     "bignumber.js": "^9.0.1",
@@ -107,6 +107,9 @@
     "react-native-themed-styles": "^0.0.4",
     "react-test-renderer": "16.11.0",
     "typescript": "^4.1.3"
+  },
+  "resolutions": {
+    "css-what": "^5.0.1"
   },
   "jest": {
     "preset": "react-native",
