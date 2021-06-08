@@ -58,6 +58,5 @@ crate-type = ["staticlib", "cdylib"]
 croaring-mw = { git = "https://github.com/i1skn/croaring-rs" }
 liblmdb-sys = { git = "https://github.com/i1skn/lmdb-rs" }
 
-
 [features]
 default = ["jni"]

@@ -1,4 +1,4 @@
-import { Appearance, Platform } from 'react-native'
+import { Appearance } from 'react-native'
 import Config from 'react-native-config'
 import {
   yellow,

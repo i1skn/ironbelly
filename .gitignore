@@ -71,6 +71,9 @@ android/app/src/main/assets/index.android.bundle
 # CocoaPods
 /ios/Pods/
 
+#Cartage
+/ios/Carthage/Checkouts/
+
 # Android key
 android/key.json
 
