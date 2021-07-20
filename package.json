@@ -35,7 +35,7 @@
     "postinstall-postinstall": "^2.1.0",
     "prop-types": "^15.7.2",
     "react": "16.13.1",
-    "react-native": "0.63.3",
+    "react-native": "0.64.1",
     "react-native-background-timer": "^2.4.1",
     "react-native-check-box": "^2.1.7",
     "react-native-circular-progress": "^1.1.0",
