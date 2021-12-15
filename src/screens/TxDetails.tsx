@@ -39,7 +39,7 @@ interface OwnProps {
 type Props = NavigationProps<'TxDetails'> & OwnProps
 
 const TxDetails = ({ tx, navigation }: Props) => {
-  const [styles, theme] = useThemedStyles(themedStyles)
+  const [styles] = useThemedStyles(themedStyles)
   return (
     <>
       <CardTitle title="Transaction Details" navigation={navigation} />
@@ -49,11 +49,17 @@ const TxDetails = ({ tx, navigation }: Props) => {
           <Text style={styles.amount}>{hrGrin(tx.amount)}</Text>
 
           {!new BigNumber(tx.fee).isZero() && (
-            <>
+            <View style={styles.field}>
               <Text style={styles.fieldTitle}>Fee</Text>
-              <Text>{hrGrin(tx.fee)}</Text>
-            </>
+              <Text style={styles.fieldValue}>{hrGrin(tx.fee)}</Text>
+            </View>
           )}
+          <View style={styles.field}>
+            <Text style={styles.fieldTitle}>When</Text>
+            <Text style={styles.date}>
+              {formatTime(moment(tx.creationTime))}
+            </Text>
+          </View>
           {tx.slateId && (
             <View style={styles.field}>
               <CopyHeader content={tx.slateId} label={'Transaction ID'} />
@@ -80,9 +86,6 @@ const TxDetails = ({ tx, navigation }: Props) => {
               />
             </View>
           )}
-
-          <Text style={styles.fieldTitle}>When</Text>
-          <Text style={styles.date}>{formatTime(moment(tx.creationTime))}</Text>
         </View>
       )}
     </>
@@ -124,7 +127,7 @@ const themedStyles = styleSheetFactory((theme) => ({
     color: theme.onBackground,
   },
   field: {
-    marginTop: 16,
+    marginTop: 24,
   },
   grinScanButtonText: {
     textAlign: 'center',

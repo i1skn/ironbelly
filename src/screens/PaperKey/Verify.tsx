@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import ReactNative, { Alert, View } from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { connect } from 'react-redux'
@@ -57,19 +57,6 @@ class Verify extends Component<Props, State> {
       mnemonicWords: Array(wordsCount).fill(''),
     }
   }
-
-  // componentDidMount() {
-  // const { isNew, route } = this.props
-  // if (isNew) {
-  // this.setState({
-  // mnemonicWords: (route.params?.mnemonic ?? '').split(' '),
-  // })
-  // } else {
-  // this.setState({
-  // mnemonicWords: ''.split(' '),
-  // })
-  // }
-  // }
 
   _onContinuePress = (currentUserPhrase: string) => {
     return () => {
@@ -118,6 +105,21 @@ class Verify extends Component<Props, State> {
     }
   }
 
+  fillFromPreviousStep = () => {
+    const { route } = this.props
+    this.setState({
+      mnemonicWords: (route.params?.mnemonic ?? '').split(' '),
+    })
+  }
+
+  fillFromAlert = () => {
+    Alert.prompt('Seed', 'Words separated with spaces', (text: string) => {
+      this.setState({
+        mnemonicWords: text.split(' '),
+      })
+    })
+  }
+
   render() {
     const { route, isNew } = this.props
     const { mnemonicWords, wordsCount } = this.state
@@ -131,8 +133,15 @@ class Verify extends Component<Props, State> {
     const [styles] = useThemedStyles(themedStyles)
     return (
       <View style={styles.wrapper}>
+        {__DEV__ && (
+          <Button
+            style={{ marginHorizontal: 16, marginBottom: 16 }}
+            title={'[DEV] Enter words'}
+            onPress={isNew ? this.fillFromPreviousStep : this.fillFromAlert}
+          />
+        )}
         {(wordsCount && (
-          <Fragment>
+          <>
             <KeyboardAwareScrollView
               innerRef={(sv) =>
                 (this._scrollView = (sv as unknown) as KeyboardAwareScrollView)
@@ -198,7 +207,7 @@ class Verify extends Component<Props, State> {
               />
               <Spacer />
             </KeyboardAwareScrollView>
-          </Fragment>
+          </>
         )) ||
           null}
       </View>
@@ -212,6 +221,7 @@ const themedStyles = styleSheetFactory(() => ({
   },
   words: {
     flex: 1,
+    paddingVertical: 32,
   },
   scrollView: {
     paddingLeft: 16,

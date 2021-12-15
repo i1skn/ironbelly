@@ -32,7 +32,7 @@ Perform this test before hitting release button in stores until we have proper e
 12. Android finalizes the transaction with Android. (-0.023)
 ...Waiting until iPhone's transaction is confirmed 10 times
 
-13. Android sends 0.053 (+0.024 fee) back to Carol
+13. Android sends 0.0535 (+0.024 fee) back to Carol
 14. iPhone sends 0.053 (+0.024 fee) back to Carol
 ...Waiting until both transactions are confirmed at least once
 

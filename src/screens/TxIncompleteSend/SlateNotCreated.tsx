@@ -233,7 +233,7 @@ const SlateNotCreated = () => {
                 size={16}
                 style={styles.optioIcon}
               />
-              <Text style={styles.fee}>{hrGrin(os.fee)}</Text>
+              <Text style={styles.fee}>{hrGrin(os.fee, 4)}</Text>
               <Text style={styles.locked}>
                 {balance.amountCurrentlySpendable === os.total
                   ? `All the funds would be locked for around ${minimumConfirmations} min.`
