@@ -43,7 +43,10 @@ export const isAndroid = Platform.OS === 'android'
 
 console.log(isAndroid ? RNFS.DocumentDirectoryPath : RNFS.LibraryDirectoryPath)
 
-export const hrGrin = (amount: BigNumber.Value, minimumFractionDigits = 9): string => {
+export const hrGrin = (
+  amount: BigNumber.Value,
+  minimumFractionDigits = 9,
+): string => {
   return (
     new Intl.NumberFormat('en-US', {
       style: 'currency',

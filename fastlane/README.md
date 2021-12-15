@@ -20,12 +20,12 @@ or alternatively using `brew install fastlane`
 ```
 fastlane ios bump
 ```
-Push a new beta build to TestFlight
+Bump new version for iOS
 ### ios beta
 ```
 fastlane ios beta
 ```
-
+Push a new beta build to TestFlight
 
 ----
 
