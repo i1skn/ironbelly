@@ -31,5 +31,5 @@ typedef struct wallet {} wallet;"#,
         .rename_item("Wallet", "wallet")
         .generate()
         .expect("Unable to generate bindings")
-        .write_to_file("bindings.h");
+        .write_to_file("../ios/Wallet.xcframework/WalletHeaders.h");
 }

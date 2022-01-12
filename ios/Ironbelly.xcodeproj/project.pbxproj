@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		19E6A92B64229B569C3F335B /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 295D2B0B9B8F233816CAE852 /* Pods_Ironbelly.framework */; };
 		1F81488E3DED4690B5AF60A5 /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 998300B9168649DEA2FD5C5E /* Share.png */; };
 		2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */; };
 		2EE92245D405410BB107EF0F /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 958B76E81DC04571A528434C /* Poppins-Light.ttf */; };
@@ -26,7 +27,6 @@
 		7ED43DD375854138B2208C5C /* ChevronRight.png in Resources */ = {isa = PBXBuildFile; fileRef = 1AC12860C4E7462AB6A9A439 /* ChevronRight.png */; };
 		8A05B33A622348C1A7EBBBED /* x.png in Resources */ = {isa = PBXBuildFile; fileRef = 11C52591DBA24BD485CB0E6E /* x.png */; };
 		A01CD803F51F4CE0BFE222D4 /* Poppins-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F669249426C949548172D721 /* Poppins-Italic.ttf */; };
-		A2B5EFB2CBCED615FC4EDA83 /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 47A11148AA6C0FF049380A47 /* Pods_Ironbelly.framework */; };
 		AE9C71C754744856A2C998BE /* Poppins-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */; };
 		B061F339986847BE91EFD112 /* Close@3x.png in Resources */ = {isa = PBXBuildFile; fileRef = 21484D9BE7F14E6280C4EBFB /* Close@3x.png */; };
 		B7AAF7350C2F4DC4A7A7C6D8 /* Poppins-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */; };
@@ -51,11 +51,11 @@
 		F65FE3622410B98400E3C118 /* FontAwesome.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F65FE35E2410B98400E3C118 /* FontAwesome.ttf */; };
 		F65FE3632410B98400E3C118 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F65FE35F2410B98400E3C118 /* MaterialCommunityIcons.ttf */; };
 		F65FE3642410B98400E3C118 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F65FE3602410B98400E3C118 /* Feather.ttf */; };
-		F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F67AD98B23C15A5100FC4CEA /* libwallet.a */; };
 		F6B4CEA12665907E000CAC2E /* Tor.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6B4CEA02665907E000CAC2E /* Tor.xcframework */; };
 		F6B4CEA22665907E000CAC2E /* Tor.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = F6B4CEA02665907E000CAC2E /* Tor.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		F6B88C4D252A4C92007FF36C /* FontAwesome5_Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6B88C4B252A4C92007FF36C /* FontAwesome5_Regular.ttf */; };
 		F6B88C50252A4CFA007FF36C /* FontAwesome5_Solid.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6B88C4F252A4CFA007FF36C /* FontAwesome5_Solid.ttf */; };
+		F6D7ABE5278DEE220039A4A8 /* Wallet.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = F6D7ABE4278DEE220039A4A8 /* Wallet.xcframework */; };
 		F6E9509221C50DE90066C203 /* GrinBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509121C50DE90066C203 /* GrinBridge.m */; };
 		F6E9509421C50E560066C203 /* GrinBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6E9509321C50E560066C203 /* GrinBridge.swift */; };
 		F6F4CE7F2555946B00953576 /* OnionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F4CE7E2555946B00953576 /* OnionManager.swift */; };
@@ -102,9 +102,9 @@
 		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
 		1AC12860C4E7462AB6A9A439 /* ChevronRight.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronRight.png; path = ../src/assets/images/ChevronRight.png; sourceTree = "<group>"; };
 		21484D9BE7F14E6280C4EBFB /* Close@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@3x.png"; path = "../src/assets/images/Close@3x.png"; sourceTree = "<group>"; };
-		3A880299A934FE70DB8A97BF /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
+		295D2B0B9B8F233816CAE852 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
-		47A11148AA6C0FF049380A47 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		4DA93361DCEDC36913826329 /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
 		65889B7F669E44F197877486 /* ChevronLeft@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@3x.png"; path = "../src/assets/images/ChevronLeft@3x.png"; sourceTree = "<group>"; };
 		7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
 		84EB5C67E41C492EB06C5DB2 /* x@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@2x.png"; path = "../src/assets/images/x@2x.png"; sourceTree = "<group>"; };
@@ -116,11 +116,11 @@
 		A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-LightItalic.ttf"; path = "../src/assets/fonts/Poppins-LightItalic.ttf"; sourceTree = "<group>"; };
 		AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
 		AEB4E1B47E9D4CB1B965F729 /* x@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@3x.png"; path = "../src/assets/images/x@3x.png"; sourceTree = "<group>"; };
-		B0D24399E64D284B1F5BA92D /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
 		B97B4FF20BD3443A8E5A9B82 /* Close.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Close.png; path = ../src/assets/images/Close.png; sourceTree = "<group>"; };
 		C342A60D16E24E1882B784C1 /* Close@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@2x.png"; path = "../src/assets/images/Close@2x.png"; sourceTree = "<group>"; };
 		DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@3x.png"; path = "../src/assets/images/ChevronRight@3x.png"; sourceTree = "<group>"; };
 		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
+		E026C7FBCAA1A1B3F2BAB948 /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
 		F26B17F2881A43CF92534013 /* Poppins-Thin.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Thin.ttf"; path = "../src/assets/fonts/Poppins-Thin.ttf"; sourceTree = "<group>"; };
 		F3E7E5C85E95450AAC91B594 /* Poppins-ExtraLight.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLight.ttf"; path = "../src/assets/fonts/Poppins-ExtraLight.ttf"; sourceTree = "<group>"; };
@@ -145,13 +145,12 @@
 		F65FE35F2410B98400E3C118 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = MaterialCommunityIcons.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf"; sourceTree = "<group>"; };
 		F65FE3602410B98400E3C118 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = Feather.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		F669249426C949548172D721 /* Poppins-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Italic.ttf"; path = "../src/assets/fonts/Poppins-Italic.ttf"; sourceTree = "<group>"; };
-		F67AD98B23C15A5100FC4CEA /* libwallet.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libwallet.a; path = ../rust/libwallet.a; sourceTree = "<group>"; };
 		F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Regular.ttf"; path = "../src/assets/fonts/Poppins-Regular.ttf"; sourceTree = "<group>"; };
 		F6B4CEA02665907E000CAC2E /* Tor.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = Tor.xcframework; path = Carthage/Build/Tor.xcframework; sourceTree = "<group>"; };
 		F6B88C4B252A4C92007FF36C /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Regular.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf"; sourceTree = "<group>"; };
 		F6B88C4F252A4CFA007FF36C /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = FontAwesome5_Solid.ttf; path = "../../../node_modules/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf"; sourceTree = "<group>"; };
 		F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Wallet-Bridging-Header.h"; path = "Ironbelly/Wallet-Bridging-Header.h"; sourceTree = SOURCE_ROOT; };
-		F6DDC63F2197893300B51AAE /* bindings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = bindings.h; path = ../../rust/bindings.h; sourceTree = "<group>"; };
+		F6D7ABE4278DEE220039A4A8 /* Wallet.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Wallet.xcframework; sourceTree = "<group>"; };
 		F6E9509121C50DE90066C203 /* GrinBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = GrinBridge.m; sourceTree = "<group>"; };
 		F6E9509321C50E560066C203 /* GrinBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrinBridge.swift; sourceTree = "<group>"; };
 		F6F4CE7E2555946B00953576 /* OnionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnionManager.swift; sourceTree = "<group>"; };
@@ -172,10 +171,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F67AD98C23C15A6100FC4CEA /* libwallet.a in Frameworks */,
 				F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */,
-				A2B5EFB2CBCED615FC4EDA83 /* Pods_Ironbelly.framework in Frameworks */,
+				F6D7ABE5278DEE220039A4A8 /* Wallet.xcframework in Frameworks */,
 				F6B4CEA12665907E000CAC2E /* Tor.xcframework in Frameworks */,
+				19E6A92B64229B569C3F335B /* Pods_Ironbelly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -185,8 +184,8 @@
 		2662B2B8162371B8F21281EC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				B0D24399E64D284B1F5BA92D /* Pods-Ironbelly.debug.xcconfig */,
-				3A880299A934FE70DB8A97BF /* Pods-Ironbelly.release.xcconfig */,
+				E026C7FBCAA1A1B3F2BAB948 /* Pods-Ironbelly.debug.xcconfig */,
+				4DA93361DCEDC36913826329 /* Pods-Ironbelly.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -265,7 +264,6 @@
 				F65FE35C2410B8E000E3C118 /* Fonts */,
 				F6D028432190C97300E0DE88 /* Wallet-Bridging-Header.h */,
 				F64186DC218895DC00A99CA0 /* AppDelegate.swift */,
-				F6DDC63F2197893300B51AAE /* bindings.h */,
 				F64186E3218895DE00A99CA0 /* Assets.xcassets */,
 				F64186E5218895DE00A99CA0 /* LaunchScreen.storyboard */,
 				F64186E8218895DE00A99CA0 /* Info.plist */,
@@ -279,10 +277,10 @@
 		F64186FC2188967A00A99CA0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F6D7ABE4278DEE220039A4A8 /* Wallet.xcframework */,
 				F6B4CEA02665907E000CAC2E /* Tor.xcframework */,
-				F67AD98B23C15A5100FC4CEA /* libwallet.a */,
 				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
-				47A11148AA6C0FF049380A47 /* Pods_Ironbelly.framework */,
+				295D2B0B9B8F233816CAE852 /* Pods_Ironbelly.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -346,14 +344,14 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F64186F6218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "Ironbelly" */;
 			buildPhases = (
-				61099621351B91B7CCD6640C /* [CP] Check Pods Manifest.lock */,
+				1B079FD03D7F7DE24CC5E606 /* [CP] Check Pods Manifest.lock */,
 				F64186D5218895DC00A99CA0 /* Sources */,
 				F64186D6218895DC00A99CA0 /* Frameworks */,
 				F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */,
 				F64186D7218895DC00A99CA0 /* Resources */,
 				F67B83C8219345180004D4A1 /* Embed App Extensions */,
-				BAE5F3D0B0DD7C6410A2E55A /* [CP] Embed Pods Frameworks */,
 				F6B4CEA32665907E000CAC2E /* Embed Frameworks */,
+				C81882CBE6CF13BD81D57D5D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -458,7 +456,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		61099621351B91B7CCD6640C /* [CP] Check Pods Manifest.lock */ = {
+		1B079FD03D7F7DE24CC5E606 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -480,7 +478,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		BAE5F3D0B0DD7C6410A2E55A /* [CP] Embed Pods Frameworks */ = {
+		C81882CBE6CF13BD81D57D5D /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -745,29 +743,25 @@
 		};
 		F64186F7218895DE00A99CA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B0D24399E64D284B1F5BA92D /* Pods-Ironbelly.debug.xcconfig */;
+			baseConfigurationReference = E026C7FBCAA1A1B3F2BAB948 /* Pods-Ironbelly.debug.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Wallet.xcframework/",
+				);
 				INFOPLIST_FILE = Ironbelly/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=arm64]" = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../rust/target/aarch64-apple-ios/debug",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../rust/target/x86_64-apple-ios/debug",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",
@@ -789,29 +783,25 @@
 		};
 		F64186F8218895DE00A99CA0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3A880299A934FE70DB8A97BF /* Pods-Ironbelly.release.xcconfig */;
+			baseConfigurationReference = 4DA93361DCEDC36913826329 /* Pods-Ironbelly.release.xcconfig */;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 45;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Wallet.xcframework/",
+				);
 				INFOPLIST_FILE = Ironbelly/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 11;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				"LIBRARY_SEARCH_PATHS[arch=arm64]" = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../rust/target/aarch64-apple-ios/release",
-				);
-				"LIBRARY_SEARCH_PATHS[arch=x86_64]" = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/../rust/target/x86_64-apple-ios/release",
-				);
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-DFB_SONARKIT_ENABLED=1",

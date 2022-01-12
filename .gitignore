@@ -88,6 +88,7 @@ screenshots/screenshots.html
 
 .env
 
-# Wallet compiled libraries 
+# Wallet compiled libraries and headers
 libwallet.*
+WalletHeaders.h
 

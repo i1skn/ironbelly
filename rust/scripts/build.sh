@@ -63,5 +63,6 @@ if [ -z "$platform" ] || [ "$platform" == "ios" ] || [ "$platform" == "all" ] ; 
       cargo build --target "$i" $rust_mode --no-default-features
   done
 
-  lipo -create -output "../ios/lib${LIB_NAME}.a" target/x86_64-apple-ios/$mode/lib${LIB_NAME}.a  target/aarch64-apple-ios/$mode/lib${LIB_NAME}.a
+  lipo -create -output "../ios/Wallet.xcframework/ios-arm64_x86_64-simulator/lib${LIB_NAME}.a" target/x86_64-apple-ios/$mode/lib${LIB_NAME}.a  target/aarch64-apple-ios-sim/$mode/lib${LIB_NAME}.a
+  cp target/aarch64-apple-ios/$mode/lib${LIB_NAME}.a ../ios/Wallet.xcframework/ios-arm64/lib${LIB_NAME}.a
 fi

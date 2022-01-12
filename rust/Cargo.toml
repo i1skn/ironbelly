@@ -57,6 +57,7 @@ crate-type = ["staticlib", "cdylib"]
 [patch.crates-io]
 croaring-mw = { git = "https://github.com/i1skn/croaring-rs" }
 liblmdb-sys = { git = "https://github.com/i1skn/lmdb-rs" }
+openssl-src = { git = "https://github.com/i1skn/openssl-src-rs", branch = "release/111" }
 
 [features]
 default = ["jni"]

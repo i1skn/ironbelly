@@ -20,7 +20,7 @@
 #define Wallet_Bridging_Header_h
 
 #import <React/RCTBridgeModule.h>
-#import "bindings.h"
+#import "WalletHeaders.h"
 #import "Tor/Helpers/NetworkTools.h"
 #import "RNSplashScreen.h"
 #endif /* Wallet_Bridging_Header_h */
