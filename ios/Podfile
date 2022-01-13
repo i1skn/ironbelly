@@ -1,25 +1,8 @@
+require File.join(File.dirname(`node --print "require.resolve('expo/package.json')"`), "scripts/autolinking")
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
-require_relative '../node_modules/react-native-unimodules/cocoapods.rb'
 
-platform :ios, '11.0'
-
-def sonarkit_post_install(installer)
-  file_name = Dir.glob("*.xcodeproj")[0]
-  app_project = Xcodeproj::Project.open(file_name)
-  app_project.native_targets.each do |target|
-    target.build_configurations.each do |config|
-      cflags = config.build_settings['OTHER_CFLAGS'] || '$(inherited) '
-      unless cflags.include? '-DFB_SONARKIT_ENABLED=1'
-        puts 'Adding -DFB_SONARKIT_ENABLED=1 in OTHER_CFLAGS...'
-        cflags << '-DFB_SONARKIT_ENABLED=1'
-      end
-      config.build_settings['OTHER_CFLAGS'] = cflags
-    end
-    app_project.save
-  end
-  installer.pods_project.save
-end
+platform :ios, '12.0'
 
 # Post Install processing for Grin Wallet 
 def grin_wallet_post_install(installer)
@@ -48,35 +31,39 @@ end
 
 
 # Post Install for Countly 
-def countly_post_install(installer)
-  installer.pods_project.targets.each do |target|
-    if target.name == "Countly"
-      target.build_configurations.each do |config|
-          config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'COUNTLY_EXCLUDE_IDFA=1']
-      end
-    end
-  end
-end
+# def countly_post_install(installer)
+#   installer.pods_project.targets.each do |target|
+#     if target.name == "Countly"
+#       target.build_configurations.each do |config|
+#           config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= ['$(inherited)', 'COUNTLY_EXCLUDE_IDFA=1']
+#       end
+#     end
+#   end
+# end
 
 use_frameworks!
 
 target 'Ironbelly' do
 
-  use_unimodules!
+  use_expo_modules!
 
   config = use_native_modules!
 
-  use_react_native!(:path => config["reactNativePath"])
+  use_react_native!(
+    :path => config[:reactNativePath],
+    # to enable hermes on iOS, change `false` to `true` and then install pods
+    :hermes_enabled => false
+  )
 
   # Add new pods below this line
   pod 'LaunchScreenSnapshot'
   pod 'ReachabilitySwift'
   pod 'ZXingObjC', '~> 3.6.5'
 
-  $static_framework = ['FlipperKit', 'Flipper', 'Flipper-Folly',
-    'ComponentKit', 'Flipper-DoubleConversion',
-    'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'YogaKit',
-    'CocoaLibEvent', 'OpenSSL-Universal', 'boost-for-react-native']
+  $static_framework = ['CocoaAsyncSocket', 'Flipper', 'Flipper-Boost-iOSX',
+    'Flipper-DoubleConversion', 'Flipper-Fmt' ,'Flipper-Folly',
+    'Flipper-Glog', 'Flipper-PeerTalk', 'Flipper-RSocket', 'FlipperKit',
+    'OpenSSL-Universal','YogaKit', 'libevent']
  
   pre_install do |installer|
     Pod::Installer::Xcode::TargetValidator.send(:define_method, :verify_no_static_framework_transitive_dependencies) {}
@@ -89,12 +76,13 @@ target 'Ironbelly' do
       end
   end
 
-  use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })
+  # use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })
+  use_flipper!()
 
   post_install do |installer|
-    flipper_post_install(installer)
-    sonarkit_post_install(installer)
-    countly_post_install(installer)
+    # countly_post_install(installer)
     grin_wallet_post_install(installer)
+    react_native_post_install(installer)
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end

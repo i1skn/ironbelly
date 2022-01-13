@@ -16,7 +16,7 @@
 
 import React from 'react'
 import { useDispatch } from 'react-redux'
-import Clipboard from '@react-native-community/clipboard'
+import Clipboard from '@react-native-clipboard/clipboard'
 import { TouchableOpacity, Platform } from 'react-native'
 import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 import { Text } from 'src/components/CustomFont'
@@ -50,7 +50,7 @@ function CopyButton({
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
     color: theme.link,

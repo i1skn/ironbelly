@@ -1,5 +1,6 @@
 package app.ironbelly;
-
+import expo.modules.ReactActivityDelegateWrapper;
+import com.facebook.react.ReactActivityDelegate;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
@@ -30,5 +31,12 @@ public class MainActivity extends ReactActivity {
         Window window = getWindow();
         window.setFlags(WindowManager.LayoutParams.FLAG_SECURE,
                 WindowManager.LayoutParams.FLAG_SECURE);
+    }
+
+    @Override
+    protected ReactActivityDelegate createReactActivityDelegate() {
+      return new ReactActivityDelegateWrapper(this,
+        new ReactActivityDelegate(this, getMainComponentName())
+      );
     }
 }

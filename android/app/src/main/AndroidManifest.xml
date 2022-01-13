@@ -16,11 +16,14 @@
       android:roundIcon="@mipmap/ic_launcher_round"
       android:allowBackup="false"
       android:usesCleartextTraffic="true" 
-      android:theme="@style/AppTheme">
+      android:extractNativeLibs="true"
+      android:theme="@style/DeviceCredentialHandlerTheme">
       <activity
 	android:name=".SplashActivity"
 	android:theme="@style/SplashTheme"
+  android:exported="true"
 	android:label="@string/app_name">
+  
 	<intent-filter>
 	  	<action android:name="android.intent.action.MAIN" />
 		<category android:name="android.intent.category.LAUNCHER" />
@@ -33,7 +36,6 @@
 	android:launchMode="singleTask"
 	android:screenOrientation="portrait"
 	android:fitsSystemWindows="true"
-	android:extractNativeLibs="true"
 	android:exported="true"
         android:windowSoftInputMode="adjustResize">
         <intent-filter>
@@ -49,7 +51,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
 	</provider>
-      <activity android:name="com.facebook.react.devsupport.DevSettingsActivity" />
     </application>
 
 </manifest>

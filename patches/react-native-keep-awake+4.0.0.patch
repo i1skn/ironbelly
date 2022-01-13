@@ -1,3 +1,16 @@
+diff --git a/node_modules/react-native-keep-awake/android/build.gradle b/node_modules/react-native-keep-awake/android/build.gradle
+index ba4dfe7..b04f116 100644
+--- a/node_modules/react-native-keep-awake/android/build.gradle
++++ b/node_modules/react-native-keep-awake/android/build.gradle
+@@ -1,7 +1,7 @@
+ buildscript {
+     repositories {
+         google()
+-        jcenter()
++        mavenCentral()
+     }
+ 
+     dependencies {
 diff --git a/node_modules/react-native-keep-awake/react-native-keep-awake.podspec b/node_modules/react-native-keep-awake/react-native-keep-awake.podspec
 index 95933a7..756ad5a 100644
 --- a/node_modules/react-native-keep-awake/react-native-keep-awake.podspec

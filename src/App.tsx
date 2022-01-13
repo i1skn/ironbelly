@@ -57,6 +57,8 @@ LogBox.ignoreLogs([
   'Expected style',
   'useNativeDriver',
   'currentlyFocusedField',
+  'new NativeEventEmitter',
+  "EventEmitter.removeListener('keyboardDidHide'",
 ])
 
 interface StateProps {
@@ -118,7 +120,7 @@ class RealApp extends React.Component<Props, State> {
       this.lockTimeout = null
     }
     if (nextAppState === 'background') {
-      WalletBridge.isWalletCreated().then(async (exists) => {
+      WalletBridge.isWalletCreated().then(async exists => {
         if (exists) {
           if (isAndroid) {
             // TODO: make this configurable for both platforms
@@ -223,7 +225,7 @@ const RealAppConnected = connect<
   DispatchProps,
   OwnProps,
   RootState
->(mapStateToProps, (dispatch) => ({
+>(mapStateToProps, dispatch => ({
   requestWalletExists: () =>
     dispatch({
       type: 'WALLET_EXISTS_REQUEST',
