@@ -49,6 +49,7 @@ import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import { styleSheetFactory, Theme, useThemedStyles } from './themes'
 import changeNavigationBarColor from 'react-native-navigation-bar-color'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -58,7 +59,7 @@ LogBox.ignoreLogs([
   'useNativeDriver',
   'currentlyFocusedField',
   'new NativeEventEmitter',
-  "EventEmitter.removeListener('keyboardDidHide'",
+  'EventEmitter.removeListener',
 ])
 
 interface StateProps {

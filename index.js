@@ -19,6 +19,7 @@ import App from './src/App'
 import { name as appName } from './app.json'
 
 import NetInfo from '@react-native-community/netinfo'
+import 'react-native-gesture-handler'
 
 // NetInfo.configure({
 // reachabilityUrl: ' https://node.ironbelly.app/',

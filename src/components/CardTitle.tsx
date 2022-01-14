@@ -42,7 +42,7 @@ type Props = {
   style?: ViewProps['style']
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   cardTitle: {
     paddingVertical: 16,
     justifyContent: 'center',

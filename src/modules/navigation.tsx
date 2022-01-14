@@ -98,6 +98,7 @@ export type RootStackParamList = {
   Main: undefined
   Overview: { slatePath: string }
   Settings: undefined
+  SettingsMain: undefined
   SettingsGrinNode: undefined | { apiSecret: string }
   Licenses: undefined
   License: { licenseText: string }
@@ -203,10 +204,10 @@ const SettingsStack = () => {
   const [styles, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
-      initialRouteName="Settings"
+      initialRouteName="SettingsMain"
       screenOptions={{ ...defaultScreenOptions(theme), headerBackTitle: '' }}>
       <Stack.Screen
-        name="Settings"
+        name="SettingsMain"
         component={SettingsScreen}
         options={{
           title: 'Settings',
@@ -286,13 +287,14 @@ const HomeTabs = () => {
   return (
     <Tab.Navigator
       initialRouteName="Overview"
-      tabBarOptions={{
-        activeTintColor: theme.secondary,
-        keyboardHidesTabBar: true,
-        style: {
+      screenOptions={{
+        tabBarActiveTintColor: theme.secondary,
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: {
           backgroundColor: theme.surface,
           borderTopWidth: 0,
         },
+        headerShown: false,
       }}>
       <Tab.Screen
         name="Overview"
@@ -306,7 +308,7 @@ const HomeTabs = () => {
               <TouchableWithoutFeedback
                 testID="OverviewTab"
                 onPress={() => {
-                  getNavigation().then((navigation) => {
+                  getNavigation().then(navigation => {
                     navigation.navigate('Overview')
                   })
                 }}>
@@ -330,7 +332,7 @@ const HomeTabs = () => {
               <TouchableWithoutFeedback
                 testID="SendTab"
                 onPress={() => {
-                  getNavigation().then((navigation) => {
+                  getNavigation().then(navigation => {
                     navigation.navigate('TxIncompleteSend')
                   })
                 }}>
@@ -354,7 +356,7 @@ const HomeTabs = () => {
               <TouchableWithoutFeedback
                 testID="ReceiveTab"
                 onPress={() => {
-                  getNavigation().then((navigation) => {
+                  getNavigation().then(navigation => {
                     navigation.navigate('TxIncompleteReceive')
                   })
                 }}>
@@ -376,7 +378,7 @@ const HomeTabs = () => {
               <TouchableWithoutFeedback
                 testID="SettingsTab"
                 onPress={() => {
-                  getNavigation().then((navigation) => {
+                  getNavigation().then(navigation => {
                     navigation.navigate('Settings')
                   })
                 }}>
@@ -484,7 +486,6 @@ export function RootStack({
   const [, theme] = useThemedStyles(themedStyles)
   return (
     <Stack.Navigator
-      headerMode="none"
       screenOptions={{
         cardStyleInterpolator: forFade,
         headerShown: false,
@@ -528,7 +529,7 @@ export const getNavigation = async (): Promise<NavigationContainerRef> => {
   return navigationRef.current
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   tabButton: {
     flex: 1,
     flexDirection: 'column',
