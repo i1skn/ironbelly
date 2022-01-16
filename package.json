@@ -12,7 +12,7 @@
     "postinstall": "patch-package && yarn generate-licenses"
   },
   "dependencies": {
-    "@react-native-clipboard/clipboard": "^1.8.5",
+    "@react-native-clipboard/clipboard": "^1.9.0",
     "@react-native-community/async-storage": "^1.8.1",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-native-community/netinfo": "^7.1.7",
