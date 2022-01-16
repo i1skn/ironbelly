@@ -8581,10 +8581,10 @@ react-native-screens@^3.10.1:
     react-freeze "^1.0.0"
     warn-once "^0.1.0"
 
-react-native-share@3.3.1:
-  version "3.3.1"
-  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.3.1.tgz#7214497147b1e061ccf8bc1562b3c6fa4b876788"
-  integrity sha512-dVIJkS/BFSljSnCqi3Uwf2r+SrP4K1Xc4kHelZsHDrzU61C0OhgMcrlxzbRj3uzmsaQJ624GkxK1t17Js0bPMA==
+react-native-share@3.8.5:
+  version "3.8.5"
+  resolved "https://registry.yarnpkg.com/react-native-share/-/react-native-share-3.8.5.tgz#e74ed39401b9fceef700435cef7c28bc37c7e267"
+  integrity sha512-GjMI2NwUvi8zC7JHWk6NIcg/gFJmK/+cAQ8VStvfy4/kOiXYE5YnpPjvKs/K1Aun0HqYi2vjvZruL5ouDEWxmg==
 
 react-native-size-matters@^0.3.1:
   version "0.3.1"
