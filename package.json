@@ -30,7 +30,7 @@
     "expo-local-authentication": "^12.1.0",
     "flux-standard-action": "^2.1.2",
     "intl": "^1.2.5",
-    "moment": "^2.24.0",
+    "moment": "^2.29.2",
     "patch-package": "^6.4.7",
     "plist": "^3.0.2",
     "postinstall-postinstall": "^2.1.0",
