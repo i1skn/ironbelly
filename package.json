@@ -32,7 +32,7 @@
     "intl": "^1.2.5",
     "moment": "^2.24.0",
     "patch-package": "^6.4.7",
-    "plist": "^3.0.2",
+    "plist": "^3.0.5",
     "postinstall-postinstall": "^2.1.0",
     "prop-types": "^15.8.1",
     "react": "17.0.2",
