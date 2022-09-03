@@ -24,7 +24,6 @@ import { NavigationProps } from 'src/common/types'
 import SlateCreated from 'src/screens/TxIncompleteSend/SlateCreated'
 import SlateNotCreated from 'src/screens/TxIncompleteSend/SlateNotCreated'
 import { hrGrin } from 'src/common'
-import { useDispatch } from 'react-redux'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 interface OwnProps {
@@ -34,8 +33,8 @@ interface OwnProps {
 type Props = NavigationProps<'TxIncompleteSend'> & OwnProps
 
 const TxIncompleteSend = ({ navigation, route }: Props) => {
+  console.log(route)
   const [styles] = useThemedStyles(themedStyles)
-  const dispatch = useDispatch()
   const tx = route?.params?.tx
   const title = tx
     ? `Sending ${hrGrin(new BigNumber(tx.amount).abs())}`
@@ -45,21 +44,6 @@ const TxIncompleteSend = ({ navigation, route }: Props) => {
   useEffect(() => {
     navigation.setParams({ title, subTitle })
   }, [title, subTitle])
-
-  const setAddress = (address: string) => {
-    dispatch({
-      type: 'TX_FORM_SET_ADDRESS',
-      address: address.toLowerCase(),
-    })
-  }
-
-  useEffect(() => {
-    const qrContent = route.params?.qrContent
-    if (qrContent) {
-      setAddress(qrContent)
-      navigation.setParams({ qrContent: undefined })
-    }
-  }, [route.params?.qrContent])
 
   return (
     <>
@@ -71,13 +55,9 @@ const TxIncompleteSend = ({ navigation, route }: Props) => {
       />
       <View style={styles.container}>
         {tx?.slateId ? (
-          <SlateCreated
-            slateId={tx.slateId}
-            route={route}
-            navigation={navigation}
-          />
+          <SlateCreated tx={tx} route={route} navigation={navigation} />
         ) : (
-          <SlateNotCreated />
+          <SlateNotCreated route={route} navigation={navigation} />
         )}
       </View>
     </>
@@ -98,7 +78,7 @@ export function androidHeaderTitle(
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   androidHeaderTitle: {
     fontSize: 21,
     color: theme.onBackground,

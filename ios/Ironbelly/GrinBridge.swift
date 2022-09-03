@@ -17,7 +17,7 @@
 import Foundation
 
 let torStatusUpdateEventName = "TorStatusUpdate"
-let torListenAddress = "127.0.0.1:3415"
+let torListenAddress = "0.0.0.0:3415"
 
 @objc(GrinBridge)
 class GrinBridge: RCTEventEmitter {

@@ -47,7 +47,7 @@ export const startHttpListenEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
     ofType('SET_WALLET_OPEN'),
     mergeMap(() =>
-      from(WalletBridge.startListenWithHttp('127.0.0.1:3415')).pipe(
+      from(WalletBridge.startListenWithHttp('0.0.0.0:3415')).pipe(
         map(
           (address: string) => txReceiveActions.setAddress(address) as Action,
         ),

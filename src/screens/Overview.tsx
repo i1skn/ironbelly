@@ -15,7 +15,7 @@
  */
 
 import React, { useCallback, useEffect } from 'react'
-import { TouchableOpacity, RefreshControl, View, Platform } from 'react-native'
+import { TouchableOpacity, RefreshControl, View } from 'react-native'
 import { connect, useDispatch } from 'react-redux'
 import { SwipeListView, SwipeRow } from 'react-native-swipe-list-view'
 import { Text } from 'src/components/CustomFont'
@@ -59,8 +59,8 @@ function Overview({
   firstLoading,
   txConfirm,
   currencyRates,
+  navigation,
 }: Props) {
-  const navigation = useNavigation()
   const dispatch = useDispatch()
 
   useEffect(() => {
@@ -156,7 +156,7 @@ function Overview({
           </SwipeRow>
         )}
         style={styles.txList}
-        keyExtractor={(item) => `${item.id}`}
+        keyExtractor={item => `${item.id}`}
         ListFooterComponent={<View style={styles.footer} />}
         ListHeaderComponent={
           (isOffline && (
@@ -227,7 +227,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   },
 })
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   container: {
     height: '100%',
   },

@@ -8,9 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		1F81488E3DED4690B5AF60A5 /* Share.png in Resources */ = {isa = PBXBuildFile; fileRef = 998300B9168649DEA2FD5C5E /* Share.png */; };
-		2AE1C8168DAE2E4A16D089D2 /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE3E8D95BA0E3814E4F23195 /* Pods_Ironbelly.framework */; };
 		2B04C70620FB46FC851D4289 /* ChevronLeft@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */; };
 		2EE92245D405410BB107EF0F /* Poppins-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 958B76E81DC04571A528434C /* Poppins-Light.ttf */; };
+		399A121E5C43B7C729D3B8D2 /* Pods_Ironbelly.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 12F5469B1142796C315801B3 /* Pods_Ironbelly.framework */; };
 		3B65D265646D439BA0B3629C /* Poppins-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */; };
 		3D9CC4A9E3F345AE8452DBBE /* Poppins-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F6A70C1BED9E40DD8926B8CC /* Poppins-Regular.ttf */; };
 		3F2CC385CA6947C5A00E8EAC /* Poppins-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */; };
@@ -100,10 +100,12 @@
 /* Begin PBXFileReference section */
 		0A610543A85349EAB6BB4EEB /* Poppins-Medium.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-Medium.ttf"; path = "../src/assets/fonts/Poppins-Medium.ttf"; sourceTree = "<group>"; };
 		11C52591DBA24BD485CB0E6E /* x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = x.png; path = ../src/assets/images/x.png; sourceTree = "<group>"; };
+		12F5469B1142796C315801B3 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		16D93EEF43BB4E93A68187BF /* ChevronLeft@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@2x.png"; path = "../src/assets/images/ChevronLeft@2x.png"; sourceTree = "<group>"; };
 		1AC12860C4E7462AB6A9A439 /* ChevronRight.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronRight.png; path = ../src/assets/images/ChevronRight.png; sourceTree = "<group>"; };
 		21484D9BE7F14E6280C4EBFB /* Close@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@3x.png"; path = "../src/assets/images/Close@3x.png"; sourceTree = "<group>"; };
 		3FAF3814E6F9481FAEB0A885 /* Poppins-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-SemiBold.ttf"; path = "../src/assets/fonts/Poppins-SemiBold.ttf"; sourceTree = "<group>"; };
+		62C89A94F0B040082EFCFBA1 /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
 		65889B7F669E44F197877486 /* ChevronLeft@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronLeft@3x.png"; path = "../src/assets/images/ChevronLeft@3x.png"; sourceTree = "<group>"; };
 		7CB5F00953884F798F14D638 /* Poppins-MediumItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-MediumItalic.ttf"; path = "../src/assets/fonts/Poppins-MediumItalic.ttf"; sourceTree = "<group>"; };
 		84EB5C67E41C492EB06C5DB2 /* x@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@2x.png"; path = "../src/assets/images/x@2x.png"; sourceTree = "<group>"; };
@@ -114,13 +116,11 @@
 		9D959331D4664C90ACA1A3A8 /* Share@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Share@3x.png"; path = "../src/assets/images/Share@3x.png"; sourceTree = "<group>"; };
 		A87A7BFB39A54F21ABE32CD2 /* Poppins-LightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-LightItalic.ttf"; path = "../src/assets/fonts/Poppins-LightItalic.ttf"; sourceTree = "<group>"; };
 		AD628337A1A740D981680EB9 /* Poppins-ExtraLightItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ExtraLightItalic.ttf"; path = "../src/assets/fonts/Poppins-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
-		AE3E8D95BA0E3814E4F23195 /* Pods_Ironbelly.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Ironbelly.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEB4E1B47E9D4CB1B965F729 /* x@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "x@3x.png"; path = "../src/assets/images/x@3x.png"; sourceTree = "<group>"; };
 		B97B4FF20BD3443A8E5A9B82 /* Close.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Close.png; path = ../src/assets/images/Close.png; sourceTree = "<group>"; };
 		C342A60D16E24E1882B784C1 /* Close@2x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Close@2x.png"; path = "../src/assets/images/Close@2x.png"; sourceTree = "<group>"; };
-		D58C6A3E24158E5842B001EE /* Pods-Ironbelly.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.debug.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.debug.xcconfig"; sourceTree = "<group>"; };
+		D3DB0F7C817BA17F766A9A0F /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
 		DB95805A93E74B42BC6861B6 /* ChevronRight@3x.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "ChevronRight@3x.png"; path = "../src/assets/images/ChevronRight@3x.png"; sourceTree = "<group>"; };
-		DD09794E25AEAB228137F92A /* Pods-Ironbelly.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Ironbelly.release.xcconfig"; path = "Target Support Files/Pods-Ironbelly/Pods-Ironbelly.release.xcconfig"; sourceTree = "<group>"; };
 		DE278FF83B76486C92F05BB4 /* ChevronLeft.png */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = ChevronLeft.png; path = ../src/assets/images/ChevronLeft.png; sourceTree = "<group>"; };
 		EBD5CD4EE0B7340670ECB35D /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Ironbelly/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		F13FA3B3119245B88443336F /* Poppins-ThinItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Poppins-ThinItalic.ttf"; path = "../src/assets/fonts/Poppins-ThinItalic.ttf"; sourceTree = "<group>"; };
@@ -176,7 +176,7 @@
 				F64187002188968D00A99CA0 /* libresolv.tbd in Frameworks */,
 				F6D7ABE5278DEE220039A4A8 /* Wallet.xcframework in Frameworks */,
 				F6B4CEA12665907E000CAC2E /* Tor.xcframework in Frameworks */,
-				2AE1C8168DAE2E4A16D089D2 /* Pods_Ironbelly.framework in Frameworks */,
+				399A121E5C43B7C729D3B8D2 /* Pods_Ironbelly.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,8 +186,8 @@
 		2662B2B8162371B8F21281EC /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				D58C6A3E24158E5842B001EE /* Pods-Ironbelly.debug.xcconfig */,
-				DD09794E25AEAB228137F92A /* Pods-Ironbelly.release.xcconfig */,
+				62C89A94F0B040082EFCFBA1 /* Pods-Ironbelly.debug.xcconfig */,
+				D3DB0F7C817BA17F766A9A0F /* Pods-Ironbelly.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -299,7 +299,7 @@
 				F6D7ABE4278DEE220039A4A8 /* Wallet.xcframework */,
 				F6B4CEA02665907E000CAC2E /* Tor.xcframework */,
 				F64186FF2188968D00A99CA0 /* libresolv.tbd */,
-				AE3E8D95BA0E3814E4F23195 /* Pods_Ironbelly.framework */,
+				12F5469B1142796C315801B3 /* Pods_Ironbelly.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -363,15 +363,15 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F64186F6218895DE00A99CA0 /* Build configuration list for PBXNativeTarget "Ironbelly" */;
 			buildPhases = (
-				405971CEAD09786EA1288AC3 /* [CP] Check Pods Manifest.lock */,
+				391E78AF781D6DD4720B2CCC /* [CP] Check Pods Manifest.lock */,
 				F64186D5218895DC00A99CA0 /* Sources */,
 				F64186D6218895DC00A99CA0 /* Frameworks */,
 				F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */,
 				F64186D7218895DC00A99CA0 /* Resources */,
 				F67B83C8219345180004D4A1 /* Embed App Extensions */,
 				F6B4CEA32665907E000CAC2E /* Embed Frameworks */,
-				BFF0BD891939F5575CE92D3B /* [CP] Embed Pods Frameworks */,
-				55C35C09DC8BB992D3811F74 /* [CP] Copy Pods Resources */,
+				0678436FA4BC407028CE475E /* [CP] Embed Pods Frameworks */,
+				E7B616097411CA1528A884B4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -476,7 +476,24 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		405971CEAD09786EA1288AC3 /* [CP] Check Pods Manifest.lock */ = {
+		0678436FA4BC407028CE475E /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		391E78AF781D6DD4720B2CCC /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -498,7 +515,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		55C35C09DC8BB992D3811F74 /* [CP] Copy Pods Resources */ = {
+		E7B616097411CA1528A884B4 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -513,23 +530,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		BFF0BD891939F5575CE92D3B /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Ironbelly/Pods-Ironbelly-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		F6B6B11F21E3D59A00B6AC5B /* Bundle React Native */ = {
@@ -783,12 +783,13 @@
 		};
 		F64186F7218895DE00A99CA0 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = D58C6A3E24158E5842B001EE /* Pods-Ironbelly.debug.xcconfig */;
+			baseConfigurationReference = 62C89A94F0B040082EFCFBA1 /* Pods-Ironbelly.debug.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (
@@ -823,12 +824,13 @@
 		};
 		F64186F8218895DE00A99CA0 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DD09794E25AEAB228137F92A /* Pods-Ironbelly.release.xcconfig */;
+			baseConfigurationReference = D3DB0F7C817BA17F766A9A0F /* Pods-Ironbelly.release.xcconfig */;
 			buildSettings = {
+				ARCHS = arm64;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 45;
+				CURRENT_PROJECT_VERSION = 48;
 				DEVELOPMENT_TEAM = 4496JM56CN;
 				ENABLE_BITCODE = NO;
 				HEADER_SEARCH_PATHS = (

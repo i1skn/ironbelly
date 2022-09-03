@@ -24,7 +24,11 @@ import { connect } from 'react-redux'
 import SettingsListItem, {
   Props as SettingsListItemProps,
 } from 'src/components/SettingsListItem'
-import { State as SettingsState, BIOMETRY_STATUS } from 'src/modules/settings'
+import {
+  State as SettingsState,
+  BIOMETRY_STATUS,
+  lockInBackgroundSelector,
+} from 'src/modules/settings'
 import { getBiometryTitle } from 'src/common'
 import { Text } from 'src/components/CustomFont'
 import { termsUrl, privacyUrl } from 'src/screens/LegalDisclaimer'
@@ -39,6 +43,7 @@ interface StateProps {
   settings: SettingsState
   isCreated: boolean
   isFloonet: boolean
+  lockInBackground: boolean
 }
 
 interface DispatchProps {
@@ -50,6 +55,7 @@ interface DispatchProps {
   destroyWallet: () => void
   migrateToMainnet: () => void
   setTheme: (theme: ColorSchemeName) => void
+  setlockInBackground: (value: boolean) => void
 }
 type Props = NavigationProps<'Settings'> & StateProps & DispatchProps
 
@@ -78,7 +84,7 @@ function Settings(props: Props) {
   const _onDestroyWallet = () => {
     return Alert.alert(
       'Destroy this wallet',
-      'This action would remove all of your data! Please back up your recovery phrase before!',
+      "This action would remove all of your data! Please back up your recovery phrase before! \n\nDO NOT do it, if you have a problematic transaction (e.g. with an exchange). You would loose the information, which could help to identify your transactions! Contact the other party's support first!",
       [
         {
           text: 'Cancel',
@@ -108,7 +114,7 @@ function Settings(props: Props) {
   const _onRepairWallet = () => {
     const title = 'Repair this wallet'
     let desc =
-      "This action would check a wallet's outputs against a live node, repair and restore missing outputs if required"
+      "This would do a complete rescan of the blockchain to find all your transactions.\n\nDO NOT do it, if you have a problematic transaction (e.g. with an exchange). You could loose the information, which could help to identify your transactions! Contact the other party's support first!"
     NetInfo.fetch().then(({ type }) => {
       if (type === 'none') {
         Alert.alert(
@@ -134,8 +140,8 @@ function Settings(props: Props) {
           style: 'cancel',
         },
         {
-          text: 'Continue',
-          style: 'default',
+          text: 'Repair',
+          style: 'destructive',
           onPress: () => {
             props.walletScan()
             props.navigation.navigate('WalletScan')
@@ -174,6 +180,14 @@ function Settings(props: Props) {
         })
       },
     },
+    {
+      title: 'Lock in background',
+      hideChevron: true,
+      value: settings.lockInBackground,
+      onValueChange: () => {
+        props.setlockInBackground(!settings.lockInBackground)
+      },
+    },
   ]
 
   const resourcesListData: Array<SettingsListItemProps> = [
@@ -181,7 +195,7 @@ function Settings(props: Props) {
       title: 'Support',
       hideChevron: true,
       onPress: () => {
-        Linking.openURL('mailto:support@ironbelly.app')
+        navigation.navigate('SettingsSupport')
       },
     },
     {
@@ -274,7 +288,7 @@ function Settings(props: Props) {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   container: {
     flexGrow: 1,
     backgroundColor: theme.background,
@@ -297,6 +311,7 @@ const mapStateToProps = (state: RootState): StateProps => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
   isFloonet: state.settings.chain === 'floonet',
+  lockInBackground: lockInBackgroundSelector(state),
 })
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -338,6 +353,12 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   enableBiometry: () => {
     dispatch({
       type: 'ENABLE_BIOMETRY_REQUEST',
+    })
+  },
+  setlockInBackground: (value: boolean) => {
+    dispatch({
+      type: 'SET_LOCK_IN_BACKGROUND',
+      value,
     })
   },
   disableBiometry: () => {

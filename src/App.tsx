@@ -49,7 +49,6 @@ import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import { styleSheetFactory, Theme, useThemedStyles } from './themes'
 import changeNavigationBarColor from 'react-native-navigation-bar-color'
-import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -70,6 +69,7 @@ interface StateProps {
   currencyRates: CurrencyRatesState
   walletCreated: boolean | null
   isWalletOpened: boolean
+  lockInBackground: boolean
 }
 
 interface DispatchProps {
@@ -120,7 +120,7 @@ class RealApp extends React.Component<Props, State> {
       BackgroundTimer.clearTimeout(this.lockTimeout)
       this.lockTimeout = null
     }
-    if (nextAppState === 'background') {
+    if (this.props.lockInBackground && nextAppState === 'background') {
       WalletBridge.isWalletCreated().then(async exists => {
         if (exists) {
           if (isAndroid) {
@@ -218,6 +218,7 @@ const mapStateToProps = (state: RootState): StateProps => {
     isWalletOpened: state.wallet.isOpened,
     currencyRates: state.currencyRates,
     walletCreated: state.wallet.isCreated,
+    lockInBackground: state.settings.lockInBackground,
   }
 }
 

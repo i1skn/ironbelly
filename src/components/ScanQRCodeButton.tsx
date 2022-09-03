@@ -19,22 +19,25 @@ import { TouchableOpacity, Platform } from 'react-native'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 
 import { Text } from 'src/components/CustomFont'
-import { useNavigation } from '@react-navigation/native'
+import { NavigationProp, useNavigation } from '@react-navigation/native'
 import { RootStackParamList } from 'src/modules/navigation'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 function ScanQRCodeButton({
   nextScreen,
+  nextScreenParams,
   label,
 }: {
   nextScreen: RootStackParamList['ScanQRCode']['nextScreen']
+  nextScreenParams?: RootStackParamList[RootStackParamList['ScanQRCode']['nextScreen']]
   label: string
 }) {
   const [styles] = useThemedStyles(themedStyles)
-  const navigation = useNavigation()
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>()
   const scan = () => {
     navigation.navigate('ScanQRCode', {
       nextScreen,
+      nextScreenParams,
       label,
     })
   }
@@ -53,7 +56,7 @@ function ScanQRCodeButton({
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   slatepackHeaderCopy: {
     fontWeight: Platform.select({ android: '700', ios: '500' }),
     color: theme.link,

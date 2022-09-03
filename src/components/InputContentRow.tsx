@@ -24,13 +24,23 @@ type Props = {
   nextScreen: RootStackParamList['ScanQRCode']['nextScreen']
   label: string
   setFunction: SetFunction
+  nextScreenParams?: RootStackParamList['ScanQRCode']['nextScreenParams']
 }
 
-function InputContentRow({ setFunction, nextScreen, label }: Props) {
+function InputContentRow({
+  setFunction,
+  nextScreen,
+  label,
+  nextScreenParams,
+}: Props) {
   return (
     <View style={styles.content}>
       <PasteButton setFunction={setFunction} />
-      <ScanQRCodeButton nextScreen={nextScreen} label={label} />
+      <ScanQRCodeButton
+        nextScreen={nextScreen}
+        label={label}
+        nextScreenParams={nextScreenParams}
+      />
     </View>
   )
 }

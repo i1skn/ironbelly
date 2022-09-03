@@ -409,9 +409,14 @@ export type walletExistsFalureAction = {
 }
 
 export type acceptLegal = { type: 'ACCEPT_LEGAL'; value: boolean }
+export type setlockInBackground = {
+  type: 'SET_LOCK_IN_BACKGROUND'
+  value: boolean
+}
 
 export type Action =
   | acceptLegal
+  | setlockInBackground
   | txListClearAction
   | txListRequestAction
   | txListSuccessAction

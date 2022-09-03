@@ -123,9 +123,7 @@ class Verify extends Component<Props, State> {
   render() {
     const { route, isNew } = this.props
     const { mnemonicWords, wordsCount } = this.state
-    const currentUserPhrase = mnemonicWords
-      .map((w) => w.toLowerCase())
-      .join(' ')
+    const currentUserPhrase = mnemonicWords.map(w => w.toLowerCase()).join(' ')
     const verified = isNew
       ? route.params.mnemonic === currentUserPhrase
       : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) ===
@@ -143,8 +141,8 @@ class Verify extends Component<Props, State> {
         {(wordsCount && (
           <>
             <KeyboardAwareScrollView
-              innerRef={(sv) =>
-                (this._scrollView = (sv as unknown) as KeyboardAwareScrollView)
+              innerRef={sv =>
+                (this._scrollView = sv as unknown as KeyboardAwareScrollView)
               }
               style={styles.scrollView}
               keyboardShouldPersistTaps={'handled'}
@@ -163,7 +161,7 @@ class Verify extends Component<Props, State> {
                   return (
                     <MnemonicWordTextInput
                       key={i}
-                      getRef={(input) => {
+                      getRef={input => {
                         if (input) {
                           this._inputs[i] = input
                         }
@@ -183,7 +181,7 @@ class Verify extends Component<Props, State> {
                           }, 100)
                         }
                       }}
-                      onChange={(value) => {
+                      onChange={value => {
                         this.setState({
                           mnemonicWords: mnemonicWords.map((w, j) => {
                             if (j === i) {

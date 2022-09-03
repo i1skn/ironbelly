@@ -22,7 +22,7 @@ import { ActivityIndicator, View, Platform } from 'react-native'
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'src/common/redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
-import { NavigationProps } from 'src/common/types'
+import { NavigationProps, Tx } from 'src/common/types'
 import Textarea from 'src/components/Textarea'
 import { getSlatePath, isValidSlatepack } from 'src/common'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -33,11 +33,15 @@ import InputContentRow from 'src/components/InputContentRow'
 import { useFocusEffect } from '@react-navigation/native'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
-type SlateCreateProps = {
-  slateId: string
+type SlateCreatedProps = {
+  tx: Tx
 } & NavigationProps<'TxIncompleteSend'>
 
-const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
+const SlateCreated = ({ tx, route, navigation }: SlateCreatedProps) => {
+  const slateId = tx.slateId
+  if (!slateId) {
+    return null
+  }
   const loadedSlatepack = route?.params?.slatepack
   const dispatch = useDispatch()
   const [styles, theme] = useThemedStyles(themedStyles)
@@ -92,6 +96,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
     // useCallback is needed here: https://bit.ly/2G0WKTJ
     useCallback(() => {
       const qrContent = route.params?.qrContent
+      console.log({ qrContent })
       if (qrContent) {
         setWithValidation(qrContent)
       }
@@ -99,7 +104,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   )
 
   const finalizeInProgress = useSelector(
-    (state) => state.tx.txFinalize.inProgress,
+    state => state.tx.txFinalize.inProgress,
   )
 
   if (finalizeInProgress) {
@@ -112,8 +117,8 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
 
   return (
     <KeyboardAwareScrollView
-      innerRef={(ref) => {
-        refScrollView.current = (ref as unknown) as KeyboardAwareScrollView
+      innerRef={ref => {
+        refScrollView.current = ref as unknown as KeyboardAwareScrollView
         setTimeout(() => {
           refScrollView.current?.scrollToEnd()
         }, 300)
@@ -175,6 +180,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
               <InputContentRow
                 setFunction={setWithValidation}
                 nextScreen={'TxIncompleteSend'}
+                nextScreenParams={{ tx }}
                 label="Slatepack"
               />
               <Button
@@ -194,7 +200,7 @@ const SlateCreated = ({ slateId, route, navigation }: SlateCreateProps) => {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   txId: {
     marginTop: 4,
     marginBottom: 24,

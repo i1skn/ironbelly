@@ -19,10 +19,9 @@ import {
   Store,
   Currency,
   setApiSecretAction,
-  checkBiometryRequestAction,
-  disableBiometryRequestAction,
   resetBiometryRequestAction,
-} from 'src/common/types'
+  checkBiometryRequestAction,
+  disableBiometryRequestAction} from 'src/common/types'
 import { ColorSchemeName } from 'react-native'
 
 import RNFS from 'react-native-fs'
@@ -45,6 +44,7 @@ export type State = {
   biometryStatus: 'unknown' | 'disabled' | 'enabled'
   biometryType: string | undefined | null
   theme: ColorSchemeName
+  lockInBackground: boolean
 }
 export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = ''
@@ -60,6 +60,7 @@ export const initialState: State = {
   biometryStatus: 'unknown',
   biometryType: null,
   theme: undefined,
+  lockInBackground: true,
 }
 export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
@@ -97,6 +98,12 @@ export const reducer = (state: State = initialState, action: Action): State => {
     case 'CHECK_BIOMETRY_SUCCESS':
       return { ...state, biometryType: action.biometryType }
 
+    case 'SET_LOCK_IN_BACKGROUND':
+      return {
+        ...state,
+        lockInBackground: action.value,
+      }
+
     default:
       return state
   }
@@ -126,7 +133,7 @@ export const sideEffects = {
         type: 'CHECK_BIOMETRY_SUCCESS',
         biometryType,
       })
-    } catch (error) {
+    } catch (error:any) {
       store.dispatch({
         type: 'CHECK_BIOMETRY_FAILURE',
         message: error.message,
@@ -149,7 +156,7 @@ export const sideEffects = {
       store.dispatch({
         type: 'DISABLE_BIOMETRY_SUCCESS',
       })
-    } catch (error) {
+    } catch (error:any) {
       store.dispatch({
         type: 'DISABLE_BIOMETRY_FAILURE',
         message: error.message,
@@ -166,7 +173,7 @@ export const sideEffects = {
       store.dispatch({
         type: 'RESET_BIOMETRY_SUCCESS',
       })
-    } catch (error) {
+    } catch (error:any) {
       store.dispatch({
         type: 'RESET_BIOMETRY_FAILURE',
         message: error.message,
@@ -179,3 +186,5 @@ export const sideEffects = {
 export const currencySelector = (state: RootState) =>
   state.settings.currencyObject
 export const currencyRatesSelector = (state: RootState) => state.currencyRates
+export const lockInBackgroundSelector = (state: RootState) =>
+  state.settings.lockInBackground

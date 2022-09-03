@@ -18,11 +18,14 @@ default_platform(:ios)
 platform :ios do
   desc "Bump new version for iOS"
 
-  lane :bump do |options|
+  lane :bumpVersion do |options|
     if options[:type]
       increment_version_number(xcodeproj: "ios/Ironbelly.xcodeproj", bump_type: options[:type])
-      increment_build_number(xcodeproj: "ios/Ironbelly.xcodeproj")
     end
+  end
+
+  lane :bumpBuildNumber do |options|
+      increment_build_number(xcodeproj: "ios/Ironbelly.xcodeproj")
   end
 
   desc "Push a new beta build to TestFlight"
@@ -49,6 +52,20 @@ platform :android do
   desc "Build Release APK"
   lane :apk do
     gradle(task: "clean assembleRelease", project_dir: 'android/')
+  end
+
+  lane :bumpVersion do |options|
+    if options[:type]
+      increment_version_name(
+        gradle_file_path: "./android/app/build.gradle",
+        bump_type: options[:type]
+      )
+    end
+  end
+  lane :bumpBuildNumber do |options|
+    if options[:type]
+      increment_version_code(gradle_file_path: "./android/app/build.gradle")
+    end
   end
 end
 

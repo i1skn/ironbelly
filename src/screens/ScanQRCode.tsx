@@ -24,7 +24,7 @@ import { BarCodeScanner, PermissionStatus } from 'expo-barcode-scanner'
 type Props = NavigationProps<'ScanQRCode'>
 
 function ScanQRCode({ route, navigation }: Props) {
-  const { label, nextScreen } = route.params
+  const { label, nextScreen, nextScreenParams } = route.params
   const [hasPermission, setHasPermission] = useState<boolean | null>(null)
   const [scanned, setScanned] = useState(false)
   useEffect(() => {
@@ -36,7 +36,7 @@ function ScanQRCode({ route, navigation }: Props) {
 
   const handleBarCodeScanned = ({ data }: { data: string }) => {
     setScanned(true)
-    navigation.navigate(nextScreen, { qrContent: data })
+    navigation.navigate(nextScreen, { ...nextScreenParams, qrContent: data })
   }
 
   const inner = () => {

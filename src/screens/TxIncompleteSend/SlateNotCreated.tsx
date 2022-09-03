@@ -15,7 +15,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import FeatherIcon from 'react-native-vector-icons/Feather'
 import {
@@ -27,7 +27,7 @@ import {
 import { useDispatch } from 'react-redux'
 import { useSelector } from 'src/common/redux'
 import { Text, Button } from 'src/components/CustomFont'
-import { OutputStrategy } from 'src/common/types'
+import { NavigationProps, OutputStrategy } from 'src/common/types'
 import NumericInput from 'src/components/NumericInput'
 import {
   FILE_TRANSPORT_METHOD,
@@ -42,7 +42,7 @@ import { isTxFormInvalid } from 'src/modules/tx'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { currencySelector, currencyRatesSelector } from 'src/modules/settings'
 import FormTextInput from 'src/components/FormTextInput'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect } from '@react-navigation/native'
 import {
   slightlyTransparent,
   styleSheetFactory,
@@ -53,10 +53,11 @@ function isZero(v: string) {
   return new BigNumber(v).isZero()
 }
 
-const SlateNotCreated = () => {
+type SlateNotCreatedProps = NavigationProps<'TxIncompleteSend'>
+
+const SlateNotCreated = ({ route, navigation }: SlateNotCreatedProps) => {
   const [styles, theme] = useThemedStyles(themedStyles)
   const dispatch = useDispatch()
-  const navigation = useNavigation()
 
   const setAmount = (amount: number, textAmount: string) => {
     dispatch({
@@ -79,7 +80,7 @@ const SlateNotCreated = () => {
     })
   }
 
-  const isSending = useSelector((state) => state.tx.txSend.inProgress)
+  const isSending = useSelector(state => state.tx.txSend.inProgress)
 
   const send = (
     amount: number,
@@ -106,13 +107,13 @@ const SlateNotCreated = () => {
     }
   }
 
-  const balance = useSelector((state) => state.balance)
+  const balance = useSelector(state => state.balance)
   const minimumConfirmations = useSelector(
-    (state) => state.settings.minimumConfirmations,
+    state => state.settings.minimumConfirmations,
   )
   const currency = useSelector(currencySelector)
   const currencyRates = useSelector(currencyRatesSelector)
-  const txForm = useSelector((state) => state.tx.txForm)
+  const txForm = useSelector(state => state.tx.txForm)
   const {
     textAmount,
     address,
@@ -139,6 +140,17 @@ const SlateNotCreated = () => {
       })
     }
   }, [amount])
+
+  useFocusEffect(
+    // useCallback is needed here: https://bit.ly/2G0WKTJ
+    useCallback(() => {
+      const qrContent = route.params?.qrContent
+      if (qrContent) {
+        setAddress(qrContent)
+        navigation.setParams({ qrContent: undefined })
+      }
+    }, [route.params]),
+  )
 
   let noticeText
   if (!isZero(balance.amountCurrentlySpendable)) {
@@ -282,7 +294,7 @@ const SlateNotCreated = () => {
             <>
               <FormTextInput
                 autoFocus={false}
-                onChange={(address) => setAddress(address)}
+                onChange={address => setAddress(address)}
                 value={address}
                 placeholder="grin......."
                 autoCorrect={false}></FormTextInput>
@@ -332,7 +344,7 @@ const SlateNotCreated = () => {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   locked: {
     fontSize: 13,
     flexWrap: 'wrap',

@@ -48,6 +48,7 @@ import NewPasswordScreen from 'src/screens/NewPassword'
 import WalletScanScreen from 'src/screens/WalletScan'
 import SettingsGrinNodeScreen from 'src/screens/Settings/GrinNode'
 import SettingsCurrencyScreen from 'src/screens/Settings/Currency'
+import SettingsSupportScreen from 'src/screens/Settings/Support'
 import LegalDisclaimerScreen from 'src/screens/LegalDisclaimer'
 import LicensesScreen from 'src/screens/Licenses'
 import LicenseScreen from 'src/screens/License'
@@ -83,6 +84,18 @@ export enum passwordScreenMode {
   PROTECT_SCREEN = 'protect_screen', // just protect screen with PIN
 }
 
+interface QrContentInParams {
+  qrContent?: string
+}
+
+type HasQrCodeInParams<T extends object> = {
+  [K in keyof T]: T[K] extends QrContentInParams ? K : never
+}[keyof T]
+
+type RoutesWithQrCode<T extends object> = {
+  [P in HasQrCodeInParams<T>]: T[P]
+}
+
 export type RootStackParamList = {
   Landing: undefined
   LegalDisclaimer: {
@@ -96,10 +109,11 @@ export type RootStackParamList = {
   }
   WalletScan: undefined
   Main: undefined
-  Overview: { slatePath: string }
+  Overview: undefined
   Settings: undefined
   SettingsMain: undefined
   SettingsGrinNode: undefined | { apiSecret: string }
+  SettingsSupport: undefined
   Licenses: undefined
   License: { licenseText: string }
   ShowQRCode: {
@@ -111,7 +125,8 @@ export type RootStackParamList = {
   ScanQRCode: {
     title?: string
     label: string
-    nextScreen: keyof RootStackParamList
+    nextScreen: keyof RoutesWithQrCode<RootStackParamList>
+    nextScreenParams?: RootStackParamList[keyof RoutesWithQrCode<RootStackParamList>]
   }
   SettingsCurrency: undefined
   ViewPaperKey: { fromSettings: boolean; mnemonic: string; password?: string }
@@ -122,18 +137,19 @@ export type RootStackParamList = {
     mnemonic?: string
   }
   TxDetails: { txId: number }
-  TxIncompleteSend:
-    | undefined
-    | {
-        tx?: Tx
-        title?: string
-        subTitle?: string
-        slatepack?: string
-        qrContent?: string
-      }
-  TxIncompleteReceive:
-    | undefined
-    | { slatepack?: string; tx?: Tx; title?: string; qrContent?: string }
+  TxIncompleteSend: {
+    tx?: Tx
+    title?: string
+    subTitle?: string
+    slatepack?: string
+    qrContent?: string
+  }
+  TxIncompleteReceive: {
+    slatepack?: string
+    tx?: Tx
+    title?: string
+    qrContent?: string
+  }
   Receive: { slatePath: string; slate: string }
   Password: { mode: passwordScreenMode }
   Created: undefined
@@ -259,6 +275,13 @@ const SettingsStack = () => {
         }}
       />
       <Stack.Screen
+        name="SettingsSupport"
+        component={SettingsSupportScreen}
+        options={{
+          title: 'Support',
+        }}
+      />
+      <Stack.Screen
         name="ViewPaperKey"
         component={ShowPaperKeyScreen}
         initialParams={{ fromSettings: true }}
@@ -333,7 +356,7 @@ const HomeTabs = () => {
                 testID="SendTab"
                 onPress={() => {
                   getNavigation().then(navigation => {
-                    navigation.navigate('TxIncompleteSend')
+                    navigation.navigate('TxIncompleteSend', {})
                   })
                 }}>
                 <View style={styles.tabButton}>{children}</View>
@@ -357,7 +380,7 @@ const HomeTabs = () => {
                 testID="ReceiveTab"
                 onPress={() => {
                   getNavigation().then(navigation => {
-                    navigation.navigate('TxIncompleteReceive')
+                    navigation.navigate('TxIncompleteReceive', {})
                   })
                 }}>
                 <View style={styles.tabButton}>{children}</View>
@@ -515,9 +538,12 @@ export function RootStack({
   )
 }
 
-export const navigationRef = React.createRef<NavigationContainerRef>()
+export const navigationRef =
+  React.createRef<NavigationContainerRef<RootStackParamList>>()
 
-export const getNavigation = async (): Promise<NavigationContainerRef> => {
+export const getNavigation = async (): Promise<
+  NavigationContainerRef<RootStackParamList>
+> => {
   let retries = 0
   while (!navigationRef.current && retries < 3) {
     await sleep(200)
