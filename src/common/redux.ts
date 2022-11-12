@@ -19,7 +19,7 @@ import {
   useSelector as useUntypedSelector,
 } from 'react-redux'
 import { createMiddleware } from 'src/common/sideEffects'
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { combineReducers, compose } from 'redux'
 import { Epic, combineEpics, createEpicMiddleware } from 'redux-observable'
 import { appEpic, appReducer } from 'src/modules/app'

@@ -60,17 +60,19 @@ buck-out/
 # For more information about the recommended setup visit:
 # https://docs.fastlane.tools/best-practices/source-control/
 
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/metadata
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/screenshots
+# **/fastlane/metadata
+**/fastlane/test_output
 
 # Bundle artifact
 *.jsbundle
 android/app/src/main/assets/index.android.bundle
 
-# CocoaPods
+# Ruby / CocoaPods
 /ios/Pods/
+/vendor/bundle/
 
 #Cartage
 /ios/Carthage/Checkouts/

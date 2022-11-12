@@ -1,3 +1,0 @@
-libtor.so filter=lfs diff=lfs merge=lfs
-screenshots/** filter=lfs diff=lfs merge=lfs
-*.bat text eol=crlf

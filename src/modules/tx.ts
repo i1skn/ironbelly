@@ -15,7 +15,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import AsyncStorage from '@react-native-community/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment'
 import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'

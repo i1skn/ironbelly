@@ -24,6 +24,7 @@ import { RouteProp } from '@react-navigation/native'
 import { TxReceiveActions } from 'src/modules/tx/receive'
 import { TorActions } from 'src/modules/tor'
 import { RootState } from './redux'
+import { PayloadAction } from '@reduxjs/toolkit'
 
 export type txListRequestAction = {
   type: 'TX_LIST_REQUEST'
@@ -510,6 +511,7 @@ export type Action =
   | walletExistsRequestAction
   | walletExistsSuccessAction
   | walletExistsFalureAction
+  | PayloadAction<unknown>
 
 export type ToolkitActions = TorActions | TxReceiveActions
 

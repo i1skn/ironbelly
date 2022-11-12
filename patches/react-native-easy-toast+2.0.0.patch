@@ -1,0 +1,31 @@
+diff --git a/node_modules/react-native-easy-toast/index.js b/node_modules/react-native-easy-toast/index.js
+index d30971e..09a9503 100755
+--- a/node_modules/react-native-easy-toast/index.js
++++ b/node_modules/react-native-easy-toast/index.js
+@@ -14,11 +14,10 @@ import {
+     Dimensions,
+     Text,
+     TouchableWithoutFeedback,
+-    ViewPropTypes as RNViewPropTypes,
+ } from 'react-native'
+ 
+ import PropTypes from 'prop-types';
+-const ViewPropTypes = RNViewPropTypes || View.propTypes;
++const ViewPropTypes =  View.propTypes;
+ export const DURATION = {
+     LENGTH_SHORT: 500,
+     FOREVER: 0,
+@@ -147,13 +146,11 @@ const styles = StyleSheet.create({
+ });
+ 
+ Toast.propTypes = {
+-    style: ViewPropTypes.style,
+     position: PropTypes.oneOf([
+         'top',
+         'center',
+         'bottom',
+     ]),
+-    textStyle: Text.propTypes.style,
+     positionValue:PropTypes.number,
+     fadeInDuration:PropTypes.number,
+     fadeOutDuration:PropTypes.number,

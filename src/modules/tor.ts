@@ -15,8 +15,8 @@
  */
 
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
-import { ignoreElements, filter, tap, map, mapTo } from 'rxjs/operators'
-import { fromEvent } from 'rxjs'
+import { ignoreElements, filter, tap, map } from 'rxjs/operators'
+import { from,  Observable } from 'rxjs'
 import { RootState } from 'src/common/redux'
 import { Epic, combineEpics, ofType } from 'redux-observable'
 import { Action, valueof } from 'src/common/types'
@@ -25,6 +25,13 @@ import WalletBridge from 'src/bridges/wallet'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const torBridgeEmitter = new NativeEventEmitter(WalletBridge as any)
+
+const torObservable = new Observable(function (observer) {
+  torBridgeEmitter.addListener('TorStatusUpdate', (status) => {
+    observer.next(status)
+  })
+
+});
 
 export const TOR_CONNECTED = 'connected'
 export const TOR_IN_PROGRESS = 'in-progress'
@@ -54,6 +61,7 @@ const torSlice = createSlice({
   },
 })
 
+
 export const torReducer = torSlice.reducer
 export const torActions = torSlice.actions
 export type TorActions = valueof<typeof torActions>
@@ -71,17 +79,18 @@ export const startTorEpic: Epic<Action, Action, RootState> = (
     ignoreElements(),
   )
 
+
 export const stopTorEpic: Epic<Action, Action, RootState> = (action$) =>
   action$.pipe(
     ofType('CLOSE_WALLET', 'WALLET_DESTROY_SUCCESS'),
     tap(() => {
       WalletBridge.stopTor().then().catch(console.error)
     }),
-    mapTo(torActions.setStatus(TOR_DISCONNECTED) as Action),
+    map(() => torActions.setStatus(TOR_DISCONNECTED) as  Action),
   )
 
 export const statusUpdates: Epic<Action, Action, RootState> = (_, state$) =>
-  fromEvent<string>(torBridgeEmitter, 'TorStatusUpdate').pipe(
+  from(torObservable).pipe(
     filter((status) => state$.value.tor.status !== status),
     map((status) => torActions.setStatus(status as TorStatus) as Action),
   )
