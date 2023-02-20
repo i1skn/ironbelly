@@ -28,10 +28,7 @@ import {
   View,
 } from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import {
-  TransitionPresets,
-  createStackNavigator,
-} from '@react-navigation/stack'
+import { TransitionPresets, createStackNavigator } from '@react-navigation/stack'
 import { NavigationContainerRef } from '@react-navigation/core'
 import OverviewScreen from 'src/screens/Overview'
 import SettingsScreen from 'src/screens/Settings'
@@ -85,77 +82,76 @@ export enum passwordScreenMode {
 }
 
 interface QrContentInParams {
-  qrContent?: string
+  qrContent?: string;
 }
 
 type HasQrCodeInParams<T extends object> = {
-  [K in keyof T]: T[K] extends QrContentInParams ? K : never
-}[keyof T]
+  [K in keyof T]: T[K] extends QrContentInParams ? K : never;
+}[keyof T];
 
 type RoutesWithQrCode<T extends object> = {
-  [P in HasQrCodeInParams<T>]: T[P]
-}
+  [P in HasQrCodeInParams<T>]: T[P];
+};
 
 export type RootStackParamList = {
-  Landing: undefined
+  Landing: undefined;
   LegalDisclaimer: {
     nextScreen: {
-      name: keyof RootStackParamList
-      params: Record<string, unknown>
-    }
-  }
+      name: keyof RootStackParamList;
+      params: Record<string, unknown>;
+    };
+  };
   NewPassword: {
-    isNew: boolean
-  }
-  WalletScan: undefined
-  Main: undefined
-  Overview: undefined
-  Settings: undefined
-  SettingsMain: undefined
-  SettingsGrinNode: undefined | { apiSecret: string }
-  SettingsSupport: undefined
-  Licenses: undefined
-  License: { licenseText: string }
+    isNew: boolean;
+  };
+  WalletScan: undefined;
+  Main: undefined;
+  Overview: undefined;
+  Settings: undefined;
+  SettingsMain: undefined;
+  SettingsGrinNode: undefined | {apiSecret: string};
+  SettingsSupport: undefined;
+  Licenses: undefined;
+  License: {licenseText: string};
   ShowQRCode: {
-    title?: string
+    title?: string;
 
-    label: string
-    content: string
-  }
+    label: string;
+    content: string;
+  };
   ScanQRCode: {
-    title?: string
-    label: string
-    nextScreen: keyof RoutesWithQrCode<RootStackParamList>
-    nextScreenParams?: RootStackParamList[keyof RoutesWithQrCode<RootStackParamList>]
-  }
-  SettingsCurrency: undefined
-  ViewPaperKey: { fromSettings: boolean; mnemonic: string; password?: string }
+    title?: string;
+    label: string;
+    nextScreen: keyof RoutesWithQrCode<RootStackParamList>;
+    nextScreenParams?: RootStackParamList[keyof RoutesWithQrCode<RootStackParamList>];
+  };
+  SettingsCurrency: undefined;
+  ViewPaperKey: {fromSettings: boolean; mnemonic: string; password?: string};
   VerifyPaperKey: {
-    title: string
-    wordsCount: number
-    password: string
-    mnemonic?: string
-  }
-  TxDetails: { txId: number }
+    title: string;
+    password: string;
+    mnemonic?: string;
+  };
+  TxDetails: {txId: number};
   TxIncompleteSend: {
-    tx?: Tx
-    title?: string
-    subTitle?: string
-    slatepack?: string
-    qrContent?: string
-  }
+    tx?: Tx;
+    title?: string;
+    subTitle?: string;
+    slatepack?: string;
+    qrContent?: string;
+  };
   TxIncompleteReceive: {
-    slatepack?: string
-    tx?: Tx
-    title?: string
-    qrContent?: string
-  }
-  Receive: { slatePath: string; slate: string }
-  Password: { mode: passwordScreenMode }
-  Created: undefined
-  NotCreated: undefined
-  HomeTabs: undefined
-}
+    slatepack?: string;
+    tx?: Tx;
+    title?: string;
+    qrContent?: string;
+  };
+  Receive: {slatePath: string; slate: string};
+  Password: {mode: passwordScreenMode};
+  Created: undefined;
+  NotCreated: undefined;
+  HomeTabs: undefined;
+};
 
 const Stack = createStackNavigator<RootStackParamList>()
 
@@ -209,7 +205,7 @@ const NotCreated = () => {
 const forFade = ({
   current,
 }: {
-  current: { progress: Animated.AnimatedInterpolation }
+  current: {progress: Animated.AnimatedInterpolation};
 }) => ({
   cardStyle: {
     opacity: current.progress,
@@ -502,9 +498,9 @@ export function RootStack({
   isWalletOpened,
   scanInProgress,
 }: {
-  walletCreated: boolean
-  isWalletOpened: boolean
-  scanInProgress: boolean
+  walletCreated: boolean;
+  isWalletOpened: boolean;
+  scanInProgress: boolean;
 }) {
   const [, theme] = useThemedStyles(themedStyles)
   return (

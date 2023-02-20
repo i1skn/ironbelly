@@ -15,104 +15,100 @@
  */
 
 import React from 'react'
-import { ScrollView, Text, View } from 'react-native'
-import { Spacer } from 'src/common'
-import Notice from 'src/components/Notice'
-import { monoSpaceFont, Button } from 'src/components/CustomFont'
+import { ScrollView, View } from 'react-native'
+import {
+  FlexGrow,
+  Spacer,
+  UnderHeaderBlock,
+  UnderHeaderBlockText,
+} from 'src/common'
+import { monoSpaceFont, Button, Text } from 'src/components/CustomFont'
 import { NavigationProps } from 'src/common/types'
 import {
   slightlyTransparent,
   styleSheetFactory,
   useThemedStyles,
 } from 'src/themes'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import CopyButton from 'src/components/CopyButton'
 
 interface OwnProps {
-  mnemonic: string
-  phrase: string
-  generateSeed: (length: number) => void
+  mnemonic: string;
+  phrase: string;
+  generateSeed: (length: number) => void;
 }
 
-type Props = NavigationProps<'ViewPaperKey'> & OwnProps
+type Props = NavigationProps<'ViewPaperKey'> & OwnProps;
 
 function Show({ route, navigation }: Props) {
   const [styles] = useThemedStyles(themedStyles)
   const { fromSettings, mnemonic } = route.params
-  const mnemonicArr = mnemonic.split(' ')
   return (
-    <View style={styles.wrapper}>
-      <ScrollView
-        style={{
-          paddingLeft: 16,
-          paddingRight: 16,
-        }}
-        testID="ShowPaperKeyScrollView"
-        showsVerticalScrollIndicator={true}>
-        <Notice>
+    <SafeAreaView edges={['bottom']} style={styles.wrapper}>
+      <UnderHeaderBlock>
+        <UnderHeaderBlockText>
           Your paper key is the only way to restore your Grin wallet if your
           phone is lost, stolen, broken, or upgraded.
           {!fromSettings &&
             ' It consists of 24 words. Please write them down on a piece of paper and keep safe.'}
-        </Notice>
-        <View style={styles.words}>
-          {mnemonicArr.map((word: string, i: number) => {
-            return (
-              <View style={styles.word} key={i}>
-                <Text style={styles.wordNumber}>{i + 1}</Text>
-                <Text style={styles.wordText} testID={`Word${i + 1}`}>
-                  {word}
-                </Text>
-              </View>
-            )
-          })}
-        </View>
-        {!fromSettings && (
-          <Button
-            testID="ShowPaperKeyContinueButton"
-            title="Continue"
-            disabled={false}
-            onPress={() => {
-              if (route.params.password) {
-                navigation.navigate('VerifyPaperKey', {
-                  title: 'Verify Paper key',
-                  wordsCount: 24,
-                  mnemonic,
-                  password: route.params.password,
-                })
-              }
-            }}
-          />
-        )}
-        <Spacer />
-      </ScrollView>
-    </View>
+        </UnderHeaderBlockText>
+      </UnderHeaderBlock>
+      <View style={styles.words}>
+        <Text style={styles.wordText}>{mnemonic}</Text>
+      </View>
+      <View style={styles.copyButton}>
+        <CopyButton content={mnemonic} subject="Paper Key" />
+      </View>
+      <FlexGrow />
+      {!fromSettings && (
+        <Button
+          testID="ShowPaperKeyContinueButton"
+          title="Continue"
+          disabled={false}
+          onPress={() => {
+            if (route.params.password) {
+              navigation.navigate('VerifyPaperKey', {
+                title: 'Verify Paper Key',
+                mnemonic,
+                password: route.params.password,
+              })
+            }
+          }}
+        />
+      )}
+    </SafeAreaView>
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   wrapper: {
     flex: 1,
+    paddingHorizontal: 16,
   },
+  scrollView: { flex: 1, backgroundColor: 'brown' },
   words: {
-    marginVertical: 16,
+    marginBottom: 16,
     marginHorizontal: 0,
-  },
-  word: {
-    flexDirection: 'row',
-    marginTop: 0,
-    marginBottom: 4,
+    backgroundColor: theme.surface,
+    padding: 16,
+    borderRadius: 16,
   },
   wordText: {
-    paddingVertical: 8,
-    paddingLeft: 16,
-    fontSize: 24,
+    fontSize: 18,
     color: theme.onBackground,
     fontFamily: monoSpaceFont,
+    lineHeight: 36,
+    textAlign: 'center',
+    fontWeight: '600',
   },
   wordNumber: {
     color: slightlyTransparent(theme.onBackground),
     paddingVertical: 8,
     fontSize: 24,
     fontFamily: monoSpaceFont,
+  },
+  copyButton: {
+    alignItems: 'center',
   },
 }))
 

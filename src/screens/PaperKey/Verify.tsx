@@ -14,216 +14,230 @@
  * limitations under the License.
  */
 
-import React, { Component } from 'react'
-import ReactNative, { Alert, View } from 'react-native'
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import React, { useCallback, useMemo, useState } from 'react'
+import { useHeaderHeight } from '@react-navigation/elements'
+import { Alert, ScrollView, View } from 'react-native'
 import { connect } from 'react-redux'
-import MnemonicWordTextInput from 'src/components/MnemonicWordTextInput'
 import NetInfo from '@react-native-community/netinfo'
-import { UnderHeaderBlock, Spacer } from 'src/common'
-import { Text, Button } from 'src/components/CustomFont'
+import Textarea from 'src/components/Textarea'
+
+import {
+  UnderHeaderBlock,
+  KeyboardAvoidingWrapper,
+  UnderHeaderBlockText,
+} from 'src/common'
+import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
 import { RootState } from 'src/common/redux'
 import { NavigationProps, Dispatch } from 'src/common/types'
 import { WalletScanState } from 'src/modules/wallet'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import bip39words from 'src/common/bip39words'
+import PasteButton from 'src/components/PasteButton'
+import CheckBox from 'react-native-check-box'
 
 type Props = NavigationProps<'VerifyPaperKey'> &
   WalletScanState & {
-    isNew: boolean
-    createWallet: (password: string, mnemonic: string, isNew: boolean) => void
-  }
+    isNew: boolean;
+    createWallet: (password: string, mnemonic: string, isNew: boolean) => void;
+  };
 
-type State = {
-  inputValue: string
-  amount: number
-  valid: boolean
-  mnemonicWords: Array<string>
-  wordsCount: number
-}
+function Verify(props: Props) {
+  const { isNew, route, createWallet } = props
+  const [paperKey, setPaperKey] = useState('')
+  const [styles, theme] = useThemedStyles(themedStyles)
 
-class Verify extends Component<Props, State> {
-  _scrollView: KeyboardAwareScrollView | null = null
-  _underHeaderBlock = null
-  _inputs: ReactNative.TextInput[] = []
-
-  constructor(props: Props) {
-    super(props)
-    const wordsCount = props.route.params.wordsCount
-    this.state = {
-      wordsCount,
-      inputValue: '',
-      amount: 0,
-      valid: false,
-      mnemonicWords: Array(wordsCount).fill(''),
-    }
-  }
-
-  _onContinuePress = (currentUserPhrase: string) => {
-    return () => {
-      const { isNew, route, createWallet } = this.props
-
-      if (!isNew) {
-        NetInfo.fetch().then(({ type }) => {
-          if (type === 'none') {
-            Alert.alert(
-              'Device is offline',
-              'Wallet recovery requires connection to the internet!',
-              [
-                {
-                  text: 'Ok',
+  const onContinuePress = useCallback(() => {
+    if (!isNew) {
+      NetInfo.fetch().then(({ type }) => {
+        if (type === 'none') {
+          Alert.alert(
+            'Device is offline',
+            'Wallet recovery requires connection to the internet!',
+            [
+              {
+                text: 'Ok',
+              },
+            ],
+          )
+        } else if (type !== 'wifi') {
+          Alert.alert(
+            'Warning',
+            'Wallet recovery requires to download A LOT OF DATA. Consider, that depend on your internet provider additional costs may occur!',
+            [
+              {
+                text: 'Cancel',
+              },
+              {
+                text: 'Continue',
+                style: 'destructive',
+                onPress: () => {
+                  createWallet(route.params.password, paperKey, isNew)
                 },
-              ],
-            )
-          } else if (type !== 'wifi') {
-            Alert.alert(
-              'Warning',
-              'Wallet recovery requires to download A LOT OF DATA. Consider, that depend on your internet provider additional costs may occur!',
-              [
-                {
-                  text: 'Cancel',
-                },
-                {
-                  text: 'Continue',
-                  style: 'destructive',
-                  onPress: () => {
-                    createWallet(
-                      route.params.password,
-                      currentUserPhrase,
-                      isNew,
-                    )
-                  },
-                },
-              ],
-            )
-          } else {
-            createWallet(route.params.password, currentUserPhrase, isNew)
-          }
-        })
-      } else {
-        createWallet(route.params.password, currentUserPhrase, isNew)
-      }
-    }
-  }
-
-  fillFromPreviousStep = () => {
-    const { route } = this.props
-    this.setState({
-      mnemonicWords: (route.params?.mnemonic ?? '').split(' '),
-    })
-  }
-
-  fillFromAlert = () => {
-    Alert.prompt('Seed', 'Words separated with spaces', (text: string) => {
-      this.setState({
-        mnemonicWords: text.split(' '),
+              },
+            ],
+          )
+        } else {
+          createWallet(route.params.password, paperKey, isNew)
+        }
       })
-    })
-  }
+    } else {
+      createWallet(route.params.password, paperKey, isNew)
+    }
+  }, [createWallet, isNew, paperKey, route.params.password])
 
-  render() {
-    const { route, isNew } = this.props
-    const { mnemonicWords, wordsCount } = this.state
-    const currentUserPhrase = mnemonicWords.map(w => w.toLowerCase()).join(' ')
-    const verified = isNew
-      ? route.params.mnemonic === currentUserPhrase
-      : mnemonicWords.reduce((acc, w) => acc + (w.length ? 1 : 0), 0) ===
-        wordsCount
-    const [styles] = useThemedStyles(themedStyles)
-    return (
-      <View style={styles.wrapper}>
-        {__DEV__ && (
-          <Button
-            style={{ marginHorizontal: 16, marginBottom: 16 }}
-            title={'[DEV] Enter words'}
-            onPress={isNew ? this.fillFromPreviousStep : this.fillFromAlert}
+  const headerHeight = useHeaderHeight()
+
+  const mnemonicWords = useMemo(
+    () => (props.route.params.mnemonic || '').split(' '),
+    [props.route.params?.mnemonic],
+  )
+
+  const separatedWords = useMemo(() => {
+    return paperKey.trim().split(' ')
+  }, [paperKey])
+
+  const invalidWordsCount = [12, 24].indexOf(separatedWords.length) === -1
+
+  const wordsToCheck = useMemo(() => paperKey.split(' '), [paperKey])
+
+  const errorMessage = useMemo(() => {
+    const invalidWords = wordsToCheck
+      .slice(0, wordsToCheck.length - 1)
+      .filter(word => bip39words.indexOf(word) === -1)
+    if (invalidWords.length) {
+      return (
+        invalidWords.join(', ') +
+        ': invalid word' +
+        (invalidWords.length === 1 ? '' : 's')
+      )
+    }
+    if (
+      isNew &&
+      mnemonicWords.length === paperKey.split(' ').length &&
+      !route.params?.mnemonic?.startsWith(paperKey)
+    ) {
+      return 'incorrect words, please double check paper key at the previous step'
+    }
+    return ''
+  }, [
+    isNew,
+    mnemonicWords.length,
+    paperKey,
+    route.params?.mnemonic,
+    wordsToCheck,
+  ])
+
+  const lastWordInvalid = useMemo(() => {
+    return bip39words.indexOf(wordsToCheck[wordsToCheck.length - 1]) === -1
+  }, [wordsToCheck])
+
+  const [checked, setChecked] = useState(false)
+
+  const disabled =
+    !!errorMessage ||
+    invalidWordsCount ||
+    (isNew ? !checked || route.params.mnemonic !== paperKey : lastWordInvalid)
+
+  return (
+    <SafeAreaView edges={['bottom']} style={styles.wrapper}>
+      <KeyboardAvoidingWrapper
+        behavior={'padding'}
+        keyboardVerticalOffset={headerHeight + 16}>
+        <ScrollView style={styles.scrollView}>
+          <UnderHeaderBlock>
+            <UnderHeaderBlockText>
+              {isNew
+                ? 'Enter the paper key you have just backed up to verify its correctness.'
+                : 'Enter the paper key to continue.'}
+            </UnderHeaderBlockText>
+          </UnderHeaderBlock>
+          <Textarea
+            containerStyle={styles.words}
+            style={styles.input}
+            value={paperKey}
+            onChangeText={setPaperKey}
+            placeholder={'space separated words'}
+            autoFocus={true}
+            autoComplete="off"
+            autoCorrect={false}
+            spellCheck={false}
+            autoCapitalize={'none'}
+          />
+          <View style={styles.pasteButton}>
+            <PasteButton setFunction={setPaperKey} />
+          </View>
+          <Text style={styles.error}>{errorMessage}</Text>
+        </ScrollView>
+        {isNew && (
+          <CheckBox
+            style={styles.checkbox}
+            checkBoxColor={theme.secondary}
+            onClick={() => {
+              setChecked(!checked)
+            }}
+            isChecked={checked}
+            rightTextView={
+              <View style={styles.warningText}>
+                <Text style={styles.checkboxText}>
+                  I understand that this Paper Key is THE ONLY way to restore my
+                  wallet if this device is lost or I forget my password!
+                </Text>
+              </View>
+            }
           />
         )}
-        {(wordsCount && (
-          <>
-            <KeyboardAwareScrollView
-              innerRef={sv =>
-                (this._scrollView = sv as unknown as KeyboardAwareScrollView)
-              }
-              style={styles.scrollView}
-              keyboardShouldPersistTaps={'handled'}
-              extraScrollHeight={8}
-              enableResetScrollToCoords={false}
-              keyboardOpeningTime={0}>
-              <UnderHeaderBlock>
-                <Text>
-                  {isNew
-                    ? 'Enter the paper key you have just written to verify its correctness.'
-                    : 'Enter the paper key to continue.'}
-                </Text>
-              </UnderHeaderBlock>
-              <View style={styles.words}>
-                {mnemonicWords.map((_, i: number) => {
-                  return (
-                    <MnemonicWordTextInput
-                      key={i}
-                      getRef={input => {
-                        if (input) {
-                          this._inputs[i] = input
-                        }
-                      }}
-                      testID={`VerifyWord${i + 1}`}
-                      number={i}
-                      autoFocus={!i}
-                      returnKeyType={i < wordsCount - 1 ? 'next' : 'done'}
-                      onSubmitEditing={() => {
-                        if (i < wordsCount - 1) {
-                          this._inputs[i + 1].focus()
-                        } else {
-                          setTimeout(() => {
-                            if (this._scrollView) {
-                              this._scrollView.scrollToEnd()
-                            }
-                          }, 100)
-                        }
-                      }}
-                      onChange={value => {
-                        this.setState({
-                          mnemonicWords: mnemonicWords.map((w, j) => {
-                            if (j === i) {
-                              return value
-                            }
-
-                            return w
-                          }),
-                        })
-                      }}
-                      value={mnemonicWords[i]}
-                    />
-                  )
-                })}
-              </View>
-              <Button
-                testID="VerifyPaperKeyContinueButton"
-                title="Continue"
-                disabled={!verified}
-                onPress={this._onContinuePress(currentUserPhrase)}
-              />
-              <Spacer />
-            </KeyboardAwareScrollView>
-          </>
-        )) ||
-          null}
-      </View>
-    )
-  }
+        <Button
+          testID="VerifyPaperKeyContinueButton"
+          title="Continue"
+          disabled={disabled}
+          onPress={onContinuePress}
+        />
+      </KeyboardAvoidingWrapper>
+    </SafeAreaView>
+  )
 }
 
-const themedStyles = styleSheetFactory(() => ({
+const themedStyles = styleSheetFactory(theme => ({
   wrapper: {
-    marginVertical: 16,
+    flex: 1,
   },
   words: {
+    minHeight: 160,
+    justifyContent: 'center',
     flex: 1,
-    paddingVertical: 32,
+    backgroundColor: theme.surface,
+    borderRadius: 8,
   },
-  scrollView: {
+  scrollView: {},
+  input: {
+    backgroundColor: theme.surface,
+    color: theme.onSurface,
+    fontSize: 18,
+    fontWeight: '400',
+    flex: 0,
+    fontFamily: monoSpaceFont,
+    textAlign: 'center',
+  },
+  error: {
+    color: theme.warning,
+    marginTop: 16,
+  },
+  pasteButton: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  checkbox: {
+    marginVertical: 16,
+  },
+  warningText: {
+    flexWrap: 'wrap',
+    flexDirection: 'row',
+    flex: 1,
     paddingLeft: 16,
-    paddingRight: 16,
+  },
+  checkboxText: {
+    color: theme.onBackground,
   },
 }))
 

@@ -341,6 +341,7 @@ export default {
 
   background: grey[100],
   onBackground: blueGrey[900],
+  onBackgroundLight: blueGrey[500],
 
   surface: white,
   onSurface: blueGrey[900],

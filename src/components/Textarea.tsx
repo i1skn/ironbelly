@@ -19,12 +19,12 @@ import ReactNative, { TextInputProps, View, ViewProps } from 'react-native'
 import { TextInput, Text } from 'src/components/CustomFont'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 type Props = TextInputProps & {
-  title?: string
-  getRef?: (instance: ReactNative.TextInput | null) => void
-  containerStyle?: ViewProps['style']
-}
+  title?: string;
+  getRef?: (instance: ReactNative.TextInput | null) => void;
+  containerStyle?: ViewProps['style'];
+};
 
-function FormTextInput(props: Props) {
+function Textarea(props: Props) {
   const [styles] = useThemedStyles(themedStyles)
   const { title, getRef, containerStyle, style, ...passProps } = props
   return (
@@ -40,7 +40,7 @@ function FormTextInput(props: Props) {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   input: {
     paddingTop: 16,
     paddingBottom: 16,
@@ -59,4 +59,4 @@ const themedStyles = styleSheetFactory((theme) => ({
   },
 }))
 
-export default FormTextInput
+export default Textarea

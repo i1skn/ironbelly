@@ -40,24 +40,24 @@ import {
 } from 'src/themes'
 
 interface StateProps {
-  settings: SettingsState
-  isCreated: boolean
-  isFloonet: boolean
-  lockInBackground: boolean
+  settings: SettingsState;
+  isCreated: boolean;
+  isFloonet: boolean;
+  lockInBackground: boolean;
 }
 
 interface DispatchProps {
-  enableBiometry: () => void
-  disableBiometry: () => void
-  walletScan: () => void
-  setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void
-  setChain: (chain: RootState['settings']['chain']) => void
-  destroyWallet: () => void
-  migrateToMainnet: () => void
-  setTheme: (theme: ColorSchemeName) => void
-  setlockInBackground: (value: boolean) => void
+  enableBiometry: () => void;
+  disableBiometry: () => void;
+  walletScan: () => void;
+  setCheckNodeApiHttpAddr: (checkNodeApiHttpAddr: string) => void;
+  setChain: (chain: RootState['settings']['chain']) => void;
+  destroyWallet: () => void;
+  migrateToMainnet: () => void;
+  setTheme: (theme: ColorSchemeName) => void;
+  setlockInBackground: (value: boolean) => void;
 }
-type Props = NavigationProps<'Settings'> & StateProps & DispatchProps
+type Props = NavigationProps<'Settings'> & StateProps & DispatchProps;
 
 function Settings(props: Props) {
   const [styles] = useThemedStyles(themedStyles)
@@ -84,7 +84,7 @@ function Settings(props: Props) {
   const _onDestroyWallet = () => {
     return Alert.alert(
       'Destroy this wallet',
-      "This action would remove all of your data! Please back up your recovery phrase before! \n\nDO NOT do it, if you have a problematic transaction (e.g. with an exchange). You would loose the information, which could help to identify your transactions! Contact the other party's support first!",
+      "This action would remove all of your data! Please back up your Paper Key before! \n\nDO NOT do it, if you have a problematic transaction (e.g. with an exchange). You would loose the information, which could help to identify your transactions! Contact the other party's support first!",
       [
         {
           text: 'Cancel',
@@ -272,7 +272,7 @@ function Settings(props: Props) {
       sections={data}
       initialNumToRender={20}
       keyExtractor={(item: SettingsListItemProps, index) => item.title + index}
-      renderItem={({ item }: { item: SettingsListItemProps }) => (
+      renderItem={({ item }: {item: SettingsListItemProps}) => (
         <SettingsListItem {...item} />
       )}
       renderSectionHeader={({ section }) => (

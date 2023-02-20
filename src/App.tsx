@@ -49,6 +49,7 @@ import { State as ToasterState } from 'src/modules/toaster'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
 import { styleSheetFactory, Theme, useThemedStyles } from './themes'
 import changeNavigationBarColor from 'react-native-navigation-bar-color'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
 
 checkSlatesDirectory()
 checkApplicationSupportDirectory()
@@ -62,38 +63,38 @@ LogBox.ignoreLogs([
 ])
 
 interface StateProps {
-  toastMessage: ToasterState
-  showTxConfirmationModal: boolean
-  chain: string
-  scanInProgress: boolean
-  currencyRates: CurrencyRatesState
-  walletCreated: boolean | null
-  isWalletOpened: boolean
-  lockInBackground: boolean
+  toastMessage: ToasterState;
+  showTxConfirmationModal: boolean;
+  chain: string;
+  scanInProgress: boolean;
+  currencyRates: CurrencyRatesState;
+  walletCreated: boolean | null;
+  isWalletOpened: boolean;
+  lockInBackground: boolean;
 }
 
 interface DispatchProps {
-  closeTxPostModal: () => void
-  clearToast: () => void
-  setApiSecret: (apiSecret: string) => void
-  requestCurrencyRates: () => void
-  setFromLink: (amount: number, message: string, url: string) => void
-  requestWalletExists: () => void
+  closeTxPostModal: () => void;
+  clearToast: () => void;
+  setApiSecret: (apiSecret: string) => void;
+  requestCurrencyRates: () => void;
+  setFromLink: (amount: number, message: string, url: string) => void;
+  requestWalletExists: () => void;
 }
 
 interface OwnProps {
-  dispatch: Dispatch
+  dispatch: Dispatch;
 }
 
 type Props = StateProps &
   DispatchProps &
   OwnProps & {
-    theme: RNNavigationTheme
-  }
+    theme: RNNavigationTheme;
+  };
 
 type State = {
-  walletCreated?: boolean
-}
+  walletCreated?: boolean;
+};
 
 class RealApp extends React.Component<Props, State> {
   lockTimeout: number | null = null
@@ -294,10 +295,12 @@ const App = () => {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ThemeProvider theme={theme}>
-          <RealAppConnected
-            dispatch={store.dispatch}
-            theme={getNavigationTheme(theme, themeName as ColorSchemeName)}
-          />
+          <SafeAreaProvider>
+            <RealAppConnected
+              dispatch={store.dispatch}
+              theme={getNavigationTheme(theme, themeName as ColorSchemeName)}
+            />
+          </SafeAreaProvider>
         </ThemeProvider>
       </PersistGate>
     </Provider>

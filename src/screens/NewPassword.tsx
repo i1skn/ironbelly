@@ -15,22 +15,27 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react'
-import { Alert } from 'react-native'
 import { connect } from 'react-redux'
 import FormTextInput from 'src/components/FormTextInput'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import { RootState } from 'src/common/redux'
 import { Error, NavigationProps, Dispatch } from 'src/common/types'
 
-import { Wrapper, UnderHeaderBlock, Spacer, FlexGrow } from 'src/common'
+import {
+  Wrapper,
+  UnderHeaderBlock,
+  Spacer,
+  FlexGrow,
+  UnderHeaderBlockText,
+} from 'src/common'
 import { Button, Text } from 'src/components/CustomFont'
 import WalletBridge from 'src/bridges/wallet'
 
 type Props = NavigationProps<'NewPassword'> & {
-  error: Error | undefined | null
-  newWallet: boolean
-  setIsNew: (value: boolean) => void
-}
+  error: Error | undefined | null;
+  newWallet: boolean;
+  setIsNew: (value: boolean) => void;
+};
 
 function NewPassword({ route, setIsNew, navigation, newWallet }: Props) {
   const [password, setPassword] = useState('')
@@ -49,14 +54,15 @@ function NewPassword({ route, setIsNew, navigation, newWallet }: Props) {
         }}
         keyboardShouldPersistTaps="handled"
         keyboardOpeningTime={0}
-        innerRef={(sv) => {
-          scrollView.current = (sv as unknown) as KeyboardAwareScrollView
+        innerRef={sv => {
+          scrollView.current = sv as unknown as KeyboardAwareScrollView
         }}>
         <Wrapper>
           <UnderHeaderBlock>
-            <Text>Choose a strong password to protect your new wallet.</Text>
+            <UnderHeaderBlockText>
+              Choose a strong password to protect your new wallet.
+            </UnderHeaderBlockText>
           </UnderHeaderBlock>
-          <Spacer />
           <FormTextInput
             testID="Password"
             returnKeyType={'next'}
@@ -95,28 +101,10 @@ function NewPassword({ route, setIsNew, navigation, newWallet }: Props) {
                   password,
                 })
               } else {
-                Alert.alert('Paper key', 'How many words in your paper key?', [
-                  {
-                    text: '12',
-                    onPress: () => {
-                      navigation.navigate('VerifyPaperKey', {
-                        title: 'Paper key',
-                        wordsCount: 12,
-                        password,
-                      })
-                    },
-                  },
-                  {
-                    text: '24',
-                    onPress: () => {
-                      navigation.navigate('VerifyPaperKey', {
-                        title: 'Paper key',
-                        wordsCount: 24,
-                        password,
-                      })
-                    },
-                  },
-                ])
+                navigation.navigate('VerifyPaperKey', {
+                  title: 'Paper key',
+                  password,
+                })
               }
             }}
             disabled={!(password && password === confirmPassword)}

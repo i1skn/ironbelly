@@ -31,30 +31,30 @@ import {
   useThemedStyles,
 } from 'src/themes'
 type Props = {
-  units?: string
-  placeholder?: string
-  testID?: string
-  title?: string
-  maxLength?: number
-  value: string
-  onChange: (value: string) => void
-  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void
-  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void
-  autoFocus: boolean
-  secureTextEntry?: boolean
-  textContentType?: TextInputIOSProps['textContentType']
-  keyboardType?: KeyboardTypeOptions
-  autoCorrect?: boolean
-  getRef?: (instance: ReactNative.TextInput | null) => void
-  returnKeyType?: ReturnKeyTypeOptions
+  units?: string;
+  placeholder?: string;
+  testID?: string;
+  title?: string;
+  maxLength?: number;
+  value: string;
+  onChange: (value: string) => void;
+  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  autoFocus: boolean;
+  secureTextEntry?: boolean;
+  textContentType?: TextInputIOSProps['textContentType'];
+  keyboardType?: KeyboardTypeOptions;
+  autoCorrect?: boolean;
+  getRef?: (instance: ReactNative.TextInput | null) => void;
+  returnKeyType?: ReturnKeyTypeOptions;
   onSubmitEditing?: (
     e: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
-  ) => void
-  multiline?: boolean
-  readonly?: boolean
-}
+  ) => void;
+  multiline?: boolean;
+  readonly?: boolean;
+};
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   input: {
     marginLeft: -20,
     padding: 20,

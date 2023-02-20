@@ -139,7 +139,7 @@ export const WALLET_DATA_DIRECTORY =
   APPLICATION_SUPPORT_DIRECTORY + '/wallet_data'
 export const TOR_DIRECTORY = APPLICATION_SUPPORT_DIRECTORY + '/tor'
 export const checkSlatesDirectory = () => {
-  RNFS.exists(SLATES_DIRECTORY).then((exists) => {
+  RNFS.exists(SLATES_DIRECTORY).then(exists => {
     if (!exists) {
       RNFS.mkdir(SLATES_DIRECTORY, {
         NSURLIsExcludedFromBackupKey: true,
@@ -152,7 +152,7 @@ export const checkSlatesDirectory = () => {
 export const ADDRESS_TRANSPORT_METHOD = 'address'
 export const FILE_TRANSPORT_METHOD = 'file'
 export const checkApplicationSupportDirectory = () => {
-  RNFS.exists(APPLICATION_SUPPORT_DIRECTORY).then((exists) => {
+  RNFS.exists(APPLICATION_SUPPORT_DIRECTORY).then(exists => {
     if (!exists) {
       RNFS.mkdir(APPLICATION_SUPPORT_DIRECTORY, {
         NSURLIsExcludedFromBackupKey: true,
@@ -172,7 +172,7 @@ export const checkWalletDataDirectory = async () => {
   }
 }
 
-export const Spacer = styled.View<{ height?: string }>`
+export const Spacer = styled.View<{height?: string}>`
   height: ${({ height }) => (height ?? isIphoneX() ? '24px' : '16px')};
   width: 100%;
 `
@@ -228,10 +228,14 @@ export const LoaderView = styled.View`
   align-items: center;
 `
 export const UnderHeaderBlock = styled.View`
-  background-color: ${colors.primaryLight};
-  padding: 12px 16px;
   margin-top: 16px;
-  border-radius: 8px;
+  margin-bottom: 16px;
+`
+
+export const UnderHeaderBlockText = styled.Text`
+  color: ${() => colors.onBackgroundLight};
+  font-size: 16;
+  line-height: 24;
 `
 
 export const getBiometryTitle = (biometryType?: string | null) => {

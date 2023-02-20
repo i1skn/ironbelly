@@ -33,7 +33,7 @@ class AppDelegate: EXAppDelegateWrapper, RCTBridgeDelegate {
         return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
     #else
         return RCTBundleURLProvider.sharedSettings().jsBundleURL(
-            forFallbackResource: "main", fallbackExtension: "jsbundle"
+            forBundleRoot: "main", fallbackExtension: "jsbundle"
         )
     #endif
     }
