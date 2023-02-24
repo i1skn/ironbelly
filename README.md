@@ -76,6 +76,10 @@ Go to the root of the repo and run `react-native run-android`
 ### Android
 [https://play.google.com/store/apps/details?id=app.ironbelly](https://play.google.com/store/apps/details?id=app.ironbelly)
 
+## How to verify Android APK signature 
+1. Download the key `gpg --keyserver keys.openpgp.org --search-keys ivan@sorokin.io`
+2. Verify `gpg --verify Ironbelly-vX.Y.Z.B.apk.asc Ironbelly-vX.Y.Z.B.apk`
+
 ## License
 
 Apache License v2.0.
