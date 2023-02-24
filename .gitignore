@@ -63,7 +63,7 @@ buck-out/
 **/fastlane/report.xml
 **/fastlane/Preview.html
 **/fastlane/screenshots
-# **/fastlane/metadata
+**/fastlane/metadata
 **/fastlane/test_output
 
 # Bundle artifact
@@ -77,8 +77,11 @@ android/app/src/main/assets/index.android.bundle
 #Cartage
 /ios/Carthage/Checkouts/
 
-# Android key
+# Android
 android/key.json
+*.pem
+*.apk
+*.aab
 
 # Local tools
 slates/*

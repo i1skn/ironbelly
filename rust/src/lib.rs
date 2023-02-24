@@ -14,7 +14,17 @@
  * limitations under the License.
  */
 use failure::ResultExt;
+use futures::channel::oneshot;
+use grin_api::{ApiServer, Router};
+use grin_core::global;
+use grin_core::global::ChainTypes;
+use grin_keychain::{ExtKeychain, Keychain};
+use grin_util::file::get_first_line;
+use grin_util::Mutex;
+use grin_util::ZeroingString;
 use grin_wallet_api::{self, Foreign, ForeignCheckMiddlewareFn, Owner};
+use grin_wallet_config::types::TorBridgeConfig;
+use grin_wallet_config::types::TorProxyConfig;
 use grin_wallet_config::{WalletConfig, GRIN_WALLET_DIR};
 use grin_wallet_controller;
 use grin_wallet_impls::tor::config as tor_config;
@@ -26,15 +36,9 @@ use grin_wallet_libwallet::{
     NodeVersionInfo, Slate, SlateVersion, SlatepackAddress, SlatepackArmor, Slatepacker,
     SlatepackerArgs, VersionedSlate, WalletInst, WalletLCProvider,
 };
-use grin_wallet_util::grin_api::{ApiServer, Router};
-use grin_wallet_util::grin_core::global;
-use grin_wallet_util::grin_core::global::ChainTypes;
-use grin_wallet_util::grin_keychain::{ExtKeychain, Keychain};
-use grin_wallet_util::grin_util::file::get_first_line;
-use grin_wallet_util::grin_util::Mutex;
-use grin_wallet_util::grin_util::ZeroingString;
 use grin_wallet_util::OnionV3Address;
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::convert::TryFrom;
 use std::fs;
 use std::net::SocketAddr;
@@ -108,7 +112,6 @@ fn create_wallet_config(config: Config) -> Result<WalletConfig, Error> {
         tls_certificate_file: None,
         tls_certificate_key: None,
         dark_background_color_scheme: Some(true),
-        keybase_notify_ttl: Some(1),
         no_commit_cache: None,
         owner_api_include_foreign: None,
         owner_api_listen_port: Some(WalletConfig::default_owner_api_listen_port()),
@@ -145,7 +148,8 @@ fn get_wallet(config: &Config) -> Result<Wallet, Error> {
     warn!("Chaintype: {:?}", global::get_chain_type());
     let node_api_secret = get_first_line(wallet_config.node_api_secret_path.clone());
 
-    let node_client = HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret);
+    let node_client =
+        HTTPNodeClient::new(&wallet_config.check_node_api_http_addr, node_api_secret)?;
     let wallet = inst_wallet::<
         DefaultLCProvider<HTTPNodeClient, ExtKeychain>,
         HTTPNodeClient,
@@ -256,7 +260,7 @@ fn wallet_phrase(wallet_dir: &str, password: &str) -> Result<String, Error> {
 fn tx_get(wallet: &Wallet, refresh_from_node: bool, tx_slate_id: &str) -> Result<String, Error> {
     let api = Owner::new(wallet.clone(), None);
     let uuid = Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    let txs = api.retrieve_txs(None, refresh_from_node, None, Some(uuid))?;
+    let txs = api.retrieve_txs(None, refresh_from_node, None, Some(uuid), None)?;
     Ok(serde_json::to_string(&txs).unwrap())
 }
 
@@ -293,7 +297,7 @@ where
 
     let mut txs = {
         wallet_lock!(wallet_inst, w);
-        updater::retrieve_txs(&mut **w, None, None, Some(&parent_key_id), true)?
+        updater::retrieve_txs(&mut **w, None, None, None, Some(&parent_key_id), true)?
     };
 
     for tx in txs.iter_mut() {
@@ -347,7 +351,7 @@ fn txs_get(
     };
     let api = Owner::new(wallet.clone(), None);
 
-    let txs = api.retrieve_txs(None, false, None, None)?;
+    let txs = api.retrieve_txs(None, false, None, None, None)?;
     let result = (refreshed, txs.1, wallet_info);
     Ok(serde_json::to_string(&result).unwrap())
 }
@@ -373,6 +377,7 @@ fn tx_strategies(
         if let Ok((_coins, total, _amount, fee)) = selection::select_coins_and_fee(
             &mut **w,
             amount,
+            false,
             tip.0,
             minimum_confirmations,
             500,
@@ -418,6 +423,7 @@ fn tx_create(
             &parent_key_id,
             true,
             false,
+            false,
         )?;
 
         {
@@ -440,7 +446,7 @@ fn tx_create(
     });
     let slatepack = packer.create_slatepack(&slate)?;
     let api = Owner::new(wallet.clone(), None);
-    let txs = api.retrieve_txs(None, false, None, Some(slate.id))?;
+    let txs = api.retrieve_txs(None, false, None, Some(slate.id), None)?;
     let result = (
         txs.1,
         SlatepackArmor::encode(&slatepack).map_err(|e| ErrorKind::GenericError(e.to_string()))?,
@@ -474,7 +480,7 @@ fn check_middleware(
                     && s.version_info.block_header_version
                         < slate_versions::GRIN_BLOCK_HEADER_VERSION
                 {
-                    Err(grin_wallet_libwallet::ErrorKind::Compatibility(
+                    Err(grin_wallet_libwallet::Error::Compatibility(
                         "Incoming Slate is not compatible with this wallet. \
 						 Please upgrade the node or use a different one."
                             .into(),
@@ -497,7 +503,7 @@ fn tx_receive(wallet: &Wallet, account: &str, slate_armored: &str) -> Result<Str
     let _ret_address = slatepack.sender;
 
     slate = foreign_api.receive_tx(&slate, Some(&account), None)?;
-    let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id))?;
+    let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id), None)?;
     let packer = Slatepacker::new(SlatepackerArgs {
         sender: None, // sender
         recipients: vec![],
@@ -521,7 +527,7 @@ fn tx_finalize(wallet: &Wallet, slate_armored: &str) -> Result<String, Error> {
     let _ret_address = slatepack.sender;
 
     slate = owner_api.finalize_tx(None, &slate)?;
-    let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id))?;
+    let txs = owner_api.retrieve_txs(None, false, None, Some(slate.id), None)?;
 
     Ok(serde_json::to_string(&txs.1).map_err(|e| ErrorKind::GenericError(e.to_string()))?)
 }
@@ -555,6 +561,7 @@ fn tx_send_address(
             &parent_key_id,
             true,
             false,
+            false,
         )?;
 
         {
@@ -578,6 +585,8 @@ fn tx_send_address(
         &tor_addr.to_http_str(),
         "127.0.0.1:39059",
         "", // Ignored
+        TorBridgeConfig::default(),
+        TorProxyConfig::default(),
     )
     .map_err(|error| {
         ErrorKind::GenericError(format!("Can not send to {}: {:?}", tor_addr, error))
@@ -600,7 +609,7 @@ fn tx_post(wallet: &Wallet, tx_slate_id: &str) -> Result<String, Error> {
     let api = Owner::new(wallet.clone(), None);
     let tx_uuid =
         Uuid::parse_str(tx_slate_id).map_err(|e| ErrorKind::GenericError(e.to_string()))?;
-    let (_, txs) = api.retrieve_txs(None, true, None, Some(tx_uuid.clone()))?;
+    let (_, txs) = api.retrieve_txs(None, true, None, Some(tx_uuid.clone()), None)?;
     if txs[0].confirmed {
         return Err(Error::from(ErrorKind::GenericError(format!(
             "Transaction with id {} is already confirmed. Not posting.",
@@ -676,7 +685,10 @@ fn start_listen_with_http(
     let socket_addr: SocketAddr = api_listen_addr
         .parse()
         .expect("unable to parse socket address");
-    apis.start(socket_addr, router, None)
+    let api_chan: &'static mut (oneshot::Sender<()>, oneshot::Receiver<()>) =
+        Box::leak(Box::new(oneshot::channel::<()>()));
+
+    apis.start(socket_addr, router, None, api_chan)
         .context(ErrorKind::GenericError(
             "API thread failed to start".to_string(),
         ))?;
@@ -710,8 +722,17 @@ fn create_tor_config(wallet: &Wallet, listen_addr: &str) -> Result<String, Error
         service_dirs.push(service_dir.to_string());
     }
 
+    let mut hm_tor_bridge: HashMap<String, String> = HashMap::new();
+    let mut hm_tor_proxy: HashMap<String, String> = HashMap::new();
     // hidden service listener doesn't need a socks port
-    tor_config::output_torrc(&tor_config_directory, listen_addr, "39059", &service_dirs)?;
+    tor_config::output_torrc(
+        &tor_config_directory,
+        listen_addr,
+        "39059",
+        &service_dirs,
+        hm_tor_bridge,
+        hm_tor_proxy,
+    )?;
 
     Ok("".to_owned())
 }

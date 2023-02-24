@@ -1,8 +1,8 @@
 use failure::{Backtrace, Context, Fail};
+use grin_core::libtx;
+use grin_keychain;
 use grin_wallet_impls;
 use grin_wallet_libwallet;
-use grin_wallet_util::grin_core::libtx;
-use grin_wallet_util::grin_keychain;
 use grin_wallet_util::OnionV3AddressError;
 use std::env;
 use std::fmt::{self, Display};
@@ -17,15 +17,15 @@ pub struct Error {
 pub enum ErrorKind {
     /// Wallet Error
     #[fail(display = "Wallet Error")]
-    WalletError(grin_wallet_impls::ErrorKind),
+    WalletError(grin_wallet_impls::Error),
 
     /// LibTX Error
     #[fail(display = "LibTx Error")]
-    LibTX(libtx::ErrorKind),
+    LibTX(libtx::Error),
 
     /// LibWallet Error
     #[fail(display = "LibWallet Error: {}", _1)]
-    LibWallet(grin_wallet_libwallet::ErrorKind, String),
+    LibWallet(grin_wallet_libwallet::Error, String),
 
     /// Keychain error
     #[fail(display = "Keychain error")]
@@ -130,7 +130,7 @@ impl From<grin_keychain::Error> for Error {
 impl From<grin_wallet_libwallet::Error> for Error {
     fn from(error: grin_wallet_libwallet::Error) -> Error {
         Error {
-            inner: Context::new(ErrorKind::LibWallet(error.kind(), format!("{}", error))),
+            inner: Context::new(ErrorKind::LibWallet(error.clone(), format!("{}", &error))),
         }
     }
 }
@@ -138,7 +138,7 @@ impl From<grin_wallet_libwallet::Error> for Error {
 impl From<libtx::Error> for Error {
     fn from(error: libtx::Error) -> Error {
         Error {
-            inner: Context::new(ErrorKind::LibTX(error.kind())),
+            inner: Context::new(ErrorKind::LibTX(error)),
         }
     }
 }
@@ -146,7 +146,7 @@ impl From<libtx::Error> for Error {
 impl From<grin_wallet_impls::Error> for Error {
     fn from(error: grin_wallet_impls::Error) -> Error {
         Error {
-            inner: Context::new(ErrorKind::WalletError(error.kind())),
+            inner: Context::new(ErrorKind::WalletError(error)),
         }
     }
 }
