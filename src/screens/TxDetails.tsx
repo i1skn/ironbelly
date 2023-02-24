@@ -15,14 +15,13 @@
  */
 import BigNumber from 'bignumber.js'
 import React from 'react'
-import FeatherIcons from 'react-native-vector-icons/Feather'
 import CopyHeader from 'src/components/CopyHeader'
 import { View, Platform } from 'react-native'
 import { connect } from 'react-redux'
 import { formatTime } from 'src/common'
 import moment from 'moment'
 import { hrGrin } from 'src/common'
-import { Link, Text } from 'src/components/CustomFont'
+import { Text } from 'src/components/CustomFont'
 import CardTitle from 'src/components/CardTitle'
 import { RootState } from 'src/common/redux'
 import { Tx, NavigationProps } from 'src/common/types'
@@ -33,10 +32,10 @@ import {
 } from 'src/themes'
 
 interface OwnProps {
-  tx: Tx
+  tx: Tx;
 }
 
-type Props = NavigationProps<'TxDetails'> & OwnProps
+type Props = NavigationProps<'TxDetails'> & OwnProps;
 
 const TxDetails = ({ tx, navigation }: Props) => {
   const [styles] = useThemedStyles(themedStyles)
@@ -70,20 +69,6 @@ const TxDetails = ({ tx, navigation }: Props) => {
             <View style={styles.field}>
               <CopyHeader content={tx.kernelExcess} label={'Kernel Excess'} />
               <Text style={styles.fieldValue}>{tx.kernelExcess}</Text>
-              <Link
-                url={`https://grinscan.net/kernel/${tx.kernelExcess}`}
-                style={styles.grinScanButtonText}
-                title={
-                  <>
-                    <Text style={styles.kernelLink}>See on GrinScan </Text>
-                    <FeatherIcons
-                      name="external-link"
-                      size={18}
-                      style={styles.kernelLink}
-                    />
-                  </>
-                }
-              />
             </View>
           )}
         </View>
@@ -95,11 +80,11 @@ const TxDetails = ({ tx, navigation }: Props) => {
 const mapStateToProps = (state: RootState, ownProps: Props) => () => {
   return {
     settings: state.settings,
-    tx: state.tx.list.data.find((tx) => tx.id === ownProps.route.params.txId),
+    tx: state.tx.list.data.find(tx => tx.id === ownProps.route.params.txId),
   }
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   container: {
     padding: 16,
     flex: 1,
@@ -128,14 +113,6 @@ const themedStyles = styleSheetFactory((theme) => ({
   },
   field: {
     marginTop: 24,
-  },
-  grinScanButtonText: {
-    textAlign: 'center',
-    fontSize: 16,
-    paddingTop: 16,
-  },
-  kernelLink: {
-    color: theme.link,
   },
 }))
 

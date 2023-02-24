@@ -42,7 +42,7 @@ function NewPassword({ route, setIsNew, navigation, newWallet }: Props) {
   const [confirmPassword, setConfirmPassword] = useState('')
   useEffect(() => {
     setIsNew(route.params?.isNew ?? false)
-  }, [])
+  }, [route.params?.isNew, setIsNew])
 
   const scrollView = useRef<KeyboardAwareScrollView>()
 

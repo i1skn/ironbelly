@@ -53,7 +53,7 @@ function isZero(v: string) {
   return new BigNumber(v).isZero()
 }
 
-type SlateNotCreatedProps = NavigationProps<'TxIncompleteSend'>
+type SlateNotCreatedProps = NavigationProps<'TxIncompleteSend'>;
 
 const SlateNotCreated = ({ route, navigation }: SlateNotCreatedProps) => {
   const [styles, theme] = useThemedStyles(themedStyles)
@@ -234,17 +234,7 @@ const SlateNotCreated = ({ route, navigation }: SlateNotCreatedProps) => {
         <>
           <Text style={styles.title}>Network fee</Text>
           {outputStrategies.map((os, i) => (
-            <TouchableOpacity
-              style={styles.option}
-              key={i}
-              onPress={() => {
-                setOutputStrategy(os)
-              }}>
-              <FeatherIcon
-                name={os === outputStrategy ? 'check-circle' : 'circle'}
-                size={16}
-                style={styles.optioIcon}
-              />
+            <View style={styles.option} key={i}>
               <Text style={styles.fee}>{hrGrin(os.fee, 4)}</Text>
               <Text style={styles.locked}>
                 {balance.amountCurrentlySpendable === os.total
@@ -253,7 +243,7 @@ const SlateNotCreated = ({ route, navigation }: SlateNotCreatedProps) => {
                       os.total,
                     )} would be locked for around ${minimumConfirmations} min.`}
               </Text>
-            </TouchableOpacity>
+            </View>
           ))}
           <Text style={styles.title}>Send via?</Text>
           <Spacer />
@@ -287,7 +277,7 @@ const SlateNotCreated = ({ route, navigation }: SlateNotCreatedProps) => {
                 size={16}
                 style={styles.optioIcon}
               />
-              <Text style={styles.transportMethodTitle}>Manual</Text>
+              <Text style={styles.transportMethodTitle}>Slatepack</Text>
             </TouchableOpacity>
           </View>
           {transportMethod === ADDRESS_TRANSPORT_METHOD && (

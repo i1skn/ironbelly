@@ -22,12 +22,13 @@ import { Dispatch, NavigationProps } from 'src/common/types'
 import { connect } from 'react-redux'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 import { View } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context'
 
 interface OwnProps {
-  acceptLegal: (value: boolean) => void
+  acceptLegal: (value: boolean) => void;
 }
 
-type Props = NavigationProps<'LegalDisclaimer'> & OwnProps
+type Props = NavigationProps<'LegalDisclaimer'> & OwnProps;
 
 export const termsUrl = 'https://ironbelly.app/terms'
 export const privacyUrl = 'https://ironbelly.app/privacy'
@@ -38,7 +39,7 @@ const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
   const [checked, setChecked] = useState(false)
   const [styles, theme] = useThemedStyles(themedStyles)
   return (
-    <Wrapper>
+    <SafeAreaView edges={['bottom']} style={styles.wrapper}>
       <View style={styles.main}>
         <Text style={styles.text}>Ironbelly - mobile wallet for </Text>
         <Link style={styles.text} url={grinUrl} title={'Grin'} />
@@ -78,12 +79,15 @@ const LegalDisclaimer = ({ acceptLegal, navigation, route }: Props) => {
           navigation.navigate(nextScreen.name, nextScreen.params)
         }}
       />
-      <Spacer />
-    </Wrapper>
+    </SafeAreaView>
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
+  wrapper: {
+    paddingHorizontal: 16,
+    flex: 1,
+  },
   main: {
     flexWrap: 'wrap',
     flexDirection: 'row',

@@ -24,7 +24,7 @@ import { useSelector } from 'src/common/redux'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
 import { NavigationProps, Tx } from 'src/common/types'
 import Textarea from 'src/components/Textarea'
-import { getSlatePath, isValidSlatepack } from 'src/common'
+import { getSlatePath, isValidSlatepack, Spacer } from 'src/common'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import CopyHeader from 'src/components/CopyHeader'
 import ShareRow from 'src/components/ShareRow'
@@ -34,8 +34,8 @@ import { useFocusEffect } from '@react-navigation/native'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 type SlateCreatedProps = {
-  tx: Tx
-} & NavigationProps<'TxIncompleteSend'>
+  tx: Tx;
+} & NavigationProps<'TxIncompleteSend'>;
 
 const SlateCreated = ({ tx, route, navigation }: SlateCreatedProps) => {
   const slateId = tx.slateId

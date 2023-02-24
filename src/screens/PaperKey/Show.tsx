@@ -18,6 +18,7 @@ import React from 'react'
 import { ScrollView, View } from 'react-native'
 import {
   FlexGrow,
+  isAndroid,
   Spacer,
   UnderHeaderBlock,
   UnderHeaderBlockText,
@@ -65,6 +66,7 @@ function Show({ route, navigation }: Props) {
           testID="ShowPaperKeyContinueButton"
           title="Continue"
           disabled={false}
+          style={styles.continueButton}
           onPress={() => {
             if (route.params.password) {
               navigation.navigate('VerifyPaperKey', {
@@ -109,6 +111,9 @@ const themedStyles = styleSheetFactory(theme => ({
   },
   copyButton: {
     alignItems: 'center',
+  },
+  continueButton: {
+    marginBottom: isAndroid ? 16 : 0,
   },
 }))
 

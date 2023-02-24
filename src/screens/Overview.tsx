@@ -31,22 +31,22 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
 
 interface OwnProps {
-  balance: BalanceType
-  txs: Array<Tx>
-  settings: SettingsState
-  txCancel: (id: number, slateId: string, isResponse: boolean) => void
-  txsGet: (showLoader: boolean, refreshFromNode: boolean) => void
-  enableBiometry: () => void
-  disableBiometry: () => void
-  txConfirm: (txSlateId: string) => void
-  txListRefreshInProgress: boolean
-  isOffline: boolean
-  firstLoading: boolean
-  walletInit: WalletInitState
-  currencyRates: CurrencyRatesState
+  balance: BalanceType;
+  txs: Array<Tx>;
+  settings: SettingsState;
+  txCancel: (id: number, slateId: string, isResponse: boolean) => void;
+  txsGet: (showLoader: boolean, refreshFromNode: boolean) => void;
+  enableBiometry: () => void;
+  disableBiometry: () => void;
+  txConfirm: (txSlateId: string) => void;
+  txListRefreshInProgress: boolean;
+  isOffline: boolean;
+  firstLoading: boolean;
+  walletInit: WalletInitState;
+  currencyRates: CurrencyRatesState;
 }
 
-type Props = NavigationProps<'Overview'> & OwnProps
+type Props = NavigationProps<'Overview'> & OwnProps;
 
 function Overview({
   txListRefreshInProgress,
@@ -98,30 +98,9 @@ function Overview({
             )}
           </View>
         }
-        renderItem={(data: { item: Tx }) => (
-          <SwipeRow
-            disableRightSwipe
-            rightOpenValue={-100}
-            disableLeftSwipe={
-              data.item.confirmed ||
-              data.item.type === 'TxPosted' ||
-              !data.item.slateId
-            }>
-            <View style={styles.cancel}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={() => {
-                  if (data.item.slateId) {
-                    txCancel(
-                      data.item.id,
-                      data.item.slateId,
-                      !data.item.storedTx,
-                    )
-                  }
-                }}>
-                <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
-              </TouchableOpacity>
-            </View>
+        renderItem={(data: {item: Tx}) => (
+          <SwipeRow disableRightSwipe disableLeftSwipe rightOpenValue={-100}>
+            <View style={styles.cancel}></View>
             <View>
               <View style={styles.listItem}>
                 <TxListItem
@@ -151,6 +130,23 @@ function Overview({
                     }
                   }}
                 />
+                <TouchableOpacity
+                  style={styles.cancelButton}
+                  onPress={() => {
+                    if (data.item.slateId) {
+                      txCancel(
+                        data.item.id,
+                        data.item.slateId,
+                        !data.item.storedTx,
+                      )
+                    }
+                  }}>
+                  {data.item.confirmed ||
+                    data.item.type === 'TxPosted' ||
+                    (!data.item.slateId && (
+                      <Text style={styles.cancelButtonText}>{'Cancel'}</Text>
+                    ))}
+                </TouchableOpacity>
               </View>
             </View>
           </SwipeRow>

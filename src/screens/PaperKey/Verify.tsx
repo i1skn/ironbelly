@@ -25,6 +25,7 @@ import {
   UnderHeaderBlock,
   KeyboardAvoidingWrapper,
   UnderHeaderBlockText,
+  isAndroid,
 } from 'src/common'
 import { Text, Button, monoSpaceFont } from 'src/components/CustomFont'
 import { RootState } from 'src/common/redux'
@@ -142,7 +143,7 @@ function Verify(props: Props) {
   return (
     <SafeAreaView edges={['bottom']} style={styles.wrapper}>
       <KeyboardAvoidingWrapper
-        behavior={'padding'}
+        behavior={isAndroid ? 'height' : 'padding'}
         keyboardVerticalOffset={headerHeight + 16}>
         <ScrollView style={styles.scrollView}>
           <UnderHeaderBlock>
@@ -192,6 +193,7 @@ function Verify(props: Props) {
           title="Continue"
           disabled={disabled}
           onPress={onContinuePress}
+          style={styles.continueButton}
         />
       </KeyboardAvoidingWrapper>
     </SafeAreaView>
@@ -238,6 +240,9 @@ const themedStyles = styleSheetFactory(theme => ({
   },
   checkboxText: {
     color: theme.onBackground,
+  },
+  continueButton: {
+    marginBottom: isAndroid ? 16 : 0,
   },
 }))
 

@@ -36,15 +36,15 @@ import {
 } from 'src/themes'
 
 type Props = {
-  walletInit: () => void
-  switchToMainnet: () => void
-  switchToFloonet: () => void
-  error: Error | undefined | null
-  walletCreated: boolean
-  isFloonet: boolean
-  settings: SettingsState
-  legalAccepted: boolean
-} & NavigationProps<'Landing'>
+  walletInit: () => void;
+  switchToMainnet: () => void;
+  switchToFloonet: () => void;
+  error: Error | undefined | null;
+  walletCreated: boolean;
+  isFloonet: boolean;
+  settings: SettingsState;
+  legalAccepted: boolean;
+} & NavigationProps<'Landing'>;
 
 function Landing(props: Props) {
   const [styles] = useThemedStyles(themedStyles)
@@ -133,7 +133,7 @@ function Landing(props: Props) {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   wrapper: {
     padding: 16,
     flexGrow: 1,

@@ -40,10 +40,10 @@ import {
 } from 'src/themes'
 
 interface OwnProps {
-  tx: Tx
+  tx: Tx;
 }
 
-type Props = NavigationProps<'TxIncompleteReceive'> & OwnProps
+type Props = NavigationProps<'TxIncompleteReceive'> & OwnProps;
 
 const TxIncompleteReceive = ({ navigation, route }: Props) => {
   const [styles, theme] = useThemedStyles(themedStyles)
@@ -121,8 +121,8 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
       <CardTitle title={title} navigation={navigation} />
       <View style={styles.container}>
         <KeyboardAwareScrollView
-          innerRef={(ref) => {
-            refScrollView.current = (ref as unknown) as KeyboardAwareScrollView
+          innerRef={ref => {
+            refScrollView.current = ref as unknown as KeyboardAwareScrollView
           }}
           contentContainerStyle={{
             ...Platform.select({
@@ -210,7 +210,7 @@ const TxIncompleteReceive = ({ navigation, route }: Props) => {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   container: {
     flexGrow: 1,
     paddingTop: 16,

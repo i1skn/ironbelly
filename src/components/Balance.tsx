@@ -29,10 +29,10 @@ import {
 } from 'src/themes'
 
 type Props = {
-  balance: Balance
-  currency: Currency
-  rates: Record<string, number>
-}
+  balance: Balance;
+  currency: Currency;
+  rates: Record<string, number>;
+};
 
 const BalanceComponent = ({ balance, currency, rates }: Props) => {
   const [styles, theme] = useThemedStyles(themedStyles)
@@ -66,7 +66,7 @@ const BalanceComponent = ({ balance, currency, rates }: Props) => {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   gradient: {
     paddingHorizontal: 16,
     paddingBottom: 48,
@@ -93,7 +93,7 @@ const themedStyles = styleSheetFactory((theme) => ({
   },
   balanceRelated: {},
   amountGrin: {
-    fontSize: 54,
+    fontSize: 40,
     fontWeight: '300',
     color: theme.onHero,
   },

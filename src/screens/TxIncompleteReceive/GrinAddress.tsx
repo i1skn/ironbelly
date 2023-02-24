@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import SectionTitle from 'src/components/SectionTitle'
 import ShareRow from 'src/components/ShareRow'
 import { Text, monoSpaceFont } from 'src/components/CustomFont'
@@ -23,12 +23,26 @@ import { useSelector } from 'src/common/redux'
 import { torStatusSelector, TOR_FAILED, TOR_IN_PROGRESS } from 'src/modules/tor'
 import { grinAddressSelector } from 'src/modules/tx/receive'
 import { styleSheetFactory, useThemedStyles } from 'src/themes'
-import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
+import CheckBox from 'react-native-check-box'
+import KeepAwake from 'react-native-keep-awake'
 
 function GrinAddress() {
-  const [styles] = useThemedStyles(themedStyles)
+  const [styles, theme] = useThemedStyles(themedStyles)
   const grinAddress = useSelector(grinAddressSelector)
   const torStatus = useSelector(torStatusSelector)
+  const [keepAwake, setKeepAwake] = useState(false)
+  const txList = useSelector(state => state.tx.list.data)
+  const initialLastTx = useRef(txList.length ? txList[0] : undefined)
+
+  useEffect(() => {
+    if (
+      (!initialLastTx.current || txList[0].id !== initialLastTx.current.id) &&
+      txList.length &&
+      !txList[0].confirmed
+    ) {
+      setKeepAwake(false)
+    }
+  }, [txList])
 
   let address
 
@@ -51,22 +65,34 @@ function GrinAddress() {
       <SectionTitle title={'Grin Address'} />
       <View style={styles.container}>{address}</View>
       <ShareRow content={grinAddress} label="Grin Address" />
-      <View style={styles.warning}>
-        <FontAwesome5Icons
-          name="exclamation-triangle"
-          size={18}
-          style={styles.warningIcon}
-        />
-
-        <Text style={styles.warningText}>
-          Keep the app open to use Grin Address!
-        </Text>
-      </View>
+      <Text style={styles.warningText}>
+        Ironbelly MUST be in the foreground and the phone must not be in sleep
+        mode to be able to use Grin Address!
+      </Text>
+      <CheckBox
+        checkBoxColor={theme.secondary}
+        onClick={() => setKeepAwake(!keepAwake)}
+        isChecked={keepAwake}
+        rightTextView={
+          <View>
+            <Text style={styles.leaveAppWaitingText}>
+              Keep the app opened until any transaction is received (will
+              significantly drain battery)
+            </Text>
+          </View>
+        }
+      />
+      {keepAwake && <KeepAwake />}
     </>
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
+  leaveAppWaitingText: {
+    marginLeft: 16,
+    marginRight: 24,
+    color: theme.onBackground,
+  },
   container: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -85,22 +111,10 @@ const themedStyles = styleSheetFactory((theme) => ({
     textAlign: 'center',
     color: theme.onBackground,
   },
-  warning: {
-    marginBottom: 8,
-    marginTop: 4,
-    fontSize: 17,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  warningIcon: {
-    color: theme.warningLight,
-  },
   warningText: {
     color: theme.warningLight,
     fontWeight: 'bold',
-    textAlign: 'center',
-    padding: 8,
+    marginBottom: 16,
   },
 }))
 

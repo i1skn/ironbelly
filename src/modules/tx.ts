@@ -15,7 +15,7 @@
  */
 
 import BigNumber from 'bignumber.js'
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import moment from 'moment'
 import { combineReducers } from 'redux'
 import RNFS from 'react-native-fs'
@@ -54,87 +54,87 @@ import { RootState } from 'src/common/redux'
 import WalletBridge from 'src/bridges/wallet'
 
 export type ListState = {
-  data: Array<Tx>
-  inProgress: boolean
-  isOffline: boolean
-  refreshFromNode: boolean
-  showLoader: boolean
-  lastUpdated: moment.Moment | undefined | null
-  error: AppError | undefined | null
-}
+  data: Array<Tx>;
+  inProgress: boolean;
+  isOffline: boolean;
+  refreshFromNode: boolean;
+  showLoader: boolean;
+  lastUpdated: moment.Moment | undefined | null;
+  error: AppError | undefined | null;
+};
 export type TxCreateState = {
-  data: Tx | undefined | null
-  created: boolean
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Tx | undefined | null;
+  created: boolean;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxSendState = {
-  data: Tx | undefined | null
-  sent: boolean
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Tx | undefined | null;
+  sent: boolean;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxPostState = {
-  txSlateId: string | undefined | null
-  showModal: boolean
-  posted: boolean
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  txSlateId: string | undefined | null;
+  showModal: boolean;
+  posted: boolean;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxGetState = {
-  data: Tx | undefined | null
-  isRefreshed: boolean
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Tx | undefined | null;
+  isRefreshed: boolean;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxReceiveState = {
-  data: Tx | undefined | null
-  received: boolean
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Tx | undefined | null;
+  received: boolean;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxFinalizeState = {
-  data: Tx | undefined | null
-  finalized: boolean
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Tx | undefined | null;
+  finalized: boolean;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxCancelState = {
-  data: Tx | undefined | null
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Tx | undefined | null;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type TxForm = {
-  amount: number
-  outputStrategy: OutputStrategy | undefined | null
-  outputStrategies: Array<OutputStrategy>
-  outputStrategies_error: string
-  outputStrategies_inProgress: boolean
-  textAmount: string
-  message: string
-  address: string
-}
+  amount: number;
+  outputStrategy: OutputStrategy | undefined | null;
+  outputStrategies: Array<OutputStrategy>;
+  outputStrategies_error: string;
+  outputStrategies_inProgress: boolean;
+  textAmount: string;
+  message: string;
+  address: string;
+};
 export type SlateShareState = {
-  inProgress: boolean
-}
+  inProgress: boolean;
+};
 export type SlateState = {
-  data: Slate | undefined | null
-  inProgress: boolean
-  error: AppError | undefined | null
-}
+  data: Slate | undefined | null;
+  inProgress: boolean;
+  error: AppError | undefined | null;
+};
 export type State = Readonly<{
-  list: ListState
-  txCreate: TxCreateState
-  txSend: TxSendState
-  txGet: TxGetState
-  txPost: TxPostState
-  txCancel: TxCancelState
-  txReceive: TxReceiveState
-  txFinalize: TxFinalizeState
-  txForm: TxForm
-  slate: SlateState
-  slateShare: SlateShareState
-}>
+  list: ListState;
+  txCreate: TxCreateState;
+  txSend: TxSendState;
+  txGet: TxGetState;
+  txPost: TxPostState;
+  txCancel: TxCancelState;
+  txReceive: TxReceiveState;
+  txFinalize: TxFinalizeState;
+  txForm: TxForm;
+  slate: SlateState;
+  slateShare: SlateShareState;
+}>;
 const initialState: State = {
   list: {
     data: [],
@@ -338,7 +338,7 @@ export const sideEffects = {
           refreshFromNode: false,
         })
       })
-      .catch((error) => {
+      .catch(error => {
         const e = JSON.parse(error.message)
         store.dispatch({
           type: 'TX_CANCEL_FAILURE',
@@ -351,14 +351,14 @@ export const sideEffects = {
   ['TX_GET_REQUEST']: async (action: txGetRequestAction, store: Store) => {
     return WalletBridge.txGet(true, action.txSlateId)
       .then((json: string) => JSON.parse(json))
-      .then((result) => {
+      .then(result => {
         store.dispatch({
           type: 'TX_GET_SUCCESS',
           isRefreshed: result[0],
           tx: result[1][0],
         })
       })
-      .catch((error) => {
+      .catch(error => {
         const e = JSON.parse(error.message)
         store.dispatch({
           type: 'TX_GET_FAILURE',
@@ -590,7 +590,7 @@ export const sideEffects = {
           type: 'SLATE_SET_SUCCESS',
         })
       })
-      .catch((error) => {
+      .catch(error => {
         store.dispatch({
           type: 'SLATE_SET_FAILURE',
           code: 1,
@@ -612,7 +612,7 @@ export const sideEffects = {
             type: 'SLATE_REMOVE_SUCCESS',
           })
         })
-        .catch((error) => {
+        .catch(error => {
           store.dispatch({
             type: 'SLATE_REMOVE_FAILURE',
             code: 1,
@@ -635,13 +635,19 @@ export const sideEffects = {
       getConfigForRust(store.getState()).minimum_confirmations,
     )
       .then((json: string) => JSON.parse(json))
-      .then((outputStrategies) => {
+      .then(outputStrategies => {
         if (!outputStrategies.length) {
           throw new Error('Not enough funds')
         }
+        console.log({ outputStrategies })
         store.dispatch({
           type: 'TX_FORM_OUTPUT_STRATEGIES_SUCCESS',
-          outputStrategies,
+          // strategy with selection_strategy_is_use_all === true is always less favorable:
+          // it costs more and lock all the funds if picked
+          // TODO: fix it in the rust codebase
+          outputStrategies: outputStrategies.filter(
+            oS => !oS.selection_strategy_is_use_all,
+          ),
         })
       })
       .catch((error: Error) => {

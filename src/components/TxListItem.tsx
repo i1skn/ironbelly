@@ -26,8 +26,10 @@ import {
   styleSheetFactory,
   useThemedStyles,
 } from 'src/themes'
+import { useDispatch } from 'react-redux'
+import FontAwesome5Icons from 'react-native-vector-icons/FontAwesome5'
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   time: {
     fontSize: 14,
     color: slightlyTransparent(theme.onSurface),
@@ -60,20 +62,29 @@ const themedStyles = styleSheetFactory((theme) => ({
     marginTop: 12,
     paddingBottom: 12,
   },
+  cancel: {
+    paddingLeft: 24,
+    paddingRight: 8,
+  },
+  cancelIcon: {
+    color: theme.warningLight,
+  },
 }))
 
 type Props = {
-  tx: Tx
-  currency: Currency
-  rates: Record<string, number>
-  minimumConfirmations: number
-  onPress: () => void
-}
+  tx: Tx;
+  currency: Currency;
+  rates: Record<string, number>;
+  minimumConfirmations: number;
+  onPress: () => void;
+};
 
 const TxListItem = (props: Props) => {
+  const dispatch = useDispatch()
   const [styles] = useThemedStyles(themedStyles)
   const { currency, rates } = props
-  const { type, confirmed, creationTime, amount } = props.tx
+  const { type, confirmed, creationTime, amount, slateId, id, storedTx } =
+    props.tx
   const momentCreationTime = moment(creationTime)
   const isFinalized = type === 'TxFinalized'
   const isPosted = type === 'TxPosted'
@@ -82,6 +93,16 @@ const TxListItem = (props: Props) => {
     moment().diff(momentCreationTime, 'hours', true) > 2
       ? formatDate(momentCreationTime)
       : momentCreationTime.fromNow()
+
+  const txCancel = (id: number, slateId: string, isResponse: boolean) => {
+    dispatch({
+      type: 'TX_CANCEL_REQUEST',
+      id,
+      slateId,
+      isResponse,
+    })
+  }
+
   return (
     <TouchableOpacity style={styles.wrapper} onPress={props.onPress}>
       <FlexGrow>
@@ -96,8 +117,8 @@ const TxListItem = (props: Props) => {
                 ? 'Sent'
                 : 'Received'
               : isSent
-                ? 'Sending...'
-                : 'Receiving...'}
+              ? 'Sending...'
+              : 'Receiving...'}
           </Text>
         </View>
         {confirmed ? (
@@ -105,12 +126,12 @@ const TxListItem = (props: Props) => {
         ) : (
           <Text style={styles.unconfirmedGuide}>
             {isPosted
-              ? 'Awaiting confirmation...'
+              ? 'Awaiting confirmation'
               : isFinalized
-                ? 'Not sent. Click to retry'
-                : isSent
-                  ? 'Action required'
-                  : 'Sender needs to finish transaction'}
+              ? 'Not sent. Click to retry'
+              : isSent
+              ? 'Action required'
+              : 'Awaiting confirmation'}
           </Text>
         )}
       </FlexGrow>
@@ -123,6 +144,17 @@ const TxListItem = (props: Props) => {
           {hrFiat(convertToFiat(amount, currency, rates), currency)}
         </Text>
       </View>
+      {!confirmed && type !== 'TxPosted' && slateId && (
+        <TouchableOpacity
+          style={styles.cancel}
+          onPress={() => {
+            if (slateId) {
+              txCancel(id, slateId, !storedTx)
+            }
+          }}>
+          <FontAwesome5Icons name="times" size={32} style={styles.cancelIcon} />
+        </TouchableOpacity>
+      )}
     </TouchableOpacity>
   )
 }
