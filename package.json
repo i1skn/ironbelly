@@ -73,7 +73,7 @@
     "rxjs": "^7.5.2",
     "rxjs-compat": "^6.6.7",
     "sleep-promise": "^9.1.0",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.7"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
