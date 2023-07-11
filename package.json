@@ -32,7 +32,7 @@
     "flux-standard-action": "^2.1.2",
     "intl": "^1.2.5",
     "moment": "^2.24.0",
-    "patch-package": "^6.4.7",
+    "patch-package": "^7.0.1",
     "plist": "^3.0.2",
     "postinstall-postinstall": "^2.1.0",
     "prop-types": "^15.8.1",
