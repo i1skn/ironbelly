@@ -1,0 +1,23 @@
+diff --git a/node_modules/react-native-vector-icons/android/build.gradle b/node_modules/react-native-vector-icons/android/build.gradle
+index 3e615e9..ea1b87d 100644
+--- a/node_modules/react-native-vector-icons/android/build.gradle
++++ b/node_modules/react-native-vector-icons/android/build.gradle
+@@ -23,6 +23,10 @@ if (isNewArchitectureEnabled()) {
+ android {
+     namespace = "com.oblador.vectoricons"
+     compileSdkVersion safeExtGet('compileSdkVersion', 31)
++    buildFeatures {
++        buildConfig = true
++    }
++    namespace "com.oblador.vectoricons"
+ 
+     defaultConfig {
+         minSdkVersion safeExtGet('minSdkVersion', 21)
+diff --git a/node_modules/react-native-vector-icons/android/src/main/AndroidManifest.xml b/node_modules/react-native-vector-icons/android/src/main/AndroidManifest.xml
+index 3bd661a..a2f47b6 100755
+--- a/node_modules/react-native-vector-icons/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-vector-icons/android/src/main/AndroidManifest.xml
+@@ -1,2 +1,2 @@
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.oblador.vectoricons">
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ </manifest>

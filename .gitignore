@@ -31,6 +31,9 @@ build/
 local.properties
 *.iml
 *.hprof
+.cxx/
+*.keystore
+!debug.keystore
 android/.project
 android/.settings/org.eclipse.buildship.core.prefs
 android/app/.classpath
@@ -46,12 +49,6 @@ android/app/.settings/org.eclipse.buildship.core.prefs
 node_modules/
 npm-debug.log
 yarn-error.log
-
-# BUCK
-buck-out/
-\.buckd/
-*.keystore
-!debug.keystore
 
 # fastlane
 #
@@ -98,3 +95,9 @@ screenshots/screenshots.html
 libwallet.*
 WalletHeaders.h
 
+ 
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+ 
+# testing
+/coverage

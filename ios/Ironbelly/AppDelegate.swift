@@ -17,35 +17,31 @@
 
 
 import UIKit
-#if DEBUG
-#if FB_SONARKIT_ENABLED
-import FlipperKit
-#endif
-#endif
 import LaunchScreenSnapshot
 import ExpoModulesCore
+import React
 
 @UIApplicationMain
-class AppDelegate: EXAppDelegateWrapper, RCTBridgeDelegate {
+class AppDelegate: EXAppDelegateWrapper, RCTBridgeDelegate, UIApplicationDelegate {
+    
+    var window: UIWindow?
+    var bridge: RCTBridge!
     
     func sourceURL(for bridge: RCTBridge!) -> URL! {
     #if DEBUG
         return RCTBundleURLProvider.sharedSettings().jsBundleURL(forBundleRoot: "index")
     #else
-        return RCTBundleURLProvider.sharedSettings().jsBundleURL(
-            forBundleRoot: "main", fallbackExtension: "jsbundle"
-        )
+        Bundle.main.url(forResource: "main", withExtension: "jsbundle")
     #endif
     }
 
-    override func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
-        initializeFlipper(with: application)
         c_set_logger()
         
-        let bridge = self.reactDelegate.createBridge(with: self, launchOptions: launchOptions)
-        let rootView = self.reactDelegate.createRootView(with: bridge, moduleName: "Ironbelly", initialProperties: nil)
-        let rootViewController = self.reactDelegate.createRootViewController()
+        self.bridge = RCTBridge(delegate: self, launchOptions: launchOptions)
+        let rootView = RCTRootView(bridge: self.bridge, moduleName: "Ironbelly", initialProperties: nil)
+        let rootViewController = UIViewController()
         rootViewController.view = rootView
         
         self.window = UIWindow(frame: UIScreen.main.bounds)
@@ -54,30 +50,14 @@ class AppDelegate: EXAppDelegateWrapper, RCTBridgeDelegate {
 
         LaunchScreenSnapshot.protect(with: nil, trigger: .didEnterBackground)
         RNSplashScreen.show()
-        super.application(application, didFinishLaunchingWithOptions: launchOptions)
+        
         return true
     }
 
-    override func application(_ app: UIApplication,
+    func application(_ app: UIApplication,
                             open url: URL,
                               options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         RCTLinkingManager.application(app, open: url, options: options)
         return true
-    }
-
-    private func initializeFlipper(with application: UIApplication) {
-        #if DEBUG
-        #if FB_SONARKIT_ENABLED
-        let client = FlipperClient.shared()
-        let layoutDescriptorMapper = SKDescriptorMapper(defaults: ())
-        FlipperKitLayoutComponentKitSupport.setUpWith(layoutDescriptorMapper)
-        client?.add(FlipperKitLayoutPlugin(rootNode: application, with: layoutDescriptorMapper!))
-        client?.add(FKUserDefaultsPlugin(suiteName: nil))
-        client?.add(FlipperKitReactPlugin())
-        client?.add(FlipperKitNetworkPlugin(networkAdapter: SKIOSNetworkAdapter()))
-        client?.add(FlipperReactPerformancePlugin.sharedInstance())
-        client?.start()
-        #endif
-        #endif
     }
 }

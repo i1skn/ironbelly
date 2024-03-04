@@ -1,5 +1,5 @@
 diff --git a/node_modules/react-native-keep-awake/android/build.gradle b/node_modules/react-native-keep-awake/android/build.gradle
-index ba4dfe7..b04f116 100644
+index ba4dfe7..41f88d6 100644
 --- a/node_modules/react-native-keep-awake/android/build.gradle
 +++ b/node_modules/react-native-keep-awake/android/build.gradle
 @@ -1,7 +1,7 @@
@@ -11,6 +11,25 @@ index ba4dfe7..b04f116 100644
      }
  
      dependencies {
+@@ -23,6 +23,8 @@ android {
+     compileSdkVersion _compileSdkVersion
+     buildToolsVersion _buildToolsVersion
+ 
++    namespace "com.corbt.keepawake"
++
+     defaultConfig {
+         minSdkVersion _minSdkVersion
+         targetSdkVersion _targetSdkVersion
+diff --git a/node_modules/react-native-keep-awake/android/src/main/AndroidManifest.xml b/node_modules/react-native-keep-awake/android/src/main/AndroidManifest.xml
+index bc02af3..9a40236 100644
+--- a/node_modules/react-native-keep-awake/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-keep-awake/android/src/main/AndroidManifest.xml
+@@ -1,4 +1,3 @@
+ <?xml version="1.0" encoding="utf-8"?>
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.corbt.keepawake" >
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ </manifest>
 diff --git a/node_modules/react-native-keep-awake/react-native-keep-awake.podspec b/node_modules/react-native-keep-awake/react-native-keep-awake.podspec
 index 95933a7..756ad5a 100644
 --- a/node_modules/react-native-keep-awake/react-native-keep-awake.podspec

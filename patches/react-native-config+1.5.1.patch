@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-native-config/android/build.gradle b/node_modules/react-native-config/android/build.gradle
+index c8f7fd4..9ff2c3c 100644
+--- a/node_modules/react-native-config/android/build.gradle
++++ b/node_modules/react-native-config/android/build.gradle
+@@ -27,6 +27,8 @@ android {
+     lintOptions {
+         abortOnError false
+     }
++    
++    namespace "com.lugg.RNCConfig"
+ }
+ 
+ repositories {
+diff --git a/node_modules/react-native-config/android/src/main/AndroidManifest.xml b/node_modules/react-native-config/android/src/main/AndroidManifest.xml
+index 12d7c74..a2f47b6 100644
+--- a/node_modules/react-native-config/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-config/android/src/main/AndroidManifest.xml
+@@ -1,3 +1,2 @@
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.lugg.RNCConfig">
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ </manifest>

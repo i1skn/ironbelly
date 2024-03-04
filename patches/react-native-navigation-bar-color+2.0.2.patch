@@ -1,0 +1,22 @@
+diff --git a/node_modules/react-native-navigation-bar-color/android/build.gradle b/node_modules/react-native-navigation-bar-color/android/build.gradle
+index 9d285c4..835201b 100644
+--- a/node_modules/react-native-navigation-bar-color/android/build.gradle
++++ b/node_modules/react-native-navigation-bar-color/android/build.gradle
+@@ -19,6 +19,8 @@ android {
+    compileSdkVersion rootProject.ext.has('compileSdkVersion') ? rootProject.ext.compileSdkVersion : DEFAULT_COMPILE_SDK_VERSION
+   buildToolsVersion rootProject.ext.has('buildToolsVersion') ? rootProject.ext.buildToolsVersion : DEFAULT_BUILD_TOOLS_VERSION
+ 
++  namespace "com.thebylito.navigationbarcolor"
++
+   defaultConfig {
+     minSdkVersion rootProject.ext.has('minSdkVersion') ? rootProject.ext.minSdkVersion : DEFAULT_MIN_SDK_VERSION
+     targetSdkVersion rootProject.ext.has('targetSdkVersion') ? rootProject.ext.targetSdkVersion : DEFAULT_TARGET_SDK_VERSION
+diff --git a/node_modules/react-native-navigation-bar-color/android/src/main/AndroidManifest.xml b/node_modules/react-native-navigation-bar-color/android/src/main/AndroidManifest.xml
+index 02625c9..a2f47b6 100644
+--- a/node_modules/react-native-navigation-bar-color/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-navigation-bar-color/android/src/main/AndroidManifest.xml
+@@ -1,3 +1,2 @@
+-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+-    package="com.thebylito.navigationbarcolor">
++<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+ </manifest>

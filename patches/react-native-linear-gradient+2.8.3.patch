@@ -1,0 +1,20 @@
+diff --git a/node_modules/react-native-linear-gradient/android/build.gradle b/node_modules/react-native-linear-gradient/android/build.gradle
+index e3aacde..8dc1376 100644
+--- a/node_modules/react-native-linear-gradient/android/build.gradle
++++ b/node_modules/react-native-linear-gradient/android/build.gradle
+@@ -28,6 +28,8 @@ android {
+     lintOptions {
+         abortOnError false
+     }
++
++    namespace "com.BV.LinearGradient"
+ }
+ 
+ repositories {
+diff --git a/node_modules/react-native-linear-gradient/android/src/main/AndroidManifest.xml b/node_modules/react-native-linear-gradient/android/src/main/AndroidManifest.xml
+index a7d57a6..cc947c5 100644
+--- a/node_modules/react-native-linear-gradient/android/src/main/AndroidManifest.xml
++++ b/node_modules/react-native-linear-gradient/android/src/main/AndroidManifest.xml
+@@ -1 +1 @@
+-<manifest package="com.BV.LinearGradient" />
++<manifest />
