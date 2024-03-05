@@ -1470,6 +1470,7 @@ dependencies = [
 [[package]]
 name = "grin_wallet_api"
 version = "5.2.0-beta.1"
+source = "git+https://github.com/i1skn/grin-wallet?branch=master#fd7770a2500f9a39f80d16fe68ea9e4ea163fb0d"
 dependencies = [
  "base64 0.12.3",
  "chrono",
@@ -1494,6 +1495,7 @@ dependencies = [
 [[package]]
 name = "grin_wallet_config"
 version = "5.2.0-beta.1"
+source = "git+https://github.com/i1skn/grin-wallet?branch=master#fd7770a2500f9a39f80d16fe68ea9e4ea163fb0d"
 dependencies = [
  "dirs 2.0.2",
  "grin_core",
@@ -1508,6 +1510,7 @@ dependencies = [
 [[package]]
 name = "grin_wallet_controller"
 version = "5.2.0-beta.1"
+source = "git+https://github.com/i1skn/grin-wallet?branch=master#fd7770a2500f9a39f80d16fe68ea9e4ea163fb0d"
 dependencies = [
  "chrono",
  "easy-jsonrpc-mw",
@@ -1541,6 +1544,7 @@ dependencies = [
 [[package]]
 name = "grin_wallet_impls"
 version = "5.2.0-beta.1"
+source = "git+https://github.com/i1skn/grin-wallet?branch=master#fd7770a2500f9a39f80d16fe68ea9e4ea163fb0d"
 dependencies = [
  "base64 0.12.3",
  "blake2-rfc",
@@ -1579,6 +1583,7 @@ dependencies = [
 [[package]]
 name = "grin_wallet_libwallet"
 version = "5.2.0-beta.1"
+source = "git+https://github.com/i1skn/grin-wallet?branch=master#fd7770a2500f9a39f80d16fe68ea9e4ea163fb0d"
 dependencies = [
  "age",
  "base64 0.9.3",
@@ -1615,6 +1620,7 @@ dependencies = [
 [[package]]
 name = "grin_wallet_util"
 version = "5.2.0-beta.1"
+source = "git+https://github.com/i1skn/grin-wallet?branch=master#fd7770a2500f9a39f80d16fe68ea9e4ea163fb0d"
 dependencies = [
  "data-encoding",
  "ed25519-dalek",

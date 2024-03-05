@@ -18,6 +18,7 @@ import * as React from 'react'
 import styled from 'styled-components/native'
 import colors from 'src/common/colors'
 import ReactNative, {
+  Appearance,
   Linking,
   Platform,
   StyleProp,
@@ -29,17 +30,17 @@ import {
   useThemedStyles,
 } from 'src/themes'
 export const monoSpaceFont = 'Menlo'
-export const Text = styled.Text<{ fontSize?: string }>`
-  font-size: ${(props) => props.fontSize ?? '16px'};
+export const Text = styled.Text<{fontSize?: string}>`
+  font-size: ${props => props.fontSize ?? '16px'};
   font-weight: normal;
   color: ${() => colors.black};
 `
 const themedStyles = styleSheetFactory(() => ({}))
 
 export const Link = (props: {
-  url: string
-  title: string | React.ReactElement
-  style?: StyleProp<TextStyle>
+  url: string;
+  title: string | React.ReactElement;
+  style?: StyleProp<TextStyle>;
 }) => {
   const [, theme] = useThemedStyles(themedStyles)
   const { url, title } = props
@@ -47,10 +48,11 @@ export const Link = (props: {
     <Text
       {...props}
       style={[
+        props.style,
         {
           color: theme.link,
+          fontWeight: 600,
         },
-        props.style,
       ]}
       onPress={() => Linking.openURL(url)}>
       {title}
@@ -58,7 +60,7 @@ export const Link = (props: {
   )
 }
 
-export const TextInput = styled.TextInput.attrs((props) => ({
+export const TextInput = styled.TextInput.attrs(props => ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   placeholderTextColor:
     props.placeholderTextColor || slightlyTransparent(props.theme.placeholder),
@@ -68,19 +70,19 @@ export const TextInput = styled.TextInput.attrs((props) => ({
 
 function getBackgroundColor(props: StyledButtonProps) {
   return props.inverted
-    ? 'white'
+    ? 'transparent'
     : props.danger
     ? colors.warning
-    : colors.primary
+    : '#FBD942' // colors.primary
 }
 
-type StyledButtonProps = { inverted?: boolean; danger?: boolean }
+type StyledButtonProps = {inverted?: boolean; danger?: boolean};
 const StyledButton = styled.TouchableOpacity<StyledButtonProps>`
-  padding: 10px 15px;
-  background-color: ${(props) => getBackgroundColor(props)};
-  border-radius: 8;
-  border-width: ${(props) => (props.inverted ? '1' : '0')};
-  opacity: ${(props) =>
+  padding: 12px 16px;
+  background-color: ${props => getBackgroundColor(props)};
+  border-radius: 16;
+  border-width: ${props => (props.inverted ? '0' : '0')};
+  opacity: ${props =>
     props.disabled ? Platform.select({ android: '0.6', ios: '0.3' }) : '1'};
 `
 const ButtonTitle = styled(Text)<StyledButtonProps>`
@@ -88,17 +90,22 @@ const ButtonTitle = styled(Text)<StyledButtonProps>`
   font-weight: 500;
   width: auto;
   text-align: center;
-  color: ${(props) => (props.danger ? '#FFF' : colors.onPrimary)};
+  color: ${props =>
+    props.danger || (Appearance.getColorScheme() === 'dark' && props.inverted)
+      ? colors.blueGrey[100]
+      : colors.onPrimary};
 `
 
-type ButtonProps = { title: string | JSX.Element } & StyledButtonProps &
-  ReactNative.TouchableOpacityProps
+type ButtonProps = {title: string | JSX.Element} & StyledButtonProps &
+  ReactNative.TouchableOpacityProps;
 export const Button = (props: ButtonProps) => {
   const isTitleString = typeof props.title === 'string'
   return (
     <StyledButton {...props}>
       {(isTitleString && (
-        <ButtonTitle danger={props.danger}>{props.title}</ButtonTitle>
+        <ButtonTitle danger={props.danger} inverted={props.inverted}>
+          {props.title}
+        </ButtonTitle>
       )) ||
         props.title}
     </StyledButton>

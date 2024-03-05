@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { persistReducer } from 'redux-persist'
 import {
   Action,
@@ -399,11 +399,8 @@ export const sideEffects = {
     action: walletScanOutputsSuccessAction,
     store: Store,
   ) => {
-    const {
-      lastRetrievedIndex,
-      highestIndex,
-      pmmrRangeLastUpdated,
-    } = store.getState().wallet.walletScan
+    const { lastRetrievedIndex, highestIndex, pmmrRangeLastUpdated } =
+      store.getState().wallet.walletScan
 
     if (
       !pmmrRangeLastUpdated ||
@@ -432,10 +429,7 @@ export const sideEffects = {
     store: Store,
   ) => {
     const { message } = action
-    const {
-      retryCount,
-      lastRetrievedIndex,
-    } = store.getState().wallet.walletScan
+    const { retryCount, lastRetrievedIndex } = store.getState().wallet.walletScan
 
     if (store.getState().wallet.isOpened) {
       // we ignore these errors, if wallet is closed

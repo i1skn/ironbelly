@@ -21,7 +21,8 @@ import {
   setApiSecretAction,
   resetBiometryRequestAction,
   checkBiometryRequestAction,
-  disableBiometryRequestAction} from 'src/common/types'
+  disableBiometryRequestAction,
+} from 'src/common/types'
 import { ColorSchemeName } from 'react-native'
 
 import RNFS from 'react-native-fs'
@@ -39,23 +40,17 @@ export enum BIOMETRY_STATUS {
 export type State = {
   currencyObject: Currency
   checkNodeApiHttpAddr: string
-  chain: 'floonet' | 'mainnet'
   minimumConfirmations: number
   biometryStatus: 'unknown' | 'disabled' | 'enabled'
   biometryType: string | undefined | null
   theme: ColorSchemeName
   lockInBackground: boolean
 }
-export const MAINNET_CHAIN = 'mainnet'
 export const MAINNET_API_SECRET = ''
 export const MAINNET_DEFAULT_NODE = 'https://next-node.ironbelly.app'
-export const FLOONET_CHAIN = 'floonet'
-export const FLOONET_API_SECRET = ''
-export const FLOONET_DEFAULT_NODE = 'http://testnet-node.ironbelly.app'
 export const initialState: State = {
   currencyObject: currencyList[8], // USD
   checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
-  chain: MAINNET_CHAIN,
   minimumConfirmations: 10,
   biometryStatus: 'unknown',
   biometryType: null,
@@ -66,22 +61,6 @@ export const reducer = (state: State = initialState, action: Action): State => {
   switch (action.type) {
     case 'SET_SETTINGS':
       return { ...state, ...action.newSettings }
-
-    case 'SWITCH_TO_MAINNET':
-      return {
-        ...state,
-        chain: MAINNET_CHAIN,
-        checkNodeApiHttpAddr: MAINNET_DEFAULT_NODE,
-        minimumConfirmations: 10,
-      }
-
-    case 'SWITCH_TO_FLOONET':
-      return {
-        ...state,
-        checkNodeApiHttpAddr: FLOONET_DEFAULT_NODE,
-        chain: FLOONET_CHAIN,
-        minimumConfirmations: 1,
-      }
 
     case 'ENABLE_BIOMETRY_SUCCESS':
       return { ...state, biometryStatus: BIOMETRY_STATUS.enabled }
@@ -133,7 +112,7 @@ export const sideEffects = {
         type: 'CHECK_BIOMETRY_SUCCESS',
         biometryType,
       })
-    } catch (error:any) {
+    } catch (error: any) {
       store.dispatch({
         type: 'CHECK_BIOMETRY_FAILURE',
         message: error.message,
@@ -156,7 +135,7 @@ export const sideEffects = {
       store.dispatch({
         type: 'DISABLE_BIOMETRY_SUCCESS',
       })
-    } catch (error:any) {
+    } catch (error: any) {
       store.dispatch({
         type: 'DISABLE_BIOMETRY_FAILURE',
         message: error.message,
@@ -173,7 +152,7 @@ export const sideEffects = {
       store.dispatch({
         type: 'RESET_BIOMETRY_SUCCESS',
       })
-    } catch (error:any) {
+    } catch (error: any) {
       store.dispatch({
         type: 'RESET_BIOMETRY_FAILURE',
         message: error.message,

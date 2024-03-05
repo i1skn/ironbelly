@@ -127,9 +127,6 @@ export type setSettingsAction = {
 export type switchToMainnetAction = {
   type: 'SWITCH_TO_MAINNET'
 }
-export type switchToFloonetAction = {
-  type: 'SWITCH_TO_FLOONET'
-}
 export type enableBiometryRequestAction = {
   type: 'ENABLE_BIOMETRY_REQUEST'
 }
@@ -441,7 +438,6 @@ export type Action =
   | txPostFalureAction
   | setSettingsAction
   | switchToMainnetAction
-  | switchToFloonetAction
   | enableBiometryRequestAction
   | enableBiometrySuccessAction
   | enableBiometryFalureAction

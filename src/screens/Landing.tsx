@@ -15,20 +15,13 @@
  */
 
 import React from 'react'
-import {
-  TouchableOpacity,
-  Button as NativeButton,
-  View,
-  Platform,
-} from 'react-native'
-import DeviceInfo from 'react-native-device-info'
+import { Image, View, Platform } from 'react-native'
 import { connect } from 'react-redux'
-import { Alert } from 'react-native'
 import { State as SettingsState } from 'src/modules/settings'
 import { FlexGrow, Spacer } from 'src/common'
-import { Text, Button } from 'src/components/CustomFont'
+import { Text, Button, Link } from 'src/components/CustomFont'
 import { RootState } from 'src/common/redux'
-import { Error, Dispatch, NavigationProps } from 'src/common/types'
+import { Error, NavigationProps } from 'src/common/types'
 import {
   slightlyTransparent,
   styleSheetFactory,
@@ -37,39 +30,14 @@ import {
 
 type Props = {
   walletInit: () => void;
-  switchToMainnet: () => void;
-  switchToFloonet: () => void;
   error: Error | undefined | null;
   walletCreated: boolean;
-  isFloonet: boolean;
   settings: SettingsState;
   legalAccepted: boolean;
 } & NavigationProps<'Landing'>;
 
 function Landing(props: Props) {
   const [styles] = useThemedStyles(themedStyles)
-  const onVersionClick = () => {
-    if (!props.isFloonet) {
-      return Alert.alert(
-        'Switch to Testnet',
-        'Are you sure you want to switch to Testnet?',
-        [
-          {
-            text: 'Cancel',
-            onPress: () => console.log('Cancel Pressed'),
-            style: 'cancel',
-          },
-          {
-            text: 'Switch',
-            style: 'destructive',
-            onPress: () => {
-              props.switchToFloonet()
-            },
-          },
-        ],
-      )
-    }
-  }
   const onNewWallet = (isNew: boolean) => {
     return () => {
       const nextScreenName = 'NewPassword'
@@ -89,46 +57,40 @@ function Landing(props: Props) {
     }
   }
 
-  const { isFloonet, switchToMainnet } = props
   return (
     <View testID="LandingScreen" style={styles.wrapper}>
-      <FlexGrow />
-      <View>
+      <View style={{ flex: 3 }} />
+      <View style={styles.title}>
+        <Image
+          source={require('src/assets/images/landing.png')}
+          style={styles.image}
+        />
         <Text style={styles.appTitle}>Ironbelly</Text>
         <Text style={styles.appSlogan}>Grin wallet you've deserved</Text>
       </View>
-
+      <View style={{ flex: 2 }} />
       <Button
         style={styles.actionButton}
-        title="Create new wallet"
+        title="Create a new wallet"
         testID="NewWalletButton"
         disabled={false}
         onPress={onNewWallet(true)}
       />
       <Button
         style={styles.actionButton}
-        title="Restore from paper key"
+        title="I already have a wallet"
         disabled={false}
         onPress={onNewWallet(false)}
+        inverted
       />
+      <View style={styles.tnc}>
+        <Text style={styles.tncText}>By continuing, I agree to the </Text>
+        <Link url={''} style={styles.tncText} title="Terms of Use" />
+        <Text style={styles.tncText}> and consent to the </Text>
+        <Link url={''} style={styles.tncText} title="Privacy Policy" />
+        <Text style={styles.tncText}>.</Text>
+      </View>
       <Spacer />
-      {isFloonet && (
-        <View style={styles.testnetDisclaimer}>
-          <Text style={styles.testnetDisclaimerText}>
-            This app is configured to use testnet
-          </Text>
-          <NativeButton
-            title="Switch to mainnet"
-            onPress={() => switchToMainnet()}
-          />
-        </View>
-      )}
-      <FlexGrow />
-      <TouchableOpacity style={styles.version} onPress={onVersionClick}>
-        <Text>
-          Version: {DeviceInfo.getVersion()} build {DeviceInfo.getBuildNumber()}
-        </Text>
-      </TouchableOpacity>
     </View>
   )
 }
@@ -137,23 +99,34 @@ const themedStyles = styleSheetFactory(theme => ({
   wrapper: {
     padding: 16,
     flexGrow: 1,
-    alignItems: 'flex-start',
+    alignItems: 'center',
     justifyContent: 'center',
   },
   actionButton: {
-    marginBottom: 20,
+    marginBottom: 8,
     width: '100%',
   },
+  image: {
+    marginRight: 24,
+  },
+  title: {
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   appTitle: {
-    fontSize: 32,
+    fontSize: 44,
     fontWeight: '600',
     color: theme.onBackground,
+    marginBottom: 8,
+    marginTop: 24,
+    textAlign: 'center',
   },
   appSlogan: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '500',
-    marginBottom: 30,
     color: slightlyTransparent(theme.onBackground),
+    textAlign: 'center',
   },
   testnetDisclaimer: {
     width: '100%',
@@ -169,27 +142,26 @@ const themedStyles = styleSheetFactory(theme => ({
     width: '100%',
     paddingBottom: Platform.select({ ios: 8, android: 40 }),
   },
+  versionText: {
+    color: theme.onBackgroundLight,
+  },
+  tnc: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    marginTop: 16,
+  },
+  tncText: {
+    fontSize: 15,
+    color: theme.onBackgroundLight,
+  },
 }))
 
 const mapStateToProps = (state: RootState) => ({
   settings: state.settings,
   isCreated: state.tx.txCreate.created,
   error: state.tx.txCreate.error,
-  isFloonet: state.settings.chain === 'floonet',
   legalAccepted: state.app.legalAccepted,
 })
 
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  switchToMainnet: () => {
-    dispatch({
-      type: 'SWITCH_TO_MAINNET',
-    })
-  },
-  switchToFloonet: () => {
-    dispatch({
-      type: 'SWITCH_TO_FLOONET',
-    })
-  },
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Landing)
+export default connect(mapStateToProps)(Landing)
