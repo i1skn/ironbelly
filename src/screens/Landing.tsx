@@ -83,13 +83,15 @@ function Landing(props: Props) {
         onPress={onNewWallet(false)}
         inverted
       />
-      <View style={styles.tnc}>
-        <Text style={styles.tncText}>By continuing, I agree to the </Text>
-        <Link url={''} style={styles.tncText} title="Terms of Use" />
-        <Text style={styles.tncText}> and consent to the </Text>
-        <Link url={''} style={styles.tncText} title="Privacy Policy" />
-        <Text style={styles.tncText}>.</Text>
-      </View>
+      {false && (
+        <View style={styles.tnc}>
+          <Text style={styles.tncText}>By continuing, I agree to the </Text>
+          <Link url={''} style={styles.tncText} title="Terms of Use" />
+          <Text style={styles.tncText}> and consent to the </Text>
+          <Link url={''} style={styles.tncText} title="Privacy Policy" />
+          <Text style={styles.tncText}>.</Text>
+        </View>
+      )}
       <Spacer />
     </View>
   )

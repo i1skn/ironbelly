@@ -17,7 +17,7 @@
 import React, { useState } from 'react'
 import { Linking, ScrollView, View } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { Button, Text } from 'src/components/CustomFont'
+import { Button, Link, Text } from 'src/components/CustomFont'
 import { Currency, Dispatch, NavigationProps } from 'src/common/types'
 import { RootState } from 'src/common/redux'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
@@ -26,7 +26,6 @@ import {
   styleSheetFactory,
   useThemedStyles,
 } from 'src/themes'
-import { Link } from '@react-navigation/native'
 type DispatchProps = {
   currency: Currency
   requestCurrencyRates: () => void
@@ -56,21 +55,11 @@ export default function CurrencyList(props: Props) {
         transactions and the data, which could help exchange to identify your
         transactions.
       </Text>
-      <Text style={styles.header}>
-        Please read the text below before contacting the support!
-      </Text>
+      <Text style={styles.header}>Still have questions?</Text>
       <Text style={styles.text}>
-        So far this app is developed and supported by a single person as a
-        non-profit project. Therefor, the response time is not guaranteed.
-        Please read thoroughly the FAQ above before contacting support!
-      </Text>
-      <Button
-        onPress={() => {
-          Linking.openURL('mailto:support@ironbelly.app')
-        }}
-        title={'Contact support'}></Button>
-      <Text style={styles.smallText}>
-        or simply send email to: support@ironbelly.app
+        You can visit <Link url={'https://forum.grin.mw/'} title="Grin Forum" />{' '}
+        or <Link url={'https://t.me/ironbelly'} title="Ironbelly group" /> in
+        Telegram.
       </Text>
     </ScrollView>
   )

@@ -20,6 +20,8 @@
     "@react-navigation/native": "^6.0.6",
     "@react-navigation/stack": "^6.0.11",
     "@reduxjs/toolkit": "^1.7.1",
+    "@rneui/base": "^4.0.0-rc.8",
+    "@rneui/themed": "^4.0.0-rc.8",
     "apsl-react-native-button": "^3.1.1",
     "base-64": "^1.0.0",
     "bignumber.js": "^9.0.2",

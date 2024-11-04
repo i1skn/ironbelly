@@ -1,7 +1,5 @@
-<a href="https://apps.apple.com/us/app/ironbelly/id1475413396" target="_blank"><img height="75" src="https://ironbelly.app/assets/appstore.png"></a>&nbsp;&nbsp;&nbsp;
-<a href="https://play.google.com/store/apps/details?id=app.ironbelly"><img height="75" src="https://ironbelly.app/assets/playstore.png"/></a>&nbsp;&nbsp;&nbsp;
-<a href="https://ironbelly.app/apks/ironbelly-3.1.0b23.apk"><img height="75" src="https://ironbelly.app/assets/apk.png"/></a>
-
+# NO LONGER SUPPORTED!
+Read more here: https://forum.grin.mw/t/ironbelly-is-spitting-fire-no-longer/11003
 
 # Ironbelly
 

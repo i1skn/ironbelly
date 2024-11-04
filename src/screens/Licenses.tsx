@@ -29,13 +29,15 @@ import {
 // import { NavigationProps } from 'src/common/types'
 // type Props = NavigationProps<'Licenses'>
 
-type ItemProps = { title: string; licenceId: number }
+type ItemProps = {title: string; licenceId: number};
 
 const Item = ({ title, licenceId }: ItemProps) => {
   const [styles] = useThemedStyles(themedStyles)
   const navigation = useNavigation()
   const onPress = (licenceId: number) => {
-    const licenseText = (licenses.licenses as Record<number, string>)[licenceId]
+    const licenseText = (licenses.licenses as Record<number, string>)[
+      licenceId
+    ]
     return () => navigation.navigate('License', { licenseText })
   }
   return (
@@ -43,12 +45,16 @@ const Item = ({ title, licenceId }: ItemProps) => {
       <Text style={styles.itemTitle} ellipsizeMode="tail" numberOfLines={2}>
         {title}
       </Text>
-      <IonicIcon style={styles.chevron} name="ios-chevron-forward" size={20} />
+      <IonicIcon
+        style={styles.chevron}
+        name="chevron-forward-outline"
+        size={20}
+      />
     </TouchableOpacity>
   )
 }
 
-function renderItem({ item }: { item: string }) {
+function renderItem({ item }: {item: string}) {
   const licenceId = (licenses.packages as Record<string, number>)[item]
   return <Item title={item} licenceId={licenceId} />
 }
@@ -69,7 +75,7 @@ const Licenses = () => {
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   container: {
     paddingHorizontal: 16,
   },

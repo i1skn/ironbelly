@@ -34,14 +34,14 @@ import {
 } from 'src/themes'
 
 export type Props = {
-  title: string
-  value?: string | boolean
-  titleStyle?: StyleProp<TextStyle>
-  hideChevron?: boolean
-  isLink?: boolean
-  onPress?: () => void
-  onValueChange?: (value: boolean) => void
-}
+  title: string;
+  value?: string | boolean;
+  titleStyle?: StyleProp<TextStyle>;
+  hideChevron?: boolean;
+  isLink?: boolean;
+  onPress?: () => void;
+  onValueChange?: (value: boolean) => void;
+};
 
 const SettingsListItem = ({
   title,
@@ -68,7 +68,7 @@ const SettingsListItem = ({
         {!hideChevron && (
           <IonicIcon
             style={styles.chevronIcon}
-            name="ios-chevron-forward"
+            name="chevron-forward-outline"
             size={20}
           />
         )}
@@ -96,7 +96,7 @@ const SettingsListItem = ({
   )
 }
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   wrapper: {
     flex: 1,
     paddingLeft: 16,

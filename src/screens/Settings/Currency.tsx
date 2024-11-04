@@ -21,24 +21,24 @@ import { connect } from 'react-redux'
 import { Text } from 'src/components/CustomFont'
 import { Currency, Dispatch, NavigationProps } from 'src/common/types'
 import { RootState } from 'src/common/redux'
-import { currencyList } from 'src/common'
-import { SearchBar } from 'react-native-elements'
+import { currencyList, isAndroid } from 'src/common'
 import { State as CurrencyRatesState } from 'src/modules/currency-rates'
+import { SearchBar } from '@rneui/themed'
 import {
   slightlyTransparent,
   styleSheetFactory,
   useThemedStyles,
 } from 'src/themes'
 type DispatchProps = {
-  currency: Currency
-  requestCurrencyRates: () => void
-  setCurrency: (currency: Currency) => void
-  currencyRates: CurrencyRatesState
-}
+  currency: Currency;
+  requestCurrencyRates: () => void;
+  setCurrency: (currency: Currency) => void;
+  currencyRates: CurrencyRatesState;
+};
 
-type Props = NavigationProps<'SettingsCurrency'> & DispatchProps
+type Props = NavigationProps<'SettingsCurrency'> & DispatchProps;
 
-type ListItemProps = { checked: boolean; value: string; onPress: () => void }
+type ListItemProps = {checked: boolean; value: string; onPress: () => void};
 
 const ListItem = ({ checked, value, onPress }: ListItemProps) => {
   const [styles] = useThemedStyles(themedStyles)
@@ -65,7 +65,7 @@ function CurrencyList(props: Props) {
   const onSearch = (newSearchText: string) => {
     setSearchText(newSearchText)
     setFilteredList(
-      currencyList.filter((currency) => {
+      currencyList.filter(currency => {
         return (
           currency.code.toLowerCase().indexOf(newSearchText.toLowerCase()) !==
           -1
@@ -88,7 +88,7 @@ function CurrencyList(props: Props) {
         ListHeaderComponent={
           <SearchBar
             placeholder="Search"
-            platform="ios"
+            platform={isAndroid ? 'android' : 'ios'}
             containerStyle={styles.searchBar}
             inputContainerStyle={styles.searchBarInput}
             cancelButtonProps={{ buttonTextStyle: styles.cancelButton }}
@@ -103,10 +103,10 @@ function CurrencyList(props: Props) {
           <Text style={styles.coinGecko}>Data from CoinGecko</Text>
         }
         data={filteredList}
-        keyExtractor={(item) => item.code}
+        keyExtractor={item => item.code}
         keyboardShouldPersistTaps={'handled'}
         onRefresh={() => props.requestCurrencyRates()}
-        renderItem={({ item }: { item: Currency }) => (
+        renderItem={({ item }: {item: Currency}) => (
           <ListItem
             checked={currency.code === item.code}
             value={item.code.toUpperCase()}
@@ -139,7 +139,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     }),
 })
 
-const themedStyles = styleSheetFactory((theme) => ({
+const themedStyles = styleSheetFactory(theme => ({
   container: {
     flexGrow: 1,
     backgroundColor: theme.background,

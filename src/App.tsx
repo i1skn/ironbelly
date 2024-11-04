@@ -14,45 +14,45 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react'
-import SplashScreen from 'react-native-splash-screen'
-import BackgroundTimer from 'react-native-background-timer'
-import { ThemeProvider } from 'styled-components'
+import React, {useEffect} from 'react';
+import SplashScreen from 'react-native-splash-screen';
+import BackgroundTimer from 'react-native-background-timer';
+import {ThemeProvider} from 'styled-components';
 import {
   NavigationContainer,
   Theme as RNNavigationTheme,
-} from '@react-navigation/native'
+} from '@react-navigation/native';
 import {
   AppState,
   StatusBar,
   AppStateStatus,
   LogBox,
   ColorSchemeName,
-} from 'react-native'
-import WalletBridge from 'src/bridges/wallet'
-import { Provider, connect } from 'react-redux'
+} from 'react-native';
+import WalletBridge from 'src/bridges/wallet';
+import {Provider, connect} from 'react-redux';
 import {
   checkSlatesDirectory,
   checkApplicationSupportDirectory,
-} from 'src/common'
-import Modal from 'react-native-modal'
-import { PersistGate } from 'redux-persist/integration/react'
-import Toast from 'react-native-easy-toast'
-import { isIphoneX } from 'react-native-iphone-x-helper'
-import { Dispatch } from 'src/common/types'
-import { RootState } from 'src/common/redux'
-import { store, persistor } from 'src/common/redux'
-import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal'
-import { RootStack, navigationRef } from 'src/modules/navigation'
-import { isAndroid } from 'src/common'
-import { State as ToasterState } from 'src/modules/toaster'
-import { State as CurrencyRatesState } from 'src/modules/currency-rates'
-import { styleSheetFactory, Theme, useThemedStyles } from './themes'
-import changeNavigationBarColor from 'react-native-navigation-bar-color'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
+} from 'src/common';
+import Modal from 'react-native-modal';
+import {PersistGate} from 'redux-persist/integration/react';
+import Toast from 'react-native-easy-toast';
+import {isIphoneX} from 'react-native-iphone-x-helper';
+import {Dispatch} from 'src/common/types';
+import {RootState} from 'src/common/redux';
+import {store, persistor} from 'src/common/redux';
+import TxPostConfirmationModal from 'src/components/TxPostConfirmationModal';
+import {RootStack, navigationRef} from 'src/modules/navigation';
+import {isAndroid} from 'src/common';
+import {State as ToasterState} from 'src/modules/toaster';
+import {State as CurrencyRatesState} from 'src/modules/currency-rates';
+import {styleSheetFactory, Theme, useThemedStyles} from './themes';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-checkSlatesDirectory()
-checkApplicationSupportDirectory()
+checkSlatesDirectory();
+checkApplicationSupportDirectory();
 
 LogBox.ignoreLogs([
   'Expected style',
@@ -60,7 +60,7 @@ LogBox.ignoreLogs([
   'currentlyFocusedField',
   'new NativeEventEmitter',
   'EventEmitter.removeListener',
-])
+]);
 
 interface StateProps {
   toastMessage: ToasterState;
@@ -97,29 +97,29 @@ type State = {
 };
 
 class RealApp extends React.Component<Props, State> {
-  lockTimeout: number | null = null
-  navigation = React.createRef()
-  toast = React.createRef<Toast>()
+  lockTimeout: number | null = null;
+  navigation = React.createRef();
+  toast = React.createRef<Toast>();
 
   async componentDidMount() {
     if (isAndroid) {
-      StatusBar.setBackgroundColor('rgba(0,0,0,0)')
-      StatusBar.setTranslucent(true)
+      StatusBar.setBackgroundColor('rgba(0,0,0,0)');
+      StatusBar.setTranslucent(true);
     }
 
-    AppState.addEventListener('change', this._handleAppStateChange)
-    this.props.requestWalletExists()
-    SplashScreen.hide()
+    AppState.addEventListener('change', this._handleAppStateChange);
+    this.props.requestWalletExists();
+    SplashScreen.hide();
   }
 
   componentWillUnmount() {
-    AppState.removeEventListener('change', this._handleAppStateChange)
+    AppState.removeEventListener('change', this._handleAppStateChange);
   }
 
   _handleAppStateChange = async (nextAppState: AppStateStatus) => {
     if (nextAppState === 'active' && this.lockTimeout) {
-      BackgroundTimer.clearTimeout(this.lockTimeout)
-      this.lockTimeout = null
+      BackgroundTimer.clearTimeout(this.lockTimeout);
+      this.lockTimeout = null;
     }
     if (this.props.lockInBackground && nextAppState === 'background') {
       WalletBridge.isWalletCreated().then(async exists => {
@@ -127,51 +127,51 @@ class RealApp extends React.Component<Props, State> {
           if (isAndroid) {
             // TODO: make this configurable for both platforms
             this.lockTimeout = BackgroundTimer.setTimeout(() => {
-              this.lockApp()
-            }, 5000)
+              this.lockApp();
+            }, 5000);
           } else {
-            this.lockApp()
+            this.lockApp();
           }
         }
-      })
+      });
     }
-  }
+  };
 
   lockApp = () => {
     store.dispatch({
       type: 'CLOSE_WALLET',
-    })
-  }
+    });
+  };
 
   componentDidUpdate(prevProps: Props) {
     if (prevProps.toastMessage.text !== this.props.toastMessage.text) {
       if (this.props.toastMessage.text) {
-        this.toast.current?.timer && clearTimeout(this.toast.current?.timer)
+        this.toast.current?.timer && clearTimeout(this.toast.current?.timer);
         this.toast.current?.show(
           this.props.toastMessage.text,
           this.props.toastMessage.duration,
           () => {
-            this.props.clearToast()
+            this.props.clearToast();
           },
-        )
+        );
       } else {
         if (this.toast.current?.state.isShow) {
           this.toast.current?.setState({
             isShow: false,
-          })
+          });
         }
       }
     }
 
     const sinceLastCurrencyRatesUpdate =
-      Date.now() - this.props.currencyRates.lastUpdated
+      Date.now() - this.props.currencyRates.lastUpdated;
 
     if (
       sinceLastCurrencyRatesUpdate > 5 * 60 * 1000 &&
       !this.props.currencyRates.inProgress &&
       !this.props.currencyRates.disabled
     ) {
-      this.props.requestCurrencyRates()
+      this.props.requestCurrencyRates();
     }
   }
 
@@ -182,9 +182,9 @@ class RealApp extends React.Component<Props, State> {
       closeTxPostModal,
       isWalletOpened,
       theme,
-    } = this.props
+    } = this.props;
     if (walletCreated === null) {
-      return null
+      return null;
     }
     return (
       <React.Fragment>
@@ -206,7 +206,7 @@ class RealApp extends React.Component<Props, State> {
           positionValue={isIphoneX() ? 75 : 55}
         />
       </React.Fragment>
-    )
+    );
   }
 }
 
@@ -220,8 +220,8 @@ const mapStateToProps = (state: RootState): StateProps => {
     currencyRates: state.currencyRates,
     walletCreated: state.wallet.isCreated,
     lockInBackground: state.settings.lockInBackground,
-  }
-}
+  };
+};
 
 const RealAppConnected = connect<
   StateProps,
@@ -241,7 +241,7 @@ const RealAppConnected = connect<
     dispatch({
       type: 'SET_API_SECRET',
       apiSecret,
-    })
+    });
   },
   clearToast: () =>
     dispatch({
@@ -260,7 +260,7 @@ const RealAppConnected = connect<
     dispatch({
       type: 'CURRENCY_RATES_REQUEST',
     }),
-}))(RealApp)
+}))(RealApp);
 
 function getNavigationTheme(
   theme: Theme,
@@ -276,20 +276,20 @@ function getNavigationTheme(
       border: theme.onBackground,
       notification: theme.warning,
     },
-  }
+  };
 }
 
-const themedStyles = styleSheetFactory(() => ({}))
+const themedStyles = styleSheetFactory(() => ({}));
 
 const App = () => {
-  const [, theme, themeName] = useThemedStyles(themedStyles)
+  const [, theme, themeName] = useThemedStyles(themedStyles);
 
   useEffect(() => {
-    changeNavigationBarColor(theme.surface, themeName === 'light', true)
+    changeNavigationBarColor(theme.surface, themeName === 'light', true);
     StatusBar.setBarStyle(
       themeName === 'light' ? 'dark-content' : 'light-content',
-    )
-  }, [themeName, theme])
+    );
+  }, [themeName, theme]);
 
   return (
     <Provider store={store}>
@@ -304,7 +304,7 @@ const App = () => {
         </ThemeProvider>
       </PersistGate>
     </Provider>
-  )
-}
+  );
+};
 
-export default App
+export default App;
